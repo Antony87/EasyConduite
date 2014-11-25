@@ -28,57 +28,60 @@ import javafx.scene.Scene;
 
 public class AudioTable {
 
-        private Scene scene;
+    private Scene scene;
 
-        private ObservableMap<Integer,AudioMedia> observableTable;
+    private ObservableMap<Integer, AudioMedia> observableTable;
 
-        private static AudioTable instance = new AudioTable();
+    private static AudioTable instance = new AudioTable();
 
-        private AudioTable() {
+    private AudioTable() {
 
-                observableTable = FXCollections.observableHashMap();
+        observableTable = FXCollections.observableHashMap();
 
-                observableTable.addListener(new MapChangeListener<Integer,AudioMedia>() {
-                        @Override
-                        public void onChanged(Change<? extends Integer,? extends AudioMedia> change) {
-                               
-                                if(change.wasAdded()){
-                                        change.getValueAdded().draw(scene);
-                                }
-                                if(change.wasRemoved()){
-                                        change.getValueRemoved().remove(scene);;
-                                }
-                        }
+        observableTable.addListener(new MapChangeListener<Integer, AudioMedia>() {
+            @Override
+            public void onChanged(Change<? extends Integer, ? extends AudioMedia> change) {
 
-                });
+                if (change.wasAdded()) {
+                    change.getValueAdded().draw(scene);
+                }
+                if (change.wasRemoved()) {
+                    change.getValueRemoved().remove(scene);;
+                }
+            }
 
-        }
+        });
 
-        public static AudioTable getInstance() {
-                return instance;
-        }
+    }
 
-        public void addAudioMedia(File audioFile) throws IOException {
+    public static AudioTable getInstance() {
+        return instance;
+    }
 
-                AudioMedia audioMedia = new AudioMedia(audioFile);
-                observableTable.putIfAbsent(audioMedia.getId(), audioMedia);
-        }
-       
-        public void deleteAudioMedia(Integer id){
-                observableTable.remove(id);
-        }
+    public void addAudioMedia(File audioFile) throws IOException {
 
-        public AudioMedia getAudioMedia(Integer id) {  
-                return observableTable.get(id);
-        }
+        AudioMedia audioMedia = new AudioMedia(audioFile);
+        observableTable.putIfAbsent(audioMedia.getId(), audioMedia);
+    }
 
-        public Scene getScene() {
-                return scene;
-        }
+    public void deleteAudioMedia(Integer id) {
+        observableTable.remove(id);
+    }
 
-        public void setScene(Scene scene) {
-                this.scene = scene;
-        }
+    public AudioMedia getAudioMedia(Integer id) {
+        return observableTable.get(id);
+    }
 
+    public Scene getScene() {
+        return scene;
+    }
+
+    public void setScene(Scene scene) {
+        this.scene = scene;
+    }
+
+    public ObservableMap<Integer, AudioMedia> getObservableTable() {
+        return observableTable;
+    }
 
 }
