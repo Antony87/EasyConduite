@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.effect.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<VBox prefHeight="480.0" prefWidth="900.0" style="-fx-background-color: #36383b;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.EasyconduiteController">
+  <children>
+    <MenuBar style="-fx-background-color: #727272;" VBox.vgrow="NEVER">
+      <menus>
+        <Menu mnemonicParsing="false" text="Fichier">
+          <items>
+            <MenuItem fx:id="fichierouvrir" mnemonicParsing="false" onAction="#handleFichierOuvrir" text="Ouvrir..." />
+            <Menu mnemonicParsing="false" text="Ouvrir récents" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Fermer" />
+            <MenuItem mnemonicParsing="false" text="Sauvegarder" />
+            <MenuItem mnemonicParsing="false" text="Sauvegarder comme..." />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" onAction="#handleQuit" text="Quit" />
+          </items>
+        </Menu>
+            <Menu mnemonicParsing="false" text="Spectacle">
+              <items>
+                  <Menu mnemonicParsing="false" text="Table audio">
+                    <items>
+                      <MenuItem id="addaudiomenu" mnemonicParsing="false" onAction="#handleAddAudioMenu" text="Ajouter audio" />
+                    </items>
+                  </Menu>
+                  <MenuItem mnemonicParsing="false" text="Propriétés" />
+              </items>
+            </Menu>
+        <Menu mnemonicParsing="false" text="Edition">
+          <items>
+            <MenuItem mnemonicParsing="false" text="Cut" />
+            <MenuItem mnemonicParsing="false" text="Copy" />
+            <MenuItem mnemonicParsing="false" text="Paste" />
+            <MenuItem mnemonicParsing="false" text="Delete" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Select All" />
+            <MenuItem mnemonicParsing="false" text="Unselect All" />
+            <MenuItem mnemonicParsing="false" text="Preferences…" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+          <items>
+            <MenuItem mnemonicParsing="false" text="A propos..." />
+          </items>
+        </Menu>
+      </menus>
+         <effect>
+            <Blend />
+         </effect>
+    </MenuBar>
+      <HBox prefHeight="50.0" prefWidth="640.0">
+         <children>
+            <ProgressBar prefHeight="20.0" prefWidth="377.0" progress="0.0">
+               <padding>
+                  <Insets left="50.0" />
+               </padding>
+            </ProgressBar>
+            <Label fx:id="timer" alignment="CENTER" contentDisplay="CENTER" style="-fx-border-color: #a8b0bb; -fx-background-color: #203029;" text="00:00:00" textAlignment="CENTER" textFill="#00ff3e">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <padding>
+                  <Insets left="50.0" right="20.0" />
+               </padding>
+               <HBox.margin>
+                  <Insets left="20.0" right="20.0" />
+               </HBox.margin>
+               <effect>
+                  <Lighting>
+                     <bumpInput>
+                        <Shadow />
+                     </bumpInput>
+                     <light>
+                        <Light.Distant />
+                     </light>
+                  </Lighting>
+               </effect>
+            </Label>
+            <ToggleButton fx:id="chronobutton" mnemonicParsing="false" onMouseClicked="#handleMouseAction" text="ON" />
+         </children>
+         <padding>
+            <Insets bottom="20.0" top="20.0" />
+         </padding>
+      </HBox>
+      <HBox fx:id="table" prefHeight="390.0" prefWidth="640.0" />
+  </children>
+</VBox>

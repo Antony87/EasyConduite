@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<FlowPane alignment="TOP_CENTER" columnHalignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="350.0" prefWidth="80.0" scaleShape="false" style="-fx-background-color: #444c57;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.antonyweb.jfx.easyconduite.FXMLController">
+   <effect>
+      <Lighting>
+         <bumpInput>
+            <Shadow />
+         </bumpInput>
+         <light>
+            <Light.Distant />
+         </light>
+      </Lighting>
+   </effect>
+   <children>
+      <Button mnemonicParsing="false" onMouseReleased="#handleDeleteTrack" text="X">
+         <font>
+            <Font size="9.0" />
+         </font>
+      </Button>
+      <Slider orientation="VERTICAL" prefHeight="250.0" value="50.0">
+         <padding>
+            <Insets bottom="20.0" />
+         </padding></Slider>
+      <Button mnemonicParsing="false" onMouseClicked="#handlePlayPauseAudio" text="Button" />
+   </children>
+   <opaqueInsets>
+      <Insets />
+   </opaqueInsets>
+   <padding>
+      <Insets top="20.0" />
+   </padding>
+</FlowPane>
