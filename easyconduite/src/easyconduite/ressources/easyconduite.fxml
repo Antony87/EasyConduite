@@ -57,40 +57,50 @@
             <Blend />
          </effect>
     </MenuBar>
-      <HBox prefHeight="50.0" prefWidth="640.0">
-         <children>
-            <ProgressBar prefHeight="20.0" prefWidth="377.0" progress="0.0">
+      <BorderPane>
+         <top>
+            <HBox alignment="CENTER" maxHeight="60.0" prefHeight="60.0" BorderPane.alignment="CENTER">
+               <children>
+                  <ProgressBar prefHeight="20.0" prefWidth="377.0" progress="0.0">
+                     <padding>
+                        <Insets left="50.0" />
+                     </padding>
+                  </ProgressBar>
+                  <Label fx:id="timer" alignment="CENTER" contentDisplay="CENTER" style="-fx-border-color: #a8b0bb; -fx-background-color: #203029;" text="00:00:00" textAlignment="CENTER" textFill="#00ff3e">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <padding>
+                        <Insets left="50.0" right="20.0" />
+                     </padding>
+                     <HBox.margin>
+                        <Insets left="20.0" right="20.0" />
+                     </HBox.margin>
+                     <effect>
+                        <Lighting>
+                           <bumpInput>
+                              <Shadow />
+                           </bumpInput>
+                           <light>
+                              <Light.Distant />
+                           </light>
+                        </Lighting>
+                     </effect>
+                  </Label>
+                  <ToggleButton fx:id="chronobutton" mnemonicParsing="false" onMouseClicked="#handleMouseAction" text="ON" />
+               </children>
+            </HBox>
+         </top>
+         <center>
+            <HBox fx:id="table" nodeOrientation="LEFT_TO_RIGHT" prefHeight="380.0" prefWidth="900.0" BorderPane.alignment="CENTER_LEFT">
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
                <padding>
-                  <Insets left="50.0" />
+                  <Insets left="2.0" right="2.0" />
                </padding>
-            </ProgressBar>
-            <Label fx:id="timer" alignment="CENTER" contentDisplay="CENTER" style="-fx-border-color: #a8b0bb; -fx-background-color: #203029;" text="00:00:00" textAlignment="CENTER" textFill="#00ff3e">
-               <font>
-                  <Font size="18.0" />
-               </font>
-               <padding>
-                  <Insets left="50.0" right="20.0" />
-               </padding>
-               <HBox.margin>
-                  <Insets left="20.0" right="20.0" />
-               </HBox.margin>
-               <effect>
-                  <Lighting>
-                     <bumpInput>
-                        <Shadow />
-                     </bumpInput>
-                     <light>
-                        <Light.Distant />
-                     </light>
-                  </Lighting>
-               </effect>
-            </Label>
-            <ToggleButton fx:id="chronobutton" mnemonicParsing="false" onMouseClicked="#handleMouseAction" text="ON" />
-         </children>
-         <padding>
-            <Insets bottom="20.0" top="20.0" />
-         </padding>
-      </HBox>
-      <HBox fx:id="table" prefHeight="390.0" prefWidth="640.0" />
+            </HBox>
+         </center>
+      </BorderPane>
   </children>
 </VBox>
