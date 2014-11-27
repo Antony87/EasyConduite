@@ -23,6 +23,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,23 +39,30 @@ public class AudioMediaUI {
 
     private MediaPlayer player;
 
-    final private AudioMedia audioMedia;
-    
-    private final Logger logger = LoggerFactory.getLogger(AudioMediaUI.class);
+    private AudioMedia audioMedia;
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(AudioMediaUI.class);
 
     private final static String FXML_CUSTOM_PATH = "ressources/piste.fxml";
 
+    private final static String ID_PANE_TABLE = "#table";
+
     /**
-     * Constructor du UI custom control for an AudioMedia.
+     * Constructor du UI custom control for an AudioMedia.<br>
+     * Not draw the control but construct object and assign a {@link MediaPlayer}.<br>
+     * Media's volume is set to 0.5 by default.
      *
      * @param scene
      * @param audioMedia
      */
     public AudioMediaUI(final Scene scene, final AudioMedia audioMedia) {
-        
-        logger.debug("Create AudioMedia with {}",audioMedia.getAudioFile().getPath());
-        
+
+        LOGGER.debug("Create AudioMedia with {}", audioMedia.getAudioFile().getPath());
         this.audioMedia = audioMedia;
+        Media media = new Media(this.audioMedia.getAudioFile().toURI().toString());
+        player = new MediaPlayer(media);
+        player.setVolume(0.5);
+
     }
 
     /**
@@ -65,14 +73,14 @@ public class AudioMediaUI {
     public void addUI(final Scene scene) {
 
         final FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML_CUSTOM_PATH));
-
         pane = null;
         try {
             pane = loader.load();
         } catch (IOException e) {
+            LOGGER.error("Error loading {}", FXML_CUSTOM_PATH, e);
             e.printStackTrace();
         }
-        HBox table = (HBox) scene.lookup("#table");
+        HBox table = (HBox) scene.lookup(ID_PANE_TABLE);
         table.getChildren().add(0, pane);
 
     }
