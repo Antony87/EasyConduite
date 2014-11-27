@@ -17,8 +17,11 @@
  */
 package easyconduite.ui;
 
+import easyconduite.controllers.AudioMediaController;
 import easyconduite.objects.AudioMedia;
 import java.io.IOException;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.FlowPane;
@@ -40,6 +43,10 @@ public class AudioMediaUI {
     private MediaPlayer player;
 
     private AudioMedia audioMedia;
+    
+    private AudioMediaController controller;
+    
+    private final DoubleProperty volume = new SimpleDoubleProperty();
 
     private final static Logger LOGGER = LoggerFactory.getLogger(AudioMediaUI.class);
 
@@ -58,9 +65,10 @@ public class AudioMediaUI {
     public AudioMediaUI(final Scene scene, final AudioMedia audioMedia) {
 
         LOGGER.debug("Create AudioMedia with {}", audioMedia.getAudioFile().getPath());
-        this.audioMedia = audioMedia;
-        Media media = new Media(this.audioMedia.getAudioFile().toURI().toString());
-        player = new MediaPlayer(media);
+        setAudioMedia(audioMedia);
+        Media media = new Media(audioMedia.getAudioFile().toURI().toString());
+        setPlayer(new MediaPlayer(media));
+        volume.bindBidirectional(player.volumeProperty());
         player.setVolume(0.5);
 
     }
@@ -75,16 +83,32 @@ public class AudioMediaUI {
         final FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML_CUSTOM_PATH));
         pane = null;
         try {
+            controller = loader.getController();
             pane = loader.load();
         } catch (IOException e) {
             LOGGER.error("Error loading {}", FXML_CUSTOM_PATH, e);
-            e.printStackTrace();
         }
         HBox table = (HBox) scene.lookup(ID_PANE_TABLE);
         table.getChildren().add(0, pane);
 
     }
 
+    /**
+     * Remove the UI Control pane form the scene.
+     *
+     * @param scene
+     */
+    public void remove(Scene scene) {
+        player.dispose();
+        HBox table = (HBox) scene.lookup("#table");
+        table.getChildren().remove(pane);
+    }
+
+    /**
+     * Get the {@link MediaPlayer} assigned to this UI Control.
+     *
+     * @return
+     */
     public MediaPlayer getPlayer() {
         return player;
     }
@@ -93,8 +117,17 @@ public class AudioMediaUI {
         this.player = player;
     }
 
+    /**
+     * Get the AudioMedia.
+     *
+     * @return
+     */
     public AudioMedia getAudioMedia() {
         return audioMedia;
+    }
+
+    private void setAudioMedia(AudioMedia audioMedia) {
+        this.audioMedia = audioMedia;
     }
 
 }
