@@ -20,7 +20,12 @@ package easyconduite.controllers;
 import easyconduite.ui.AudioMediaUI;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaPlayer.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,13 +36,49 @@ import org.slf4j.LoggerFactory;
  */
 public class AudioMediaController implements Initializable {
     
+    private AudioMediaUI audioMediaUI;
+    
     private final static Logger LOGGER = LoggerFactory.getLogger(AudioMediaController.class);
 
+    @FXML
+    private void handlePlayPauseAudio(MouseEvent event) {
+        // get source of event and parent.
+        if (event.getSource().getClass() == Button.class) {
+            final Button button = (Button) event.getSource();
 
+            MediaPlayer player = audioMediaUI.getPlayer();
+            Status status = player.getStatus();
+
+            if (status == MediaPlayer.Status.PLAYING) {
+                player.pause();
+            }
+            if (status == MediaPlayer.Status.PAUSED || status == MediaPlayer.Status.STOPPED
+                    || status == MediaPlayer.Status.READY) {
+                player.play();
+            }
+        }
+
+    }
+
+    @FXML
+    private void handleDeleteTrack(MouseEvent event) {
+        if (event.getSource().getClass() == Button.class) {
+            EasyconduiteController.removeAudioMediaUI(audioMediaUI.getAudioMedia());
+            audioMediaUI.remove(null);
+        }
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public AudioMediaUI getAudioMediaUI() {
+        return audioMediaUI;
+    }
+
+    public void setAudioMediaUI(AudioMediaUI audioMediaUI) {
+        this.audioMediaUI = audioMediaUI;
     }
 
 }

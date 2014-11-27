@@ -6,25 +6,21 @@
 package easyconduite.controllers;
 
 import easyconduite.objects.AudioMedia;
-import easyconduite.objects.AudioTable;
 import easyconduite.ui.AudioMediaUI;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.media.MediaPlayer.Status;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -33,6 +29,8 @@ import javafx.stage.Stage;
  * @author V902832
  */
 public class EasyconduiteController implements Initializable {
+
+    private static ObservableList<AudioMedia> observableListMedia;
 
     /**
      * Zone texte affichant le timer du spectacle.
@@ -71,41 +69,13 @@ public class EasyconduiteController implements Initializable {
     }
 
     @FXML
-    private void handlePlayPauseAudio(MouseEvent event) {
-        // get source of event and parent.
-        if (event.getSource().getClass() == Button.class) {
-            final Button button = (Button) event.getSource();
-            final Pane pane = (Pane) button.getParent();
-            final AudioMedia audioMedia = AudioTable.getInstance()
-                    .getAudioMedia(new Integer(pane.getId()));
-            Status status = audioMedia.getStatus();
-            if (status == Status.PLAYING) {
-                audioMedia.pause();
-            }
-            if (status == Status.PAUSED || status == Status.STOPPED
-                    || status == Status.READY) {
-                audioMedia.play();
-            }
-        }
-
-    }
-
-    @FXML
-    private void handleDeleteTrack(MouseEvent event) {
-        if (event.getSource().getClass() == Button.class) {
-            final Button button = (Button) event.getSource();
-            final Pane pane = (Pane) button.getParent();
-            AudioTable.getInstance().deleteAudioMedia(new Integer(pane.getId()));
-        }
-    }
-
-    @FXML
     private void handleFichierOuvrir(ActionEvent event) {
 
     }
 
     /**
-     * Cette méthode est appellée par l'événement du menu ajout d'une média dans la table audio.
+     * Cette méthode est appellée par l'événement du menu ajout d'une média dans
+     * la table audio.
      *
      * @param event
      */
@@ -122,7 +92,8 @@ public class EasyconduiteController implements Initializable {
     }
 
     /**
-     * Cette méthode est appellé par l'action Quit du menu Fichier et ferme l'application.
+     * Cette méthode est appellé par l'action Quit du menu Fichier et ferme
+     * l'application.
      *
      * @param event
      */
@@ -135,6 +106,12 @@ public class EasyconduiteController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
 
         // TODO
+    }
+
+    public static void removeAudioMediaUI(AudioMedia audioMedia) {
+        if (observableListMedia.contains(audioMedia)) {
+            observableListMedia.remove(audioMedia);
+        } 
     }
 
     public void setTimeline(Timeline timeline) {

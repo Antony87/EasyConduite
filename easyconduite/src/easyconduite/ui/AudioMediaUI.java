@@ -32,7 +32,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class encapsulates logics and behaviors about Custom UI Control of an AudioMedia.
+ * This class encapsulates logics and behaviors about Custom UI Control of an
+ * AudioMedia.
  *
  * @author A Fons
  */
@@ -43,9 +44,11 @@ public class AudioMediaUI {
     private MediaPlayer player;
 
     private AudioMedia audioMedia;
-    
+
     private AudioMediaController controller;
-    
+
+    private final Scene scene;
+
     private final DoubleProperty volume = new SimpleDoubleProperty();
 
     private final static Logger LOGGER = LoggerFactory.getLogger(AudioMediaUI.class);
@@ -56,7 +59,8 @@ public class AudioMediaUI {
 
     /**
      * Constructor du UI custom control for an AudioMedia.<br>
-     * Not draw the control but construct object and assign a {@link MediaPlayer}.<br>
+     * Not draw the control but construct object and assign a
+     * {@link MediaPlayer}.<br>
      * Media's volume is set to 0.5 by default.
      *
      * @param scene
@@ -65,6 +69,7 @@ public class AudioMediaUI {
     public AudioMediaUI(final Scene scene, final AudioMedia audioMedia) {
 
         LOGGER.debug("Create AudioMedia with {}", audioMedia.getAudioFile().getPath());
+        this.scene=scene;
         setAudioMedia(audioMedia);
         Media media = new Media(audioMedia.getAudioFile().toURI().toString());
         setPlayer(new MediaPlayer(media));
@@ -85,6 +90,7 @@ public class AudioMediaUI {
         pane = null;
         try {
             controller = loader.getController();
+            controller.setAudioMediaUI(this);
             pane = loader.load();
         } catch (IOException e) {
             LOGGER.error("Error loading {}", FXML_CUSTOM_PATH, e);
