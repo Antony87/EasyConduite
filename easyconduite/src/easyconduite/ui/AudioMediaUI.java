@@ -68,13 +68,14 @@ public class AudioMediaUI {
         setAudioMedia(audioMedia);
         Media media = new Media(audioMedia.getAudioFile().toURI().toString());
         setPlayer(new MediaPlayer(media));
+        // bind for volume property
         volume.bindBidirectional(player.volumeProperty());
         player.setVolume(0.5);
 
     }
 
     /**
-     * Add to a scene the custom control UI for an {@link AudioMediaUI}.
+     * Add the custom control UI for an {@link AudioMediaUI} to a scene.
      *
      * @param scene
      */
@@ -94,7 +95,7 @@ public class AudioMediaUI {
     }
 
     /**
-     * Remove the UI Control pane form the scene.
+     * Remove the UI Control pane from the scene.
      *
      * @param scene
      */

@@ -17,19 +17,27 @@
  */
 package easyconduite.controllers;
 
+import easyconduite.ui.AudioMediaUI;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
+ * Controller for the UI custom control {@link AudioMediaUI}.
  *
  * @author A Fons
  */
-public class AudioMediaController implements Initializable{
+public class AudioMediaController implements Initializable {
+    
+    private final static Logger LOGGER = LoggerFactory.getLogger(AudioMediaController.class);
+
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
 }
