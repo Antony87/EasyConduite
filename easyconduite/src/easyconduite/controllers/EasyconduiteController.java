@@ -6,12 +6,15 @@
 package easyconduite.controllers;
 
 import easyconduite.objects.AudioMedia;
+import easyconduite.objects.AudioTable;
 import easyconduite.ui.AudioMediaUI;
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -30,7 +33,7 @@ import javafx.stage.Stage;
  */
 public class EasyconduiteController implements Initializable {
 
-    private static ObservableList<AudioMedia> observableListMedia;
+    private static ObservableList<AudioMedia> audioMediaObsList;
 
     /**
      * Zone texte affichant le timer du spectacle.
@@ -105,12 +108,16 @@ public class EasyconduiteController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        // TODO
+        // initialize Observable List of AudioMedia
+        setAudioMediaObsList(FXCollections.observableArrayList());
+        // binding with Observable List from AudioTable
+        Bindings.bindContent(getAudioMediaObsList(), AudioTable.getAudioMediaObsList());
+        
     }
 
     public static void removeAudioMediaUI(AudioMedia audioMedia) {
-        if (observableListMedia.contains(audioMedia)) {
-            observableListMedia.remove(audioMedia);
+        if (audioMediaObsList.contains(audioMedia)) {
+            audioMediaObsList.remove(audioMedia);
         } 
     }
 
@@ -125,5 +132,15 @@ public class EasyconduiteController implements Initializable {
     public void setStage(Stage stage) {
         this.stage = stage;
     }
+
+    public static ObservableList<AudioMedia> getAudioMediaObsList() {
+        return audioMediaObsList;
+    }
+
+    private static void setAudioMediaObsList(ObservableList<AudioMedia> audioMediaObsList) {
+        EasyconduiteController.audioMediaObsList = audioMediaObsList;
+    }
+    
+    
 
 }

@@ -20,37 +20,22 @@ package easyconduite.objects;
 
 import java.io.File;
 import java.io.IOException;
-
 import javafx.collections.FXCollections;
-import javafx.collections.MapChangeListener;
-import javafx.collections.ObservableMap;
+
+import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 
 public class AudioTable {
 
     private Scene scene;
-
-    private ObservableMap<Integer, AudioMedia> observableTable;
+    
+    private static ObservableList<AudioMedia> audioMediaObsList;
 
     private static AudioTable instance = new AudioTable();
 
     private AudioTable() {
-
-        observableTable = FXCollections.observableHashMap();
-
-        observableTable.addListener(new MapChangeListener<Integer, AudioMedia>() {
-            @Override
-            public void onChanged(Change<? extends Integer, ? extends AudioMedia> change) {
-
-                if (change.wasAdded()) {
-                    change.getValueAdded().draw(scene);
-                }
-                if (change.wasRemoved()) {
-                    change.getValueRemoved().remove(scene);;
-                }
-            }
-
-        });
+        
+        audioMediaObsList = FXCollections.observableArrayList();
 
     }
 
@@ -61,15 +46,16 @@ public class AudioTable {
     public void addAudioMedia(File audioFile) throws IOException {
 
         AudioMedia audioMedia = new AudioMedia(audioFile);
-        observableTable.putIfAbsent(audioMedia.getId(), audioMedia);
+
     }
 
     public void deleteAudioMedia(Integer id) {
-        observableTable.remove(id);
+
     }
 
     public AudioMedia getAudioMedia(Integer id) {
-        return observableTable.get(id);
+        return null;
+
     }
 
     public Scene getScene() {
@@ -80,8 +66,8 @@ public class AudioTable {
         this.scene = scene;
     }
 
-    public ObservableMap<Integer, AudioMedia> getObservableTable() {
-        return observableTable;
+    public static ObservableList<AudioMedia> getAudioMediaObsList() {
+        return audioMediaObsList;
     }
 
 }
