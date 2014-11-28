@@ -19,15 +19,21 @@ package easyconduite.ui;
 
 import easyconduite.controllers.AudioMediaController;
 import easyconduite.objects.AudioMedia;
-import java.io.IOException;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.fxml.FXMLLoader;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,9 +43,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author A Fons
  */
-public class AudioMediaUI {
-
-    private FlowPane pane;
+public class AudioMediaUI extends FlowPane {
 
     private MediaPlayer player;
 
@@ -67,9 +71,12 @@ public class AudioMediaUI {
      * @param audioMedia
      */
     public AudioMediaUI(final Scene scene, final AudioMedia audioMedia) {
-
+        
+        super(Orientation.VERTICAL);
+        
         LOGGER.debug("Create AudioMedia with {}", audioMedia.getAudioFile().getPath());
-        this.scene=scene;
+
+        this.scene = scene;
         setAudioMedia(audioMedia);
         Media media = new Media(audioMedia.getAudioFile().toURI().toString());
         setPlayer(new MediaPlayer(media));
@@ -82,21 +89,37 @@ public class AudioMediaUI {
     /**
      * Add the custom control UI for an {@link AudioMediaUI} to a scene.
      *
-     * @param scene
      */
-    public void addUI(final Scene scene) {
+    public void addUI() {
+                
+        this.setAlignment(Pos.TOP_CENTER);
+        this.setColumnHalignment(HPos.CENTER);   
+        this.setMaxHeight(USE_PREF_SIZE);
+        this.setMaxWidth(USE_PREF_SIZE);
+        this.setPrefHeight(350);
+        this.setPrefWidth(80);
+        this.setPrefWrapLength(380);
+        this.setStyle("-fx-background-color: #444c57;");
+        this.setPadding(new Insets(20, 0, 0, 0));
 
-        final FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML_CUSTOM_PATH));
-        pane = null;
-        try {
-            controller = loader.getController();
-            controller.setAudioMediaUI(this);
-            pane = loader.load();
-        } catch (IOException e) {
-            LOGGER.error("Error loading {}", FXML_CUSTOM_PATH, e);
-        }
+                    
+        Button boutonClose = new Button("X");
+        boutonClose.setTextAlignment(TextAlignment.CENTER);
+        boutonClose.setFont(new Font(9));
+        this.getChildren().add(boutonClose);
+
+        Slider curseVolume = new Slider();
+        curseVolume.setOrientation(Orientation.VERTICAL);
+        curseVolume.setPrefHeight(250);
+        curseVolume.setValue(50);
+        curseVolume.setPadding(new Insets(0,0,20,0));
+        this.getChildren().add(curseVolume);
+        
+        Button btnPlayPause = new Button("Play");
+        this.getChildren().add(btnPlayPause);
+
         HBox table = (HBox) scene.lookup(ID_PANE_TABLE);
-        table.getChildren().add(0, pane);
+        table.getChildren().add(0, this);
 
     }
 
@@ -108,7 +131,7 @@ public class AudioMediaUI {
     public void remove(Scene scene) {
         player.dispose();
         HBox table = (HBox) scene.lookup("#table");
-        table.getChildren().remove(pane);
+        table.getChildren().remove(this);
     }
 
     /**

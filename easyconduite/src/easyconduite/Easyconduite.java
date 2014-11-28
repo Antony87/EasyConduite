@@ -18,7 +18,7 @@ import javafx.stage.Stage;
 
 /**
  *
- * @author V902832
+ * @author A. Fons
  */
 public class Easyconduite extends Application {
 
@@ -30,7 +30,6 @@ public class Easyconduite extends Application {
         Parent root = loader.load();
 
         EasyconduiteController controller = loader.getController();
-        controller.setStage(stage);
 
         Scene scene = new Scene(root);
         //scene.getStylesheets().add("/styles/Styles.css");
@@ -38,9 +37,10 @@ public class Easyconduite extends Application {
         Label ltimer = (Label) scene.lookup("#timer");
         Timeline timeline = Chrono.getTimeline(ltimer);
         controller.setTimeline(timeline);
+        controller.setScene(scene);
 
-        AudioTable audioTable = AudioTable.getInstance();
-        audioTable.setScene(scene);
+        AudioTable audioTable = new AudioTable();
+        controller.setAudioTable(audioTable);
 
         stage.setTitle("EasyConduite 0.1");
         stage.setScene(scene);

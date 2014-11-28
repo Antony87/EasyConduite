@@ -18,56 +18,56 @@
  */
 package easyconduite.objects;
 
-import java.io.File;
-import java.io.IOException;
-import javafx.collections.FXCollections;
+import java.util.ArrayList;
+import java.util.List;
 
 import javafx.collections.ObservableList;
-import javafx.scene.Scene;
 
+/**
+ * This class manage an {@link ObservableList} of AudioMedia.
+ *
+ * @author A Fons
+ */
 public class AudioTable {
 
-    private Scene scene;
-    
-    private static ObservableList<AudioMedia> audioMediaObsList;
+    private List<AudioMedia> audioMediaList;
 
-    private static AudioTable instance = new AudioTable();
-
-    private AudioTable() {
-        
-        audioMediaObsList = FXCollections.observableArrayList();
-
+    /**
+     * Constructor.
+     * <br> Initialize the ObservableList of AudioFile.
+     */
+    public AudioTable() {
+        audioMediaList = new ArrayList<AudioMedia>();
     }
 
-    public static AudioTable getInstance() {
-        return instance;
+    /**
+     * This method add an AudioFile to List.
+     *
+     * @param audioFile
+     * @throws IllegalArgumentException
+     */
+    public void addAudioMedia(AudioMedia audioMedia) throws IllegalArgumentException {
+
+        if (!audioMediaList.contains(audioMedia)) {
+            audioMediaList.add(audioMedia);
+        } else {
+            throw new IllegalArgumentException("AudioFile already added");
+        }
     }
 
-    public void addAudioMedia(File audioFile) throws IOException {
-
-        AudioMedia audioMedia = new AudioMedia(audioFile);
-
+    public void removeAudioMedia(AudioMedia audioMedia) {
+        if (audioMediaList.contains(audioMedia)) {
+            audioMediaList.remove(audioMedia);
+        }
     }
 
-    public void deleteAudioMedia(Integer id) {
-
-    }
-
-    public AudioMedia getAudioMedia(Integer id) {
-        return null;
-
-    }
-
-    public Scene getScene() {
-        return scene;
-    }
-
-    public void setScene(Scene scene) {
-        this.scene = scene;
-    }
-
-    public static ObservableList<AudioMedia> getAudioMediaObsList() {
-        return audioMediaObsList;
+    /**
+     * Rhis method expose the List, to allow binding from other class.
+     *
+     * @return
+     */
+    public List<AudioMedia> getAudioMediaObsList() {
+        return audioMediaList;
     }
 
 }

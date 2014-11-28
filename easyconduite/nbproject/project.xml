@@ -15,7 +15,6 @@
         <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
             <name>easyconduite</name>
             <source-roots>
-                <root id="src.config.dir"/>
                 <root id="src.dir"/>
             </source-roots>
             <test-roots>

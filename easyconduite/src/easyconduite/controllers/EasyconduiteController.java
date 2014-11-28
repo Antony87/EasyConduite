@@ -13,10 +13,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableSet;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -27,7 +26,8 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -35,28 +35,25 @@ import javafx.stage.Stage;
  */
 public class EasyconduiteController implements Initializable {
     
-    // @TODO gestion des collections bindés de AudioMedia par un set pour éviter les doublons.
-
     @FXML
     private Label timer;
-
+    
     @FXML
     private ToggleButton chronobutton;
-
+    
     @FXML
     private HBox table;
-
+    
     private Timeline timeline;
-
-    private Stage stage;
-
+    
     private AudioTable audioTable;
     
     private Scene scene;
-
-    private static ObservableSet<AudioMedia> audioMediaObsList;
-
-
+    
+    private static ObservableList<AudioMedia> audioMediaObsList;
+    
+    private final static Logger LOGGER = LoggerFactory.getLogger(EasyconduiteController.class);
+    
     @FXML
     private void handleMouseAction(MouseEvent event) {
         System.out.println("You clicked me!");
@@ -70,32 +67,41 @@ public class EasyconduiteController implements Initializable {
             }
         }
     }
-
+    
     @FXML
     private void handleFichierOuvrir(ActionEvent event) {
-
+        
     }
 
     /**
-     * Cette méthode est appellée par l'événement du menu ajout d'une média dans la table audio.
+     * Cette méthode est appellée par l'événement du menu ajout d'une média dans
+     * la table audio.
      *
      * @param event
      */
     @FXML
     private void handleAddAudioMenu(ActionEvent event) {
         
-        // @TODO ajout a l'observable set si tout se passe bien.
-
-        if (event.getSource() == MenuItem.class) {
-            final FileChooser fileChooser = new FileChooser();
-            File file = fileChooser.showOpenDialog(this.stage);
-            if (file != null) {
-                AudioMedia audioMedia = new AudioMedia(file);
+        System.out.println("AddAudioMenu");
+        
+        LOGGER.debug("Call AddAudioMenu");
+        
+        final FileChooser fileChooser = new FileChooser();
+        File file = fileChooser.showOpenDialog(scene.getWindow());
+        if (file != null) {
+            AudioMedia audioMedia = new AudioMedia(file);
+            if (!audioMediaObsList.contains(audioMedia)) {
+                audioMediaObsList.add(audioMedia);
                 AudioMediaUI audioMediaUI = new AudioMediaUI(getScene(), audioMedia);
+                audioMediaUI.addUI();
+            } else {
+                audioMedia = null;
+                // @TODO affichage message alerte.
             }
         }
+        
     }
-
+    
     public static void removeAudioMediaUI(AudioMedia audioMedia) {
         if (audioMediaObsList.contains(audioMedia)) {
             audioMediaObsList.remove(audioMedia);
@@ -103,7 +109,8 @@ public class EasyconduiteController implements Initializable {
     }
 
     /**
-     * Cette méthode est appellé par l'action Quit du menu Fichier et ferme l'application.
+     * Cette méthode est appellé par l'action Quit du menu Fichier et ferme
+     * l'application.
      *
      * @param event
      */
@@ -111,49 +118,45 @@ public class EasyconduiteController implements Initializable {
     private void handleQuit(ActionEvent event) {
         Platform.exit();
     }
-
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
         // initialize Observable List of AudioMedia
-        setAudioMediaObsList(FXCollections.observableArrayList());
-        // binding with Observable List from AudioTable
-        Bindings.bindContent(getAudioMediaObsList(), AudioTable.getAudioMediaObsList());
-
+        audioMediaObsList = FXCollections.observableArrayList();
+        
+        audioMediaObsList.addListener(new ListChangeListener<AudioMedia>() {
+            
+            @Override
+            public void onChanged(ListChangeListener.Change<? extends AudioMedia> change) {
+                
+                while (change.next()) {                    
+                    if (change.wasAdded()) {
+                        audioTable.addAudioMedia(change.getAddedSubList().get(0));
+                        break;
+                    }
+                    if (change.wasRemoved()) {
+                        audioTable.removeAudioMedia(change.getRemoved().get(0));
+                        break;
+                    }
+                }
+                
+            }
+        });
+        
     }
-
+    
     public void setTimeline(Timeline timeline) {
         this.timeline = timeline;
     }
-
-    public Stage getStage() {
-        return stage;
-    }
-
-    public void setStage(Stage stage) {
-        this.stage = stage;
-    }
-
-    public static ObservableList<AudioMedia> getAudioMediaObsList() {
-        return audioMediaObsList;
-    }
-
-    private static void setAudioMediaObsList(ObservableList<AudioMedia> audioMediaObsList) {
-        EasyconduiteController.audioMediaObsList = audioMediaObsList;
-    }
-
-    public AudioTable getAudioTable() {
-        return audioTable;
-    }
-
+    
     public void setAudioTable(AudioTable audioTable) {
         this.audioTable = audioTable;
     }
-
+    
     private Scene getScene() {
         return scene;
     }
-
+    
     public void setScene(Scene scene) {
         this.scene = scene;
     }
