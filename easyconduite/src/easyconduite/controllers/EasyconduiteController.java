@@ -16,9 +16,11 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ToggleButton;
@@ -32,6 +34,8 @@ import javafx.stage.Stage;
  * @author A Fons
  */
 public class EasyconduiteController implements Initializable {
+    
+    // @TODO gestion des collections bindés de AudioMedia par un set pour éviter les doublons.
 
     @FXML
     private Label timer;
@@ -47,8 +51,11 @@ public class EasyconduiteController implements Initializable {
     private Stage stage;
 
     private AudioTable audioTable;
+    
+    private Scene scene;
 
-    private static ObservableList<AudioMedia> audioMediaObsList;
+    private static ObservableSet<AudioMedia> audioMediaObsList;
+
 
     @FXML
     private void handleMouseAction(MouseEvent event) {
@@ -76,13 +83,15 @@ public class EasyconduiteController implements Initializable {
      */
     @FXML
     private void handleAddAudioMenu(ActionEvent event) {
+        
+        // @TODO ajout a l'observable set si tout se passe bien.
 
         if (event.getSource() == MenuItem.class) {
             final FileChooser fileChooser = new FileChooser();
             File file = fileChooser.showOpenDialog(this.stage);
             if (file != null) {
                 AudioMedia audioMedia = new AudioMedia(file);
-                AudioMediaUI audioMediaUI = new AudioMediaUI(getStage().getScene(), audioMedia);
+                AudioMediaUI audioMediaUI = new AudioMediaUI(getScene(), audioMedia);
             }
         }
     }
@@ -139,5 +148,13 @@ public class EasyconduiteController implements Initializable {
 
     public void setAudioTable(AudioTable audioTable) {
         this.audioTable = audioTable;
+    }
+
+    private Scene getScene() {
+        return scene;
+    }
+
+    public void setScene(Scene scene) {
+        this.scene = scene;
     }
 }
