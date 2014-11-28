@@ -29,33 +29,26 @@ import javafx.stage.Stage;
 
 /**
  *
- * @author V902832
+ * @author A Fons
  */
 public class EasyconduiteController implements Initializable {
 
-    private static ObservableList<AudioMedia> audioMediaObsList;
-
-    /**
-     * Zone texte affichant le timer du spectacle.
-     */
     @FXML
     private Label timer;
 
-    /**
-     * Togglebutton de play/stop du timer
-     */
     @FXML
     private ToggleButton chronobutton;
 
-    /**
-     * HBox de la table des pistes son.
-     */
     @FXML
     private HBox table;
 
     private Timeline timeline;
 
     private Stage stage;
+
+    private AudioTable audioTable;
+
+    private static ObservableList<AudioMedia> audioMediaObsList;
 
     @FXML
     private void handleMouseAction(MouseEvent event) {
@@ -77,8 +70,7 @@ public class EasyconduiteController implements Initializable {
     }
 
     /**
-     * Cette méthode est appellée par l'événement du menu ajout d'une média dans
-     * la table audio.
+     * Cette méthode est appellée par l'événement du menu ajout d'une média dans la table audio.
      *
      * @param event
      */
@@ -89,14 +81,20 @@ public class EasyconduiteController implements Initializable {
             final FileChooser fileChooser = new FileChooser();
             File file = fileChooser.showOpenDialog(this.stage);
             if (file != null) {
-                AudioMediaUI audioMediaUI = new AudioMediaUI(getStage().getScene(), null);
+                AudioMedia audioMedia = new AudioMedia(file);
+                AudioMediaUI audioMediaUI = new AudioMediaUI(getStage().getScene(), audioMedia);
             }
         }
     }
 
+    public static void removeAudioMediaUI(AudioMedia audioMedia) {
+        if (audioMediaObsList.contains(audioMedia)) {
+            audioMediaObsList.remove(audioMedia);
+        }
+    }
+
     /**
-     * Cette méthode est appellé par l'action Quit du menu Fichier et ferme
-     * l'application.
+     * Cette méthode est appellé par l'action Quit du menu Fichier et ferme l'application.
      *
      * @param event
      */
@@ -112,13 +110,7 @@ public class EasyconduiteController implements Initializable {
         setAudioMediaObsList(FXCollections.observableArrayList());
         // binding with Observable List from AudioTable
         Bindings.bindContent(getAudioMediaObsList(), AudioTable.getAudioMediaObsList());
-        
-    }
 
-    public static void removeAudioMediaUI(AudioMedia audioMedia) {
-        if (audioMediaObsList.contains(audioMedia)) {
-            audioMediaObsList.remove(audioMedia);
-        } 
     }
 
     public void setTimeline(Timeline timeline) {
@@ -140,7 +132,12 @@ public class EasyconduiteController implements Initializable {
     private static void setAudioMediaObsList(ObservableList<AudioMedia> audioMediaObsList) {
         EasyconduiteController.audioMediaObsList = audioMediaObsList;
     }
-    
-    
 
+    public AudioTable getAudioTable() {
+        return audioTable;
+    }
+
+    public void setAudioTable(AudioTable audioTable) {
+        this.audioTable = audioTable;
+    }
 }
