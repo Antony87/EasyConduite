@@ -17,10 +17,12 @@
  */
 package easyconduite.ui;
 
-import easyconduite.controllers.AudioMediaController;
+import easyconduite.controllers.EasyconduiteController;
 import easyconduite.objects.AudioMedia;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -28,12 +30,15 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,15 +54,11 @@ public class AudioMediaUI extends FlowPane {
 
     private AudioMedia audioMedia;
 
-    private AudioMediaController controller;
+    private SimpleStringProperty name = new SimpleStringProperty();
 
     private final Scene scene;
 
-    private final DoubleProperty volume = new SimpleDoubleProperty();
-
     private final static Logger LOGGER = LoggerFactory.getLogger(AudioMediaUI.class);
-
-    private final static String FXML_CUSTOM_PATH = "ressources/piste.fxml";
 
     private final static String ID_PANE_TABLE = "#table";
 
@@ -71,19 +72,15 @@ public class AudioMediaUI extends FlowPane {
      * @param audioMedia
      */
     public AudioMediaUI(final Scene scene, final AudioMedia audioMedia) {
-        
+
         super(Orientation.VERTICAL);
-        
+
         LOGGER.debug("Create AudioMedia with {}", audioMedia.getAudioFile().getPath());
 
         this.scene = scene;
         setAudioMedia(audioMedia);
         Media media = new Media(audioMedia.getAudioFile().toURI().toString());
-        setPlayer(new MediaPlayer(media));
-        // bind for volume property
-        volume.bindBidirectional(player.volumeProperty());
-        player.setVolume(0.5);
-
+        player = new MediaPlayer(media);
     }
 
     /**
@@ -91,32 +88,75 @@ public class AudioMediaUI extends FlowPane {
      *
      */
     public void addUI() {
-                
+
+        Insets insetForIncontrols = new Insets(10, 0, 0, 0);
+
         this.setAlignment(Pos.TOP_CENTER);
-        this.setColumnHalignment(HPos.CENTER);   
+        this.setColumnHalignment(HPos.CENTER);
         this.setMaxHeight(USE_PREF_SIZE);
         this.setMaxWidth(USE_PREF_SIZE);
-        this.setPrefHeight(350);
+        this.setPrefHeight(380);
         this.setPrefWidth(80);
         this.setPrefWrapLength(380);
         this.setStyle("-fx-background-color: #444c57;");
-        this.setPadding(new Insets(20, 0, 0, 0));
+        this.setPadding(insetForIncontrols);
+        this.setVgap(10);
 
-                    
         Button boutonClose = new Button("X");
         boutonClose.setTextAlignment(TextAlignment.CENTER);
         boutonClose.setFont(new Font(9));
+        boutonClose.setOnMouseReleased(new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent event) {
+                remove();
+            }
+        });
+        
         this.getChildren().add(boutonClose);
 
-        Slider curseVolume = new Slider();
+        Slider curseVolume = new Slider(0, 1, 1);
         curseVolume.setOrientation(Orientation.VERTICAL);
         curseVolume.setPrefHeight(250);
-        curseVolume.setValue(50);
-        curseVolume.setPadding(new Insets(0,0,20,0));
+        curseVolume.setBlockIncrement(0.1);
+        player.volumeProperty().bindBidirectional(curseVolume.valueProperty()); 
         this.getChildren().add(curseVolume);
-        
+
         Button btnPlayPause = new Button("Play");
+        btnPlayPause.setOnMouseReleased(new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent event) {
+            MediaPlayer.Status status = player.getStatus();
+
+            if (status == MediaPlayer.Status.PLAYING) {
+                System.out.println("pause");
+                player.pause();
+            }
+            if (status == MediaPlayer.Status.PAUSED || status == MediaPlayer.Status.STOPPED
+                    || status == MediaPlayer.Status.READY) {
+                System.out.println("play");
+                player.seek(Duration.ZERO);
+                player.play();
+            }
+            }
+        });
+        
         this.getChildren().add(btnPlayPause);
+        
+
+        TextField textName = new TextField();
+        textName.setPrefWidth(50);
+        textName.setPromptText("nom");
+        nameProperty().bindBidirectional(textName.textProperty());
+        nameProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                audioMedia.setName(newValue);
+            }
+        });
+
+        this.getChildren().add(textName);
 
         HBox table = (HBox) scene.lookup(ID_PANE_TABLE);
         table.getChildren().add(0, this);
@@ -126,12 +166,12 @@ public class AudioMediaUI extends FlowPane {
     /**
      * Remove the UI Control pane from the scene.
      *
-     * @param scene
      */
-    public void remove(Scene scene) {
+    public void remove() {
         player.dispose();
         HBox table = (HBox) scene.lookup("#table");
         table.getChildren().remove(this);
+        EasyconduiteController.removeAudioMediaUI(this.getAudioMedia());
     }
 
     /**
@@ -158,6 +198,18 @@ public class AudioMediaUI extends FlowPane {
 
     private void setAudioMedia(AudioMedia audioMedia) {
         this.audioMedia = audioMedia;
+    }
+
+    public String getName() {
+        return name.getValue();
+    }
+
+    public void setName(String name) {
+        this.name.setValue(name);
+    }
+
+    public SimpleStringProperty nameProperty() {
+        return name;
     }
 
 }
