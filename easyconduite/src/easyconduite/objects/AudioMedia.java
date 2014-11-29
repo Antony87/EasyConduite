@@ -88,4 +88,9 @@ public class AudioMedia {
         this.volume.set(volume);
     }
 
+    @Override
+    public String toString() {
+        return "AudioMedia{" + "id=" + id + ", name=" + name + ", linkedKeyCode=" + linkedKeyCode + ", audioFile=" + audioFile + ", volume=" + volume + '}';
+    }
+    
 }

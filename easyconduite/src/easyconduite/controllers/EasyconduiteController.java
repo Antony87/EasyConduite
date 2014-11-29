@@ -10,7 +10,10 @@ import easyconduite.objects.AudioTable;
 import easyconduite.ui.AudioMediaUI;
 import java.io.File;
 import java.net.URL;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -22,54 +25,57 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javafx.util.Duration;
 
 /**
  *
  * @author A Fons
  */
 public class EasyconduiteController implements Initializable {
-    
+
     @FXML
     private Label timer;
-    
+
     @FXML
     private ToggleButton chronobutton;
-    
-    @FXML
-    private HBox table;
-    
+
     private Timeline timeline;
-    
+
     private AudioTable audioTable;
-    
+
     private Scene scene;
+
+    private ObservableList<AudioMedia> audioMediaObsList;
+
+    private Map<KeyCode, AudioMediaUI> keycodesAudioMap;
     
-    private static ObservableList<AudioMedia> audioMediaObsList;
-    
-    private final static Logger LOGGER = LoggerFactory.getLogger(EasyconduiteController.class);
-    
+    private static Logger logger = Logger.getLogger(EasyconduiteController.class.getName());
+
     @FXML
     private void handleMouseAction(MouseEvent event) {
-        System.out.println("You clicked me!");
+        
+        // TODO gestion plus fine du ToogleButton
+        
         if (timeline != null) {
             if (!chronobutton.isSelected()) {
+                logger.info("ToggleButton chronobutton was deselected : Chrono play");
                 timeline.pause();
                 chronobutton.setStyle(null);
             } else {
+                logger.info("ToggleButton chronobutton was selected : Chrono play");
                 chronobutton.setStyle("-fx-background-color : red");
                 timeline.play();
             }
         }
     }
-    
+
     @FXML
     private void handleFichierOuvrir(ActionEvent event) {
-        
+
     }
 
     /**
@@ -80,30 +86,31 @@ public class EasyconduiteController implements Initializable {
      */
     @FXML
     private void handleAddAudioMenu(ActionEvent event) {
-        
-        System.out.println("AddAudioMenu");
-        
-        LOGGER.debug("Call AddAudioMenu");
-        
+
+
         final FileChooser fileChooser = new FileChooser();
         File file = fileChooser.showOpenDialog(scene.getWindow());
         if (file != null) {
             AudioMedia audioMedia = new AudioMedia(file);
             if (!audioMediaObsList.contains(audioMedia)) {
                 audioMediaObsList.add(audioMedia);
-                AudioMediaUI audioMediaUI = new AudioMediaUI(getScene(), audioMedia);
+                AudioMediaUI audioMediaUI = new AudioMediaUI(audioMedia, this);
                 audioMediaUI.addUI();
             } else {
                 audioMedia = null;
                 // @TODO affichage message alerte.
             }
         }
-        
+
     }
-    
-    public static void removeAudioMediaUI(AudioMedia audioMedia) {
-        if (audioMediaObsList.contains(audioMedia)) {
-            audioMediaObsList.remove(audioMedia);
+
+    public void removeAudioMediaUI(AudioMediaUI audioMediaui) {
+
+        if (audioMediaObsList.contains(audioMediaui.getAudioMedia())) {
+            audioMediaObsList.remove(audioMediaui.getAudioMedia());
+        }
+        if (keycodesAudioMap.containsValue(audioMediaui)) {
+            keycodesAudioMap.remove(audioMediaui);
         }
     }
 
@@ -117,18 +124,31 @@ public class EasyconduiteController implements Initializable {
     private void handleQuit(ActionEvent event) {
         Platform.exit();
     }
-    
+
+    @FXML
+    private void handleKeyCodePlay(KeyEvent event) {
+
+            if (keycodesAudioMap.containsKey(event.getCode())) {
+                AudioMediaUI audioMedia = keycodesAudioMap.get(event.getCode());
+                audioMedia.getPlayer().seek(Duration.ZERO);
+                audioMedia.getPlayer().play();
+            }
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // initialize Observable List of AudioMedia
         audioMediaObsList = FXCollections.observableArrayList();
-        
+
+        // initialize Map for binding Keycode to AudioMediaUI
+        keycodesAudioMap = new EnumMap<>(KeyCode.class);
+
         audioMediaObsList.addListener(new ListChangeListener<AudioMedia>() {
-            
+
             @Override
             public void onChanged(ListChangeListener.Change<? extends AudioMedia> change) {
-                
-                while (change.next()) {                    
+
+                while (change.next()) {
                     if (change.wasAdded()) {
                         audioTable.addAudioMedia(change.getAddedSubList().get(0));
                         break;
@@ -138,25 +158,33 @@ public class EasyconduiteController implements Initializable {
                         break;
                     }
                 }
-                
+
             }
         });
-        
+
     }
-    
+
     public void setTimeline(Timeline timeline) {
         this.timeline = timeline;
     }
-    
+
     public void setAudioTable(AudioTable audioTable) {
         this.audioTable = audioTable;
     }
-    
-    private Scene getScene() {
+
+    public Scene getScene() {
         return scene;
     }
-    
+
     public void setScene(Scene scene) {
         this.scene = scene;
+    }
+
+    public Map<KeyCode, AudioMediaUI> getKeycodesAudioMap() {
+        return keycodesAudioMap;
+    }
+
+    public ToggleButton getChronobutton() {
+        return chronobutton;
     }
 }

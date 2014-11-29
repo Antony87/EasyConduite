@@ -8,6 +8,7 @@ package easyconduite;
 import easyconduite.controllers.EasyconduiteController;
 import easyconduite.objects.AudioTable;
 import easyconduite.ui.Chrono;
+import java.util.logging.Level;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -28,12 +29,11 @@ public class Easyconduite extends Application {
         final FXMLLoader loader = new FXMLLoader(getClass().getResource("ressources/easyconduite.fxml"));
 
         Parent root = loader.load();
+        Scene scene = new Scene(root);
 
         EasyconduiteController controller = loader.getController();
 
-        Scene scene = new Scene(root);
         //scene.getStylesheets().add("/styles/Styles.css");
-
         Label ltimer = (Label) scene.lookup("#timer");
         Timeline timeline = Chrono.getTimeline(ltimer);
         controller.setTimeline(timeline);
@@ -51,6 +51,12 @@ public class Easyconduite extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+
+        System.out.println(args[0]);
+        String levelLog = args[0].substring(args[0].indexOf("=") + 1);
+        System.out.println(levelLog);
+
+        Config.setLevel(Level.parse(levelLog));
         launch(args);
     }
 

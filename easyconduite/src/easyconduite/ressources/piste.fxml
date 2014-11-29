@@ -8,41 +8,31 @@
 <?import javafx.scene.layout.*?>
 <?import easyconduite.ui.*?>
 
-<FlowPane alignment="TOP_CENTER" columnHalignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="380.0" prefWidth="80.0" scaleShape="false" style="-fx-background-color: #444c57;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.AudioMediaController">
-   <effect>
-      <Lighting>
-         <bumpInput>
-            <Shadow />
-         </bumpInput>
-         <light>
-            <Light.Distant />
-         </light>
-      </Lighting>
-   </effect>
-   <children>
-      <Button mnemonicParsing="false" onMouseReleased="#handleDeleteTrack" text="X" textAlignment="CENTER">
+<VBox alignment="CENTER" prefWidth="100.0" spacing="10.0" style="-fx-background-color: #444c57;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+         <children>
+      <SplitMenuButton maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" text="actions" textFill="#08eb44">
+        <items>
+          <MenuItem mnemonicParsing="false" text="associer touche" />
+          <MenuItem mnemonicParsing="false" text="supprime" />
+        </items>
          <font>
-            <Font size="9.0" />
+            <Font size="10.0" />
          </font>
+      </SplitMenuButton>
+            <Button mnemonicParsing="false" onMouseReleased="#handleDeleteTrack" text="X" textAlignment="CENTER">
+               <font>
+                  <Font size="9.0" />
+               </font>
+            </Button>
+            <Slider blockIncrement="0.1" majorTickUnit="0.1" max="1.0" orientation="VERTICAL" prefHeight="300.0" showTickMarks="true" value="1.0" />
+            <TextField prefHeight="0.0" prefWidth="0.0" promptText="Nom">
+               <font>
+                  <Font name="System Bold" size="10.0" />
+               </font>
+            </TextField>
+            <Button mnemonicParsing="false" onMouseClicked="#handlePlayPauseAudio" text="Button" />
+         </children>
          <FlowPane.margin>
-            <Insets top="10.0" />
+            <Insets bottom="10.0" top="10.0" />
          </FlowPane.margin>
-      </Button>
-      <Slider orientation="VERTICAL" prefHeight="250.0" value="50.0">
-         <FlowPane.margin>
-            <Insets top="10.0" />
-         </FlowPane.margin></Slider>
-      <Button mnemonicParsing="false" onMouseClicked="#handlePlayPauseAudio" text="Button">
-         <FlowPane.margin>
-            <Insets top="10.0" />
-         </FlowPane.margin></Button>
-      <TextField prefHeight="25.0" prefWidth="0.0" promptText="Nom">
-         <FlowPane.margin>
-            <Insets top="10.0" />
-         </FlowPane.margin>
-      </TextField>
-   </children>
-   <opaqueInsets>
-      <Insets />
-   </opaqueInsets>
-</FlowPane>
+      </VBox>

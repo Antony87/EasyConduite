@@ -17,30 +17,32 @@
  */
 package easyconduite.ui;
 
+import easyconduite.Config;
 import easyconduite.controllers.EasyconduiteController;
 import easyconduite.objects.AudioMedia;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
+import javafx.scene.control.SplitMenuButton;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class encapsulates logics and behaviors about Custom UI Control of an
@@ -48,7 +50,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author A Fons
  */
-public class AudioMediaUI extends FlowPane {
+public class AudioMediaUI extends VBox {
 
     private MediaPlayer player;
 
@@ -56,11 +58,11 @@ public class AudioMediaUI extends FlowPane {
 
     private SimpleStringProperty name = new SimpleStringProperty();
 
-    private final Scene scene;
-
-    private final static Logger LOGGER = LoggerFactory.getLogger(AudioMediaUI.class);
+    private final EasyconduiteController easyConduiteController;
 
     private final static String ID_PANE_TABLE = "#table";
+    
+    private static Logger logger = Logger.getLogger(AudioMediaUI.class.getName());
 
     /**
      * Constructor du UI custom control for an AudioMedia.<br>
@@ -68,16 +70,16 @@ public class AudioMediaUI extends FlowPane {
      * {@link MediaPlayer}.<br>
      * Media's volume is set to 0.5 by default.
      *
-     * @param scene
      * @param audioMedia
+     * @param controller
      */
-    public AudioMediaUI(final Scene scene, final AudioMedia audioMedia) {
+    public AudioMediaUI(final AudioMedia audioMedia, final EasyconduiteController controller) {
 
-        super(Orientation.VERTICAL);
+        super(10);
+        
+        logger.log(Level.INFO, "Create AudioMediaUI with {0}",audioMedia);
 
-        LOGGER.debug("Create AudioMedia with {}", audioMedia.getAudioFile().getPath());
-
-        this.scene = scene;
+        easyConduiteController = controller;
         setAudioMedia(audioMedia);
         Media media = new Media(audioMedia.getAudioFile().toURI().toString());
         player = new MediaPlayer(media);
@@ -88,65 +90,76 @@ public class AudioMediaUI extends FlowPane {
      *
      */
     public void addUI() {
+        
+        logger.setLevel(Config.getLevel());
+        logger.entering(this.getClass().getName(), "addUI");
 
         Insets insetForIncontrols = new Insets(10, 0, 0, 0);
 
-        this.setAlignment(Pos.TOP_CENTER);
-        this.setColumnHalignment(HPos.CENTER);
-        this.setMaxHeight(USE_PREF_SIZE);
-        this.setMaxWidth(USE_PREF_SIZE);
-        this.setPrefHeight(380);
-        this.setPrefWidth(80);
-        this.setPrefWrapLength(380);
+        this.setAlignment(Pos.CENTER);
+        this.setPrefWidth(100);
         this.setStyle("-fx-background-color: #444c57;");
         this.setPadding(insetForIncontrols);
-        this.setVgap(10);
 
-        Button boutonClose = new Button("X");
-        boutonClose.setTextAlignment(TextAlignment.CENTER);
-        boutonClose.setFont(new Font(9));
-        boutonClose.setOnMouseReleased(new EventHandler<MouseEvent>() {
+        //Splimenu
+        MenuItem menuAssoKey = new MenuItem("associer touche");
+        menuAssoKey.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
-            public void handle(MouseEvent event) {
-                remove();
+            public void handle(ActionEvent event) {
+                LinkKeyBoardDialog dialog = new LinkKeyBoardDialog(getThis(), easyConduiteController);
             }
         });
         
-        this.getChildren().add(boutonClose);
 
+        MenuItem menuRemove = new MenuItem("supprimer");
+        menuRemove.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                remove();
+            }
+        });
+        SplitMenuButton menuActions = new SplitMenuButton(menuAssoKey, menuRemove);
+        menuActions.setText("Actions");
+        this.getChildren().add(menuActions);
+
+        // Slider for volume control
         Slider curseVolume = new Slider(0, 1, 1);
         curseVolume.setOrientation(Orientation.VERTICAL);
         curseVolume.setPrefHeight(250);
         curseVolume.setBlockIncrement(0.1);
-        player.volumeProperty().bindBidirectional(curseVolume.valueProperty()); 
+        curseVolume.setShowTickMarks(true);
+        curseVolume.setMajorTickUnit(0.1);
+        player.volumeProperty().bindBidirectional(curseVolume.valueProperty());
         this.getChildren().add(curseVolume);
 
+        // Play/pause button
         Button btnPlayPause = new Button("Play");
         btnPlayPause.setOnMouseReleased(new EventHandler<MouseEvent>() {
 
             @Override
             public void handle(MouseEvent event) {
-            MediaPlayer.Status status = player.getStatus();
+                MediaPlayer.Status status = player.getStatus();
 
-            if (status == MediaPlayer.Status.PLAYING) {
-                System.out.println("pause");
-                player.pause();
-            }
-            if (status == MediaPlayer.Status.PAUSED || status == MediaPlayer.Status.STOPPED
-                    || status == MediaPlayer.Status.READY) {
-                System.out.println("play");
-                player.seek(Duration.ZERO);
-                player.play();
-            }
+                if (status == MediaPlayer.Status.PLAYING) {
+                    System.out.println("pause");
+                    player.pause();
+                }
+                if (status == MediaPlayer.Status.PAUSED || status == MediaPlayer.Status.STOPPED
+                        || status == MediaPlayer.Status.READY) {
+                    System.out.println("play");
+                    player.seek(Duration.ZERO);
+                    player.play();
+                }
             }
         });
-        
+
         this.getChildren().add(btnPlayPause);
-        
 
         TextField textName = new TextField();
-        textName.setPrefWidth(50);
+        textName.setFont(new Font(10));
+        textName.setPrefWidth(100);
         textName.setPromptText("nom");
         nameProperty().bindBidirectional(textName.textProperty());
         nameProperty().addListener(new ChangeListener<String>() {
@@ -158,8 +171,8 @@ public class AudioMediaUI extends FlowPane {
 
         this.getChildren().add(textName);
 
-        HBox table = (HBox) scene.lookup(ID_PANE_TABLE);
-        table.getChildren().add(0, this);
+        HBox table = (HBox) getSceneFromController().lookup(ID_PANE_TABLE);
+        table.getChildren().add(table.getChildren().size(), this);
 
     }
 
@@ -169,9 +182,9 @@ public class AudioMediaUI extends FlowPane {
      */
     public void remove() {
         player.dispose();
-        HBox table = (HBox) scene.lookup("#table");
+        HBox table = (HBox) getSceneFromController().lookup(ID_PANE_TABLE);
         table.getChildren().remove(this);
-        EasyconduiteController.removeAudioMediaUI(this.getAudioMedia());
+        easyConduiteController.removeAudioMediaUI(this);
     }
 
     /**
@@ -210,6 +223,14 @@ public class AudioMediaUI extends FlowPane {
 
     public SimpleStringProperty nameProperty() {
         return name;
+    }
+
+    private Scene getSceneFromController() {
+        return easyConduiteController.getScene();
+    }
+
+    private AudioMediaUI getThis() {
+        return this;
     }
 
 }
