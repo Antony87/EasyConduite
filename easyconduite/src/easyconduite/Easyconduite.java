@@ -33,7 +33,7 @@ public class Easyconduite extends Application {
 
         EasyconduiteController controller = loader.getController();
 
-        //scene.getStylesheets().add("/styles/Styles.css");
+        scene.getStylesheets().add("/styles/Styles.css");
         Label ltimer = (Label) scene.lookup("#timer");
         Timeline timeline = Chrono.getTimeline(ltimer);
         controller.setTimeline(timeline);
