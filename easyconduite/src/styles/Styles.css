@@ -20,6 +20,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     Author     : antony fons
 */
 .track-vbox {
-    -fx-padding: 10 0 0 0;
+    -fx-padding: 10 0 10 0;
+    -fx-alignment :CENTER;
+    -fx-pref-width : 100;
     -fx-background-color: #444c57;
 }
+
+

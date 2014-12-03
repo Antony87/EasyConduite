@@ -92,17 +92,9 @@ public class AudioMediaUI extends VBox {
     public void addUI() {
         
         logger.setLevel(Config.getLevel());
-        logger.entering(this.getClass().getName(), "addUI");
-        
-        // test css
+        logger.entering(this.getClass().getName(), "addUI");      
+        // attribution css for Track VBOX
         this.getStyleClass().add("track-vbox");
-
-        //Insets insetForIncontrols = new Insets(10, 0, 0, 0);
-
-        this.setAlignment(Pos.CENTER);
-        this.setPrefWidth(100);
-        //this.setStyle("-fx-background-color: #444c57;");
-        //this.setPadding(insetForIncontrols);
 
         //Splimenu
         MenuItem menuAssoKey = new MenuItem("associer touche");
