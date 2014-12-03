@@ -27,6 +27,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -36,6 +37,8 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.SplitMenuButton;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -61,7 +64,7 @@ public class AudioMediaUI extends VBox {
     private final EasyconduiteController easyConduiteController;
 
     private final static String ID_PANE_TABLE = "#table";
-    
+
     private static Logger logger = Logger.getLogger(AudioMediaUI.class.getName());
 
     /**
@@ -76,8 +79,8 @@ public class AudioMediaUI extends VBox {
     public AudioMediaUI(final AudioMedia audioMedia, final EasyconduiteController controller) {
 
         super(10);
-        
-        logger.log(Level.INFO, "Create AudioMediaUI with {0}",audioMedia);
+
+        logger.log(Level.INFO, "Create AudioMediaUI with {0}", audioMedia);
 
         easyConduiteController = controller;
         setAudioMedia(audioMedia);
@@ -90,34 +93,32 @@ public class AudioMediaUI extends VBox {
      *
      */
     public void addUI() {
-        
+
         logger.setLevel(Config.getLevel());
-        logger.entering(this.getClass().getName(), "addUI");      
+        logger.entering(this.getClass().getName(), "addUI");
         // attribution css for Track VBOX
         this.getStyleClass().add("track-vbox");
 
-        //Splimenu
-        MenuItem menuAssoKey = new MenuItem("associer touche");
-        menuAssoKey.setOnAction(new EventHandler<ActionEvent>() {
+        HBox topHbox = hBoxForTrack();
+        IconButton buttonQuit = new IconButton("/icons/MinusRedButton.png");
+        buttonQuit.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
             @Override
-            public void handle(ActionEvent event) {
-                LinkKeyBoardDialog dialog = new LinkKeyBoardDialog(getThis(), easyConduiteController);
-            }
-        });
-        
-
-        MenuItem menuRemove = new MenuItem("supprimer");
-        menuRemove.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
+            public void handle(MouseEvent event) {
                 remove();
             }
         });
-        SplitMenuButton menuActions = new SplitMenuButton(menuAssoKey, menuRemove);
-        menuActions.setText("Actions");
-        this.getChildren().add(menuActions);
+
+        IconButton buttonAssocKey = new IconButton("/icons/Gear.png");
+        buttonAssocKey.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent event) {
+                LinkKeyBoardDialog dialog = new LinkKeyBoardDialog(getThis(), easyConduiteController);
+            }
+        });
+        topHbox.getChildren().addAll(buttonQuit, buttonAssocKey);
+        this.getChildren().add(topHbox);
 
         // Slider for volume control
         Slider curseVolume = new Slider(0, 1, 1);
@@ -226,6 +227,14 @@ public class AudioMediaUI extends VBox {
 
     private AudioMediaUI getThis() {
         return this;
+    }
+
+    private HBox hBoxForTrack() {
+
+        HBox hbox = new HBox(10);
+        hbox.setPrefWidth(100);
+        hbox.setAlignment(Pos.CENTER);
+        return hbox;
     }
 
 }
