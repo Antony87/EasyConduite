@@ -130,9 +130,22 @@ public class AudioMediaUI extends VBox {
         player.volumeProperty().bindBidirectional(curseVolume.valueProperty());
         this.getChildren().add(curseVolume);
 
-        // Play/pause button
-        Button btnPlayPause = new Button("Play");
-        btnPlayPause.setOnMouseReleased(new EventHandler<MouseEvent>() {
+        TextField textName = new TextField();
+        textName.getStyleClass().add("texteTrack");
+        textName.setPromptText("nom du son");
+        nameProperty().bindBidirectional(textName.textProperty());
+        nameProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                audioMedia.setName(newValue);
+            }
+        });
+
+        this.getChildren().add(textName);
+        
+        HBox bottomHbox = hBoxForTrack();
+        IconButton buttonPlayPause = new IconButton("/icons/PlayGreenButton.png");
+        buttonPlayPause.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
             @Override
             public void handle(MouseEvent event) {
@@ -150,26 +163,13 @@ public class AudioMediaUI extends VBox {
                 }
             }
         });
-
-        this.getChildren().add(btnPlayPause);
-
-        TextField textName = new TextField();
-        textName.setFont(new Font(10));
-        textName.setPrefWidth(100);
-        textName.setPromptText("nom");
-        nameProperty().bindBidirectional(textName.textProperty());
-        nameProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                audioMedia.setName(newValue);
-            }
-        });
-
-        this.getChildren().add(textName);
-
+        IconButton buttonStop = new IconButton("/icons/StopRedButton.png");
+        
+        bottomHbox.getChildren().addAll(buttonStop,buttonPlayPause);
+        this.getChildren().add(bottomHbox);
+        
         HBox table = (HBox) getSceneFromController().lookup(ID_PANE_TABLE);
         table.getChildren().add(table.getChildren().size(), this);
-
     }
 
     /**

@@ -17,10 +17,8 @@
  */
 package easyconduite.ui;
 
-import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 
 /**
  * This class creates a clickable image with a icon.
@@ -37,18 +35,10 @@ public class IconButton extends ImageView {
         super();
         this.icon = new Image(getClass().getResourceAsStream(nameOfIcon), 30, 30, true, false);
         this.setImage(getIcon());
-        //this.getStyleClass().add("circleButton");
-        DropShadow shadow = new DropShadow();
-//Adding the shadow when the mouse cursor is on
-        this.addEventHandler(MouseEvent.MOUSE_ENTERED, (MouseEvent e) -> {
-            this.setEffect(shadow);
-        });
-        this.addEventHandler(MouseEvent.MOUSE_EXITED, (MouseEvent e) -> {
-            this.setEffect(null);
-        });
+        this.getStyleClass().add("circleButton");
     }
 
-    public Image getIcon() {
+    public final Image getIcon() {
         return icon;
     }
 
@@ -56,7 +46,7 @@ public class IconButton extends ImageView {
         this.icon = icon;
     }
 
-    public String getNameOfIcon() {
+    public final String getNameOfIcon() {
         return nameOfIcon;
     }
 
