@@ -30,19 +30,20 @@ import javafx.collections.ObservableList;
  */
 public class AudioTable {
 
-    private List<AudioMedia> audioMediaList;
+    private final List<AudioMedia> audioMediaList;
 
     /**
      * Constructor.
      * <br> Initialize the ObservableList of AudioFile.
      */
     public AudioTable() {
-        audioMediaList = new ArrayList<AudioMedia>();
+        audioMediaList = new ArrayList<>();
     }
 
     /**
      * This method add an AudioFile to List.
      *
+     * @param audioMedia
      * @param audioFile
      * @throws IllegalArgumentException
      */

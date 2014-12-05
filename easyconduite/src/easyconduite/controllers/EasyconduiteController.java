@@ -13,6 +13,7 @@ import java.net.URL;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -53,13 +54,10 @@ public class EasyconduiteController implements Initializable {
 
     private Map<KeyCode, AudioMediaUI> keycodesAudioMap;
     
-    private static Logger logger = Logger.getLogger(EasyconduiteController.class.getName());
+    private static final Logger logger = Logger.getLogger(EasyconduiteController.class.getName());
 
     @FXML
     private void handleMouseAction(MouseEvent event) {
-        
-        // TODO gestion plus fine du ToogleButton
-        
         if (timeline != null) {
             if (!chronobutton.isSelected()) {
                 logger.info("ToggleButton chronobutton was deselected : Chrono play");
@@ -110,7 +108,8 @@ public class EasyconduiteController implements Initializable {
             audioMediaObsList.remove(audioMediaui.getAudioMedia());
         }
         if (keycodesAudioMap.containsValue(audioMediaui)) {
-            keycodesAudioMap.remove(audioMediaui);
+            keycodesAudioMap.remove(audioMediaui.affectedKeyCodeProperty(),audioMediaui);
+            
         }
     }
 
@@ -130,8 +129,7 @@ public class EasyconduiteController implements Initializable {
 
             if (keycodesAudioMap.containsKey(event.getCode())) {
                 AudioMediaUI audioMedia = keycodesAudioMap.get(event.getCode());
-                audioMedia.getPlayer().seek(Duration.ZERO);
-                audioMedia.getPlayer().play();
+                audioMedia.playPause();
             }
     }
 

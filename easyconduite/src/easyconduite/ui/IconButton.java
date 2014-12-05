@@ -53,6 +53,7 @@ public class IconButton extends ImageView {
     public void setNameOfIcon(String nameOfIcon) {
         this.nameOfIcon = nameOfIcon;
         setIcon(new Image(getClass().getResourceAsStream(nameOfIcon), 30, 30, true, false));
+        this.setImage(getIcon());
     }
     
     
