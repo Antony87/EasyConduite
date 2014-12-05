@@ -35,7 +35,7 @@ public class IconButton extends ImageView {
         super();
         this.icon = new Image(getClass().getResourceAsStream(nameOfIcon), 30, 30, true, false);
         this.setImage(getIcon());
-        this.getStyleClass().add("circleButton");
+        this.getStyleClass().add("circle-Button");
     }
 
     public final Image getIcon() {

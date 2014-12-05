@@ -64,10 +64,10 @@ public class EasyconduiteController implements Initializable {
             if (!chronobutton.isSelected()) {
                 logger.info("ToggleButton chronobutton was deselected : Chrono play");
                 timeline.pause();
-                chronobutton.setStyle(null);
+                //chronobutton.setStyle(null);
             } else {
                 logger.info("ToggleButton chronobutton was selected : Chrono play");
-                chronobutton.setStyle("-fx-background-color : red");
+                //chronobutton.setStyle("-fx-background-color : red");
                 timeline.play();
             }
         }

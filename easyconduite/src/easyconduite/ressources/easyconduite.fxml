@@ -66,7 +66,7 @@
                         <Insets left="50.0" />
                      </padding>
                   </ProgressBar>
-                  <Label fx:id="timer" alignment="CENTER" contentDisplay="CENTER" maxHeight="42.0" minHeight="42.0" prefHeight="42.0" style="-fx-border-color: #a8b0bb; -fx-background-color: #203029;" text="00:00:00" textAlignment="CENTER" textFill="#00ff3e">
+                  <Label fx:id="timer" alignment="CENTER" contentDisplay="CENTER" maxHeight="42.0" minHeight="42.0" prefHeight="42.0" style="-fx-border-color: #a8b0bb; -fx-background-color: #203029;" text="00:00:00" textAlignment="CENTER" textFill="#00d936">
                      <font>
                         <Font size="24.0" />
                      </font>
@@ -87,7 +87,7 @@
                         </Lighting>
                      </effect>
                   </Label>
-                  <ToggleButton fx:id="chronobutton" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" onMouseClicked="#handleMouseAction" prefHeight="42.0" prefWidth="42.0" text="ON" textAlignment="CENTER" />
+                  <ToggleButton fx:id="chronobutton" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" onMouseClicked="#handleMouseAction" prefHeight="42.0" prefWidth="42.0" styleClass="chrono-button" stylesheets="@../../styles/Styles.css" text="ON" textAlignment="CENTER" />
                </children>
             </HBox>
          </top>

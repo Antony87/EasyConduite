@@ -23,10 +23,7 @@ import easyconduite.objects.AudioMedia;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -50,15 +47,15 @@ public class AudioMediaUI extends VBox {
 
     private AudioMedia audioMedia;
 
-    private SimpleStringProperty name = new SimpleStringProperty();
+    private final SimpleStringProperty name = new SimpleStringProperty();
 
-    private SimpleStringProperty stringKeyAffected = new SimpleStringProperty();
+    private final SimpleStringProperty stringKeyAffected = new SimpleStringProperty();
 
     private final EasyconduiteController easyConduiteController;
 
     private final static String ID_PANE_TABLE = "#table";
 
-    private static Logger logger = Logger.getLogger(AudioMediaUI.class.getName());
+    private static final Logger logger = Logger.getLogger(AudioMediaUI.class.getName());
 
     /**
      * Constructor du UI custom control for an AudioMedia.<br>
@@ -93,67 +90,52 @@ public class AudioMediaUI extends VBox {
 
         HBox topHbox = hBoxForTrack();
         IconButton buttonQuit = new IconButton("/icons/MinusRedButton.png");
-        buttonQuit.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-            @Override
-            public void handle(MouseEvent event) {
-                remove();
-            }
+        
+        buttonQuit.setOnMouseClicked((MouseEvent event) -> {
+            remove();
         });
 
         // create button wich link a key to an AudioMedia
         IconButton buttonAssocKey = new IconButton("/icons/Gear.png");
-        buttonAssocKey.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-            @Override
-            public void handle(MouseEvent event) {
-                LinkKeyBoardDialog dialog = new LinkKeyBoardDialog(getThis(), easyConduiteController);
-            }
+        
+        buttonAssocKey.setOnMouseClicked((MouseEvent event) -> {
+            LinkKeyBoardDialog dialog = new LinkKeyBoardDialog(getThis(), easyConduiteController);
         });
+        
         topHbox.getChildren().addAll(buttonQuit, buttonAssocKey);
         this.getChildren().add(topHbox);
 
         // Slider for volume control
         Slider curseVolume = new Slider(0, 1, 1);
-        curseVolume.setOrientation(Orientation.VERTICAL);
-        curseVolume.setPrefHeight(250);
         curseVolume.setBlockIncrement(0.1);
-        curseVolume.setShowTickMarks(true);
         curseVolume.setMajorTickUnit(0.1);
         player.volumeProperty().bindBidirectional(curseVolume.valueProperty());
         this.getChildren().add(curseVolume);
 
         TextField textName = new TextField();
-        textName.getStyleClass().add("texteTrack");
+        textName.getStyleClass().add("texte-track");
         textName.setPromptText("nom du son");
         nameProperty().bindBidirectional(textName.textProperty());
-        nameProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                audioMedia.setName(newValue);
-            }
+        
+        nameProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            audioMedia.setName(newValue);
         });
 
         this.getChildren().add(textName);
 
         HBox bottomHbox = hBoxForTrack();
         IconButton buttonPlayPause = new IconButton("/icons/PlayGreenButton.png");
-        buttonPlayPause.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-            @Override
-            public void handle(MouseEvent event) {
-                MediaPlayer.Status status = player.getStatus();
-
-                if (status == MediaPlayer.Status.PLAYING) {
-                    System.out.println("pause");
-                    player.pause();
-                }
-                if (status == MediaPlayer.Status.PAUSED || status == MediaPlayer.Status.STOPPED
-                        || status == MediaPlayer.Status.READY) {
-                    System.out.println("play");
-                    player.seek(Duration.ZERO);
-                    player.play();
-                }
+        
+        buttonPlayPause.setOnMouseClicked((MouseEvent event) -> {
+            MediaPlayer.Status status = player.getStatus();
+            
+            if (status == MediaPlayer.Status.PLAYING) {
+                player.pause();
+            }
+            if (status == MediaPlayer.Status.PAUSED || status == MediaPlayer.Status.STOPPED
+                    || status == MediaPlayer.Status.READY) {
+                player.seek(Duration.ZERO);
+                player.play();
             }
         });
         IconButton buttonStop = new IconButton("/icons/StopRedButton.png");
