@@ -82,6 +82,7 @@ public class LinkKeyBoardDialog extends VBox {
             @Override
             public void handle(MouseEvent event) {
                 if(getChosenKey()!=null){
+                    //TODO attention ! ajout des key et non pas substitution
                     controller.getKeycodesAudioMap().put(getChosenKey(), audioMediaUI);
                     audioMediaUI.setStringKeyAffected(getChosenKey().getName());
                     System.out.println(getChosenKey().getName()+ " added to "+controller.getKeycodesAudioMap().getClass().getName());
