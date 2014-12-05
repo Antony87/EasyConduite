@@ -59,16 +59,16 @@
     </MenuBar>
       <BorderPane>
          <top>
-            <HBox alignment="CENTER" maxHeight="60.0" prefHeight="60.0" BorderPane.alignment="CENTER">
+            <HBox alignment="CENTER" maxHeight="80.0" prefHeight="80.0" BorderPane.alignment="CENTER">
                <children>
                   <ProgressBar prefHeight="20.0" prefWidth="377.0" progress="0.0">
                      <padding>
                         <Insets left="50.0" />
                      </padding>
                   </ProgressBar>
-                  <Label fx:id="timer" alignment="CENTER" contentDisplay="CENTER" style="-fx-border-color: #a8b0bb; -fx-background-color: #203029;" text="00:00:00" textAlignment="CENTER" textFill="#00ff3e">
+                  <Label fx:id="timer" alignment="CENTER" contentDisplay="CENTER" maxHeight="42.0" minHeight="42.0" prefHeight="42.0" style="-fx-border-color: #a8b0bb; -fx-background-color: #203029;" text="00:00:00" textAlignment="CENTER" textFill="#00ff3e">
                      <font>
-                        <Font size="18.0" />
+                        <Font size="24.0" />
                      </font>
                      <padding>
                         <Insets left="50.0" right="20.0" />
@@ -87,7 +87,7 @@
                         </Lighting>
                      </effect>
                   </Label>
-                  <ToggleButton fx:id="chronobutton" mnemonicParsing="false" onMouseClicked="#handleMouseAction" text="ON" />
+                  <ToggleButton fx:id="chronobutton" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" onMouseClicked="#handleMouseAction" prefHeight="42.0" prefWidth="42.0" text="ON" textAlignment="CENTER" />
                </children>
             </HBox>
          </top>

@@ -25,31 +25,22 @@ import java.util.logging.Logger;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
-import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import javafx.scene.control.SplitMenuButton;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 /**
- * This class encapsulates logics and behaviors about Custom UI Control of an
- * AudioMedia.
+ * This class encapsulates logics and behaviors about Custom UI Control of an AudioMedia.
  *
  * @author A Fons
  */
@@ -61,6 +52,8 @@ public class AudioMediaUI extends VBox {
 
     private SimpleStringProperty name = new SimpleStringProperty();
 
+    private SimpleStringProperty stringKeyAffected = new SimpleStringProperty();
+
     private final EasyconduiteController easyConduiteController;
 
     private final static String ID_PANE_TABLE = "#table";
@@ -69,8 +62,7 @@ public class AudioMediaUI extends VBox {
 
     /**
      * Constructor du UI custom control for an AudioMedia.<br>
-     * Not draw the control but construct object and assign a
-     * {@link MediaPlayer}.<br>
+     * Not draw the control but construct object and assign a {@link MediaPlayer}.<br>
      * Media's volume is set to 0.5 by default.
      *
      * @param audioMedia
@@ -109,6 +101,7 @@ public class AudioMediaUI extends VBox {
             }
         });
 
+        // create button wich link a key to an AudioMedia
         IconButton buttonAssocKey = new IconButton("/icons/Gear.png");
         buttonAssocKey.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
@@ -142,7 +135,7 @@ public class AudioMediaUI extends VBox {
         });
 
         this.getChildren().add(textName);
-        
+
         HBox bottomHbox = hBoxForTrack();
         IconButton buttonPlayPause = new IconButton("/icons/PlayGreenButton.png");
         buttonPlayPause.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -164,10 +157,17 @@ public class AudioMediaUI extends VBox {
             }
         });
         IconButton buttonStop = new IconButton("/icons/StopRedButton.png");
-        
-        bottomHbox.getChildren().addAll(buttonStop,buttonPlayPause);
+
+        bottomHbox.getChildren().addAll(buttonStop, buttonPlayPause);
         this.getChildren().add(bottomHbox);
-        
+
+        // create the label will be display on the bottom of UI, with value of assocKey
+        Label labelTouche = new Label();
+        labelTouche.textProperty().bindBidirectional(stringKeyAffectedProperty());
+        labelTouche.getStyleClass().add("labelkey-track");
+        this.getChildren().add(labelTouche);
+
+        // get the scene from the controller.
         HBox table = (HBox) getSceneFromController().lookup(ID_PANE_TABLE);
         table.getChildren().add(table.getChildren().size(), this);
     }
@@ -219,6 +219,18 @@ public class AudioMediaUI extends VBox {
 
     public SimpleStringProperty nameProperty() {
         return name;
+    }
+
+    public String getStringKeyAffected() {
+        return stringKeyAffected.getValue();
+    }
+
+    public void setStringKeyAffected(String name) {
+        this.stringKeyAffected.setValue(name);
+    }
+
+    public SimpleStringProperty stringKeyAffectedProperty() {
+        return stringKeyAffected;
     }
 
     private Scene getSceneFromController() {
