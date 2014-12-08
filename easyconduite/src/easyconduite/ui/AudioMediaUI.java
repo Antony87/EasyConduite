@@ -89,6 +89,12 @@ public class AudioMediaUI extends VBox {
         setAudioMedia(audioMedia);
         Media media = new Media(audioMedia.getAudioFile().toURI().toString());
         player = new MediaPlayer(media);
+        player.setOnEndOfMedia(() -> {
+            player.setStartTime(Duration.ZERO);
+            player.stop();
+            buttonPlayPause.setNameOfIcon(NAME_ICON_PLAY);
+            logger.log(Level.INFO, "End of media player with status {0}", player.getStatus());
+        });
     }
 
     /**
