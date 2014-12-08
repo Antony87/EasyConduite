@@ -30,7 +30,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
-import javafx.util.Duration;
 
 /**
  *
@@ -53,7 +52,7 @@ public class EasyconduiteController implements Initializable {
     private ObservableList<AudioMedia> audioMediaObsList;
 
     private Map<KeyCode, AudioMediaUI> keycodesAudioMap;
-    
+
     private static final Logger logger = Logger.getLogger(EasyconduiteController.class.getName());
 
     @FXML
@@ -85,7 +84,6 @@ public class EasyconduiteController implements Initializable {
     @FXML
     private void handleAddAudioMenu(ActionEvent event) {
 
-
         final FileChooser fileChooser = new FileChooser();
         File file = fileChooser.showOpenDialog(scene.getWindow());
         if (file != null) {
@@ -93,7 +91,6 @@ public class EasyconduiteController implements Initializable {
             if (!audioMediaObsList.contains(audioMedia)) {
                 audioMediaObsList.add(audioMedia);
                 AudioMediaUI audioMediaUI = new AudioMediaUI(audioMedia, this);
-                audioMediaUI.addUI();
             } else {
                 audioMedia = null;
                 // @TODO affichage message alerte.
@@ -108,8 +105,8 @@ public class EasyconduiteController implements Initializable {
             audioMediaObsList.remove(audioMediaui.getAudioMedia());
         }
         if (keycodesAudioMap.containsValue(audioMediaui)) {
-            keycodesAudioMap.remove(audioMediaui.affectedKeyCodeProperty(),audioMediaui);
-            
+            keycodesAudioMap.remove(audioMediaui.affectedKeyCodeProperty(), audioMediaui);
+
         }
     }
 
@@ -127,10 +124,10 @@ public class EasyconduiteController implements Initializable {
     @FXML
     private void handleKeyCodePlay(KeyEvent event) {
 
-            if (keycodesAudioMap.containsKey(event.getCode())) {
-                AudioMediaUI audioMedia = keycodesAudioMap.get(event.getCode());
-                audioMedia.playPause();
-            }
+        if (keycodesAudioMap.containsKey(event.getCode())) {
+            AudioMediaUI audioMedia = keycodesAudioMap.get(event.getCode());
+            audioMedia.playPause();
+        }
     }
 
     @Override
@@ -160,6 +157,33 @@ public class EasyconduiteController implements Initializable {
             }
         });
 
+    }
+
+    public void updateKeyCodetoMap(final KeyCode newKeycode, final AudioMediaUI newAudioMediaUi) {
+
+        if (keycodesAudioMap.containsKey(newKeycode)) {
+            AudioMediaUI oldAUdioMediaUi = keycodesAudioMap.get(newKeycode);
+            oldAUdioMediaUi.setAffectedKeyCode(KeyCode.UNDEFINED);
+            keycodesAudioMap.remove(newKeycode);
+        }
+        for (Map.Entry<KeyCode, AudioMediaUI> entrySet : keycodesAudioMap.entrySet()) {
+            KeyCode key = entrySet.getKey();
+            AudioMediaUI value = entrySet.getValue();
+            if (newAudioMediaUi.equals(value)) {
+                keycodesAudioMap.remove(key, value);
+                break;
+            }
+        }
+
+        newAudioMediaUi.setAffectedKeyCode(newKeycode);
+        keycodesAudioMap.put(newKeycode, newAudioMediaUi);
+
+        for (Map.Entry<KeyCode, AudioMediaUI> entrySet : keycodesAudioMap.entrySet()) {
+            KeyCode key = entrySet.getKey();
+            AudioMediaUI value = entrySet.getValue();
+            logger.log(Level.INFO, "KeyMap key {0} AUdioMediUI {1}", new Object[]{key, value});
+
+        }
     }
 
     public void setTimeline(Timeline timeline) {

@@ -20,6 +20,8 @@ package easyconduite.ui;
 import easyconduite.Config;
 import easyconduite.controllers.EasyconduiteController;
 import easyconduite.objects.AudioMedia;
+import java.io.IOException;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.ObjectProperty;
@@ -58,7 +60,7 @@ public class AudioMediaUI extends VBox {
 
     private final SimpleStringProperty name = new SimpleStringProperty();
 
-    private final ObjectProperty<KeyCode> affectedKeyCode = new SimpleObjectProperty<>();
+    private final ObjectProperty<KeyCode> affectedKeyCode = new SimpleObjectProperty<>(KeyCode.UNDEFINED);
 
     private final EasyconduiteController easyConduiteController;
 
@@ -95,6 +97,12 @@ public class AudioMediaUI extends VBox {
             buttonPlayPause.setNameOfIcon(NAME_ICON_PLAY);
             logger.log(Level.INFO, "End of media player with status {0}", player.getStatus());
         });
+
+        nameProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            audioMedia.setName(newValue);
+        });
+        addUI();
+
     }
 
     /**
@@ -119,7 +127,11 @@ public class AudioMediaUI extends VBox {
         IconButton buttonAssocKey = new IconButton("/icons/Gear.png");
 
         buttonAssocKey.setOnMouseClicked((MouseEvent event) -> {
-            LinkKeyBoardDialog dialog = new LinkKeyBoardDialog(getThis(), easyConduiteController);
+            try {
+                LinkKeyBoardDialog dialog = new LinkKeyBoardDialog(getThis(), easyConduiteController);
+            } catch (IOException ex) {
+                Logger.getLogger(AudioMediaUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
 
         topHbox.getChildren().addAll(buttonQuit, buttonAssocKey);
@@ -132,16 +144,11 @@ public class AudioMediaUI extends VBox {
         player.volumeProperty().bindBidirectional(curseVolume.valueProperty());
         this.getChildren().add(curseVolume);
 
-        TextField textName = new TextField();
-        textName.getStyleClass().add("texte-track");
-        textName.setPromptText("nom du son");
-        nameProperty().bindBidirectional(textName.textProperty());
+        Label nameLabel = new Label();
+        nameLabel.getStyleClass().add("texte-track");
+        nameProperty().bindBidirectional(nameLabel.textProperty());
 
-        nameProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-            audioMedia.setName(newValue);
-        });
-
-        this.getChildren().add(textName);
+        this.getChildren().add(nameLabel);
 
         HBox bottomHbox = hBoxForTrack();
         buttonPlayPause = new IconButton(NAME_ICON_PLAY);
@@ -288,6 +295,36 @@ public class AudioMediaUI extends VBox {
         hbox.setPrefWidth(100);
         hbox.setAlignment(Pos.CENTER);
         return hbox;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + Objects.hashCode(this.audioMedia);
+        hash = 29 * hash + Objects.hashCode(this.name);
+        hash = 29 * hash + Objects.hashCode(this.affectedKeyCode);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final AudioMediaUI other = (AudioMediaUI) obj;
+        if (!Objects.equals(this.audioMedia, other.audioMedia)) {
+            return false;
+        }
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        if (!Objects.equals(this.affectedKeyCode, other.affectedKeyCode)) {
+            return false;
+        }
+        return true;
     }
 
     @Override

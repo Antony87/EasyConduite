@@ -19,9 +19,12 @@
 package easyconduite.objects;
 
 import java.io.File;
+import java.util.Objects;
+import java.util.UUID;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.input.KeyCode;
 
 /**
  * Class that encapsulate audio media, behavior.
@@ -31,18 +34,14 @@ import javafx.beans.property.SimpleDoubleProperty;
  */
 public class AudioMedia {
 
-    /**
-     * id
-     */
-    private Integer id;
-
+    private UUID uniqueId;
     /**
      * Name of track, to be displayed on top of the pane.
      *
      */
     private String name;
 
-    private int linkedKeyCode;
+    private KeyCode linkedKeyCode;
 
     private File audioFile;
 
@@ -57,6 +56,7 @@ public class AudioMedia {
 
     public AudioMedia(final File audioFile) {
         this.audioFile = audioFile;
+        uniqueId = UUID.randomUUID();
     }
 
 
@@ -68,11 +68,11 @@ public class AudioMedia {
         this.name = name;
     }
 
-    public int getLinkedKeyCode() {
+    public KeyCode getLinkedKeyCode() {
         return linkedKeyCode;
     }
 
-    public void setLinkedKeyCode(final int linkedKeyCode) {
+    public void setLinkedKeyCode(final KeyCode linkedKeyCode) {
         this.linkedKeyCode = linkedKeyCode;
     }
 
@@ -89,8 +89,37 @@ public class AudioMedia {
     }
 
     @Override
-    public String toString() {
-        return "AudioMedia{" + "id=" + id + ", name=" + name + ", linkedKeyCode=" + linkedKeyCode + ", audioFile=" + audioFile + ", volume=" + volume + '}';
+    public int hashCode() {
+        int hash = 3;
+        hash = 41 * hash + Objects.hashCode(this.uniqueId);
+        hash = 41 * hash + Objects.hashCode(this.name);
+        hash = 41 * hash + Objects.hashCode(this.linkedKeyCode);
+        hash = 41 * hash + Objects.hashCode(this.audioFile);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final AudioMedia other = (AudioMedia) obj;
+        if (!Objects.equals(this.uniqueId, other.uniqueId)) {
+            return false;
+        }
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        if (this.linkedKeyCode != other.linkedKeyCode) {
+            return false;
+        }
+        if (!Objects.equals(this.audioFile, other.audioFile)) {
+            return false;
+        }
+        return true;
     }
     
 }
