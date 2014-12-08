@@ -18,7 +18,11 @@
 package easyconduite.ui;
 
 import easyconduite.controllers.EasyconduiteController;
-import javafx.event.EventHandler;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -42,13 +46,15 @@ import javafx.stage.StageStyle;
 public class LinkKeyBoardDialog extends VBox {
 
     private Stage dialogStage;
-    
+
     private KeyCode chosenKey;
-    
+
+    private static final Logger logger = Logger.getLogger(LinkKeyBoardDialog.class.getName());
+
     public LinkKeyBoardDialog(final AudioMediaUI audioMediaUI, final EasyconduiteController controller) {
 
         super(10);
-        
+
         setDialogStage(new Stage());
         getDialogStage().initModality(Modality.APPLICATION_MODAL);
 
@@ -68,44 +74,47 @@ public class LinkKeyBoardDialog extends VBox {
 
         HBox barreBoutons = new HBox(10);
         Button annuler = new Button("annuler");
-        annuler.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
-            @Override
-            public void handle(MouseEvent event) {
-                getDialogStage().close();
-            }
+        annuler.setOnMouseClicked((MouseEvent event) -> {
+            getDialogStage().close();
         });
 
         Button ok = new Button("ok");
-        ok.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
-            @Override
-            public void handle(MouseEvent event) {
-                if(getChosenKey()!=null){
-                    //TODO attention ! ajout des key et non pas substitution
-                    controller.getKeycodesAudioMap().put(getChosenKey(), audioMediaUI);
-                    audioMediaUI.setStringKeyAffected(getChosenKey().getName());
-                    System.out.println(getChosenKey().getName()+ " added to "+controller.getKeycodesAudioMap().getClass().getName());
-                    getDialogStage().close();
-                }else{
-                    //@TODO
+        // create lstener for manage KeycodeAudioMap.
+        ChangeListener<? extends KeyCode> change = (ObservableValue<? extends KeyCode> observable, KeyCode oldValue, KeyCode newValue) -> {
+            
+            Map<KeyCode, AudioMediaUI> mapKeyCode = controller.getKeycodesAudioMap();
+            for (Map.Entry<KeyCode, AudioMediaUI> entrySet : mapKeyCode.entrySet()) {
+                AudioMediaUI value = entrySet.getValue();
+                if(value.getAffectedKeyCode()==newValue){
+                    value.affectedKeyCodeProperty().set(KeyCode.UNDEFINED);
                 }
             }
+            mapKeyCode.remove(oldValue);
+            
+            controller.getKeycodesAudioMap().put(newValue, audioMediaUI);
+            logger.log(Level.INFO, "keycodesAudioMap size {0}",mapKeyCode.size());
+        };
+        
+        audioMediaUI.affectedKeyCodeProperty().addListener((ChangeListener) change);
+
+        ok.setOnMouseClicked((MouseEvent event) -> {
+            if (getChosenKey() != null) {
+                audioMediaUI.setAffectedKeyCode(getChosenKey());
+            }
+            getDialogStage().close();
+            audioMediaUI.affectedKeyCodeProperty().removeListener((ChangeListener)change);
         });
-        
-        
+
         barreBoutons.getChildren().addAll(annuler, ok);
 
         this.getChildren().addAll(message, codeKeyboard, barreBoutons);
 
-        this.setOnKeyReleased(new EventHandler<KeyEvent>() {
-
-            @Override
-            public void handle(KeyEvent event) {
-                codeKeyboard.setText(event.getCode().getName());
-                setChosenKey(event.getCode());
-                event.consume();
-            }
+        this.setOnKeyReleased((KeyEvent event) -> {
+            codeKeyboard.setText(event.getCode().getName());
+            setChosenKey(event.getCode());
+            event.consume();
         });
 
         Show(scene);
@@ -130,7 +139,5 @@ public class LinkKeyBoardDialog extends VBox {
     public void setChosenKey(KeyCode chosenKey) {
         this.chosenKey = chosenKey;
     }
-    
-    
 
 }

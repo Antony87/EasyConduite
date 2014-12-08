@@ -22,25 +22,27 @@ import easyconduite.controllers.EasyconduiteController;
 import easyconduite.objects.AudioMedia;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
 
 /**
- * This class encapsulates logics and behaviors about Custom UI Control of an AudioMedia.
+ * This class encapsulates logics and behaviors about Custom UI Control of an
+ * AudioMedia.
  *
  * @author A Fons
  */
@@ -50,19 +52,28 @@ public class AudioMediaUI extends VBox {
 
     private AudioMedia audioMedia;
 
-    private SimpleStringProperty name = new SimpleStringProperty();
+    private Label labelAffectedKeycode;
 
-    private SimpleStringProperty stringKeyAffected = new SimpleStringProperty();
+    private IconButton buttonPlayPause;
+
+    private final SimpleStringProperty name = new SimpleStringProperty();
+
+    private final ObjectProperty<KeyCode> affectedKeyCode = new SimpleObjectProperty<>();
 
     private final EasyconduiteController easyConduiteController;
 
     private final static String ID_PANE_TABLE = "#table";
 
-    private static Logger logger = Logger.getLogger(AudioMediaUI.class.getName());
+    private final static String NAME_ICON_PLAY = "/icons/PlayGreenButton.png";
+
+    private final static String NAME_ICON_PAUSE = "/icons/PauseBlueButton.png";
+
+    private static final Logger logger = Logger.getLogger(AudioMediaUI.class.getName());
 
     /**
      * Constructor du UI custom control for an AudioMedia.<br>
-     * Not draw the control but construct object and assign a {@link MediaPlayer}.<br>
+     * Not draw the control but construct object and assign a
+     * {@link MediaPlayer}.<br>
      * Media's volume is set to 0.5 by default.
      *
      * @param audioMedia
@@ -82,7 +93,7 @@ public class AudioMediaUI extends VBox {
 
     /**
      * Add the custom control UI for an {@link AudioMediaUI} to a scene.
-     *
+     * affectedKeyCode.bind(affectedKeyCode)affectedKeyCode);
      */
     public void addUI() {
 
@@ -93,68 +104,45 @@ public class AudioMediaUI extends VBox {
 
         HBox topHbox = hBoxForTrack();
         IconButton buttonQuit = new IconButton("/icons/MinusRedButton.png");
-        buttonQuit.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
-            @Override
-            public void handle(MouseEvent event) {
-                remove();
-            }
+        buttonQuit.setOnMouseClicked((MouseEvent event) -> {
+            remove();
         });
 
         // create button wich link a key to an AudioMedia
         IconButton buttonAssocKey = new IconButton("/icons/Gear.png");
-        buttonAssocKey.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
-            @Override
-            public void handle(MouseEvent event) {
-                LinkKeyBoardDialog dialog = new LinkKeyBoardDialog(getThis(), easyConduiteController);
-            }
+        buttonAssocKey.setOnMouseClicked((MouseEvent event) -> {
+            LinkKeyBoardDialog dialog = new LinkKeyBoardDialog(getThis(), easyConduiteController);
         });
+
         topHbox.getChildren().addAll(buttonQuit, buttonAssocKey);
         this.getChildren().add(topHbox);
 
         // Slider for volume control
         Slider curseVolume = new Slider(0, 1, 1);
-        curseVolume.setOrientation(Orientation.VERTICAL);
-        curseVolume.setPrefHeight(250);
         curseVolume.setBlockIncrement(0.1);
-        curseVolume.setShowTickMarks(true);
         curseVolume.setMajorTickUnit(0.1);
         player.volumeProperty().bindBidirectional(curseVolume.valueProperty());
         this.getChildren().add(curseVolume);
 
         TextField textName = new TextField();
-        textName.getStyleClass().add("texteTrack");
+        textName.getStyleClass().add("texte-track");
         textName.setPromptText("nom du son");
         nameProperty().bindBidirectional(textName.textProperty());
-        nameProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                audioMedia.setName(newValue);
-            }
+
+        nameProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            audioMedia.setName(newValue);
         });
 
         this.getChildren().add(textName);
 
         HBox bottomHbox = hBoxForTrack();
-        IconButton buttonPlayPause = new IconButton("/icons/PlayGreenButton.png");
-        buttonPlayPause.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        buttonPlayPause = new IconButton(NAME_ICON_PLAY);
 
-            @Override
-            public void handle(MouseEvent event) {
-                MediaPlayer.Status status = player.getStatus();
-
-                if (status == MediaPlayer.Status.PLAYING) {
-                    System.out.println("pause");
-                    player.pause();
-                }
-                if (status == MediaPlayer.Status.PAUSED || status == MediaPlayer.Status.STOPPED
-                        || status == MediaPlayer.Status.READY) {
-                    System.out.println("play");
-                    player.seek(Duration.ZERO);
-                    player.play();
-                }
-            }
+        buttonPlayPause.setOnMouseClicked((MouseEvent event) -> {
+            MediaPlayer.Status status = player.getStatus();
+            playPause();
         });
         IconButton buttonStop = new IconButton("/icons/StopRedButton.png");
 
@@ -162,10 +150,16 @@ public class AudioMediaUI extends VBox {
         this.getChildren().add(bottomHbox);
 
         // create the label will be display on the bottom of UI, with value of assocKey
-        Label labelTouche = new Label();
-        labelTouche.textProperty().bindBidirectional(stringKeyAffectedProperty());
-        labelTouche.getStyleClass().add("labelkey-track");
-        this.getChildren().add(labelTouche);
+        setLabelAffectedKeycode(new Label());
+        affectedKeyCodeProperty().addListener((ObservableValue<? extends KeyCode> observable, KeyCode oldValue, KeyCode newValue) -> {
+            if (newValue == KeyCode.UNDEFINED) {
+                getLabelAffectedKeycode().setText(null);
+            } else {
+                getLabelAffectedKeycode().setText(newValue.getName());
+            }
+        });
+        getLabelAffectedKeycode().getStyleClass().add("labelkey-track");
+        this.getChildren().add(getLabelAffectedKeycode());
 
         // get the scene from the controller.
         HBox table = (HBox) getSceneFromController().lookup(ID_PANE_TABLE);
@@ -183,6 +177,39 @@ public class AudioMediaUI extends VBox {
         easyConduiteController.removeAudioMediaUI(this);
     }
 
+    public void playPause() {
+
+        Status status = getPlayer().getStatus();
+
+        switch (status) {
+            case PAUSED:
+                getPlayer().play();
+                buttonPlayPause.setNameOfIcon(NAME_ICON_PAUSE);
+                break;
+            case PLAYING:
+                getPlayer().pause();
+                buttonPlayPause.setNameOfIcon(NAME_ICON_PLAY);
+                break;
+            case READY:
+                getPlayer().seek(Duration.ZERO);
+                buttonPlayPause.setNameOfIcon(NAME_ICON_PAUSE);
+                getPlayer().play();
+                break;
+            case STOPPED:
+                getPlayer().play();
+                buttonPlayPause.setNameOfIcon(NAME_ICON_PAUSE);
+                break;
+            case UNKNOWN:
+                getPlayer().seek(Duration.ZERO);
+                getPlayer().play();
+                buttonPlayPause.setNameOfIcon(NAME_ICON_PAUSE);
+                break;
+            default:
+                break;
+        }
+
+    }
+
     /**
      * Get the {@link MediaPlayer} assigned to this UI Control.
      *
@@ -194,6 +221,14 @@ public class AudioMediaUI extends VBox {
 
     private void setPlayer(MediaPlayer player) {
         this.player = player;
+    }
+
+    public Label getLabelAffectedKeycode() {
+        return labelAffectedKeycode;
+    }
+
+    public void setLabelAffectedKeycode(Label labelAffectedKeycode) {
+        this.labelAffectedKeycode = labelAffectedKeycode;
     }
 
     /**
@@ -221,16 +256,16 @@ public class AudioMediaUI extends VBox {
         return name;
     }
 
-    public String getStringKeyAffected() {
-        return stringKeyAffected.getValue();
+    public KeyCode getAffectedKeyCode() {
+        return affectedKeyCode.getValue();
     }
 
-    public void setStringKeyAffected(String name) {
-        this.stringKeyAffected.setValue(name);
+    public void setAffectedKeyCode(KeyCode code) {
+        this.affectedKeyCode.setValue(code);
     }
 
-    public SimpleStringProperty stringKeyAffectedProperty() {
-        return stringKeyAffected;
+    public ObjectProperty<KeyCode> affectedKeyCodeProperty() {
+        return affectedKeyCode;
     }
 
     private Scene getSceneFromController() {
@@ -247,6 +282,11 @@ public class AudioMediaUI extends VBox {
         hbox.setPrefWidth(100);
         hbox.setAlignment(Pos.CENTER);
         return hbox;
+    }
+
+    @Override
+    public String toString() {
+        return "AudioMediaUI{" + "audioMedia=" + audioMedia + ", name=" + name + ", affectedKeyCode=" + affectedKeyCode + '}';
     }
 
 }

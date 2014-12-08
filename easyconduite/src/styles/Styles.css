@@ -19,23 +19,45 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     Created on : 30 nov. 2014, 23:11:42
     Author     : antony fons
 */
+
 .track-vbox {
     -fx-padding: 10 0 10 0;
     -fx-alignment :CENTER;
     -fx-pref-width : 100;
-    -fx-background-color: #444c57;
+    -fx-background-color: #535965;
 }
-.circleButton
-{
+
+.circle-Button {
+
 }
-.circleButton:hover
-{
+
+.circle-Button:hover {
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+    -fx-cursor: hand;
 }
-.texteTrack{
+
+.texte-track {
     -fx-font-size: 11;
     -fx-pref-width: 80;
 }
-.labelkey-track{
+
+.labelkey-track {
     -fx-font-size: 24;
 }
+
+// definition css for all slider.
+.slider {
+    -fx-orientation: vertical;
+    -fx-pref-height: 250;
+    -fx-show-tick-marks : true;
+}
+.chrono-button{
+    -fx-background-color : #00d938;
+}
+.chrono-button:hover{
+    -fx-cursor: hand;
+}
+.chrono-button:selected{
+    -fx-background-color : red
+}
+// fin de la css
