@@ -39,9 +39,6 @@ public class Easyconduite extends Application {
         controller.setTimeline(timeline);
         controller.setScene(scene);
 
-        AudioTable audioTable = new AudioTable();
-        controller.setAudioTable(audioTable);
-
         stage.setTitle("EasyConduite 0.1");
         stage.setScene(scene);
         stage.show();

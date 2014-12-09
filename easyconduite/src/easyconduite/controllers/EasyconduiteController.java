@@ -6,7 +6,6 @@
 package easyconduite.controllers;
 
 import easyconduite.objects.AudioMedia;
-import easyconduite.objects.AudioTable;
 import easyconduite.ui.AudioMediaUI;
 import java.io.File;
 import java.net.URL;
@@ -18,7 +17,6 @@ import java.util.logging.Logger;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -43,13 +41,11 @@ public class EasyconduiteController implements Initializable {
 
     @FXML
     private ToggleButton chronobutton;
-    
+
     @FXML
     private HBox table;
 
     private Timeline timeline;
-
-    private AudioTable audioTable;
 
     private Scene scene;
 
@@ -80,8 +76,7 @@ public class EasyconduiteController implements Initializable {
     }
 
     /**
-     * Cette méthode est appellée par l'événement du menu ajout d'une média dans
-     * la table audio.
+     * Cette méthode est appellée par l'événement du menu ajout d'une média dans la table audio.
      *
      * @param event
      */
@@ -95,6 +90,7 @@ public class EasyconduiteController implements Initializable {
             if (!audioMediaObsList.contains(audioMedia)) {
                 audioMediaObsList.add(audioMedia);
                 AudioMediaUI audioMediaUI = new AudioMediaUI(audioMedia, this);
+                table.getChildren().add(table.getChildren().size(), audioMediaUI);
             } else {
                 audioMedia = null;
                 // @TODO affichage message alerte.
@@ -105,20 +101,20 @@ public class EasyconduiteController implements Initializable {
 
     public void removeAudioMediaUI(AudioMediaUI audioMediaui) {
 
-        if (audioMediaObsList.contains(audioMediaui.getAudioMedia())) {
-            audioMediaObsList.remove(audioMediaui.getAudioMedia());
+        if (audioMediaObsList.remove(audioMediaui.getAudioMedia())) {
+            logger.log(Level.INFO, "AudioMedia {0} remove from audioMediaObsList", audioMediaui.getAudioMedia().toString());
         }
-        if (keycodesAudioMap.containsValue(audioMediaui)) {
-            keycodesAudioMap.remove(audioMediaui.affectedKeyCodeProperty(), audioMediaui);
+
+        if (keycodesAudioMap.remove(audioMediaui.affectedKeyCodeProperty(), audioMediaui)) {
+            logger.log(Level.INFO, "remove key {0} AUdioMediUI {1}", new Object[]{audioMediaui.affectedKeyCodeProperty(), audioMediaui.toString()});
         }
         audioMediaui.getPlayer().dispose();
-        table.getChildren().remove(audioMediaui);
-        
+        table.getChildren().removeAll(audioMediaui);
+
     }
 
     /**
-     * Cette méthode est appellé par l'action Quit du menu Fichier et ferme
-     * l'application.
+     * Cette méthode est appellé par l'action Quit du menu Fichier et ferme l'application.
      *
      * @param event
      */
@@ -140,28 +136,9 @@ public class EasyconduiteController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // initialize Observable List of AudioMedia
         audioMediaObsList = FXCollections.observableArrayList();
-
+        
         // initialize Map for binding Keycode to AudioMediaUI
         keycodesAudioMap = new EnumMap<>(KeyCode.class);
-
-        audioMediaObsList.addListener(new ListChangeListener<AudioMedia>() {
-
-            @Override
-            public void onChanged(ListChangeListener.Change<? extends AudioMedia> change) {
-
-                while (change.next()) {
-                    if (change.wasAdded()) {
-                        audioTable.addAudioMedia(change.getAddedSubList().get(0));
-                        break;
-                    }
-                    if (change.wasRemoved()) {
-                        audioTable.removeAudioMedia(change.getRemoved().get(0));
-                        break;
-                    }
-                }
-
-            }
-        });
 
     }
 
@@ -194,10 +171,6 @@ public class EasyconduiteController implements Initializable {
 
     public void setTimeline(Timeline timeline) {
         this.timeline = timeline;
-    }
-
-    public void setAudioTable(AudioTable audioTable) {
-        this.audioTable = audioTable;
     }
 
     public Scene getScene() {

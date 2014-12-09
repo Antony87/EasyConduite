@@ -63,8 +63,6 @@ public class AudioMediaUI extends VBox {
 
     private final EasyconduiteController easyConduiteController;
 
-    private final static String ID_PANE_TABLE = "#table";
-
     private final static String NAME_ICON_PLAY = "/icons/PlayGreenButton.png";
 
     private final static String NAME_ICON_PAUSE = "/icons/PauseBlueButton.png";
@@ -172,10 +170,6 @@ public class AudioMediaUI extends VBox {
         });
         getLabelAffectedKeycode().getStyleClass().add("labelkey-track");
         this.getChildren().add(getLabelAffectedKeycode());
-
-        // get the scene from the controller.
-        HBox table = (HBox) getSceneFromController().lookup(ID_PANE_TABLE);
-        table.getChildren().add(table.getChildren().size(), this);
     }
 
     public void playPause() {
