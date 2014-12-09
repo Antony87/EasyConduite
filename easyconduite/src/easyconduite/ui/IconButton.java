@@ -26,36 +26,62 @@ import javafx.scene.image.ImageView;
  * @author Antony Fons
  */
 public class IconButton extends ImageView {
-    
-    private Image icon;
-    
-    private String nameOfIcon;
 
-    public IconButton(String nameOfIcon) {
+    private Image icon;
+
+    private String pathNameOfIcon;
+
+    private static final String CSS_STYLE = "circle-Button";
+
+    /**
+     * Constructor.<br>
+     * Construct an IconButton, wich extends an {@link ImageView}. The size of icon is 30,30 px.
+     *
+     * @param pathNameOfIcon The path and name of the icon, loaded by ResourceAsStream (from classpath).
+     */
+    public IconButton(String pathNameOfIcon) {
         super();
-        this.icon = new Image(getClass().getResourceAsStream(nameOfIcon), 30, 30, true, false);
+        this.icon = new Image(getClass().getResourceAsStream(pathNameOfIcon), 30, 30, true, false);
         this.setImage(getIcon());
-        this.getStyleClass().add("circle-Button");
+        this.getStyleClass().add(CSS_STYLE);
     }
 
+    /**
+     * Get the {@link  Image} icon.
+     *
+     * @return Image Object of IconButton.
+     */
     public final Image getIcon() {
         return icon;
     }
 
+    /**
+     * Set the {@link  Image} icon.
+     *
+     * @param icon
+     */
     public void setIcon(Image icon) {
         this.icon = icon;
     }
 
-    public final String getNameOfIcon() {
-        return nameOfIcon;
+    /**
+     * Get the pathName of the icon.
+     *
+     * @return
+     */
+    public final String getPathNameOfIcon() {
+        return pathNameOfIcon;
     }
 
-    public void setNameOfIcon(String nameOfIcon) {
-        this.nameOfIcon = nameOfIcon;
+    /**
+     * Set the pathName of the icon and fix {@link  Image} of this with a 30,30 px image ressource.
+     *
+     * @param nameOfIcon
+     */
+    public void setPathNameOfIcon(String nameOfIcon) {
+        this.pathNameOfIcon = nameOfIcon;
         setIcon(new Image(getClass().getResourceAsStream(nameOfIcon), 30, 30, true, false));
         this.setImage(getIcon());
     }
-    
-    
 
 }

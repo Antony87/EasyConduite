@@ -29,6 +29,7 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 
 /**
@@ -42,6 +43,9 @@ public class EasyconduiteController implements Initializable {
 
     @FXML
     private ToggleButton chronobutton;
+    
+    @FXML
+    private HBox table;
 
     private Timeline timeline;
 
@@ -106,8 +110,10 @@ public class EasyconduiteController implements Initializable {
         }
         if (keycodesAudioMap.containsValue(audioMediaui)) {
             keycodesAudioMap.remove(audioMediaui.affectedKeyCodeProperty(), audioMediaui);
-
         }
+        audioMediaui.getPlayer().dispose();
+        table.getChildren().remove(audioMediaui);
+        
     }
 
     /**

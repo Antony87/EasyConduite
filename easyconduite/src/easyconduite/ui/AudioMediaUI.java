@@ -32,7 +32,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -94,7 +93,7 @@ public class AudioMediaUI extends VBox {
         player.setOnEndOfMedia(() -> {
             player.setStartTime(Duration.ZERO);
             player.stop();
-            buttonPlayPause.setNameOfIcon(NAME_ICON_PLAY);
+            buttonPlayPause.setPathNameOfIcon(NAME_ICON_PLAY);
             logger.log(Level.INFO, "End of media player with status {0}", player.getStatus());
         });
 
@@ -120,7 +119,7 @@ public class AudioMediaUI extends VBox {
         IconButton buttonQuit = new IconButton("/icons/MinusRedButton.png");
 
         buttonQuit.setOnMouseClicked((MouseEvent event) -> {
-            remove();
+            easyConduiteController.removeAudioMediaUI(this);
         });
 
         // create button wich link a key to an AudioMedia
@@ -179,17 +178,6 @@ public class AudioMediaUI extends VBox {
         table.getChildren().add(table.getChildren().size(), this);
     }
 
-    /**
-     * Remove the UI Control pane from the scene.
-     *
-     */
-    public void remove() {
-        player.dispose();
-        HBox table = (HBox) getSceneFromController().lookup(ID_PANE_TABLE);
-        table.getChildren().remove(this);
-        easyConduiteController.removeAudioMediaUI(this);
-    }
-
     public void playPause() {
 
         Status status = getPlayer().getStatus();
@@ -197,25 +185,25 @@ public class AudioMediaUI extends VBox {
         switch (status) {
             case PAUSED:
                 getPlayer().play();
-                buttonPlayPause.setNameOfIcon(NAME_ICON_PAUSE);
+                buttonPlayPause.setPathNameOfIcon(NAME_ICON_PAUSE);
                 break;
             case PLAYING:
                 getPlayer().pause();
-                buttonPlayPause.setNameOfIcon(NAME_ICON_PLAY);
+                buttonPlayPause.setPathNameOfIcon(NAME_ICON_PLAY);
                 break;
             case READY:
                 getPlayer().seek(Duration.ZERO);
-                buttonPlayPause.setNameOfIcon(NAME_ICON_PAUSE);
+                buttonPlayPause.setPathNameOfIcon(NAME_ICON_PAUSE);
                 getPlayer().play();
                 break;
             case STOPPED:
                 getPlayer().play();
-                buttonPlayPause.setNameOfIcon(NAME_ICON_PAUSE);
+                buttonPlayPause.setPathNameOfIcon(NAME_ICON_PAUSE);
                 break;
             case UNKNOWN:
                 getPlayer().seek(Duration.ZERO);
                 getPlayer().play();
-                buttonPlayPause.setNameOfIcon(NAME_ICON_PAUSE);
+                buttonPlayPause.setPathNameOfIcon(NAME_ICON_PAUSE);
                 break;
             default:
                 break;

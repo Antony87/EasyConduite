@@ -33,6 +33,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 /**
+ * This class manage a dialog box, wich exposes affected key, name and repeat for an audio track.
  *
  * @author antony Fons
  */
@@ -96,11 +97,11 @@ public class LinkKeyBoardDialog extends Stage {
         dialogStage.showAndWait();
     }
 
-    public KeyCode getChosenKey() {
+    private KeyCode getChosenKey() {
         return chosenKey;
     }
 
-    public void setChosenKey(KeyCode chosenKey) {
+    private void setChosenKey(KeyCode chosenKey) {
         this.chosenKey = chosenKey;
     }
 
