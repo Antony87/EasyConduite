@@ -61,15 +61,12 @@ public class LinkKeyBoardDialog extends Stage {
         Scene scene = new Scene(dialogPane);
 
         TextField name = (TextField) scene.lookup("#nametrackfield");
+                
         name.textProperty().bindBidirectional(audioMediaUI.nameProperty());
         TextField codeKeyboard = (TextField) scene.lookup("#keytrackfield");
-        final KeyCode codeExistant = audioMediaUI.getAffectedKeyCode();
-        if (codeExistant != KeyCode.UNDEFINED) {
-            codeKeyboard.setText(codeExistant.getName());
-        } else {
-            codeKeyboard.setText("");
-            codeKeyboard.setPromptText("pressez une touche");
-        }
+        
+        codeKeyboard.textProperty().bindBidirectional(audioMediaUI.affectedKeyCodeProperty(), new KeyCodeConverter());        
+
         Button annuler = (Button) scene.lookup("#cancelbutton");
         Button ok = (Button) scene.lookup("#okbutton");
 
@@ -84,7 +81,7 @@ public class LinkKeyBoardDialog extends Stage {
             codeKeyboard.setText(event.getCode().getName());
             setChosenKey(event.getCode());
         });
-
+        
         // Event Handler for OK button
         ok.setOnMouseClicked((MouseEvent event) -> {
             if (getChosenKey() != KeyCode.UNDEFINED && null != getChosenKey()) {

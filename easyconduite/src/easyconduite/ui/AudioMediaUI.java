@@ -53,9 +53,9 @@ public class AudioMediaUI extends VBox {
 
     private AudioMedia audioMedia;
 
-    private Label labelAffectedKeycode;
-
     private IconButton buttonPlayPause;
+    
+    private Label KeyCodeLabel;
 
     private final SimpleStringProperty name = new SimpleStringProperty();
 
@@ -80,6 +80,7 @@ public class AudioMediaUI extends VBox {
     public AudioMediaUI(final AudioMedia audioMedia, final EasyconduiteController controller) {
 
         super(10);
+        this.KeyCodeLabel = new Label();
 
         logger.log(Level.INFO, "Create AudioMediaUI with {0}", audioMedia);
 
@@ -155,17 +156,16 @@ public class AudioMediaUI extends VBox {
         bottomHbox.getChildren().addAll(buttonStop, buttonPlayPause);
         this.getChildren().add(bottomHbox);
 
-        // create the label will be display on the bottom of UI, with value of assocKey
-        setLabelAffectedKeycode(new Label());
-        affectedKeyCodeProperty().addListener((ObservableValue<? extends KeyCode> observable, KeyCode oldValue, KeyCode newValue) -> {
-            if (newValue == KeyCode.UNDEFINED) {
-                getLabelAffectedKeycode().setText(null);
-            } else {
-                getLabelAffectedKeycode().setText(newValue.getName());
-            }
-        });
-        getLabelAffectedKeycode().getStyleClass().add("labelkey-track");
-        this.getChildren().add(getLabelAffectedKeycode());
+        KeyCodeLabel.getStyleClass().add("labelkey-track");
+        this.getChildren().add(KeyCodeLabel);
+    }
+
+    public Label getKeyCodeLabel() {
+        return KeyCodeLabel;
+    }
+
+    public void setKeyCodeLabel(Label KeyCodeLabel) {
+        this.KeyCodeLabel = KeyCodeLabel;
     }
 
     public void playPause() {
@@ -214,14 +214,6 @@ public class AudioMediaUI extends VBox {
         this.player = player;
     }
 
-    public Label getLabelAffectedKeycode() {
-        return labelAffectedKeycode;
-    }
-
-    public void setLabelAffectedKeycode(Label labelAffectedKeycode) {
-        this.labelAffectedKeycode = labelAffectedKeycode;
-    }
-
     /**
      * Get the AudioMedia.
      *
@@ -266,6 +258,8 @@ public class AudioMediaUI extends VBox {
     private AudioMediaUI getThis() {
         return this;
     }
+    
+    
 
     private HBox hBoxForTrack() {
 
