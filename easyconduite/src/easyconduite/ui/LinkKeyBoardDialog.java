@@ -33,7 +33,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 /**
- * This class manage a dialog box, wich exposes affected key, name and repeat for an audio track.
+ * This class manage a dialog box, wich exposes affected key, name and repeat
+ * for an audio track.
  *
  * @author antony Fons
  */
@@ -61,11 +62,11 @@ public class LinkKeyBoardDialog extends Stage {
         Scene scene = new Scene(dialogPane);
 
         TextField name = (TextField) scene.lookup("#nametrackfield");
-                
+
         name.textProperty().bindBidirectional(audioMediaUI.nameProperty());
         TextField codeKeyboard = (TextField) scene.lookup("#keytrackfield");
-        
-        codeKeyboard.textProperty().bindBidirectional(audioMediaUI.affectedKeyCodeProperty(), new KeyCodeConverter());        
+
+        codeKeyboard.textProperty().set(KeyCodeUtil.toString(audioMediaUI.getAffectedKeyCode()));
 
         Button annuler = (Button) scene.lookup("#cancelbutton");
         Button ok = (Button) scene.lookup("#okbutton");
@@ -79,13 +80,13 @@ public class LinkKeyBoardDialog extends Stage {
         codeKeyboard.setOnKeyReleased((KeyEvent event) -> {
             codeKeyboard.clear();
             codeKeyboard.setText(event.getCode().getName());
-            setChosenKey(event.getCode());
+            chosenKey = event.getCode();
         });
-        
+
         // Event Handler for OK button
         ok.setOnMouseClicked((MouseEvent event) -> {
-            if (getChosenKey() != KeyCode.UNDEFINED && null != getChosenKey()) {
-                audioMediaUI.setAffectedKeyCode(chosenKey);
+            if (KeyCodeUtil.isValid(chosenKey)) {
+                audioMediaUI.affectedKeyCodeProperty().set(chosenKey);
                 controller.refreshKeycodesAudioMap(audioMediaUI);
             }
             dialogStage.close();
@@ -93,14 +94,6 @@ public class LinkKeyBoardDialog extends Stage {
 
         dialogStage.setScene(scene);
         dialogStage.showAndWait();
-    }
-
-    private KeyCode getChosenKey() {
-        return chosenKey;
-    }
-
-    private void setChosenKey(KeyCode chosenKey) {
-        this.chosenKey = chosenKey;
     }
 
 }

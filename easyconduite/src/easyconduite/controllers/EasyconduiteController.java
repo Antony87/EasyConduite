@@ -7,11 +7,11 @@ package easyconduite.controllers;
 
 import easyconduite.objects.AudioMedia;
 import easyconduite.ui.AudioMediaUI;
+import easyconduite.ui.KeyCodeUtil;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -128,7 +128,6 @@ public class EasyconduiteController implements Initializable {
 
         audioMediaUIList = new ArrayList<>();
 
-        // initialize Map for binding Keycode to AudioMediaUI
         keycodesAudioMap = new EnumMap<>(KeyCode.class);
          
     }
@@ -151,19 +150,19 @@ public class EasyconduiteController implements Initializable {
 
     }
 
-    public void refreshKeycodesAudioMap(AudioMediaUI audioMediaUI) {
+    public void refreshKeycodesAudioMap(final AudioMediaUI audioMediaUI) {
 
-        final KeyCode keyCode = audioMediaUI.getAffectedKeyCode();
-        AudioMediaUI oldAudioMediaUI = keycodesAudioMap.get(keyCode);
+        final KeyCode keyCode = audioMediaUI.affectedKeyCodeProperty().getValue();
+        final AudioMediaUI oldAudioMediaUI = keycodesAudioMap.get(keyCode);
         if(null!=oldAudioMediaUI){
             oldAudioMediaUI.setAffectedKeyCode(KeyCode.UNDEFINED);
         }        
         keycodesAudioMap.clear();
-        for (Iterator<AudioMediaUI> iterator = audioMediaUIList.iterator(); iterator.hasNext();) {
-            AudioMediaUI next = iterator.next();
-            if (next.getAffectedKeyCode() != KeyCode.UNDEFINED || null != next.getAffectedKeyCode()) {
-                logger.log(Level.INFO, "Put {0} , {1} in keycodesAudioMap",new Object[]{next.getAffectedKeyCode(),next.toString()});
-                keycodesAudioMap.put(next.getAffectedKeyCode(), next);
+        for (AudioMediaUI newAudioMediaUI : audioMediaUIList) {
+            KeyCode newCode = newAudioMediaUI.affectedKeyCodeProperty().getValue();
+            if (KeyCodeUtil.isValid(newCode)) {
+                logger.log(Level.INFO, "Put {0} , {1} in keycodesAudioMap",new Object[]{newAudioMediaUI.getAffectedKeyCode(),newAudioMediaUI.toString()});
+                keycodesAudioMap.put(newCode, newAudioMediaUI);
             }
         }
     }

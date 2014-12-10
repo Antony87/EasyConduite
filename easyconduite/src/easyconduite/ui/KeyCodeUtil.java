@@ -18,25 +18,21 @@
 package easyconduite.ui;
 
 import javafx.scene.input.KeyCode;
-import javafx.util.StringConverter;
 
 /**
  *
  * @author antony
  */
-public class KeyCodeConverter extends StringConverter {
+public class KeyCodeUtil  {
 
-    @Override
-    public String toString(Object object) {
-        KeyCode code = (KeyCode) object;
-        if (code == KeyCode.UNDEFINED || code==null) {
-            return "";
-        } else {
+    public static String toString(final KeyCode code) {
+        if (isValid(code)) {
             return code.getName();
+        } else {
+            return "";
         }
     }
 
-    @Override
     public KeyCode fromString(String string) {
 
         KeyCode.getKeyCode(string);
@@ -44,5 +40,14 @@ public class KeyCodeConverter extends StringConverter {
         
         return KeyCode.getKeyCode(string);
     };
+    
+    public static boolean isValid(final KeyCode code){
+        
+        if(code == KeyCode.UNDEFINED || code==null){
+            return false;
+        }else{
+            return true;
+        }        
+    }
 
 }

@@ -25,25 +25,15 @@
             <MenuItem mnemonicParsing="false" onAction="#handleQuit" text="Quit" />
           </items>
         </Menu>
-            <Menu mnemonicParsing="false" text="Spectacle">
+            <Menu mnemonicParsing="false" text="Pistes">
               <items>
-                  <Menu mnemonicParsing="false" text="Table audio">
-                    <items>
-                      <MenuItem id="addaudiomenu" mnemonicParsing="false" onAction="#handleAddAudioMenu" text="Ajouter audio" />
-                    </items>
-                  </Menu>
+                <MenuItem id="addaudiomenu" mnemonicParsing="false" onAction="#handleAddAudioMenu" text="Ajouter" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" text="Propriétés" />
               </items>
             </Menu>
-        <Menu mnemonicParsing="false" text="Edition">
+        <Menu mnemonicParsing="false" text="Conduite">
           <items>
-            <MenuItem mnemonicParsing="false" text="Cut" />
-            <MenuItem mnemonicParsing="false" text="Copy" />
-            <MenuItem mnemonicParsing="false" text="Paste" />
-            <MenuItem mnemonicParsing="false" text="Delete" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Select All" />
-            <MenuItem mnemonicParsing="false" text="Unselect All" />
             <MenuItem mnemonicParsing="false" text="Preferences…" />
           </items>
         </Menu>
