@@ -9,15 +9,16 @@ import easyconduite.objects.AudioMedia;
 import easyconduite.ui.AudioMediaUI;
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -49,7 +50,7 @@ public class EasyconduiteController implements Initializable {
 
     private Scene scene;
 
-    private ObservableList<AudioMedia> audioMediaObsList;
+    private List<AudioMediaUI> audioMediaUIList;
 
     private Map<KeyCode, AudioMediaUI> keycodesAudioMap;
 
@@ -87,30 +88,20 @@ public class EasyconduiteController implements Initializable {
         File file = fileChooser.showOpenDialog(scene.getWindow());
         if (file != null) {
             AudioMedia audioMedia = new AudioMedia(file);
-            if (!audioMediaObsList.contains(audioMedia)) {
-                audioMediaObsList.add(audioMedia);
-                AudioMediaUI audioMediaUI = new AudioMediaUI(audioMedia, this);
-                table.getChildren().add(table.getChildren().size(), audioMediaUI);
-            } else {
-                audioMedia = null;
-                // @TODO affichage message alerte.
-            }
+            AudioMediaUI audioMediaUI = new AudioMediaUI(audioMedia, this);
+            addMediaUI(audioMediaUI);
         }
 
     }
 
     public void removeAudioMediaUI(AudioMediaUI audioMediaui) {
-
-        if (audioMediaObsList.remove(audioMediaui.getAudioMedia())) {
+        
+        if (audioMediaUIList.remove(audioMediaui)) {
             logger.log(Level.INFO, "AudioMedia {0} remove from audioMediaObsList", audioMediaui.getAudioMedia().toString());
+            refreshKeycodesAudioMap(audioMediaui);
+            audioMediaui.getPlayer().dispose();
+            table.getChildren().removeAll(audioMediaui);
         }
-
-        if (keycodesAudioMap.remove(audioMediaui.affectedKeyCodeProperty(), audioMediaui)) {
-            logger.log(Level.INFO, "remove key {0} AUdioMediUI {1}", new Object[]{audioMediaui.affectedKeyCodeProperty(), audioMediaui.toString()});
-        }
-        audioMediaui.getPlayer().dispose();
-        table.getChildren().removeAll(audioMediaui);
-
     }
 
     /**
@@ -134,38 +125,46 @@ public class EasyconduiteController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // initialize Observable List of AudioMedia
-        audioMediaObsList = FXCollections.observableArrayList();
-        
+
+        audioMediaUIList = new ArrayList<>();
+
         // initialize Map for binding Keycode to AudioMediaUI
         keycodesAudioMap = new EnumMap<>(KeyCode.class);
+         
+    }
+
+    /**
+     * This method add an AudioMediaUI to the scene, to the List for manage.
+     *
+     * @param audioMediaUI
+     */
+    public void addMediaUI(AudioMediaUI audioMediaUI) {
+
+        try {
+            audioMediaUIList.add(audioMediaUI);
+            refreshKeycodesAudioMap(audioMediaUI);
+            table.getChildren().add(table.getChildren().size(), audioMediaUI);
+
+        } catch (Exception e) {
+            //TODO penser a une zone d'affichage d'erreur.
+        }
 
     }
 
-    public void updateKeyCodetoMap(final KeyCode newKeycode, final AudioMediaUI newAudioMediaUi) {
+    public void refreshKeycodesAudioMap(AudioMediaUI audioMediaUI) {
 
-        if (keycodesAudioMap.containsKey(newKeycode)) {
-            AudioMediaUI oldAUdioMediaUi = keycodesAudioMap.get(newKeycode);
-            oldAUdioMediaUi.setAffectedKeyCode(KeyCode.UNDEFINED);
-            keycodesAudioMap.remove(newKeycode);
-        }
-        for (Map.Entry<KeyCode, AudioMediaUI> entrySet : keycodesAudioMap.entrySet()) {
-            KeyCode key = entrySet.getKey();
-            AudioMediaUI value = entrySet.getValue();
-            if (newAudioMediaUi.equals(value)) {
-                keycodesAudioMap.remove(key, value);
-                break;
+        final KeyCode keyCode = audioMediaUI.getAffectedKeyCode();
+        AudioMediaUI oldAudioMediaUI = keycodesAudioMap.get(keyCode);
+        if(null!=oldAudioMediaUI){
+            oldAudioMediaUI.setAffectedKeyCode(KeyCode.UNDEFINED);
+        }        
+        keycodesAudioMap.clear();
+        for (Iterator<AudioMediaUI> iterator = audioMediaUIList.iterator(); iterator.hasNext();) {
+            AudioMediaUI next = iterator.next();
+            if (next.getAffectedKeyCode() != KeyCode.UNDEFINED || null != next.getAffectedKeyCode()) {
+                logger.log(Level.INFO, "Put {0} , {1} in keycodesAudioMap",new Object[]{next.getAffectedKeyCode(),next.toString()});
+                keycodesAudioMap.put(next.getAffectedKeyCode(), next);
             }
-        }
-
-        newAudioMediaUi.setAffectedKeyCode(newKeycode);
-        keycodesAudioMap.put(newKeycode, newAudioMediaUi);
-
-        for (Map.Entry<KeyCode, AudioMediaUI> entrySet : keycodesAudioMap.entrySet()) {
-            KeyCode key = entrySet.getKey();
-            AudioMediaUI value = entrySet.getValue();
-            logger.log(Level.INFO, "KeyMap key {0} AUdioMediUI {1}", new Object[]{key, value});
-
         }
     }
 

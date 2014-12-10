@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -42,8 +43,7 @@ import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
 
 /**
- * This class encapsulates logics and behaviors about Custom UI Control of an
- * AudioMedia.
+ * This class encapsulates logics and behaviors about Custom UI Control of an AudioMedia.
  *
  * @author A Fons
  */
@@ -71,8 +71,7 @@ public class AudioMediaUI extends VBox {
 
     /**
      * Constructor du UI custom control for an AudioMedia.<br>
-     * Not draw the control but construct object and assign a
-     * {@link MediaPlayer}.<br>
+     * Not draw the control but construct object and assign a {@link MediaPlayer}.<br>
      * Media's volume is set to 0.5 by default.
      *
      * @param audioMedia
@@ -95,9 +94,6 @@ public class AudioMediaUI extends VBox {
             logger.log(Level.INFO, "End of media player with status {0}", player.getStatus());
         });
 
-        nameProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-            audioMedia.setName(newValue);
-        });
         addUI();
 
     }

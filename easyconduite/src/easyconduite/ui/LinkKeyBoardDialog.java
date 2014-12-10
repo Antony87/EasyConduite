@@ -88,7 +88,8 @@ public class LinkKeyBoardDialog extends Stage {
         // Event Handler for OK button
         ok.setOnMouseClicked((MouseEvent event) -> {
             if (getChosenKey() != KeyCode.UNDEFINED && null != getChosenKey()) {
-                controller.updateKeyCodetoMap(getChosenKey(), audioMediaUI);
+                audioMediaUI.setAffectedKeyCode(chosenKey);
+                controller.refreshKeycodesAudioMap(audioMediaUI);
             }
             dialogStage.close();
         });
