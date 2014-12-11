@@ -27,6 +27,7 @@ import javafx.collections.ObservableList;
  * This class manage an {@link ObservableList} of AudioMedia.
  *
  * @author A Fons
+ * @deprecated 
  */
 public class AudioTable {
 
