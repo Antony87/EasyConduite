@@ -18,34 +18,43 @@
  */
 package easyconduite.objects;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import java.io.File;
 import java.util.Objects;
 import java.util.UUID;
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.input.KeyCode;
 
 /**
- * Class that encapsulate audio media, behavior.
+ * Class POJO that encapsulate AudioMedia behavior.
  *
  * @author A.Fons
  *
  */
+@XStreamAlias("audiomedia")
 public class AudioMedia {
 
+    @XStreamAlias("id")
     private UUID uniqueId;
     /**
      * Name of track, to be displayed on top of the pane.
      *
      */
+    @XStreamAlias("name")
     private String name;
 
+    @XStreamAlias("keycode")
     private KeyCode linkedKeyCode;
 
+    @XStreamOmitField
     private File audioFile;
+    
+    @XStreamAlias("path")
+    private String filePathName;
 
-    private final DoubleProperty volume = new SimpleDoubleProperty();
+    @XStreamAlias("volume")
+    private Double volume;
 
     /**
      * Default constructor, to be conform bean specification.
@@ -56,9 +65,9 @@ public class AudioMedia {
 
     public AudioMedia(final File audioFile) {
         this.audioFile = audioFile;
+        this.filePathName = audioFile.getAbsolutePath();
         uniqueId = UUID.randomUUID();
     }
-
 
     public String getName() {
         return name;
@@ -81,11 +90,11 @@ public class AudioMedia {
     }
 
     public final Double getVolume() {
-        return volume.get();
+        return volume;
     }
 
     public final void setVolume(final Double volume) {
-        this.volume.set(volume);
+        this.volume = volume;
     }
 
     @Override
@@ -121,5 +130,5 @@ public class AudioMedia {
         }
         return true;
     }
-    
+
 }

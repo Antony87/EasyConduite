@@ -50,8 +50,14 @@ public class EasyconduiteController implements Initializable {
 
     private Scene scene;
 
+    /**
+     * List of AudioMediaUI added to the table.
+     */
     private List<AudioMediaUI> audioMediaUIList;
 
+    /**
+     * Map of mapping from a KeyCode (Keyboard key) and an AudioMediaUI.
+     */
     private Map<KeyCode, AudioMediaUI> keycodesAudioMap;
 
     private static final Logger logger = Logger.getLogger(EasyconduiteController.class.getName());
@@ -95,7 +101,7 @@ public class EasyconduiteController implements Initializable {
     }
 
     public void removeAudioMediaUI(AudioMediaUI audioMediaui) {
-        
+
         if (audioMediaUIList.remove(audioMediaui)) {
             logger.log(Level.INFO, "AudioMedia {0} remove from audioMediaObsList", audioMediaui.getAudioMedia().toString());
             refreshKeycodesAudioMap(audioMediaui);
@@ -129,7 +135,7 @@ public class EasyconduiteController implements Initializable {
         audioMediaUIList = new ArrayList<>();
 
         keycodesAudioMap = new EnumMap<>(KeyCode.class);
-         
+
     }
 
     /**
@@ -154,14 +160,14 @@ public class EasyconduiteController implements Initializable {
 
         final KeyCode keyCode = audioMediaUI.affectedKeyCodeProperty().getValue();
         final AudioMediaUI oldAudioMediaUI = keycodesAudioMap.get(keyCode);
-        if(null!=oldAudioMediaUI){
+        if (null != oldAudioMediaUI) {
             oldAudioMediaUI.setAffectedKeyCode(KeyCode.UNDEFINED);
-        }        
+        }
         keycodesAudioMap.clear();
         for (AudioMediaUI newAudioMediaUI : audioMediaUIList) {
             KeyCode newCode = newAudioMediaUI.affectedKeyCodeProperty().getValue();
             if (KeyCodeUtil.isValid(newCode)) {
-                logger.log(Level.INFO, "Put {0} , {1} in keycodesAudioMap",new Object[]{newAudioMediaUI.getAffectedKeyCode(),newAudioMediaUI.toString()});
+                logger.log(Level.INFO, "Put {0} , {1} in keycodesAudioMap", new Object[]{newAudioMediaUI.getAffectedKeyCode(), newAudioMediaUI.toString()});
                 keycodesAudioMap.put(newCode, newAudioMediaUI);
             }
         }
