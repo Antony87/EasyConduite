@@ -18,6 +18,8 @@
  */
 package easyconduite.objects;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,11 +29,15 @@ import javafx.collections.ObservableList;
  * This class manage an {@link ObservableList} of AudioMedia.
  *
  * @author A Fons
- * @deprecated 
  */
+@XStreamAlias("audiotable")
 public class AudioTable {
 
-    private final List<AudioMedia> audioMediaList;
+    @XStreamAlias("name")
+    private String name;
+    
+    @XStreamImplicit(itemFieldName = "audiomedia")
+    private List<AudioMedia> audioMediaList;
 
     /**
      * Constructor.
@@ -42,28 +48,6 @@ public class AudioTable {
     }
 
     /**
-     * This method add an AudioFile to List.
-     *
-     * @param audioMedia
-     * @param audioFile
-     * @throws IllegalArgumentException
-     */
-    public void addAudioMedia(AudioMedia audioMedia) throws IllegalArgumentException {
-
-        if (!audioMediaList.contains(audioMedia)) {
-            audioMediaList.add(audioMedia);
-        } else {
-            throw new IllegalArgumentException("AudioFile already added");
-        }
-    }
-
-    public void removeAudioMedia(AudioMedia audioMedia) {
-        if (audioMediaList.contains(audioMedia)) {
-            audioMediaList.remove(audioMedia);
-        }
-    }
-
-    /**
      * Rhis method expose the List, to allow binding from other class.
      *
      * @return
@@ -71,5 +55,23 @@ public class AudioTable {
     public List<AudioMedia> getAudioMediaObsList() {
         return audioMediaList;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<AudioMedia> getAudioMediaList() {
+        return audioMediaList;
+    }
+
+    public void setAudioMediaList(List<AudioMedia> audioMediaList) {
+        this.audioMediaList = audioMediaList;
+    }
+    
+    
 
 }
