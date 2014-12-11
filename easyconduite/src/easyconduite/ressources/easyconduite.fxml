@@ -19,7 +19,7 @@
             <Menu mnemonicParsing="false" text="Ouvrir récents" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" text="Fermer" />
-            <MenuItem mnemonicParsing="false" text="Sauvegarder" />
+            <MenuItem mnemonicParsing="false" onAction="#handleSave" text="Sauvegarder" />
             <MenuItem mnemonicParsing="false" text="Sauvegarder comme..." />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" onAction="#handleQuit" text="Quit" />

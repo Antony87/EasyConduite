@@ -5,6 +5,8 @@
  */
 package easyconduite.controllers;
 
+import easyconduite.application.PersistenceUtil;
+import easyconduite.application.PersistenceUtil.TypeFileChooser;
 import easyconduite.objects.AudioMedia;
 import easyconduite.ui.AudioMediaUI;
 import easyconduite.ui.KeyCodeUtil;
@@ -83,15 +85,15 @@ public class EasyconduiteController implements Initializable {
     }
 
     /**
-     * Cette méthode est appellée par l'événement du menu ajout d'une média dans la table audio.
+     * Cette méthode est appellée par l'événement du menu ajout d'une média dans
+     * la table audio.
      *
      * @param event
      */
     @FXML
     private void handleAddAudioMenu(ActionEvent event) {
 
-        final FileChooser fileChooser = new FileChooser();
-        File file = fileChooser.showOpenDialog(scene.getWindow());
+        File file = PersistenceUtil.getFileChooser(scene, TypeFileChooser.OPEN);
         if (file != null) {
             AudioMedia audioMedia = new AudioMedia(file);
             AudioMediaUI audioMediaUI = new AudioMediaUI(audioMedia, this);
@@ -111,7 +113,8 @@ public class EasyconduiteController implements Initializable {
     }
 
     /**
-     * Cette méthode est appellé par l'action Quit du menu Fichier et ferme l'application.
+     * Cette méthode est appellé par l'action Quit du menu Fichier et ferme
+     * l'application.
      *
      * @param event
      */
@@ -127,6 +130,13 @@ public class EasyconduiteController implements Initializable {
             AudioMediaUI audioMedia = keycodesAudioMap.get(event.getCode());
             audioMedia.playPause();
         }
+    }
+
+    @FXML
+    private void handleSave(ActionEvent event) {
+
+        File file = PersistenceUtil.getFileChooser(scene, TypeFileChooser.SAVE);
+
     }
 
     @Override
