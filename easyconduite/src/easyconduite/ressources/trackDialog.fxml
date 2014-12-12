@@ -18,6 +18,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
             <TextField fx:id="nametrackfield" GridPane.columnIndex="1">
@@ -58,6 +59,11 @@
                <font>
                   <Font name="Arial Black" size="12.0" />
                </font>
+            </Label>
+            <Label id="error" alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="167.0" textFill="#f20707" GridPane.columnIndex="1" GridPane.rowIndex="3">
+               <GridPane.margin>
+                  <Insets left="10.0" />
+               </GridPane.margin>
             </Label>
          </children>
          <BorderPane.margin>

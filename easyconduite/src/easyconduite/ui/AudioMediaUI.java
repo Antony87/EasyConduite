@@ -29,7 +29,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -86,10 +85,11 @@ public class AudioMediaUI extends VBox {
 
         logger.log(Level.INFO, "Create AudioMediaUI with {0}", audioMedia);
 
-        affectedKeyCodeProperty().setValue(KeyCode.UNDEFINED);
+        affectedKeyCodeProperty().setValue(audioMedia.getLinkedKeyCode());
+        
+        this.audioMedia=audioMedia;
 
         easyConduiteController = controller;
-        setAudioMedia(audioMedia);
         Media media = new Media(audioMedia.getAudioFile().toURI().toString());
         player = new MediaPlayer(media);
         player.setOnEndOfMedia(() -> {
@@ -102,11 +102,10 @@ public class AudioMediaUI extends VBox {
 
             @Override
             public void changed(ObservableValue<? extends KeyCode> observable, KeyCode oldValue, KeyCode newValue) {
-                logger.log(Level.INFO, "affectedKeyCodeProperty change to {0}", affectedKeyCodeProperty().getValue());
                 if (newValue != null) {
                      keyCodeLabel.setText(KeyCodeUtil.toString(newValue));
+                     getAudioMedia().setLinkedKeyCode(newValue);
                 }
-
             }
         });
 
@@ -118,7 +117,7 @@ public class AudioMediaUI extends VBox {
      * Add the custom control UI for an {@link AudioMediaUI} to a scene.
      * affectedKeyCode.bind(affectedKeyCode)affectedKeyCode);
      */
-    public void addUI() {
+    public final void addUI() {
 
         logger.setLevel(Config.getLevel());
         logger.entering(this.getClass().getName(), "addUI");
@@ -211,6 +210,16 @@ public class AudioMediaUI extends VBox {
 
     }
 
+    public AudioMedia getAudioMedia() {
+        return audioMedia;
+    }
+
+    public void setAudioMedia(AudioMedia audioMedia) {
+        this.audioMedia = audioMedia;
+    }
+
+    
+    
     /**
      * Get the {@link MediaPlayer} assigned to this UI Control.
      *
@@ -222,19 +231,6 @@ public class AudioMediaUI extends VBox {
 
     private void setPlayer(MediaPlayer player) {
         this.player = player;
-    }
-
-    /**
-     * Get the AudioMedia.
-     *
-     * @return
-     */
-    public AudioMedia getAudioMedia() {
-        return audioMedia;
-    }
-
-    private void setAudioMedia(AudioMedia audioMedia) {
-        this.audioMedia = audioMedia;
     }
 
     public String getName() {

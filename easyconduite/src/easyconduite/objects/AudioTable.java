@@ -35,7 +35,7 @@ public class AudioTable {
 
     @XStreamAlias("name")
     private String name;
-    
+
     @XStreamImplicit(itemFieldName = "audiomedia")
     private List<AudioMedia> audioMediaList;
 
@@ -47,13 +47,19 @@ public class AudioTable {
         audioMediaList = new ArrayList<>();
     }
 
-    /**
-     * Rhis method expose the List, to allow binding from other class.
-     *
-     * @return
-     */
-    public List<AudioMedia> getAudioMediaObsList() {
-        return audioMediaList;
+    public void addIfNotPresent(AudioMedia audioMedia) {
+
+        if (!audioMediaList.contains(audioMedia)) {
+            audioMediaList.add(audioMedia);
+        }
+    }
+
+    public void removeIfPresent(AudioMedia audioMedia) {
+
+        if (audioMediaList.contains(audioMedia)) {
+            audioMediaList.remove(audioMedia);
+        }
+
     }
 
     public String getName() {
@@ -71,7 +77,5 @@ public class AudioTable {
     public void setAudioMediaList(List<AudioMedia> audioMediaList) {
         this.audioMediaList = audioMediaList;
     }
-    
-    
 
 }

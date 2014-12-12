@@ -15,13 +15,19 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package easyconduite.application;
+package easyconduite.util;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioTable;
+import easyconduite.ui.AudioMediaUI;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.util.Iterator;
 import java.util.List;
 import javafx.scene.Scene;
 import javafx.stage.FileChooser;
@@ -33,54 +39,72 @@ import javafx.stage.FileChooser.ExtensionFilter;
  */
 public class PersistenceUtil {
 
+    /**
+     * The character set. UTF-8 works good for windows, mac and Umlaute.
+     */
+    private static final Charset CHARSET = Charset.forName("UTF-8");
+
+    private static final String SUFFIXE = "xml";
+
     public enum TypeFileChooser {
 
         SAVE, OPEN
     }
 
-    private String xml;
-
-    public void save(File file, List<AudioMedia> listAudioMedia) {
-
-        AudioTable table = new AudioTable();
-        table.setAudioMediaList(listAudioMedia);
-        table.setName("toto");
+    public static void save(File file, AudioTable audioTable) throws IOException {
 
         XStream xstream = new XStream(new StaxDriver());
         xstream.processAnnotations(AudioMedia.class);
         xstream.processAnnotations(AudioTable.class);
 
-        xml = xstream.toXML(table);
+        final String xml = xstream.toXML(audioTable);
+        saveFile(xml, file);
 
     }
 
-    public String getXml() {
-        return xml;
-    }
+    public static File getFileChooser(final Scene scene, final TypeFileChooser type) {
 
-    public void setXml(String xml) {
-        this.xml = xml;
-    }
+        File file = null;
+        if (type != null) {
 
-    public static File getFileChooser(final Scene scene,final TypeFileChooser type) {
-        
-        File file =null;
-        if(type!=null){
-            
             final FileChooser fileChooser = new FileChooser();
-            if(type.equals(TypeFileChooser.OPEN)){
+            if (type.equals(TypeFileChooser.OPEN)) {
                 fileChooser.setTitle("Ouvrir fichier audio");
-                fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Fichiers audio", "*.mp3","*.wav"));
+                fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Fichiers audio", "*.mp3", "*.wav"));
                 file = fileChooser.showOpenDialog(scene.getWindow());
             }
-            if(type.equals(TypeFileChooser.SAVE)){
+            if (type.equals(TypeFileChooser.SAVE)) {
                 fileChooser.setTitle("Sauvegarder projet");
                 fileChooser.getExtensionFilters().add(new ExtensionFilter("Fichiers xml", "*.xml"));
                 file = fileChooser.showSaveDialog(scene.getWindow());
-            }   
+            }
         }
         return file;
 
+    }
+
+    public static void prepareAudioTable(AudioTable audioTable, List<AudioMediaUI> audioMediaUIList) {
+
+        for (Iterator<AudioMediaUI> iterator = audioMediaUIList.iterator(); iterator.hasNext();) {
+            AudioMediaUI next = iterator.next();
+            audioTable.addIfNotPresent(next.getAudioMedia());
+        }
+
+    }
+
+    /**
+     * Saves the content String to the specified file.
+     *
+     * @param content
+     * @param file
+     * @throws IOException thrown if an I/O error occurs opening or creating the file
+     */
+    private static void saveFile(String content, File file) throws IOException {
+
+        try (
+                BufferedWriter writer = Files.newBufferedWriter(file.toPath(), CHARSET)) {
+            writer.write(content, 0, content.length());
+        }
     }
 
 }

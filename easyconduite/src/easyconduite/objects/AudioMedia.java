@@ -49,7 +49,7 @@ public class AudioMedia {
 
     @XStreamOmitField
     private File audioFile;
-    
+
     @XStreamAlias("path")
     private String filePathName;
 
@@ -59,14 +59,16 @@ public class AudioMedia {
     /**
      * Default constructor, to be conform bean specification.
      */
-    public AudioMedia() {
-
+    private AudioMedia() {
     }
 
     public AudioMedia(final File audioFile) {
+        
+        // set default values;
         this.audioFile = audioFile;
         this.filePathName = audioFile.getAbsolutePath();
         uniqueId = UUID.randomUUID();
+        linkedKeyCode = KeyCode.UNDEFINED;
     }
 
     public String getName() {

@@ -17,8 +17,10 @@
  */
 package easyconduite.application;
 
+import easyconduite.util.PersistenceUtil;
 import easyconduite.objects.AudioMedia;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.input.KeyCode;
@@ -70,14 +72,14 @@ public class PersistenceUtilTest {
     /**
      * Test of save method, of class PersistenceUtil.
      */
-    @Test
-    public void testSave() {
-        System.out.println("save");
-        File file = null;
-        PersistenceUtil instance = new PersistenceUtil();
-        instance.save(file, audioMedias);
-        System.out.println(instance.getXml());
-        fail("The test case is a prototype.");
-    }
+//    @Test
+//    public void testSave() throws IOException {
+//        System.out.println("save");
+//        File file = null;
+//        PersistenceUtil instance = new PersistenceUtil();
+//        instance.save(file, audioMedias);
+//        System.out.println(instance.getXml());
+//        fail("The test case is a prototype.");
+//    }
 
 }

@@ -6,6 +6,7 @@
 package easyconduite;
 
 import easyconduite.controllers.EasyconduiteController;
+import easyconduite.objects.AudioTable;
 import easyconduite.ui.Chrono;
 import java.util.logging.Level;
 import javafx.animation.Timeline;
@@ -37,6 +38,7 @@ public class Easyconduite extends Application {
         Timeline timeline = Chrono.getTimeline(ltimer);
         controller.setTimeline(timeline);
         controller.setScene(scene);
+        controller.setAudioTable(new AudioTable());
 
         stage.setTitle("EasyConduite 0.1");
         stage.setScene(scene);
