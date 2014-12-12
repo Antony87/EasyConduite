@@ -85,11 +85,12 @@ public class AudioMediaUI extends VBox {
 
         logger.log(Level.INFO, "Create AudioMediaUI with {0}", audioMedia);
 
-        affectedKeyCodeProperty().setValue(audioMedia.getLinkedKeyCode());
+        //affectedKeyCodeProperty().setValue(audioMedia.getLinkedKeyCode());
         
         this.audioMedia=audioMedia;
 
         easyConduiteController = controller;
+        
         Media media = new Media(audioMedia.getAudioFile().toURI().toString());
         player = new MediaPlayer(media);
         player.setOnEndOfMedia(() -> {
@@ -98,6 +99,7 @@ public class AudioMediaUI extends VBox {
             buttonPlayPause.setPathNameOfIcon(NAME_ICON_PLAY);
             logger.log(Level.INFO, "End of media player with status {0}", player.getStatus());
         });
+        
         affectedKeyCodeProperty().addListener(new ChangeListener<KeyCode>() {
 
             @Override
@@ -105,6 +107,7 @@ public class AudioMediaUI extends VBox {
                 if (newValue != null) {
                      keyCodeLabel.setText(KeyCodeUtil.toString(newValue));
                      getAudioMedia().setLinkedKeyCode(newValue);
+                     controller.updateKeycodesAudioMap();
                 }
             }
         });

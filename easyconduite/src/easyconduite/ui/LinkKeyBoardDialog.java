@@ -20,7 +20,6 @@ package easyconduite.ui;
 import easyconduite.controllers.EasyconduiteController;
 import java.io.IOException;
 import java.util.logging.Logger;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -35,7 +34,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 /**
- * This class manage a dialog box, wich exposes affected key, name and repeat for an audio track.
+ * This class manage a dialog box, wich exposes affected key, name and repeat
+ * for an audio track.
  *
  * @author antony Fons
  */
@@ -60,10 +60,12 @@ public class LinkKeyBoardDialog extends Stage {
         dialogStage.initStyle(StageStyle.UTILITY);
         dialogStage.setResizable(false);
 
+        final KeyCode existingKeyCode = audioMediaUI.getAffectedKeyCode();
+
         Scene scene = new Scene(dialogPane);
 
         TextField name = (TextField) scene.lookup("#nametrackfield");
-        
+
         Label error = (Label) scene.lookup("#error");
 
         name.textProperty().bindBidirectional(audioMediaUI.nameProperty());
@@ -83,14 +85,15 @@ public class LinkKeyBoardDialog extends Stage {
         codeKeyboard.setOnKeyReleased((KeyEvent event) -> {
             codeKeyboard.setText(event.getCode().getName());
             chosenKey = event.getCode();
-            if (controller.isExistKeyCode(chosenKey)) {
+            if (controller.isExistKeyCode(chosenKey) && chosenKey != existingKeyCode) {
                 error.textProperty().setValue("Déja attribuée !");
                 ok.disableProperty().set(true);
-            }else{
+            } else {
+                error.textProperty().setValue(null);
                 ok.disableProperty().set(false);
             }
         });
-        
+
         codeKeyboard.setOnMousePressed((MouseEvent event) -> {
             codeKeyboard.clear();
         });
@@ -100,9 +103,9 @@ public class LinkKeyBoardDialog extends Stage {
 
             // update name of AudioMedia
             audioMediaUI.getAudioMedia().setName(audioMediaUI.nameProperty().getValue());
-            
+
             // update Map of KeyCode
-            if (KeyCodeUtil.isValid(chosenKey) && !controller.isExistKeyCode(chosenKey)) {
+            if (chosenKey != existingKeyCode) {
                 audioMediaUI.affectedKeyCodeProperty().set(chosenKey);
             }
             dialogStage.close();

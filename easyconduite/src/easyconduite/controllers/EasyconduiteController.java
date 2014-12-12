@@ -185,22 +185,13 @@ public class EasyconduiteController implements Initializable {
 
     }
 
-    public void updateKeycodesAudioMap(final AudioMediaUI audioMediaUI) {
-
-        final KeyCode keyCode = audioMediaUI.affectedKeyCodeProperty().getValue();
-
-        final AudioMediaUI oldAudioMediaUI = keycodesAudioMap.get(keyCode);
-        if (null != oldAudioMediaUI) {
-            oldAudioMediaUI.setAffectedKeyCode(KeyCode.UNDEFINED);
-            oldAudioMediaUI.getAudioMedia().setLinkedKeyCode(KeyCode.UNDEFINED);
-        }
-        audioMediaUI.getAudioMedia().setLinkedKeyCode(keyCode);
+    public void updateKeycodesAudioMap() {
+        
         keycodesAudioMap.clear();
-        for (AudioMediaUI newAudioMediaUI : audioMediaUIList) {
-            KeyCode newCode = newAudioMediaUI.affectedKeyCodeProperty().getValue();
-            if (KeyCodeUtil.isValid(newCode)) {
-                logger.log(Level.INFO, "Put {0} , {1} in keycodesAudioMap", new Object[]{newAudioMediaUI.getAffectedKeyCode(), newAudioMediaUI.toString()});
-                keycodesAudioMap.put(newCode, newAudioMediaUI);
+        for (Iterator<AudioMediaUI> iterator = audioMediaUIList.iterator(); iterator.hasNext();) {
+            AudioMediaUI unAudioMediaUI = iterator.next();
+            if(KeyCodeUtil.isValid(unAudioMediaUI.getAffectedKeyCode())){
+                keycodesAudioMap.put(unAudioMediaUI.getAffectedKeyCode(), unAudioMediaUI);
             }
         }
     }
