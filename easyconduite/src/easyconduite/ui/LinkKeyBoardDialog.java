@@ -51,9 +51,12 @@ public class LinkKeyBoardDialog extends Stage {
 
     public LinkKeyBoardDialog(final AudioMediaUI audioMediaUI, final EasyconduiteController controller) throws IOException {
 
-        final FXMLLoader loader = new FXMLLoader(getClass().getResource(PATH_FXML));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(PATH_FXML));
 
         dialogPane = (BorderPane) loader.load();
+        
+        loader = null;
+        
         Stage dialogStage = new Stage();
         dialogStage.setTitle("Propriétes du morceaux");
         dialogStage.initModality(Modality.APPLICATION_MODAL);
