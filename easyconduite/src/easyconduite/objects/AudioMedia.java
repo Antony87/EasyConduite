@@ -87,6 +87,18 @@ public class AudioMedia {
         this.linkedKeyCode = linkedKeyCode;
     }
 
+    public void setAudioFile(File audioFile) {
+        this.audioFile = audioFile;
+    }
+
+    public void setFilePathName(String filePathName) {
+        this.filePathName = filePathName;
+    }
+
+    public String getFilePathName() {
+        return filePathName;
+    }
+    
     public File getAudioFile() {
         return audioFile;
     }

@@ -17,7 +17,6 @@
  */
 package easyconduite.ui;
 
-import easyconduite.Config;
 import easyconduite.controllers.EasyconduiteController;
 import easyconduite.objects.AudioMedia;
 import java.io.IOException;
@@ -129,12 +128,15 @@ public class AudioMediaUI extends VBox {
 
         // attribution css for Track VBOX
         this.getStyleClass().add("track-vbox");
+        
+        // Label for name of the track /////////////////////////////////////////
+        Label nameLabel = new Label();
+        nameLabel.getStyleClass().add("texte-track");
+        nameProperty().bindBidirectional(nameLabel.textProperty());
+        this.getChildren().add(nameLabel);
+        ////////////////////////////////////////////////////////////////////////
 
-        progressTrack = new ProgressBar(0);
-        progressTrack.getStyleClass().add("progress-bar-track");
-
-        this.getChildren().add(progressTrack);
-
+        // ToolBar with delete and confugure button ////////////////////////////
         HBox topHbox = hBoxForTrack();
         IconButton buttonDelete = new IconButton("/icons/MinusRedButton.png");
 
@@ -155,6 +157,7 @@ public class AudioMediaUI extends VBox {
 
         topHbox.getChildren().addAll(buttonDelete, buttonAssocKey);
         this.getChildren().add(topHbox);
+        ////////////////////////////////////////////////////////////////////////
 
         // Slider for volume control
         Slider curseVolume = new Slider(0, 1, 1);//
@@ -162,13 +165,14 @@ public class AudioMediaUI extends VBox {
 
         player.volumeProperty().bindBidirectional(curseVolume.valueProperty());
         this.getChildren().add(curseVolume);
+        
+        // Progressbar /////////////////////////////////////////////////////////
+        progressTrack = new ProgressBar(0);
+        progressTrack.getStyleClass().add("progress-bar-track");
+        this.getChildren().add(progressTrack);
+        ////////////////////////////////////////////////////////////////////////
 
-        Label nameLabel = new Label();
-        nameLabel.getStyleClass().add("texte-track");
-        nameProperty().bindBidirectional(nameLabel.textProperty());
-
-        this.getChildren().add(nameLabel);
-
+        // ToolBar with Stop and play button ///////////////////////////////////
         HBox bottomHbox = hBoxForTrack();
         buttonPlayPause = new IconButton(NAME_ICON_PLAY);
         buttonPlayPause.setOnMouseClicked((MouseEvent event) -> {
@@ -183,6 +187,7 @@ public class AudioMediaUI extends VBox {
 
         bottomHbox.getChildren().addAll(buttonStop, buttonPlayPause);
         this.getChildren().add(bottomHbox);
+        ////////////////////////////////////////////////////////////////////////
 
         keyCodeLabel.getStyleClass().add("labelkey-track");
         this.getChildren().add(keyCodeLabel);

@@ -21,13 +21,11 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioTable;
-import easyconduite.ui.AudioMediaUI;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.util.Iterator;
 import java.util.List;
 import javafx.scene.Scene;
 import javafx.stage.FileChooser;
@@ -62,6 +60,22 @@ public class PersistenceUtil {
 
     }
 
+    public static AudioTable open(File file) {
+
+        XStream xstream = new XStream(new StaxDriver());
+        xstream.processAnnotations(AudioMedia.class);
+        xstream.processAnnotations(AudioTable.class);
+        
+        AudioTable audioTable = (AudioTable) xstream.fromXML(file);
+        List<AudioMedia> audioMedias = audioTable.getAudioMediaList();
+        for (AudioMedia audioMedia : audioMedias) {
+            audioMedia.setAudioFile(new File(audioMedia.getFilePathName()));
+        }
+        
+        return audioTable;
+
+    }
+
     public static File getFileChooser(final Scene scene, final TypeFileChooser type) {
 
         File file = null;
@@ -70,7 +84,7 @@ public class PersistenceUtil {
             final FileChooser fileChooser = new FileChooser();
             if (type.equals(TypeFileChooser.OPEN)) {
                 fileChooser.setTitle("Ouvrir fichier audio");
-                fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Fichiers audio", "*.mp3", "*.wav"));
+                fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Fichiers audio", "*.mp3", "*.wav","*.xml"));
                 file = fileChooser.showOpenDialog(scene.getWindow());
             }
             if (type.equals(TypeFileChooser.SAVE)) {
@@ -83,21 +97,13 @@ public class PersistenceUtil {
 
     }
 
-    public static void prepareAudioTable(AudioTable audioTable, List<AudioMediaUI> audioMediaUIList) {
-
-        for (Iterator<AudioMediaUI> iterator = audioMediaUIList.iterator(); iterator.hasNext();) {
-            AudioMediaUI next = iterator.next();
-            audioTable.addIfNotPresent(next.getAudioMedia());
-        }
-
-    }
-
     /**
      * Saves the content String to the specified file.
      *
      * @param content
      * @param file
-     * @throws IOException thrown if an I/O error occurs opening or creating the file
+     * @throws IOException thrown if an I/O error occurs opening or creating the
+     * file
      */
     private static void saveFile(String content, File file) throws IOException {
 
@@ -107,4 +113,14 @@ public class PersistenceUtil {
         }
     }
 
+    private boolean isSuffixed(String suffix, File file) throws IOException {
+
+        String ext = Files.probeContentType(file.toPath());
+        if (suffix.equalsIgnoreCase(ext)) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
 }

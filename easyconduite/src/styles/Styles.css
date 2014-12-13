@@ -40,13 +40,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 }
 
 .texte-track {
-    -fx-font-size: 11;
+    -fx-font-size: 12;
     -fx-pref-width: 80;
+    -fx-text-fill:whitesmoke;
+    -fx-text-alignment:center;
 }
 
 .labelkey-track {
     -fx-font-size: 24;
-    -fx-text-fill:#00d936;
+    -fx-text-fill:#00d936
 }
 
 // definition css for all slider.
@@ -54,6 +56,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     -fx-orientation: vertical;
     -fx-pref-height: 250;
     -fx-show-tick-marks : true;
+    -fx-major-tick-unit:0.1;
+    -fx-block-increment:0.1;
+    -fx-snap-to-ticks:true;
+    -fx-minor-tick-count:10;
 }
 .chrono-button{
     -fx-background-color : #00d938;

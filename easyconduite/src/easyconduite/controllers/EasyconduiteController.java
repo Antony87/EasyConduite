@@ -87,10 +87,21 @@ public class EasyconduiteController implements Initializable {
     @FXML
     private void handleFichierOuvrir(ActionEvent event) {
 
+        // TODO si existant non sauvegarder, boite d'alerte.
+        
+        
+        File file = PersistenceUtil.getFileChooser(scene, TypeFileChooser.OPEN);
+        audioTable = PersistenceUtil.open(file);
+        List<AudioMedia> audioMedias = audioTable.getAudioMediaList();
+        for (AudioMedia audioMedia : audioMedias) {
+            addMediaUI(audioMedia);
+        }
+        updateKeycodesAudioMap();
     }
 
     /**
-     * Cette méthode est appellée par l'événement du menu ajout d'une média dans la table audio.
+     * Cette méthode est appellée par l'événement du menu ajout d'une média dans
+     * la table audio.
      *
      * @param event
      */
@@ -130,7 +141,8 @@ public class EasyconduiteController implements Initializable {
     }
 
     /**
-     * Cette méthode est appellé par l'action Quit du menu Fichier et ferme l'application.
+     * Cette méthode est appellé par l'action Quit du menu Fichier et ferme
+     * l'application.
      *
      * @param event
      */
@@ -152,7 +164,6 @@ public class EasyconduiteController implements Initializable {
     private void handleSave(ActionEvent event) {
 
         File file = PersistenceUtil.getFileChooser(scene, TypeFileChooser.SAVE);
-        PersistenceUtil.prepareAudioTable(audioTable, audioMediaUIList);
         try {
             PersistenceUtil.save(file, audioTable);
         } catch (IOException ex) {
@@ -179,6 +190,9 @@ public class EasyconduiteController implements Initializable {
 
         AudioMediaUI audioMediaUI = new AudioMediaUI(audioMedia, this);
 
+        audioMediaUI.setAffectedKeyCode(audioMedia.getLinkedKeyCode());
+        audioMediaUI.setName(audioMedia.getName());
+
         audioMediaUIList.add(audioMediaUI);
 
         table.getChildren().add(table.getChildren().size(), audioMediaUI);
@@ -186,11 +200,11 @@ public class EasyconduiteController implements Initializable {
     }
 
     public void updateKeycodesAudioMap() {
-        
+
         keycodesAudioMap.clear();
         for (Iterator<AudioMediaUI> iterator = audioMediaUIList.iterator(); iterator.hasNext();) {
             AudioMediaUI unAudioMediaUI = iterator.next();
-            if(KeyCodeUtil.isValid(unAudioMediaUI.getAffectedKeyCode())){
+            if (KeyCodeUtil.isValid(unAudioMediaUI.getAffectedKeyCode())) {
                 keycodesAudioMap.put(unAudioMediaUI.getAffectedKeyCode(), unAudioMediaUI);
             }
         }
