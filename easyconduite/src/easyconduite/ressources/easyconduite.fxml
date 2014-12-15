@@ -16,11 +16,11 @@
         <Menu mnemonicParsing="false" text="Fichier">
           <items>
             <MenuItem fx:id="fichierouvrir" mnemonicParsing="false" onAction="#handleFichierOuvrir" text="Ouvrir..." />
-            <Menu mnemonicParsing="false" text="Ouvrir récents" />
+            <Menu disable="true" mnemonicParsing="false" text="Ouvrir récents" />
+            <MenuItem mnemonicParsing="false" onAction="#handleSave" text="Sauvegarder" />
+            <MenuItem disable="true" mnemonicParsing="false" text="Sauvegarder comme..." />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" text="Fermer" />
-            <MenuItem mnemonicParsing="false" onAction="#handleSave" text="Sauvegarder" />
-            <MenuItem mnemonicParsing="false" text="Sauvegarder comme..." />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" onAction="#handleQuit" text="Quit" />
           </items>
@@ -29,7 +29,7 @@
               <items>
                 <MenuItem id="addaudiomenu" mnemonicParsing="false" onAction="#handleAddAudioMenu" text="Ajouter" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="Propriétés" />
+                  <MenuItem disable="true" mnemonicParsing="false" text="Propriétés" />
               </items>
             </Menu>
         <Menu mnemonicParsing="false" text="Conduite">
@@ -39,7 +39,7 @@
         </Menu>
         <Menu mnemonicParsing="false" text="Help">
           <items>
-            <MenuItem mnemonicParsing="false" text="A propos..." />
+            <MenuItem mnemonicParsing="false" onAction="#handleAbout" text="A propos..." />
           </items>
         </Menu>
       </menus>
