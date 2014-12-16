@@ -106,6 +106,8 @@ public class PersistenceUtil {
      * file
      */
     private static void saveFile(String content, File file) throws IOException {
+        
+        // TODO lève une exception si File est null
 
         try (
                 BufferedWriter writer = Files.newBufferedWriter(file.toPath(), CHARSET)) {
