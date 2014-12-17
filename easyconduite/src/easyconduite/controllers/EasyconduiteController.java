@@ -9,6 +9,7 @@ import easyconduite.util.PersistenceUtil;
 import easyconduite.util.PersistenceUtil.TypeFileChooser;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioTable;
+import easyconduite.ui.AboutDialog;
 import easyconduite.ui.AudioMediaUI;
 import easyconduite.ui.KeyCodeUtil;
 import java.io.File;
@@ -174,6 +175,12 @@ public class EasyconduiteController implements Initializable {
     
     @FXML
     private void handleAbout(ActionEvent event){
+        
+        try {
+            AboutDialog aboutDialog = new AboutDialog();
+        } catch (IOException ex) {
+            Logger.getLogger(EasyconduiteController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
     }
 
