@@ -88,16 +88,15 @@ public class EasyconduiteController implements Initializable {
     @FXML
     private void handleFichierOuvrir(ActionEvent event) {
 
-        // TODO si existant non sauvegarder, boite d'alerte.
-        
-        
-        File file = PersistenceUtil.getFileChooser(scene, TypeFileChooser.OPEN);
-        audioTable = PersistenceUtil.open(file);
-        List<AudioMedia> audioMedias = audioTable.getAudioMediaList();
-        for (AudioMedia audioMedia : audioMedias) {
-            addMediaUI(audioMedia);
+        File file = PersistenceUtil.getOpenProjectFile(scene);
+        if (file != null) {
+            audioTable = PersistenceUtil.open(file);
+            List<AudioMedia> audioMedias = audioTable.getAudioMediaList();
+            for (AudioMedia audioMedia : audioMedias) {
+                addMediaUI(audioMedia);
+            }
+            updateKeycodesAudioMap();
         }
-        updateKeycodesAudioMap();
     }
 
     /**
@@ -109,7 +108,7 @@ public class EasyconduiteController implements Initializable {
     @FXML
     private void handleAddAudioMenu(ActionEvent event) {
 
-        File file = PersistenceUtil.getFileChooser(scene, TypeFileChooser.OPEN);
+        File file = PersistenceUtil.getOpenAudioFile(scene);
         if (file != null) {
 
             AudioMedia audioMedia = new AudioMedia(file);
@@ -164,7 +163,7 @@ public class EasyconduiteController implements Initializable {
     @FXML
     private void handleSave(ActionEvent event) {
 
-        File file = PersistenceUtil.getFileChooser(scene, TypeFileChooser.SAVE);
+        File file = PersistenceUtil.getSaveProjectFile(scene);
         try {
             PersistenceUtil.save(file, audioTable);
         } catch (IOException ex) {
@@ -172,16 +171,16 @@ public class EasyconduiteController implements Initializable {
         }
 
     }
-    
+
     @FXML
-    private void handleAbout(ActionEvent event){
-        
+    private void handleAbout(ActionEvent event) {
+
         try {
             AboutDialog aboutDialog = new AboutDialog();
         } catch (IOException ex) {
             Logger.getLogger(EasyconduiteController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }
 
     @Override

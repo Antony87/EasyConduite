@@ -53,7 +53,7 @@ public class AboutDialog extends Stage {
         Scene scene = new Scene(dialogPane);
 
         Button annuler = (Button) scene.lookup("#cancelbutton");
-
+        
         // Event Handler for cancel button
         annuler.setOnMouseClicked((MouseEvent event) -> {
             dialogStage.close();

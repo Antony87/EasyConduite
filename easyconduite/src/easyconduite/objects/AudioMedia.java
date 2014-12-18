@@ -21,6 +21,7 @@ package easyconduite.objects;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -69,6 +70,10 @@ public class AudioMedia {
         this.filePathName = audioFile.getAbsolutePath();
         uniqueId = UUID.randomUUID();
         linkedKeyCode = KeyCode.UNDEFINED;
+        Path path = audioFile.toPath();
+        name = path.getFileName().toString();
+        
+        
     }
 
     public String getName() {

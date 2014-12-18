@@ -96,6 +96,10 @@ public class AudioMediaUI extends VBox {
 
         //affectedKeyCodeProperty().setValue(audioMedia.getLinkedKeyCode());
         this.audioMedia = audioMedia;
+        
+        if(this.audioMedia.getName()!=null){
+            name.set(this.audioMedia.getName());
+        }
 
         easyConduiteController = controller;
 

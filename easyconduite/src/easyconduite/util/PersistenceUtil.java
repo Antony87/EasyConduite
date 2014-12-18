@@ -26,7 +26,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.Scene;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -44,9 +47,13 @@ public class PersistenceUtil {
 
     private static final String SUFFIXE = "xml";
 
+    private static Path lastDirectory;
+
+    private static final Logger logger = Logger.getLogger(PersistenceUtil.class.getName());
+
     public enum TypeFileChooser {
 
-        SAVE, OPEN
+        SAVE, OPEN_AUDIO, OPEN_PROJECT
     }
 
     public static void save(File file, AudioTable audioTable) throws IOException {
@@ -65,34 +72,42 @@ public class PersistenceUtil {
         XStream xstream = new XStream(new StaxDriver());
         xstream.processAnnotations(AudioMedia.class);
         xstream.processAnnotations(AudioTable.class);
-        
+
         AudioTable audioTable = (AudioTable) xstream.fromXML(file);
         List<AudioMedia> audioMedias = audioTable.getAudioMediaList();
         for (AudioMedia audioMedia : audioMedias) {
             audioMedia.setAudioFile(new File(audioMedia.getFilePathName()));
         }
-        
+
         return audioTable;
 
     }
 
-    public static File getFileChooser(final Scene scene, final TypeFileChooser type) {
+    
+    public static File getSaveProjectFile(final Scene scene){
+        
+        File file = getFileChooser(TypeFileChooser.SAVE).showSaveDialog(scene.getWindow());
+        return file;
+        
+    }
 
-        File file = null;
-        if (type != null) {
+    public static File getOpenProjectFile(final Scene scene) {
 
-            final FileChooser fileChooser = new FileChooser();
-            if (type.equals(TypeFileChooser.OPEN)) {
-                fileChooser.setTitle("Ouvrir fichier audio");
-                fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Fichiers audio", "*.mp3", "*.wav","*.xml"));
-                file = fileChooser.showOpenDialog(scene.getWindow());
-            }
-            if (type.equals(TypeFileChooser.SAVE)) {
-                fileChooser.setTitle("Sauvegarder projet");
-                fileChooser.getExtensionFilters().add(new ExtensionFilter("Fichiers xml", "*.xml"));
-                file = fileChooser.showSaveDialog(scene.getWindow());
-            }
+        File file = getFileChooser(TypeFileChooser.OPEN_PROJECT).showOpenDialog(scene.getWindow());
+        return file;
+
+    }
+
+    public static File getOpenAudioFile(final Scene scene) {
+
+
+        File file = getFileChooser(TypeFileChooser.OPEN_AUDIO).showOpenDialog(scene.getWindow());
+
+        if (file != null) {
+            lastDirectory = file.toPath().getParent();
+            logger.log(Level.INFO, "lastDirectory {0}", lastDirectory.toString());
         }
+
         return file;
 
     }
@@ -106,23 +121,46 @@ public class PersistenceUtil {
      * file
      */
     private static void saveFile(String content, File file) throws IOException {
-        
-        // TODO lève une exception si File est null
 
-        try (
-                BufferedWriter writer = Files.newBufferedWriter(file.toPath(), CHARSET)) {
-            writer.write(content, 0, content.length());
+        if (file != null) {
+            try (
+                    BufferedWriter writer = Files.newBufferedWriter(file.toPath(), CHARSET)) {
+                writer.write(content, 0, content.length());
+            }
         }
     }
 
-    private boolean isSuffixed(String suffix, File file) throws IOException {
 
-        String ext = Files.probeContentType(file.toPath());
-        if (suffix.equalsIgnoreCase(ext)) {
-            return true;
-        } else {
-            return false;
+    private static FileChooser getFileChooser(TypeFileChooser type) {
+        String title = null;
+        String text = null;
+        String extension[] = null;
+
+        switch (type) {
+            case OPEN_AUDIO:
+                title = "Ouvrir fichier audio";
+                text = "Fichier audio";
+                extension = new String[]{"*.mp3", "*.wav"};
+                break;
+            case OPEN_PROJECT:
+                title = "Ouvrir fichier projet";
+                text = "Fichier xml";
+                extension = new String[]{"*.xml"};
+                break;
+            case SAVE:
+                title = "Sauvegarder fichier projet";
+                text = "Fichier xml";
+                extension = new String[]{"*.xml"};
+                break;
         }
-
+        
+        final FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle(title);
+        fileChooser.getExtensionFilters().addAll(new ExtensionFilter(text, extension));
+        if (lastDirectory != null) {
+            fileChooser.setInitialDirectory(new File(lastDirectory.toUri()));
+        }
+        
+        return fileChooser;
     }
 }
