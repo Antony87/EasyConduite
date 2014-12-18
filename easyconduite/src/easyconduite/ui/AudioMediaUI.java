@@ -33,6 +33,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Slider;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -41,6 +42,9 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
+import org.controlsfx.control.action.Action;
+import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.Dialogs;
 
 /**
  * This class encapsulates logics and behaviors about Custom UI Control of an
@@ -141,7 +145,16 @@ public class AudioMediaUI extends VBox {
         IconButton buttonDelete = new IconButton("/icons/MinusRedButton.png");
 
         buttonDelete.setOnMouseClicked((MouseEvent event) -> {
-            easyConduiteController.removeAudioMediaUI(this);
+            
+            Action reponse = Dialogs.create()
+                    .title("Suppression")
+                    .message("Desirez-vous réellement supprimer cette piste ?")
+                    .graphic(new ImageView("/icons/HelpBlueButton.png"))
+                    .showConfirm();
+            if(reponse==Dialog.ACTION_YES){
+                easyConduiteController.removeAudioMediaUI(this);
+            }
+            
         });
 
         // create button wich link a key to an AudioMedia
