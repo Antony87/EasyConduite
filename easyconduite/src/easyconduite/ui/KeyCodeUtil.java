@@ -23,11 +23,18 @@ import javafx.scene.input.KeyCode;
  *
  * @author antony
  */
-public class KeyCodeUtil  {
+public class KeyCodeUtil {
 
     public static String toString(final KeyCode code) {
         if (isValid(code)) {
-            return code.getName();
+
+            String sCode = code.getName();
+            if (sCode.startsWith("Numpad")) {
+                return sCode.substring(6);
+            } else {
+                return code.getName();
+            }
+
         } else {
             return "";
         }
@@ -36,18 +43,19 @@ public class KeyCodeUtil  {
     public KeyCode fromString(String string) {
 
         KeyCode.getKeyCode(string);
-        
-        
+
         return KeyCode.getKeyCode(string);
-    };
+    }
+
+    ;
     
-    public static boolean isValid(final KeyCode code){
-        
-        if(code == KeyCode.UNDEFINED || code==null){
+    public static boolean isValid(final KeyCode code) {
+
+        if (code == KeyCode.UNDEFINED || code == null) {
             return false;
-        }else{
+        } else {
             return true;
-        }        
+        }
     }
 
 }
