@@ -6,7 +6,6 @@
 package easyconduite.controllers;
 
 import easyconduite.util.PersistenceUtil;
-import easyconduite.util.PersistenceUtil.TypeFileChooser;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioTable;
 import easyconduite.ui.AboutDialog;
@@ -164,12 +163,12 @@ public class EasyconduiteController implements Initializable {
     private void handleSave(ActionEvent event) {
 
         File file = PersistenceUtil.getSaveProjectFile(scene);
+        // TDOD si file non null
         try {
             PersistenceUtil.save(file, audioTable);
         } catch (IOException ex) {
             Logger.getLogger(EasyconduiteController.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     @FXML
