@@ -56,6 +56,9 @@ public class AudioMedia {
 
     @XStreamAlias("volume")
     private Double volume;
+    
+    @XStreamAlias("repeat")
+    private Boolean repeat;
 
     /**
      * Default constructor, to be conform bean specification.
@@ -116,6 +119,16 @@ public class AudioMedia {
         this.volume = volume;
     }
 
+    public Boolean getRepeat() {
+        return repeat;
+    }
+
+    public void setRepeat(Boolean repeat) {
+        this.repeat = repeat;
+    }
+    
+    
+
     @Override
     public int hashCode() {
         int hash = 3;
@@ -147,7 +160,18 @@ public class AudioMedia {
         if (!Objects.equals(this.audioFile, other.audioFile)) {
             return false;
         }
+        if (!Objects.equals(this.filePathName, other.filePathName)) {
+            return false;
+        }
+        if (!Objects.equals(this.repeat, other.repeat)) {
+            return false;
+        }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "AudioMedia{" + "name=" + name + ", linkedKeyCode=" + linkedKeyCode + ", filePathName=" + filePathName + ", volume=" + volume + ", repeat=" + repeat + '}';
     }
 
 }
