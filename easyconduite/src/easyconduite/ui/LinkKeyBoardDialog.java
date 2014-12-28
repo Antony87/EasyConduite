@@ -20,9 +20,12 @@ package easyconduite.ui;
 import easyconduite.controllers.EasyconduiteController;
 import java.io.IOException;
 import java.util.logging.Logger;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -78,6 +81,15 @@ public class LinkKeyBoardDialog extends Stage {
 
         Button annuler = (Button) scene.lookup("#cancelbutton");
         Button ok = (Button) scene.lookup("#okbutton");
+        
+        CheckBox repeatTrack = (CheckBox) scene.lookup("#repeattrack");
+        repeatTrack.selectedProperty().addListener(new ChangeListener<Boolean>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                audioMediaUI.repeatProperty().setValue(newValue);
+            }
+        });
 
         // Event Handler for cancel button
         annuler.setOnMouseClicked((MouseEvent event) -> {
