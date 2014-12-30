@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.geometry.*?>
 <?import java.lang.*?>
@@ -34,7 +35,7 @@
             </Menu>
         <Menu mnemonicParsing="false" text="Conduite">
           <items>
-            <MenuItem mnemonicParsing="false" text="Preferences…" />
+            <MenuItem mnemonicParsing="false" onAction="#handleParamConduite" text="Paramètres..." />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">
@@ -49,22 +50,47 @@
     </MenuBar>
       <BorderPane>
          <top>
-            <HBox alignment="CENTER" maxHeight="80.0" prefHeight="80.0" BorderPane.alignment="CENTER">
+            <HBox alignment="CENTER" maxHeight="80.0" prefHeight="80.0" spacing="20.0" BorderPane.alignment="CENTER">
                <children>
-                  <ProgressBar prefHeight="20.0" prefWidth="377.0" progress="0.0">
+                  <StackPane prefHeight="150.0" prefWidth="200.0">
+                     <children>
+                        <Rectangle fx:id="timeLineRectangle" arcHeight="5.0" arcWidth="5.0" fill="#203029" height="30.0" stroke="#a8b0bb" strokeType="INSIDE" width="500.0" />
+                        <Label fx:id="timeLineLabel" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" prefHeight="0.0" prefWidth="495.0" style="-fx-background-color: transparent;" textAlignment="CENTER" textFill="#00d936" />
+                     </children>
                      <padding>
-                        <Insets left="50.0" />
+                        <Insets right="20.0" />
                      </padding>
-                  </ProgressBar>
-                  <Label fx:id="timer" alignment="CENTER" contentDisplay="CENTER" maxHeight="42.0" minHeight="42.0" prefHeight="42.0" style="-fx-border-color: #a8b0bb; -fx-background-color: #203029;" text="00:00:00" textAlignment="CENTER" textFill="#00d936">
+                     <HBox.margin>
+                        <Insets right="20.0" />
+                     </HBox.margin>
+                  </StackPane>
+                  <Label fx:id="duration" alignment="CENTER" contentDisplay="CENTER" maxHeight="42.0" minHeight="42.0" prefHeight="42.0" prefWidth="143.0" style="-fx-border-color: #a8b0bb; -fx-background-color: #203029;" text="00:00" textAlignment="CENTER" textFill="#edf5ef">
+                     <effect>
+                        <Lighting>
+                           <bumpInput>
+                              <Shadow />
+                           </bumpInput>
+                           <light>
+                              <Light.Distant />
+                           </light>
+                        </Lighting>
+                     </effect>
                      <font>
                         <Font size="24.0" />
                      </font>
                      <padding>
-                        <Insets left="50.0" right="20.0" />
+                        <Insets left="10.0" right="10.0" />
+                     </padding>
+                  </Label>
+                  <Label fx:id="timer" alignment="CENTER" contentDisplay="RIGHT" maxHeight="42.0" minHeight="42.0" prefHeight="42.0" style="-fx-border-color: #a8b0bb; -fx-background-color: #203029;" text="00:00:00" textAlignment="CENTER" textFill="#00d936">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                     <padding>
+                        <Insets left="10.0" right="10.0" />
                      </padding>
                      <HBox.margin>
-                        <Insets left="20.0" right="20.0" />
+                        <Insets />
                      </HBox.margin>
                      <effect>
                         <Lighting>

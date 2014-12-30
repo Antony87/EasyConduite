@@ -20,17 +20,10 @@ package easyconduite.ui;
 import easyconduite.controllers.EasyconduiteController;
 import easyconduite.objects.AudioMedia;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
@@ -56,122 +49,123 @@ import org.controlsfx.dialog.Dialogs;
  * @author A Fons
  */
 public class AudioMediaUI extends VBox {
-
-    private MediaPlayer player;
-
-    private AudioMedia audioMedia;
-
-    private IconButton buttonPlayPause;
-
-    private Label keyCodeLabel;
     
-    private ImageView repeatImageView;
-
+    private MediaPlayer player;
+    
+    private AudioMedia audioMedia;
+    
+    private IconButton buttonPlayPause;
+    
+    private final Label keyCodeLabel = new Label();
+    
+    private final ImageView repeatImageView = new ImageView();
+    
+    private final Label nameLabel = new Label();
+    
     private ProgressIndicator progressTrack;
 
-    private final SimpleStringProperty name = new SimpleStringProperty();
-
-    private final ObjectProperty<KeyCode> affectedKeyCode = new SimpleObjectProperty<>();
-
-    private final BooleanProperty repeat = new SimpleBooleanProperty(false);
-
     private final EasyconduiteController easyConduiteController;
-
+    
     private final static String NAME_ICON_PLAY = "/icons/PlayGreenButton.png";
-
+    
     private final static String NAME_ICON_PAUSE = "/icons/PauseBlueButton.png";
-
+    
     private static final Logger logger = Logger.getLogger(AudioMediaUI.class.getName());
 
     /**
      * Constructor du UI custom control for an AudioMedia.<br>
      * Not draw the control but construct object and assign a
      * {@link MediaPlayer}.<br>
-     * Media's volume is set to 0.5 by default.
      *
-     * @param audioMedia
+     * @param unAudioMedia
      * @param controller
      */
-    public AudioMediaUI(final AudioMedia audioMedia, final EasyconduiteController controller) {
-
-        super(10);
-        keyCodeLabel = new Label();
+    public AudioMediaUI(final AudioMedia unAudioMedia, final EasyconduiteController controller) {
         
-        repeatImageView = new ImageView();
-
+        super(10);
+        // initialize audioMedia
+        this.audioMedia = unAudioMedia;
+        
         logger.log(Level.INFO, "Create AudioMediaUI with {0}", audioMedia);
 
-        //affectedKeyCodeProperty().setValue(audioMedia.getLinkedKeyCode());
-        this.audioMedia = audioMedia;
-
+        // initialize nameLabel
         if (this.audioMedia.getName() != null) {
-            name.set(this.audioMedia.getName());
+            //name.set(this.audioMedia.getName());
+            nameLabel.setText(this.audioMedia.getName());
         }
 
+        // initialize keyCodeLabel
+        keyCodeLabel.setText(KeyCodeUtil.toString(this.audioMedia.getLinkedKeyCode()));
+        
         easyConduiteController = controller;
-
+        
         Media media = new Media(audioMedia.getAudioFile().toURI().toString());
         player = new MediaPlayer(media);
         player.setOnEndOfMedia(() -> {
             player.setStartTime(Duration.ZERO);
             // if repeat is false, force to stop de player.
-            if (!repeat.getValue()) {
+            if (!this.audioMedia.getRepeat()) {
                 player.stop();
                 buttonPlayPause.setPathNameOfIcon(NAME_ICON_PLAY);
             }
-
+            
             logger.log(Level.INFO, "End of media player with status {0}", player.getStatus());
         });
-
-        affectedKeyCodeProperty().addListener((ObservableValue<? extends KeyCode> observable, KeyCode oldValue, KeyCode newValue) -> {
-            if (newValue != null) {
-                keyCodeLabel.setText(KeyCodeUtil.toString(newValue));
-                getAudioMedia().setLinkedKeyCode(newValue);
-                controller.updateKeycodesAudioMap();
-            }
-        });
-
-        repeatProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            if (newValue) {
-                player.setCycleCount(MediaPlayer.INDEFINITE);
-                getAudioMedia().setRepeat(newValue);
-                repeatImageView.setImage(new Image(getClass().getResourceAsStream("/icons/repeat.png"), 30, 30, true, false));
-                logger.log(Level.INFO, "CycleCount {0}", player.cycleCountProperty().getValue());
-            }else{
-                repeatImageView.setImage(null);
-            }
-        });
-
+        
         player.currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> {
             progressTrack.setProgress(newValue.toSeconds() / player.getTotalDuration().toSeconds());
         });
-
-        addUI();
-
+        
+        drawUI();
+        
+    }
+    
+    public void updateAffectedKeyCode(KeyCode code) {
+        if (code != null) {
+            keyCodeLabel.setText(KeyCodeUtil.toString(code));
+            audioMedia.setLinkedKeyCode(code);
+            easyConduiteController.updateKeycodesAudioMap();
+        }
+    }
+    
+    public void updateRepeat(Boolean repeatValue) {
+        if (repeatValue) {
+            player.setCycleCount(MediaPlayer.INDEFINITE);
+            audioMedia.setRepeat(repeatValue);
+            repeatImageView.setImage(new Image(getClass().getResourceAsStream("/icons/repeat.png"), 18, 18, true, false));
+            logger.log(Level.INFO, "CycleCount {0}", player.cycleCountProperty().getValue());
+        } else {
+            repeatImageView.setImage(null);
+            player.setCycleCount(1);
+        }
+    }
+    
+    public void updateName(String name) {
+        if (null != name) {
+            audioMedia.setName(name);
+            nameLabel.setText(name);
+        }        
     }
 
     /**
      * Add the custom control UI for an {@link AudioMediaUI} to a scene.
      * affectedKeyCode.bind(affectedKeyCode)affectedKeyCode);
      */
-    public final void addUI() {
+    public final void drawUI() {
 
         // attribution css for Track VBOX
         this.getStyleClass().add("track-vbox");
 
         // Label for name of the track /////////////////////////////////////////
-        Label nameLabel = new Label();
         nameLabel.getStyleClass().add("texte-track");
-        nameProperty().bindBidirectional(nameLabel.textProperty());
-        this.getChildren().add(nameLabel);
         ////////////////////////////////////////////////////////////////////////
 
         // ToolBar with delete and confugure button ////////////////////////////
         HBox topHbox = hBoxForTrack();
         IconButton buttonDelete = new IconButton("/icons/MinusRedButton.png");
-
+        
         buttonDelete.setOnMouseClicked((MouseEvent event) -> {
-
+            
             Action reponse = Dialogs.create()
                     .title("Suppression")
                     .message("Desirez-vous réellement supprimer cette piste ?")
@@ -180,12 +174,12 @@ public class AudioMediaUI extends VBox {
             if (reponse == Dialog.ACTION_YES) {
                 easyConduiteController.removeAudioMediaUI(this);
             }
-
+            
         });
 
         // create button wich link a key to an AudioMedia
         IconButton buttonAssocKey = new IconButton("/icons/Gear.png");
-
+        
         buttonAssocKey.setOnMouseClicked((MouseEvent event) -> {
             try {
                 LinkKeyBoardDialog dialog = new LinkKeyBoardDialog(this, easyConduiteController);
@@ -193,22 +187,18 @@ public class AudioMediaUI extends VBox {
                 Logger.getLogger(AudioMediaUI.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-
+        
         topHbox.getChildren().addAll(buttonDelete, buttonAssocKey);
-        this.getChildren().add(topHbox);
         ////////////////////////////////////////////////////////////////////////
 
         // Slider for volume control
         Slider curseVolume = new Slider(0, 1, 1);//
         curseVolume.getStyleClass().add("slider-volume-track");
-
         player.volumeProperty().bindBidirectional(curseVolume.valueProperty());
-        this.getChildren().add(curseVolume);
 
         // Progressbar /////////////////////////////////////////////////////////
         progressTrack = new ProgressBar(0);
         progressTrack.getStyleClass().add("progress-bar-track");
-        this.getChildren().add(progressTrack);
         ////////////////////////////////////////////////////////////////////////
 
         // ToolBar with Stop and play button ///////////////////////////////////
@@ -217,31 +207,30 @@ public class AudioMediaUI extends VBox {
         buttonPlayPause.setOnMouseClicked((MouseEvent event) -> {
             playPause();
         });
-
+        
         IconButton buttonStop = new IconButton("/icons/StopRedButton.png");
         buttonStop.setOnMouseClicked((MouseEvent event) -> {
             player.stop();
             buttonPlayPause.setPathNameOfIcon(NAME_ICON_PLAY);
         });
-
+        
         bottomHbox.getChildren().addAll(buttonStop, buttonPlayPause);
-        this.getChildren().add(bottomHbox);
         ////////////////////////////////////////////////////////////////////////
 
-        // icone repeat for repeat /////////////////////////////////////////////////
-        repeatImageView.setFitHeight(30);
-        repeatImageView.setFitWidth(30);
-        this.getChildren().add(repeatImageView);
-
+        // icone repeat for repeat /////////////////////////////////////////////
+        repeatImageView.setFitHeight(18);
+        repeatImageView.setFitWidth(18);
+        ////////////////////////////////////////////////////////////////////////
 
         keyCodeLabel.getStyleClass().add("labelkey-track");
-        this.getChildren().add(keyCodeLabel);
+        
+        this.getChildren().addAll(nameLabel,topHbox,curseVolume,progressTrack,bottomHbox,repeatImageView,keyCodeLabel);
     }
-
+    
     public void playPause() {
-
+        
         Status status = getPlayer().getStatus();
-
+        
         switch (status) {
             case PAUSED:
                 getPlayer().play();
@@ -268,13 +257,13 @@ public class AudioMediaUI extends VBox {
             default:
                 break;
         }
-
+        
     }
-
+    
     public AudioMedia getAudioMedia() {
         return audioMedia;
     }
-
+    
     public void setAudioMedia(AudioMedia audioMedia) {
         this.audioMedia = audioMedia;
     }
@@ -287,88 +276,17 @@ public class AudioMediaUI extends VBox {
     public MediaPlayer getPlayer() {
         return player;
     }
-
+    
     private void setPlayer(MediaPlayer player) {
         this.player = player;
     }
-
-    public String getName() {
-        return name.getValue();
-    }
-
-    public void setName(String name) {
-        this.name.setValue(name);
-    }
-
-    public SimpleStringProperty nameProperty() {
-        return name;
-    }
-
-    public KeyCode getAffectedKeyCode() {
-        return affectedKeyCode.getValue();
-    }
-
-    public void setAffectedKeyCode(KeyCode code) {
-        this.affectedKeyCode.setValue(code);
-    }
-
-    public ObjectProperty<KeyCode> affectedKeyCodeProperty() {
-        return affectedKeyCode;
-    }
-
-    public Boolean getRepeat() {
-        return repeat.getValue();
-    }
-
-    public void setRepeat(Boolean repeat) {
-        this.repeat.setValue(repeat);
-    }
-
-    public BooleanProperty repeatProperty() {
-        return repeat;
-    }
-
+    
     private HBox hBoxForTrack() {
-
+        
         HBox hbox = new HBox(10);
         hbox.setPrefWidth(100);
         hbox.setAlignment(Pos.CENTER);
         return hbox;
     }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 29 * hash + Objects.hashCode(this.audioMedia);
-        hash = 29 * hash + Objects.hashCode(this.name);
-        hash = 29 * hash + Objects.hashCode(this.affectedKeyCode);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final AudioMediaUI other = (AudioMediaUI) obj;
-        if (!Objects.equals(this.audioMedia, other.audioMedia)) {
-            return false;
-        }
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (!Objects.equals(this.affectedKeyCode, other.affectedKeyCode)) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "AudioMediaUI{" + "audioMedia=" + audioMedia + ", name=" + name + ", affectedKeyCode=" + affectedKeyCode + '}';
-    }
-
+    
 }

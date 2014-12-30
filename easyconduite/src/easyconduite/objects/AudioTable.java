@@ -20,6 +20,7 @@ package easyconduite.objects;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,9 @@ public class AudioTable {
 
     @XStreamAlias("name")
     private String name;
+    
+    @XStreamAlias("duration")
+    private Duration duration;
 
     @XStreamImplicit(itemFieldName = "audiomedia")
     private List<AudioMedia> audioMediaList;
@@ -77,5 +81,15 @@ public class AudioTable {
     public void setAudioMediaList(List<AudioMedia> audioMediaList) {
         this.audioMediaList = audioMediaList;
     }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+    
+    
 
 }

@@ -73,6 +73,7 @@ public class AudioMedia {
         this.filePathName = audioFile.getAbsolutePath();
         uniqueId = UUID.randomUUID();
         linkedKeyCode = KeyCode.UNDEFINED;
+        repeat=new Boolean(false);
         Path path = audioFile.toPath();
         name = path.getFileName().toString();
         

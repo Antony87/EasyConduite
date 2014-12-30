@@ -11,12 +11,13 @@ import easyconduite.objects.AudioTable;
 import easyconduite.ui.AboutDialog;
 import easyconduite.ui.AudioMediaUI;
 import easyconduite.ui.KeyCodeUtil;
+import easyconduite.ui.ParamConduiteDialog;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -34,6 +35,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.shape.Rectangle;
 
 /**
  *
@@ -49,6 +51,12 @@ public class EasyconduiteController implements Initializable {
 
     @FXML
     private HBox table;
+    
+    @FXML
+    private Rectangle timeLineRectangle;
+    
+    @FXML
+    private Label timeLineLabel;
 
     private Timeline timeline;
 
@@ -130,7 +138,7 @@ public class EasyconduiteController implements Initializable {
         audioMediaUIList.remove(audioMediaUI);
 
         // remove audioMediaUI from keycodesAudioMap
-        keycodesAudioMap.remove(audioMediaUI.getAffectedKeyCode(), audioMediaUI);
+        keycodesAudioMap.remove(audioMediaUI.getAudioMedia().getLinkedKeyCode(), audioMediaUI);
 
         audioMediaUI.getPlayer().dispose();
         table.getChildren().removeAll(audioMediaUI);
@@ -181,6 +189,17 @@ public class EasyconduiteController implements Initializable {
         }
 
     }
+    
+    @FXML
+    private void handleParamConduite(ActionEvent event){
+        
+        try {
+            ParamConduiteDialog conduiteDialog = new ParamConduiteDialog(audioTable, this);
+        } catch (IOException ex) {
+            Logger.getLogger(EasyconduiteController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -200,8 +219,8 @@ public class EasyconduiteController implements Initializable {
 
         AudioMediaUI audioMediaUI = new AudioMediaUI(audioMedia, this);
 
-        audioMediaUI.setAffectedKeyCode(audioMedia.getLinkedKeyCode());
-        audioMediaUI.setName(audioMedia.getName());
+        //audioMediaUI.setAffectedKeyCode(audioMedia.getLinkedKeyCode());
+        //audioMediaUI.setName(audioMedia.getName());
 
         audioMediaUIList.add(audioMediaUI);
 
@@ -212,20 +231,23 @@ public class EasyconduiteController implements Initializable {
     public void updateKeycodesAudioMap() {
 
         keycodesAudioMap.clear();
-        for (Iterator<AudioMediaUI> iterator = audioMediaUIList.iterator(); iterator.hasNext();) {
-            AudioMediaUI unAudioMediaUI = iterator.next();
-            if (KeyCodeUtil.isValid(unAudioMediaUI.getAffectedKeyCode())) {
-                keycodesAudioMap.put(unAudioMediaUI.getAffectedKeyCode(), unAudioMediaUI);
+        for (AudioMediaUI unAudioMediaUI : audioMediaUIList) {
+            if (KeyCodeUtil.isValid(unAudioMediaUI.getAudioMedia().getLinkedKeyCode())) {
+                keycodesAudioMap.put(unAudioMediaUI.getAudioMedia().getLinkedKeyCode(), unAudioMediaUI);
             }
         }
+    }
+    
+    public void updateConduiteDuration(Duration duree){
+        if(null!=duree){
+            audioTable.setDuration(duree);
+        }
+        
     }
 
     public boolean isExistKeyCode(KeyCode keycode) {
 
-        if (keycodesAudioMap.containsKey(keycode)) {
-            return true;
-        }
-        return false;
+        return keycodesAudioMap.containsKey(keycode);
 
     }
 
