@@ -19,13 +19,13 @@ package easyconduite.ui;
 
 import easyconduite.controllers.EasyconduiteController;
 import easyconduite.objects.AudioTable;
+import easyconduite.util.DurationUtil;
 import java.io.IOException;
 import java.time.Duration;
-import java.time.format.DateTimeParseException;
 import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ListChangeListener;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -72,10 +72,11 @@ public class ParamConduiteDialog extends Stage {
 
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if(!isParsableToDuration(newValue)){
+                if(!DurationUtil.isParsableToDuration(newValue)){
                     durationText.setStyle("-fx-border-color:red");
                 }else{
                     durationText.setStyle("");
+                    duration = DurationUtil.parseFromConduite(newValue);
                 }
 
             }
@@ -88,34 +89,17 @@ public class ParamConduiteDialog extends Stage {
         annuler.setOnMouseClicked((MouseEvent event) -> {
             dialogStage.close();
         });
+        
+        ok.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent event) {
+               controller.updateConduiteDuration(duration);
+            }
+        });
 
         dialogStage.setScene(scene);
         dialogStage.showAndWait();
-
-    }
-
-    private boolean isParsableToDuration(String textField) {
-
-        String[] values = textField.split(":");
-
-        if (null != values && values.length == 2) {
-            StringBuilder stb = new StringBuilder();
-            stb.append("PT");
-            stb.append(values[0]);
-            stb.append("H");
-            stb.append(values[1]);
-            stb.append("M");
-
-            try {
-                Duration.parse(stb);
-                return true;
-            } catch (DateTimeParseException e) {
-                return false;
-            }
-
-        }
-
-        return false;
 
     }
 

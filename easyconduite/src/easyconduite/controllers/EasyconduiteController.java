@@ -12,6 +12,7 @@ import easyconduite.ui.AboutDialog;
 import easyconduite.ui.AudioMediaUI;
 import easyconduite.ui.KeyCodeUtil;
 import easyconduite.ui.ParamConduiteDialog;
+import easyconduite.util.DurationUtil;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -57,6 +58,9 @@ public class EasyconduiteController implements Initializable {
     
     @FXML
     private Label timeLineLabel;
+    
+    @FXML
+    private Label duration;
 
     private Timeline timeline;
 
@@ -241,6 +245,7 @@ public class EasyconduiteController implements Initializable {
     public void updateConduiteDuration(Duration duree){
         if(null!=duree){
             audioTable.setDuration(duree);
+            duration.setText(DurationUtil.toStringForConduite(duree));
         }
         
     }
