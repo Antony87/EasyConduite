@@ -17,90 +17,66 @@
  */
 package easyconduite.ui;
 
+import easyconduite.ui.model.EasyConduiteAbstractDialog;
 import easyconduite.controllers.EasyconduiteController;
 import easyconduite.objects.AudioTable;
 import easyconduite.util.DurationUtil;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.logging.Logger;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 /**
+ * This class draws a dialog box to set params for the play (duration and
+ * other).
  *
  * @author antony Fons
  */
-public class ParamConduiteDialog extends Stage {
-
-    private Duration duration;
-    
-    private TextField durationText;
-
-    private final BorderPane dialogPane;
-
-    private static final Logger logger = Logger.getLogger(ParamConduiteDialog.class.getName());
-
+public class ParamConduiteDialog extends EasyConduiteAbstractDialog {
     private static final String PATH_FXML = "/easyconduite/ressources/conduiteDialog.fxml";
 
+    private Duration duration;
+
+    private TextField durationText;
+
+    private final EasyconduiteController easyConduiteController;
+
+
+    /**
+     * Constructor.<br>This class extends abstract class
+     * {@link EasyConduiteAbstractDialog}, so you have to implement super() in
+     * constructor.
+     *
+     * @param audioTable
+     * @param controller
+     * @throws IOException
+     */
     public ParamConduiteDialog(final AudioTable audioTable, final EasyconduiteController controller) throws IOException {
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(PATH_FXML));
+        super(PATH_FXML, "Propriétes du spectacle");
 
-        dialogPane = (BorderPane) loader.load();
+        this.easyConduiteController = controller;
 
-        Stage dialogStage = new Stage();
-        dialogStage.setTitle("Propriétes du spectacle");
-        dialogStage.initModality(Modality.APPLICATION_MODAL);
-        dialogStage.initStyle(StageStyle.UTILITY);
-        dialogStage.setResizable(false);
+        durationText = (TextField) this.getScene().lookup("#durationField");
 
-        // initialize fields
-        Scene scene = new Scene(dialogPane);
-        durationText = (TextField) scene.lookup("#durationField");
-
-        durationText.textProperty().addListener(new ChangeListener<String>() {
-
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if(!DurationUtil.isParsableToDuration(newValue)){
-                    durationText.setStyle("-fx-border-color:red");
-                }else{
-                    durationText.setStyle("");
-                    duration = DurationUtil.parseFromConduite(newValue);
-                }
-
+        durationText.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            if (!DurationUtil.isParsableToDuration(newValue)) {
+                durationText.setStyle("-fx-border-color:red");
+            } else {
+                durationText.setStyle("");
+                duration = DurationUtil.parseFromConduite(newValue);
             }
         });
-
-        Button annuler = (Button) scene.lookup("#cancelbutton");
-        Button ok = (Button) scene.lookup("#okbutton");
-
-        // Event Handler for cancel button
-        annuler.setOnMouseClicked((MouseEvent event) -> {
-            dialogStage.close();
-        });
-        
-        ok.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-            @Override
-            public void handle(MouseEvent event) {
-               controller.updateConduiteDuration(duration);
-            }
-        });
-
-        dialogStage.setScene(scene);
-        dialogStage.showAndWait();
 
     }
 
+    @Override
+    public void onClickOkButton() {
+        easyConduiteController.updateConduiteDuration(duration);
+    }
+
+    @Override
+    public void onClickCancelButton() {
+        this.close();
+    }
 }
