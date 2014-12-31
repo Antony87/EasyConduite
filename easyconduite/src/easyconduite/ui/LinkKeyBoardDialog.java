@@ -17,6 +17,7 @@
  */
 package easyconduite.ui;
 
+import easyconduite.util.KeyCodeUtil;
 import easyconduite.controllers.EasyconduiteController;
 import java.io.IOException;
 import java.util.Objects;

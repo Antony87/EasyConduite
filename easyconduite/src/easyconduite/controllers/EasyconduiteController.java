@@ -10,7 +10,7 @@ import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioTable;
 import easyconduite.ui.AboutDialog;
 import easyconduite.ui.AudioMediaUI;
-import easyconduite.ui.KeyCodeUtil;
+import easyconduite.util.KeyCodeUtil;
 import easyconduite.ui.ParamConduiteDialog;
 import easyconduite.util.DurationUtil;
 import java.io.File;

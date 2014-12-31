@@ -5,6 +5,7 @@
  */
 package easyconduite;
 
+import easyconduite.util.Config;
 import easyconduite.controllers.EasyconduiteController;
 import easyconduite.objects.AudioTable;
 import easyconduite.ui.Chrono;
