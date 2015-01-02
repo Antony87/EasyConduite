@@ -19,6 +19,8 @@ package easyconduite.util;
 
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -26,28 +28,20 @@ import java.time.format.DateTimeParseException;
  */
 public class DurationUtil {
 
+    private static final String DURATION_REGEX = "([0-9]?[0-9]{1}):([0-5]{1}[0-9]{1})";
+
+    private static final Pattern DURATION_PATTERN = Pattern.compile(DURATION_REGEX);
+
     public static boolean isParsableToDuration(String textField) {
 
-        String[] values = textField.split(":");
+        boolean isParsable = false;
 
-        if (null != values && values.length == 2) {
-            StringBuilder stb = new StringBuilder();
-            stb.append("PT");
-            stb.append(values[0]);
-            stb.append("H");
-            stb.append(values[1]);
-            stb.append("M");
-
-            try {
-                Duration.parse(stb);
-                return true;
-            } catch (DateTimeParseException e) {
-                return false;
-            }
-
+        if (null != textField && !textField.isEmpty()) {
+            Matcher m = DURATION_PATTERN.matcher(textField);
+            isParsable = m.matches();
         }
 
-        return false;
+        return isParsable;
     }
 
     public static Duration parseFromConduite(String textField) {
@@ -69,12 +63,12 @@ public class DurationUtil {
     public static String toStringForConduite(Duration duree) {
 
         if (null != duree) {
-            StringBuilder stb = new StringBuilder();
-            stb.append(duree.toHours());
-            stb.append(":");
-            stb.append(duree.minusHours(duree.toHours()).toMinutes());
 
-            return stb.toString();
+            long minutes = duree.toMinutes() - duree.toHours() * 60;
+            long heures = duree.toHours();
+
+            String s = String.format("%02d:%02d", heures, minutes);
+            return s;
         }
 
         return null;
