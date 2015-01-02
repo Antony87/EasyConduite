@@ -17,27 +17,27 @@ import javafx.scene.control.Label;
 import javafx.util.Duration;
 
 public class Chrono {
-                       
-        public static Timeline getTimeline(final Label label){
-               
-                final SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-                final Calendar calendar = Calendar.getInstance();
-                calendar.set(0,0,0,0,0,0);
-               
-                final Timeline timeline = new Timeline(new KeyFrame(
-                                Duration.seconds(1), new EventHandler<ActionEvent>() {
-                                        @Override
-                                        public void handle(ActionEvent event) {
-                                                calendar.add(Calendar.SECOND, 1);
-                                                label.setText(format.format(calendar.getTime()));
-                                        };
-                                }));
+    
+    
+    public static Timeline getTimeline(final Label label) {
+        
+        final SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        final Calendar calendar = Calendar.getInstance();
+        calendar.set(0, 0, 0, 0, 0, 0);
+        
+        final Timeline timeline = new Timeline(new KeyFrame(
+                Duration.seconds(1), new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        calendar.add(Calendar.SECOND, 1);
+                        label.setText(format.format(calendar.getTime()));
+                    }
+                ;
+        }));
                 timeline.setCycleCount(Animation.INDEFINITE);
-               
-               
-                return timeline;
-               
-        }
-       
+        
+        return timeline;
+        
+    }
+    
 }
-
