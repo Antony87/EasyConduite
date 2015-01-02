@@ -19,6 +19,7 @@ package easyconduite.ui.model;
 
 import java.io.IOException;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
@@ -36,6 +37,8 @@ import javafx.stage.StageStyle;
 public abstract class EasyConduiteAbstractDialog extends Stage {
 
     private final BorderPane dialogPane;
+    
+    private Initializable controller;
 
     /**
      * Cancel Button.
@@ -52,17 +55,17 @@ public abstract class EasyConduiteAbstractDialog extends Stage {
      *
      * @param fxmlPath The path of fxml descriptor for the dialog box.
      * @param title the title of the dialog box.
+     * @param aController
      * @throws IOException
      */
-    public EasyConduiteAbstractDialog(final String fxmlPath, final String title) throws IOException {
-
-        super();
+    public EasyConduiteAbstractDialog(final String fxmlPath, final String title,final Initializable aController) throws IOException {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
 
         dialogPane = (BorderPane) loader.load();
+        
+        setController(aController);
 
-        //Stage dialogStage = new Stage();
         this.setTitle(title);
         this.initModality(Modality.APPLICATION_MODAL);
         this.initStyle(StageStyle.UTILITY);
@@ -81,7 +84,7 @@ public abstract class EasyConduiteAbstractDialog extends Stage {
             onClickOkButton();
         });
 
-        this.showAndWait();
+        this.show();
 
     }
 
@@ -94,4 +97,14 @@ public abstract class EasyConduiteAbstractDialog extends Stage {
      * This method is calling when a click event is fired on Cancel button.
      */
     public abstract void onClickCancelButton();
+
+    public Initializable getController() {
+        return controller;
+    }
+
+    private void setController(Initializable controller) {
+        this.controller = controller;
+    }
+    
+    
 }

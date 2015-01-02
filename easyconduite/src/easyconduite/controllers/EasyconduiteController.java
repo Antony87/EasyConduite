@@ -12,6 +12,7 @@ import easyconduite.ui.AboutDialog;
 import easyconduite.ui.AudioMediaUI;
 import easyconduite.util.KeyCodeUtil;
 import easyconduite.ui.ParamConduiteDialog;
+import easyconduite.ui.CursorTimeLineConduite;
 import easyconduite.util.DurationUtil;
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +37,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 
 /**
@@ -43,6 +45,8 @@ import javafx.scene.shape.Rectangle;
  * @author A Fons
  */
 public class EasyconduiteController implements Initializable {
+    
+    private static final Logger logger = Logger.getLogger(EasyconduiteController.class.getName());
 
     @FXML
     private Label timer;
@@ -60,9 +64,14 @@ public class EasyconduiteController implements Initializable {
     private Label timeLineLabel;
     
     @FXML
+    private StackPane timelinepane;
+    
+    @FXML
     private Label duration;
 
     private Timeline timeline;
+    
+    private Timeline timeLineConduite;
 
     private Scene scene;
 
@@ -78,20 +87,18 @@ public class EasyconduiteController implements Initializable {
      */
     private Map<KeyCode, AudioMediaUI> keycodesAudioMap;
 
-    private static final Logger logger = Logger.getLogger(EasyconduiteController.class.getName());
 
     @FXML
     private void handleMouseAction(MouseEvent event) {
         // TODO refactorer 
         if (timeline != null) {
             if (!chronobutton.isSelected()) {
-                logger.info("ToggleButton chronobutton was deselected : Chrono play");
                 timeline.pause();
+                //timeLineConduite.pause();
                 //chronobutton.setStyle(null);
             } else {
-                logger.info("ToggleButton chronobutton was selected : Chrono play");
-                //chronobutton.setStyle("-fx-background-color : red");
                 timeline.play();
+                //timeLineConduite.play();
             }
         }
     }
@@ -198,6 +205,7 @@ public class EasyconduiteController implements Initializable {
     private void handleParamConduite(ActionEvent event){
         
         try {
+            System.out.println("Appel constructeur ParamDialog");
             ParamConduiteDialog conduiteDialog = new ParamConduiteDialog(audioTable, this);
         } catch (IOException ex) {
             Logger.getLogger(EasyconduiteController.class.getName()).log(Level.SEVERE, null, ex);
@@ -246,6 +254,12 @@ public class EasyconduiteController implements Initializable {
         if(null!=duree){
             audioTable.setDuration(duree);
             duration.setText(DurationUtil.toStringForConduite(duree));
+            
+//            if(duree!=null && !duree.equals(Duration.ZERO)){
+//                CursorTimeLineConduite cursorConduite = CursorTimeLineConduite.getInstance(duree, timelinepane, timeLineRectangle);
+//                timeLineConduite=cursorConduite.getTimeLine();
+//            }
+            
         }
         
     }

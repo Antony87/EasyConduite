@@ -33,14 +33,12 @@ import javafx.scene.control.TextField;
  * @author antony Fons
  */
 public class ParamConduiteDialog extends EasyConduiteAbstractDialog {
+
     private static final String PATH_FXML = "/easyconduite/ressources/conduiteDialog.fxml";
 
     private Duration duration;
 
     private TextField durationText;
-
-    private final EasyconduiteController easyConduiteController;
-
 
     /**
      * Constructor.<br>This class extends abstract class
@@ -53,12 +51,10 @@ public class ParamConduiteDialog extends EasyConduiteAbstractDialog {
      */
     public ParamConduiteDialog(final AudioTable audioTable, final EasyconduiteController controller) throws IOException {
 
-        super(PATH_FXML, "Propriétes du spectacle");
-
-        this.easyConduiteController = controller;
-
-        durationText = (TextField) this.getScene().lookup("#durationField");
-
+        super(PATH_FXML, "Propriétes du spectacle",controller);
+        
+        durationText = (TextField) getScene().lookup("#durationField");
+        
         durationText.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             if (!DurationUtil.isParsableToDuration(newValue)) {
                 durationText.setStyle("-fx-border-color:red");
@@ -72,11 +68,13 @@ public class ParamConduiteDialog extends EasyConduiteAbstractDialog {
 
     @Override
     public void onClickOkButton() {
-        easyConduiteController.updateConduiteDuration(duration);
+       ((EasyconduiteController)getController()).updateConduiteDuration(duration);
+       close();
     }
 
     @Override
     public void onClickCancelButton() {
-        this.close();
+        close();
     }
+
 }

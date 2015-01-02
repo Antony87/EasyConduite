@@ -52,7 +52,7 @@
          <top>
             <HBox alignment="CENTER" maxHeight="80.0" prefHeight="80.0" spacing="20.0" BorderPane.alignment="CENTER">
                <children>
-                  <StackPane prefHeight="150.0" prefWidth="200.0">
+                  <StackPane fx:id="timelinepane" alignment="CENTER_LEFT" prefHeight="150.0" prefWidth="200.0">
                      <children>
                         <Rectangle fx:id="timeLineRectangle" arcHeight="5.0" arcWidth="5.0" fill="#203029" height="30.0" stroke="#a8b0bb" strokeType="INSIDE" width="500.0" />
                         <Label fx:id="timeLineLabel" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" prefHeight="0.0" prefWidth="495.0" style="-fx-background-color: transparent;" textAlignment="CENTER" textFill="#00d936" />

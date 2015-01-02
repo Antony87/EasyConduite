@@ -19,23 +19,17 @@ package easyconduite.ui;
 
 import easyconduite.util.KeyCodeUtil;
 import easyconduite.controllers.EasyconduiteController;
+import easyconduite.ui.model.EasyConduiteAbstractDialog;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 /**
  * This class manage a dialog box, wich exposes affected key, name and repeat
@@ -43,53 +37,44 @@ import javafx.stage.StageStyle;
  *
  * @author antony Fons
  */
-public class LinkKeyBoardDialog extends Stage {
-
-    private KeyCode chosenKey;
-
-    private boolean nameChange = false;
-
-    private boolean repeatChange = false;
-
-    private final BorderPane dialogPane;
+public class LinkKeyBoardDialog extends EasyConduiteAbstractDialog {
 
     private static final Logger logger = Logger.getLogger(LinkKeyBoardDialog.class.getName());
 
     private static final String PATH_FXML = "/easyconduite/ressources/trackDialog.fxml";
 
-    public LinkKeyBoardDialog(final AudioMediaUI audioMediaUI, final EasyconduiteController controller) throws IOException {
+    private KeyCode chosenKey;
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(PATH_FXML));
+    private final AudioMediaUI audioMediaUI;
 
-        dialogPane = (BorderPane) loader.load();
+    private final KeyCode existingKeyCode;
 
-        Stage dialogStage = new Stage();
-        dialogStage.setTitle("Propriétes du morceaux");
-        dialogStage.initModality(Modality.APPLICATION_MODAL);
-        dialogStage.initStyle(StageStyle.UTILITY);
-        dialogStage.setResizable(false);
+    private final CheckBox repeatTrack;
+
+    private final TextField name;
+
+    private boolean nameChange = false;
+
+    private boolean repeatChange = false;
+
+    public LinkKeyBoardDialog(final AudioMediaUI anAudioMediaUI, final EasyconduiteController controller) throws IOException {
+
+        super(PATH_FXML, "Propriétes du morceaux",controller);
+
+        audioMediaUI = anAudioMediaUI;
 
         // initialize fields
-        Scene scene = new Scene(dialogPane);
-        TextField name = (TextField) scene.lookup("#nametrackfield");
+        name = (TextField) getScene().lookup("#nametrackfield");
         name.textProperty().set(audioMediaUI.getAudioMedia().getName());
 
-        CheckBox repeatTrack = (CheckBox) scene.lookup("#repeattrack");
+        repeatTrack = (CheckBox) getScene().lookup("#repeattrack");
         repeatTrack.selectedProperty().setValue(audioMediaUI.getAudioMedia().getRepeat());
 
-        Label error = (Label) scene.lookup("#error");
-        TextField codeKeyboard = (TextField) scene.lookup("#keytrackfield");
+        Label error = (Label) getScene().lookup("#error");
+        TextField codeKeyboard = (TextField) getScene().lookup("#keytrackfield");
         codeKeyboard.textProperty().set(KeyCodeUtil.toString(audioMediaUI.getAudioMedia().getLinkedKeyCode()));
 
-        Button annuler = (Button) scene.lookup("#cancelbutton");
-        Button ok = (Button) scene.lookup("#okbutton");
-
-        final KeyCode existingKeyCode = audioMediaUI.getAudioMedia().getLinkedKeyCode();
-
-        // Event Handler for cancel button
-        annuler.setOnMouseClicked((MouseEvent event) -> {
-            dialogStage.close();
-        });
+        existingKeyCode = audioMediaUI.getAudioMedia().getLinkedKeyCode();
 
         // Event Handler for capture keycode
         codeKeyboard.setOnKeyReleased((KeyEvent event) -> {
@@ -120,28 +105,6 @@ public class LinkKeyBoardDialog extends Stage {
             }
         });
 
-        // Event Handler for OK button
-        ok.setOnMouseClicked((MouseEvent event) -> {
-
-            // update Map of KeyCode
-            if (chosenKey != existingKeyCode) {
-                audioMediaUI.updateAffectedKeyCode(chosenKey);
-//                audioMediaUI.affectedKeyCodeProperty().set(chosenKey);
-            }
-
-            if (isRepeatChange()) {
-                audioMediaUI.updateRepeat(repeatTrack.selectedProperty().getValue());
-            }
-
-            if (isNameChange()) {
-                audioMediaUI.updateName(name.getText());
-            }
-
-            dialogStage.close();
-        });
-
-        dialogStage.setScene(scene);
-        dialogStage.showAndWait();
     }
 
     public final boolean isNameChange() {
@@ -158,6 +121,29 @@ public class LinkKeyBoardDialog extends Stage {
 
     public final void setRepeatChange(boolean repeatChange) {
         this.repeatChange = repeatChange;
+    }
+
+    @Override
+    public void onClickOkButton() {
+        // update Map of KeyCode
+        if (chosenKey != existingKeyCode) {
+            audioMediaUI.updateAffectedKeyCode(chosenKey);
+//                audioMediaUI.affectedKeyCodeProperty().set(chosenKey);
+        }
+
+        if (isRepeatChange()) {
+            audioMediaUI.updateRepeat(repeatTrack.selectedProperty().getValue());
+        }
+
+        if (isNameChange()) {
+            audioMediaUI.updateName(name.getText());
+        }
+        close();
+    }
+
+    @Override
+    public void onClickCancelButton() {
+        close();
     }
 
 }
