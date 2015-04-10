@@ -34,9 +34,14 @@ import javafx.collections.ObservableList;
 @XStreamAlias("audiotable")
 public class AudioTable {
 
+    /**
+     * Name of the table.<br>
+     * Name of the "conduite".
+     *
+     */
     @XStreamAlias("name")
     private String name;
-    
+
     @XStreamAlias("duration")
     private Duration duration;
 
@@ -51,6 +56,11 @@ public class AudioTable {
         audioMediaList = new ArrayList<>();
     }
 
+    /**
+     * This method add an {@link AudioMedia} in the List if not already present.
+     *
+     * @param audioMedia
+     */
     public void addIfNotPresent(AudioMedia audioMedia) {
 
         if (!audioMediaList.contains(audioMedia)) {
@@ -89,7 +99,5 @@ public class AudioTable {
     public void setDuration(Duration duration) {
         this.duration = duration;
     }
-    
-    
 
 }

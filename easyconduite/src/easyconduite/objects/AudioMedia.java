@@ -26,6 +26,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import javafx.scene.input.KeyCode;
+import javafx.scene.media.MediaPlayer;
 
 /**
  * Class POJO that encapsulate AudioMedia behavior.
@@ -36,6 +37,9 @@ import javafx.scene.input.KeyCode;
 @XStreamAlias("audiomedia")
 public class AudioMedia {
 
+    /**
+     * Unique Id of the AudioMedia.
+     */
     @XStreamAlias("id")
     private UUID uniqueId;
     /**
@@ -45,18 +49,34 @@ public class AudioMedia {
     @XStreamAlias("name")
     private String name;
 
+    /**
+     * {@link KeyCode of the key linked with AudioMedia.
+     *
+     */
     @XStreamAlias("keycode")
     private KeyCode linkedKeyCode;
 
+    /**
+     * File audio. Able to read by {@link MediaPlayer}.
+     */
     @XStreamOmitField
     private File audioFile;
 
+    /**
+     * Path of the audio file.
+     */
     @XStreamAlias("path")
     private String filePathName;
 
+    /**
+     * Volume of the media.
+     */
     @XStreamAlias("volume")
     private Double volume;
-    
+
+    /**
+     * Is the media repeat ?.
+     */
     @XStreamAlias("repeat")
     private Boolean repeat;
 
@@ -67,17 +87,17 @@ public class AudioMedia {
     }
 
     public AudioMedia(final File audioFile) {
-        
+
         // set default values;
         this.audioFile = audioFile;
         this.filePathName = audioFile.getAbsolutePath();
         uniqueId = UUID.randomUUID();
         linkedKeyCode = KeyCode.UNDEFINED;
-        repeat=new Boolean(false);
+        repeat = false;
+        volume = 0.5;
         Path path = audioFile.toPath();
         name = path.getFileName().toString();
-        
-        
+
     }
 
     public String getName() {
@@ -107,7 +127,7 @@ public class AudioMedia {
     public String getFilePathName() {
         return filePathName;
     }
-    
+
     public File getAudioFile() {
         return audioFile;
     }
@@ -127,8 +147,6 @@ public class AudioMedia {
     public void setRepeat(Boolean repeat) {
         this.repeat = repeat;
     }
-    
-    
 
     @Override
     public int hashCode() {

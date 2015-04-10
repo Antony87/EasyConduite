@@ -50,27 +50,27 @@ import org.controlsfx.dialog.Dialogs;
  * @author A Fons
  */
 public class AudioMediaUI extends VBox {
-    
+
     private MediaPlayer player;
-    
+
     private AudioMedia audioMedia;
-    
+
     private IconButton buttonPlayPause;
-    
+
     private final Label keyCodeLabel = new Label();
-    
+
     private final ImageView repeatImageView = new ImageView();
-    
+
     private final Label nameLabel = new Label();
-    
+
     private ProgressIndicator progressTrack;
 
     private final EasyconduiteController easyConduiteController;
-    
+
     private final static String NAME_ICON_PLAY = "/icons/PlayGreenButton.png";
-    
+
     private final static String NAME_ICON_PAUSE = "/icons/PauseBlueButton.png";
-    
+
     private static final Logger logger = Logger.getLogger(AudioMediaUI.class.getName());
 
     /**
@@ -82,11 +82,11 @@ public class AudioMediaUI extends VBox {
      * @param controller
      */
     public AudioMediaUI(final AudioMedia unAudioMedia, final EasyconduiteController controller) {
-        
+
         super(10);
         // initialize audioMedia
         this.audioMedia = unAudioMedia;
-        
+
         logger.log(Level.INFO, "Create AudioMediaUI with {0}", audioMedia);
 
         // initialize nameLabel
@@ -97,11 +97,15 @@ public class AudioMediaUI extends VBox {
 
         // initialize keyCodeLabel
         keyCodeLabel.setText(KeyCodeUtil.toString(this.audioMedia.getLinkedKeyCode()));
-        
+
         easyConduiteController = controller;
-        
+
         Media media = new Media(audioMedia.getAudioFile().toURI().toString());
         player = new MediaPlayer(media);
+
+        // Manage volume property.
+        player.volumeProperty().setValue(this.audioMedia.getVolume());
+
         player.setOnEndOfMedia(() -> {
             player.setStartTime(Duration.ZERO);
             // if repeat is false, force to stop de player.
@@ -109,18 +113,30 @@ public class AudioMediaUI extends VBox {
                 player.stop();
                 buttonPlayPause.setPathNameOfIcon(NAME_ICON_PLAY);
             }
-            
+
             logger.log(Level.INFO, "End of media player with status {0}", player.getStatus());
         });
-        
+
         player.currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> {
             progressTrack.setProgress(newValue.toSeconds() / player.getTotalDuration().toSeconds());
         });
-        
+
+        // Draw the GUI for this media.
         drawUI();
-        
+
+        updateRepeat(this.audioMedia.getRepeat());
+
+        player.volumeProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
+
+            if (newValue != oldValue) {
+                audioMedia.setVolume(newValue.doubleValue());
+                logger.log(Level.FINE, "Change volume AudioMedia with {0}", audioMedia.getVolume());
+            }
+
+        });
+
     }
-    
+
     public void updateAffectedKeyCode(KeyCode code) {
         if (code != null) {
             keyCodeLabel.setText(KeyCodeUtil.toString(code));
@@ -128,11 +144,12 @@ public class AudioMediaUI extends VBox {
             easyConduiteController.updateKeycodesAudioMap();
         }
     }
-    
+
     public void updateRepeat(Boolean repeatValue) {
+        audioMedia.setRepeat(repeatValue);
+        logger.log(Level.INFO, "Change repeat AudioMedia with {0}", audioMedia.getRepeat());
         if (repeatValue) {
             player.setCycleCount(MediaPlayer.INDEFINITE);
-            audioMedia.setRepeat(repeatValue);
             repeatImageView.setImage(new Image(getClass().getResourceAsStream("/icons/repeat.png"), 18, 18, true, false));
             logger.log(Level.INFO, "CycleCount {0}", player.cycleCountProperty().getValue());
         } else {
@@ -140,12 +157,12 @@ public class AudioMediaUI extends VBox {
             player.setCycleCount(1);
         }
     }
-    
+
     public void updateName(String name) {
         if (null != name) {
             audioMedia.setName(name);
             nameLabel.setText(name);
-        }        
+        }
     }
 
     /**
@@ -164,9 +181,9 @@ public class AudioMediaUI extends VBox {
         // ToolBar with delete and confugure button ////////////////////////////
         HBox topHbox = hBoxForTrack();
         IconButton buttonDelete = new IconButton("/icons/MinusRedButton.png");
-        
+
         buttonDelete.setOnMouseClicked((MouseEvent event) -> {
-            
+
             Action reponse = Dialogs.create()
                     .title("Suppression")
                     .message("Desirez-vous réellement supprimer cette piste ?")
@@ -175,12 +192,12 @@ public class AudioMediaUI extends VBox {
             if (reponse == Dialog.ACTION_YES) {
                 easyConduiteController.removeAudioMediaUI(this);
             }
-            
+
         });
 
         // create button wich link a key to an AudioMedia
         IconButton buttonAssocKey = new IconButton("/icons/Gear.png");
-        
+
         buttonAssocKey.setOnMouseClicked((MouseEvent event) -> {
             try {
                 LinkKeyBoardDialog dialog = new LinkKeyBoardDialog(this, easyConduiteController);
@@ -188,12 +205,12 @@ public class AudioMediaUI extends VBox {
                 Logger.getLogger(AudioMediaUI.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-        
+
         topHbox.getChildren().addAll(buttonDelete, buttonAssocKey);
         ////////////////////////////////////////////////////////////////////////
 
         // Slider for volume control
-        Slider curseVolume = new Slider(0, 1, 1);//
+        Slider curseVolume = new Slider(0, 1, this.audioMedia.getVolume());
         curseVolume.getStyleClass().add("slider-volume-track");
         player.volumeProperty().bindBidirectional(curseVolume.valueProperty());
 
@@ -208,13 +225,13 @@ public class AudioMediaUI extends VBox {
         buttonPlayPause.setOnMouseClicked((MouseEvent event) -> {
             playPause();
         });
-        
+
         IconButton buttonStop = new IconButton("/icons/StopRedButton.png");
         buttonStop.setOnMouseClicked((MouseEvent event) -> {
             player.stop();
             buttonPlayPause.setPathNameOfIcon(NAME_ICON_PLAY);
         });
-        
+
         bottomHbox.getChildren().addAll(buttonStop, buttonPlayPause);
         ////////////////////////////////////////////////////////////////////////
 
@@ -224,14 +241,14 @@ public class AudioMediaUI extends VBox {
         ////////////////////////////////////////////////////////////////////////
 
         keyCodeLabel.getStyleClass().add("labelkey-track");
-        
-        this.getChildren().addAll(nameLabel,topHbox,curseVolume,progressTrack,bottomHbox,repeatImageView,keyCodeLabel);
+
+        this.getChildren().addAll(nameLabel, topHbox, curseVolume, progressTrack, bottomHbox, repeatImageView, keyCodeLabel);
     }
-    
+
     public void playPause() {
-        
+
         Status status = getPlayer().getStatus();
-        
+
         switch (status) {
             case PAUSED:
                 getPlayer().play();
@@ -258,13 +275,13 @@ public class AudioMediaUI extends VBox {
             default:
                 break;
         }
-        
+
     }
-    
+
     public AudioMedia getAudioMedia() {
         return audioMedia;
     }
-    
+
     public void setAudioMedia(AudioMedia audioMedia) {
         this.audioMedia = audioMedia;
     }
@@ -277,17 +294,17 @@ public class AudioMediaUI extends VBox {
     public MediaPlayer getPlayer() {
         return player;
     }
-    
+
     private void setPlayer(MediaPlayer player) {
         this.player = player;
     }
-    
+
     private HBox hBoxForTrack() {
-        
+
         HBox hbox = new HBox(10);
         hbox.setPrefWidth(100);
         hbox.setAlignment(Pos.CENTER);
         return hbox;
     }
-    
+
 }

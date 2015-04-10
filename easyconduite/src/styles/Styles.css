@@ -54,6 +54,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 }
 
 // definition css for all slider.
+/*
+
 .slider {
     -fx-orientation: vertical;
     -fx-pref-height: 250;
@@ -63,6 +65,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     -fx-snap-to-ticks:true;
     -fx-minor-tick-count:10;
 }
+*/
 .chrono-button{
     -fx-background-color : #00d938;
 }
@@ -81,11 +84,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 }
 
 .check-box-repeat {
-    
+
 }
 
 .slider-volume-track {
     -fx-orientation: vertical;
-    -fx-block-increment: 20;
+    -fx-pref-height: 250;
+    -fx-block-increment: 0.05;
+    -fx-show-tick-marks : true;
+    -fx-major-tick-unit:0.1;
+    -fx-snap-to-ticks:true;
 }
 // fin de la css
