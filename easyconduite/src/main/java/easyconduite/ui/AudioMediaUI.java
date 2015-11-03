@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
@@ -40,9 +41,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
 import org.controlsfx.control.action.Action;
-import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
-
 /**
  * This class encapsulates logics and behaviors about Custom UI Control of an
  * AudioMedia.
@@ -189,7 +188,7 @@ public class AudioMediaUI extends VBox {
                     .message("Desirez-vous réellement supprimer cette piste ?")
                     .graphic(new ImageView("/icons/HelpBlueButton.png"))
                     .showConfirm();
-            if (reponse == Dialog.ACTION_YES) {
+            if (reponse == Dialog) {
                 easyConduiteController.removeAudioMediaUI(this);
             }
 
