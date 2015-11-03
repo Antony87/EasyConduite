@@ -11,7 +11,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mainClass>com.mycompany.mavenproject1.MainApp</mainClass>
+        <mainClass>easyconduite.Easyconduite</mainClass>
     </properties>
 
     <organization>
