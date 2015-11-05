@@ -27,8 +27,16 @@ import javafx.beans.property.SimpleBooleanProperty;
  */
 public abstract class AbstractPlayer {
     
+    private Media media;
     
     private final BooleanProperty repeat = new SimpleBooleanProperty(false);
+    
+    public abstract void play();
+    
+    public abstract void pause();
+    
+    public abstract void stop();
+    
 
     public boolean isRepeat() {
         return repeat.get();
@@ -42,8 +50,6 @@ public abstract class AbstractPlayer {
         return repeat;
     }
        
-    private Media media;
-
     public Media getMedia() {
         return media;
     }

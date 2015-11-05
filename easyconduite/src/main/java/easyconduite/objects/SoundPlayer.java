@@ -18,6 +18,8 @@
 package easyconduite.objects;
 
 import easyconduite.model.AbstractPlayer;
+import javafx.beans.property.FloatProperty;
+import javafx.beans.property.SimpleFloatProperty;
 
 /**
  *
@@ -25,6 +27,54 @@ import easyconduite.model.AbstractPlayer;
  */
 public class SoundPlayer extends AbstractPlayer{
     
-
+    private final FloatProperty volume = new SimpleFloatProperty();
     
+    private Integer fadeInDelay;
+    
+    private Integer fadeOutDelay;
+    
+    
+
+    public float getVolume() {
+        return volume.get();
+    }
+
+    public void setVolume(float value) {
+        volume.set(value);
+    }
+
+    public FloatProperty volumeProperty() {
+        return volume;
+    }
+
+    public Integer getFadeInDelay() {
+        return fadeInDelay;
+    }
+
+    public void setFadeInDelay(Integer fadeInDelay) {
+        this.fadeInDelay = fadeInDelay;
+    }
+
+    public Integer getFadeOutDelay() {
+        return fadeOutDelay;
+    }
+
+    public void setFadeOutDelay(Integer fadeOutDelay) {
+        this.fadeOutDelay = fadeOutDelay;
+    }
+    
+    @Override
+    public void play() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void pause() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void stop() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
