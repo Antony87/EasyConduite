@@ -17,14 +17,18 @@
  */
 package easyconduite.util;
 
+import java.io.IOException;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author antony fons
  */
 public class Config {
-    
+
     public static Level level;
 
     public static Level getLevel() {
@@ -34,5 +38,18 @@ public class Config {
     public static void setLevel(Level level) {
         Config.level = level;
     }
-   
+
+    public static Logger getLogger(String className) {
+        
+        Handler fh;
+        Logger logger = Logger.getLogger(className);
+        try {
+            fh = new FileHandler("easyconduite.log");
+            logger.addHandler(fh);
+        } catch (IOException | SecurityException ex) {
+            Logger.getLogger(Config.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return logger;
+    }
+
 }

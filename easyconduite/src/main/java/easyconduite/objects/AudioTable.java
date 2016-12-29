@@ -18,8 +18,7 @@
  */
 package easyconduite.objects;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import java.io.Serializable;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,21 +30,19 @@ import javafx.collections.ObservableList;
  *
  * @author A Fons
  */
-@XStreamAlias("audiotable")
-public class AudioTable {
+public class AudioTable implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Name of the table.<br>
      * Name of the "conduite".
      *
      */
-    @XStreamAlias("name")
     private String name;
 
-    @XStreamAlias("duration")
     private Duration duration;
 
-    @XStreamImplicit(itemFieldName = "audiomedia")
     private List<AudioMedia> audioMediaList;
 
     /**

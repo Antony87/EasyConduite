@@ -18,13 +18,16 @@
 package easyconduite.objects;
 
 import easyconduite.model.AbstractPlayer;
+import java.io.Serializable;
 import javafx.scene.input.KeyCode;
 
 /**
  *
  * @author V902832
  */
-public class Line {
+public class Line implements Serializable{
+    
+    private static final long serialVersionUID = 1L;
     
     private String name;
     

@@ -19,12 +19,16 @@ package easyconduite.objects;
 
 import easyconduite.model.MediaType;
 import java.io.File;
+import java.io.Serializable;
 
 /**
+ * Cette classe défini un Média.
  *
  * @author V902832
  */
-public class Media {
+public class Media implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String name;
 

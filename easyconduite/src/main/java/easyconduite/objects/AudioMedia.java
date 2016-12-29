@@ -18,9 +18,8 @@
  */
 package easyconduite.objects;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import java.io.File;
+import java.io.Serializable;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.UUID;
@@ -34,50 +33,46 @@ import javafx.scene.media.MediaPlayer;
  * @author A.Fons
  *
  */
-@XStreamAlias("audiomedia")
-public class AudioMedia {
 
+public class AudioMedia implements Serializable{
+
+    private static final long serialVersionUID = 1L;
+    
     /**
      * Unique Id of the AudioMedia.
      */
-    @XStreamAlias("id")
     private UUID uniqueId;
+    
     /**
      * Name of track, to be displayed on top of the pane.
      *
      */
-    @XStreamAlias("name")
     private String name;
 
     /**
      * {@link KeyCode of the key linked with AudioMedia.
      *
      */
-    @XStreamAlias("keycode")
     private KeyCode linkedKeyCode;
 
     /**
      * File audio. Able to read by {@link MediaPlayer}.
      */
-    @XStreamOmitField
     private File audioFile;
 
     /**
      * Path of the audio file.
      */
-    @XStreamAlias("path")
     private String filePathName;
 
     /**
      * Volume of the media.
      */
-    @XStreamAlias("volume")
     private Double volume;
 
     /**
      * Is the media repeat ?.
      */
-    @XStreamAlias("repeat")
     private Boolean repeat;
 
     /**

@@ -40,8 +40,9 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
 import org.controlsfx.control.action.Action;
-import org.controlsfx.dialog.Dialogs;
 import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.Dialogs;
+
 /**
  * This class encapsulates logics and behaviors about Custom UI Control of an
  * AudioMedia.
