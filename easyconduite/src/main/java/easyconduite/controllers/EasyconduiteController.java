@@ -44,7 +44,7 @@ import javafx.scene.shape.Rectangle;
  * @author A Fons
  */
 public class EasyconduiteController implements Initializable {
-    
+
     private static final Logger logger = Logger.getLogger(EasyconduiteController.class.getName());
 
     @FXML
@@ -55,21 +55,21 @@ public class EasyconduiteController implements Initializable {
 
     @FXML
     private HBox table;
-    
+
     @FXML
     private Rectangle timeLineRectangle;
-    
+
     @FXML
     private Label timeLineLabel;
-    
+
     @FXML
     private StackPane timelinepane;
-    
+
     @FXML
     private Label duration;
 
     private Timeline timeline;
-    
+
     private Timeline timeLineConduite;
 
     private Scene scene;
@@ -85,7 +85,6 @@ public class EasyconduiteController implements Initializable {
      * Map of mapping from a KeyCode (Keyboard key) and an AudioMediaUI.
      */
     private Map<KeyCode, AudioMediaUI> keycodesAudioMap;
-
 
     @FXML
     private void handleMouseAction(MouseEvent event) {
@@ -109,9 +108,11 @@ public class EasyconduiteController implements Initializable {
         if (file != null) {
             audioTable = PersistenceUtil.open(file);
             List<AudioMedia> audioMedias = audioTable.getAudioMediaList();
-            for (AudioMedia audioMedia : audioMedias) {
+            // avant d'ajouter les MediaUI, on vide la table
+            table.getChildren().clear();
+            audioMedias.stream().forEach((audioMedia) -> {
                 addMediaUI(audioMedia);
-            }
+            });
             updateKeycodesAudioMap();
         }
     }
@@ -181,11 +182,12 @@ public class EasyconduiteController implements Initializable {
     private void handleSave(ActionEvent event) {
 
         File file = PersistenceUtil.getSaveProjectFile(scene);
-        // TDOD si file non null
-        try {
-            PersistenceUtil.save(file, audioTable);
-        } catch (IOException ex) {
-            Logger.getLogger(EasyconduiteController.class.getName()).log(Level.SEVERE, null, ex);
+        if (file != null) {
+            try {
+                PersistenceUtil.save(file, audioTable);
+            } catch (IOException ex) {
+                Logger.getLogger(EasyconduiteController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -199,17 +201,17 @@ public class EasyconduiteController implements Initializable {
         }
 
     }
-    
+
     @FXML
-    private void handleParamConduite(ActionEvent event){
-        
+    private void handleParamConduite(ActionEvent event) {
+
         try {
             System.out.println("Appel constructeur ParamDialog");
             ParamConduiteDialog conduiteDialog = new ParamConduiteDialog(audioTable, this);
         } catch (IOException ex) {
             Logger.getLogger(EasyconduiteController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }
 
     @Override
@@ -232,7 +234,6 @@ public class EasyconduiteController implements Initializable {
 
         //audioMediaUI.setAffectedKeyCode(audioMedia.getLinkedKeyCode());
         //audioMediaUI.setName(audioMedia.getName());
-
         audioMediaUIList.add(audioMediaUI);
 
         table.getChildren().add(table.getChildren().size(), audioMediaUI);
@@ -248,19 +249,18 @@ public class EasyconduiteController implements Initializable {
             }
         }
     }
-    
-    public void updateConduiteDuration(Duration duree){
-        if(null!=duree){
+
+    public void updateConduiteDuration(Duration duree) {
+        if (null != duree) {
             audioTable.setDuration(duree);
             duration.setText(DurationUtil.toStringForConduite(duree));
-            
+
 //            if(duree!=null && !duree.equals(Duration.ZERO)){
 //                CursorTimeLineConduite cursorConduite = CursorTimeLineConduite.getInstance(duree, timelinepane, timeLineRectangle);
 //                timeLineConduite=cursorConduite.getTimeLine();
 //            }
-            
         }
-        
+
     }
 
     public boolean isExistKeyCode(KeyCode keycode) {
