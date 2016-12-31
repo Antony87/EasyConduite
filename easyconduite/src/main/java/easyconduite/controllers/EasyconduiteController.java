@@ -12,7 +12,6 @@ import easyconduite.ui.AboutDialog;
 import easyconduite.ui.AudioMediaUI;
 import easyconduite.util.KeyCodeUtil;
 import easyconduite.ui.ParamConduiteDialog;
-import easyconduite.ui.CursorTimeLineConduite;
 import easyconduite.util.DurationUtil;
 import java.io.File;
 import java.io.IOException;

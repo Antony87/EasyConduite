@@ -19,37 +19,65 @@ package easyconduite.util;
 
 import java.io.IOException;
 import java.util.logging.FileHandler;
-import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 /**
+ * This class encapsulates behaviors for severals configurations.<br>As
+ * properties, logger...
  *
  * @author antony fons
  */
 public class Config {
 
-    public static Level level;
+    /**
+     * This method return a custom logger who write to a easyconduite.log
+     * file.
+     *
+     * @param className name of the class who call the logger.
+     * @return
+     */
+    public static Logger getCustomLogger(String className) {
 
-    public static Level getLevel() {
-        return level;
-    }
-
-    public static void setLevel(Level level) {
-        Config.level = level;
-    }
-
-    public static Logger getLogger(String className) {
-        
-        Handler fh;
         Logger logger = Logger.getLogger(className);
-        try {
-            fh = new FileHandler("easyconduite.log");
-            logger.addHandler(fh);
-        } catch (IOException | SecurityException ex) {
-            Logger.getLogger(Config.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        logger.setLevel(Level.ALL);
+        logger.addHandler(SingleFileHandler.getFileHandlerInstance());
+
         return logger;
+    }
+
+    /**
+     * This inner class implements a FileHandler with the Singleton pattern.
+     */
+    private static class SingleFileHandler {
+
+        private static SingleFileHandler fileHandler = null;
+        private static FileHandler fileTxt;
+
+        /**
+         * Method of the inner class that creates a Singleton pattern FileHandler.
+         * @return 
+         */
+        public static FileHandler getFileHandlerInstance() {
+
+            if (fileHandler == null) {
+                fileHandler = new SingleFileHandler();
+            }
+            return fileTxt;
+        }
+
+        private SingleFileHandler() {
+            try {
+                fileTxt = new FileHandler("easyconduite.log", true);
+                fileTxt.setFormatter(new SimpleFormatter());
+                fileTxt.setEncoding("UTF8");
+            } catch (IOException ex) {
+                Logger.getLogger(Config.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SecurityException ex) {
+                Logger.getLogger(Config.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
 }

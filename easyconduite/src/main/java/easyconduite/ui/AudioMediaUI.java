@@ -20,11 +20,15 @@ package easyconduite.ui;
 import easyconduite.util.KeyCodeUtil;
 import easyconduite.controllers.EasyconduiteController;
 import easyconduite.objects.AudioMedia;
+import easyconduite.util.Config;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
@@ -39,9 +43,6 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
-import org.controlsfx.control.action.Action;
-import org.controlsfx.dialog.Dialog;
-import org.controlsfx.dialog.Dialogs;
 
 /**
  * This class encapsulates logics and behaviors about Custom UI Control of an
@@ -71,7 +72,9 @@ public class AudioMediaUI extends VBox {
 
     private final static String NAME_ICON_PAUSE = "/icons/PauseBlueButton.png";
 
-    private static final Logger logger = Logger.getLogger(AudioMediaUI.class.getName());
+    private final static String CLASSNAME = AudioMediaUI.class.getName();
+
+    private static final Logger LOGGER = Config.getCustomLogger(CLASSNAME);
 
     /**
      * Constructor du UI custom control for an AudioMedia.<br>
@@ -86,8 +89,7 @@ public class AudioMediaUI extends VBox {
         super(10);
         // initialize audioMedia
         this.audioMedia = unAudioMedia;
-
-        logger.log(Level.INFO, "Create AudioMediaUI with {0}", audioMedia);
+        LOGGER.log(Level.INFO, "Create AudioMediaUI with {0}", audioMedia);
 
         // initialize nameLabel
         if (this.audioMedia.getName() != null) {
@@ -101,6 +103,7 @@ public class AudioMediaUI extends VBox {
         easyConduiteController = controller;
 
         Media media = new Media(audioMedia.getAudioFile().toURI().toString());
+
         player = new MediaPlayer(media);
 
         // Manage volume property.
@@ -114,7 +117,33 @@ public class AudioMediaUI extends VBox {
                 buttonPlayPause.setPathNameOfIcon(NAME_ICON_PLAY);
             }
 
-            logger.log(Level.INFO, "End of media player with status {0}", player.getStatus());
+            LOGGER.log(Level.FINE, "End of media player with status {0}", player.getStatus());
+        });
+
+        player.setOnError(() -> {
+            Alert alert = ActionDialog.createActionDialog("Une erreur de média est survenue.");
+            alert.setAlertType(Alert.AlertType.ERROR);
+            alert.setContentText(player.getError().getMessage());
+            LOGGER.log(Level.SEVERE, "Media error", player.getError());
+            Optional<ButtonType> result = alert.showAndWait();
+            alert.close();
+        });
+
+        player.setOnPaused(() -> {
+            buttonPlayPause.setPathNameOfIcon(NAME_ICON_PLAY);
+        });
+
+        player.setOnPlaying(() -> {
+            buttonPlayPause.setPathNameOfIcon(NAME_ICON_PAUSE);
+        });
+
+        player.setOnStopped(() -> {
+            buttonPlayPause.setPathNameOfIcon(NAME_ICON_PAUSE);
+        });
+
+        player.setOnReady(() -> {
+            player.seek(Duration.ZERO);
+            buttonPlayPause.setPathNameOfIcon(NAME_ICON_PLAY);
         });
 
         player.currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> {
@@ -130,7 +159,7 @@ public class AudioMediaUI extends VBox {
 
             if (newValue != oldValue) {
                 audioMedia.setVolume(newValue.doubleValue());
-                logger.log(Level.FINE, "Change volume AudioMedia with {0}", audioMedia.getVolume());
+                LOGGER.log(Level.FINE, "Change volume AudioMedia with {0}", audioMedia.getVolume());
             }
 
         });
@@ -147,11 +176,11 @@ public class AudioMediaUI extends VBox {
 
     public void updateRepeat(Boolean repeatValue) {
         audioMedia.setRepeat(repeatValue);
-        logger.log(Level.INFO, "Change repeat AudioMedia with {0}", audioMedia.getRepeat());
+        LOGGER.log(Level.INFO, "Change repeat AudioMedia with {0}", audioMedia.getRepeat());
         if (repeatValue) {
             player.setCycleCount(MediaPlayer.INDEFINITE);
             repeatImageView.setImage(new Image(getClass().getResourceAsStream("/icons/repeat.png"), 18, 18, true, false));
-            logger.log(Level.INFO, "CycleCount {0}", player.cycleCountProperty().getValue());
+            LOGGER.log(Level.INFO, "CycleCount {0}", player.cycleCountProperty().getValue());
         } else {
             repeatImageView.setImage(null);
             player.setCycleCount(1);
@@ -184,12 +213,10 @@ public class AudioMediaUI extends VBox {
 
         buttonDelete.setOnMouseClicked((MouseEvent event) -> {
 
-            Action reponse = Dialogs.create()
-                    .title("Suppression")
-                    .message("Desirez-vous réellement supprimer cette piste ?")
-                    .graphic(new ImageView("/icons/HelpBlueButton.png"))
-                    .showConfirm();
-            if (reponse == Dialog.ACTION_OK) {
+            Alert alert = ActionDialog.createActionDialog("Vous allez supprimer cette piste.");
+            Optional<ButtonType> result = alert.showAndWait();
+
+            if (result.get() == ButtonType.OK) {
                 easyConduiteController.removeAudioMediaUI(this);
             }
 
@@ -202,7 +229,7 @@ public class AudioMediaUI extends VBox {
             try {
                 LinkKeyBoardDialog dialog = new LinkKeyBoardDialog(this, easyConduiteController);
             } catch (IOException ex) {
-                Logger.getLogger(AudioMediaUI.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.log(Level.SEVERE, "Erreur chargement easyConduiteController");
             }
         });
 
@@ -247,35 +274,33 @@ public class AudioMediaUI extends VBox {
 
     public void playPause() {
 
-        Status status = getPlayer().getStatus();
-
-        switch (status) {
-            case PAUSED:
-                getPlayer().play();
-                buttonPlayPause.setPathNameOfIcon(NAME_ICON_PAUSE);
-                break;
-            case PLAYING:
-                getPlayer().pause();
-                buttonPlayPause.setPathNameOfIcon(NAME_ICON_PLAY);
-                break;
-            case READY:
-                getPlayer().seek(Duration.ZERO);
-                buttonPlayPause.setPathNameOfIcon(NAME_ICON_PAUSE);
-                getPlayer().play();
-                break;
-            case STOPPED:
-                getPlayer().play();
-                buttonPlayPause.setPathNameOfIcon(NAME_ICON_PAUSE);
-                break;
-            case UNKNOWN:
-                getPlayer().seek(Duration.ZERO);
-                getPlayer().play();
-                buttonPlayPause.setPathNameOfIcon(NAME_ICON_PAUSE);
-                break;
-            default:
-                break;
+        Status status = player.getStatus();
+        if (status == null) {
+            LOGGER.warning("Play/pause with null status !");
+        } else {
+            LOGGER.log(Level.FINE, "Play/pause action with {0}", status);
+            switch (status) {
+                case PAUSED:
+                    player.play();
+                    break;
+                case PLAYING:
+                    player.pause();
+                    break;
+                case READY:
+                    player.play();
+                    break;
+                case STOPPED:
+                    player.play();
+                    break;
+                case UNKNOWN:
+                    player.seek(Duration.ZERO);
+                    player.play();
+                    buttonPlayPause.setPathNameOfIcon(NAME_ICON_PAUSE);
+                    break;
+                default:
+                    break;
+            }
         }
-
     }
 
     public AudioMedia getAudioMedia() {
@@ -286,25 +311,16 @@ public class AudioMediaUI extends VBox {
         this.audioMedia = audioMedia;
     }
 
-    /**
-     * Get the {@link MediaPlayer} assigned to this UI Control.
-     *
-     * @return
-     */
-    public MediaPlayer getPlayer() {
-        return player;
-    }
-
-    private void setPlayer(MediaPlayer player) {
-        this.player = player;
-    }
-
     private HBox hBoxForTrack() {
 
         HBox hbox = new HBox(10);
         hbox.setPrefWidth(100);
         hbox.setAlignment(Pos.CENTER);
         return hbox;
+    }
+
+    public MediaPlayer getPlayer() {
+        return player;
     }
 
 }

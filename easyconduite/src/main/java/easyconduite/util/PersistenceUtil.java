@@ -42,8 +42,10 @@ public class PersistenceUtil {
     private static final String SUFFIXE = ".ecp";
 
     private static Path lastDirectory;
-
-    private static final Logger LOGGER = Config.getLogger(PersistenceUtil.class.getName());
+    
+    private static final String CLASSNAME = PersistenceUtil.class.getName();
+    
+    private static final Logger LOGGER = Config.getCustomLogger(CLASSNAME);
 
     public enum TypeFileChooser {
 
@@ -57,7 +59,7 @@ public class PersistenceUtil {
      * @throws IOException
      */
     public static void save(File file, AudioTable audioTable) throws IOException {
-        LOGGER.entering(PersistenceUtil.class.getName(), "save");
+        LOGGER.entering(CLASSNAME, "save");
 
         ObjectOutputStream oos = null;
         try {
@@ -67,6 +69,7 @@ public class PersistenceUtil {
             oos.flush();
 
         } catch (final IOException e) {
+            LOGGER.log(Level.SEVERE, "Error open file",e);
 
         } finally {
             try {
@@ -75,6 +78,7 @@ public class PersistenceUtil {
                     oos.close();
                 }
             } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, "Error open file",ex);
             }
         }
 
@@ -86,6 +90,7 @@ public class PersistenceUtil {
      * @return
      */
     public static AudioTable open(File file) {
+        LOGGER.entering(CLASSNAME, "open");
 
         ObjectInputStream ois = null;
 
