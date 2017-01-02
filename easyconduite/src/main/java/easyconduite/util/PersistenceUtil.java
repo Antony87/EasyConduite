@@ -17,7 +17,6 @@
  */
 package easyconduite.util;
 
-import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioTable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,7 +25,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.Scene;
@@ -59,7 +57,7 @@ public class PersistenceUtil {
      * @throws IOException
      */
     public static void save(File file, AudioTable audioTable) throws IOException {
-        LOGGER.entering(CLASSNAME, "save");
+        LOGGER.log(Level.INFO, "Save project with file.name[{0}] AudioTable.name[{1}]",new Object[]{file.getName(),audioTable.getName()});
 
         ObjectOutputStream oos = null;
         try {
@@ -111,13 +109,6 @@ public class PersistenceUtil {
                 LOGGER.log(Level.SEVERE, null, ex);
             }
         }
-
-        if (audioTable != null) {
-            List<AudioMedia> audioMedias = audioTable.getAudioMediaList();
-            audioMedias.stream().forEach((audioMedia) -> {
-                audioMedia.setAudioFile(new File(audioMedia.getFilePathName()));
-            });
-        }
         return audioTable;
 
     }
@@ -130,7 +121,7 @@ public class PersistenceUtil {
     public static File getSaveProjectFile(final Scene scene) {
 
         File file = getFileChooser(TypeFileChooser.SAVE).showSaveDialog(scene.getWindow());
-        if (!file.getName().endsWith(SUFFIXE)) {
+        if (file!=null && !file.getName().endsWith(SUFFIXE)) {
             file.renameTo(new File(file.getAbsolutePath() + SUFFIXE));
         }
         return file;

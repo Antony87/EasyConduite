@@ -23,10 +23,8 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.collections.ObservableList;
-
 /**
- * This class manage an {@link ObservableList} of AudioMedia.
+ * This class manage an AudioMedia list and the entire drama Playing duration.
  *
  * @author A Fons
  */
@@ -34,12 +32,7 @@ public class AudioTable implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * Name of the table.<br>
-     * Name of the "conduite".
-     *
-     */
-    private String name;
+    private String name="";
 
     private Duration duration;
 
@@ -47,16 +40,17 @@ public class AudioTable implements Serializable {
 
     /**
      * Constructor.
-     * <br> Initialize the ObservableList of AudioFile.
+     * <br> Initialize the list of AudioFile.
      */
     public AudioTable() {
         audioMediaList = new ArrayList<>();
     }
 
     /**
-     * This method add an {@link AudioMedia} in the List if not already present.
+     * This method add an {@link AudioMedia} into the List if not already
+     * present.
      *
-     * @param audioMedia
+     * @param audioMedia Media audio to be put into de List.
      */
     public void addIfNotPresent(AudioMedia audioMedia) {
 
@@ -65,6 +59,11 @@ public class AudioTable implements Serializable {
         }
     }
 
+    /**
+     * This method remove an {@link AudioMedia} from the list if present.
+     *
+     * @param audioMedia Media audio to be remove from the List.
+     */
     public void removeIfPresent(AudioMedia audioMedia) {
 
         if (audioMediaList.contains(audioMedia)) {
@@ -73,26 +72,56 @@ public class AudioTable implements Serializable {
 
     }
 
+    /**
+     * Return te name of this AudioTable.
+     *
+     * @return
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Set the name of this AudioTable.
+     *
+     * @param name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Get the AudioMedia List.
+     *
+     * @return
+     */
     public List<AudioMedia> getAudioMediaList() {
         return audioMediaList;
     }
 
+    /**
+     * Set the AudioMedia List.
+     *
+     * @param audioMediaList
+     */
     public void setAudioMediaList(List<AudioMedia> audioMediaList) {
         this.audioMediaList = audioMediaList;
     }
 
+    /**
+     * Return drama duration.
+     *
+     * @return
+     */
     public Duration getDuration() {
         return duration;
     }
 
+    /**
+     * Set drama duration.
+     *
+     * @param duration
+     */
     public void setDuration(Duration duration) {
         this.duration = duration;
     }

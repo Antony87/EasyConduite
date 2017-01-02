@@ -1,34 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.effect.*?>
-<?import javafx.geometry.*?>
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.effect.Light.Distant?>
+<?import javafx.scene.effect.Lighting?>
+<?import javafx.scene.effect.Shadow?>
+<?import javafx.scene.input.KeyCodeCombination?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
 
-<VBox onKeyReleased="#handleKeyCodePlay" prefHeight="600.0" prefWidth="1024.0" style="-fx-background-color: #36383b;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.EasyconduiteController">
+<VBox onKeyReleased="#handleKeyCodePlay" prefHeight="600.0" prefWidth="1024.0" style="-fx-background-color: #36383b;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.EasyconduiteController">
   <children>
     <MenuBar style="-fx-background-color: #727272;" VBox.vgrow="NEVER">
       <menus>
         <Menu mnemonicParsing="false" text="Fichier">
           <items>
-            <MenuItem fx:id="fichierouvrir" mnemonicParsing="false" onAction="#handleFichierOuvrir" text="Ouvrir..." />
+            <MenuItem fx:id="fichierouvrir" mnemonicParsing="false" onAction="#handleFichierOuvrir" text="Ouvrir">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
             <Menu disable="true" mnemonicParsing="false" text="Ouvrir récents" />
-            <MenuItem mnemonicParsing="false" onAction="#handleSave" text="Sauvegarder" />
-            <MenuItem disable="true" mnemonicParsing="false" text="Sauvegarder comme..." />
+            <MenuItem mnemonicParsing="false" onAction="#handleSave" text="Enregistrer">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Fermer" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" onAction="#handleQuit" text="Quit" />
+            <MenuItem mnemonicParsing="false" onAction="#handleQuit" text="Quit">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="Q" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
           </items>
         </Menu>
             <Menu mnemonicParsing="false" text="Pistes">
               <items>
-                <MenuItem id="addaudiomenu" mnemonicParsing="false" onAction="#handleAddAudioMenu" text="Ajouter" />
+                <MenuItem id="addaudiomenu" mnemonicParsing="false" onAction="#handleAddAudioMenu" text="Ajouter audio" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem disable="true" mnemonicParsing="false" text="Propriétés" />
               </items>
