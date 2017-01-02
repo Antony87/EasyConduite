@@ -41,7 +41,7 @@ public class LinkKeyBoardDialog extends EasyConduiteAbstractDialog {
 
     private static final Logger logger = Logger.getLogger(LinkKeyBoardDialog.class.getName());
 
-    private static final String PATH_FXML = "/easyconduite/ressources/trackDialog.fxml";
+    private static final String PATH_FXML = "/fxml/trackDialog.fxml";
 
     private KeyCode chosenKey;
 

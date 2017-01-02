@@ -138,7 +138,7 @@ public class AudioMediaUI extends VBox {
         });
 
         player.setOnStopped(() -> {
-            buttonPlayPause.setPathNameOfIcon(NAME_ICON_PAUSE);
+            buttonPlayPause.setPathNameOfIcon(NAME_ICON_PLAY);
         });
 
         player.setOnReady(() -> {

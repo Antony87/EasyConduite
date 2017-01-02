@@ -34,7 +34,7 @@ import javafx.stage.StageStyle;
  */
 public class AboutDialog extends Stage {
 
-    private final String PATH_FXML = "/easyconduite/ressources/aboutDialog.fxml";
+    private final String PATH_FXML = "/fxml/aboutDialog.fxml";
 
     public AboutDialog() throws IOException {
 

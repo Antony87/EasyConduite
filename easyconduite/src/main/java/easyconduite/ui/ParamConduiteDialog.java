@@ -34,7 +34,7 @@ import javafx.scene.control.TextField;
  */
 public class ParamConduiteDialog extends EasyConduiteAbstractDialog {
 
-    private static final String PATH_FXML = "/easyconduite/ressources/conduiteDialog.fxml";
+    private static final String PATH_FXML = "/fxml/conduiteDialog.fxml";
 
     private Duration duration;
 
