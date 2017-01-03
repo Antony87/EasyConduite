@@ -97,8 +97,10 @@ public class AudioMediaUI extends VBox {
             nameLabel.setText(this.audioMedia.getName());
         }
 
-        // initialize keyCodeLabel
+        // initialize values
         keyCodeLabel.setText(KeyCodeUtil.toString(this.audioMedia.getLinkedKeyCode()));
+        
+        final Boolean repeat = this.audioMedia.getRepeat();
 
         easyConduiteController = controller;
 
@@ -132,7 +134,7 @@ public class AudioMediaUI extends VBox {
         player.setOnPaused(() -> {
             buttonPlayPause.setPathNameOfIcon(NAME_ICON_PLAY);
         });
-
+        
         player.setOnPlaying(() -> {
             buttonPlayPause.setPathNameOfIcon(NAME_ICON_PAUSE);
         });
@@ -145,7 +147,11 @@ public class AudioMediaUI extends VBox {
             player.seek(Duration.ZERO);
             buttonPlayPause.setPathNameOfIcon(NAME_ICON_PLAY);
         });
-
+        
+        player.setOnEndOfMedia(() -> {
+            progressTrack.setProgress(0);
+        });
+        
         player.currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> {
             progressTrack.setProgress(newValue.toSeconds() / player.getTotalDuration().toSeconds());
         });
@@ -174,7 +180,7 @@ public class AudioMediaUI extends VBox {
         }
     }
 
-    public void updateRepeat(Boolean repeatValue) {
+    public final void updateRepeat(Boolean repeatValue) {
         audioMedia.setRepeat(repeatValue);
         LOGGER.log(Level.INFO, "Change repeat AudioMedia with {0}", audioMedia.getRepeat());
         if (repeatValue) {

@@ -29,7 +29,6 @@
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
-            <Menu disable="true" mnemonicParsing="false" text="Ouvrir récents" />
             <MenuItem mnemonicParsing="false" onAction="#handleSave" text="Enregistrer">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
