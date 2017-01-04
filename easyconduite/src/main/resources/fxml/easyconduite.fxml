@@ -25,16 +25,16 @@
       <menus>
         <Menu mnemonicParsing="false" text="Fichier">
           <items>
-            <MenuItem fx:id="fichierouvrir" mnemonicParsing="false" onAction="#handleFichierOuvrir" text="Ouvrir">
+            <MenuItem fx:id="fichierouvrir" mnemonicParsing="false" onAction="#handleFichierOuvrir" text="Ouvrir Conduite audio">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#handleSave" text="Enregistrer">
+            <MenuItem mnemonicParsing="false" onAction="#handleSave" text="Enregistrer Conduite audio">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" onAction="#handleQuit" text="Quit">
+            <MenuItem mnemonicParsing="false" onAction="#handleQuit" text="Quitter">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="Q" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
@@ -42,14 +42,14 @@
         </Menu>
             <Menu mnemonicParsing="false" text="Pistes">
               <items>
-                <MenuItem id="addaudiomenu" mnemonicParsing="false" onAction="#handleAddAudioMenu" text="Ajouter audio" />
+                <MenuItem id="addaudiomenu" mnemonicParsing="false" onAction="#handleAddAudioMenu" text="Ajouter Piste audio" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem disable="true" mnemonicParsing="false" text="Propriétés" />
               </items>
             </Menu>
         <Menu mnemonicParsing="false" text="Conduite">
           <items>
-            <MenuItem mnemonicParsing="false" onAction="#handleParamConduite" text="Paramètres..." />
+            <MenuItem disable="true" mnemonicParsing="false" onAction="#handleParamConduite" text="Paramètres..." />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">

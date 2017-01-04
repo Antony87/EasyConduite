@@ -20,12 +20,14 @@ package easyconduite.ui;
 import easyconduite.util.KeyCodeUtil;
 import easyconduite.controllers.EasyconduiteController;
 import easyconduite.ui.model.EasyConduiteAbstractDialog;
+import easyconduite.util.Config;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -38,8 +40,10 @@ import javafx.scene.input.MouseEvent;
  * @author antony Fons
  */
 public class LinkKeyBoardDialog extends EasyConduiteAbstractDialog {
+    
+    private static final String CLASSNAME = LinkKeyBoardDialog.class.getName();
 
-    private static final Logger logger = Logger.getLogger(LinkKeyBoardDialog.class.getName());
+    private static final Logger LOGGER = Config.getCustomLogger(CLASSNAME);
 
     private static final String PATH_FXML = "/fxml/trackDialog.fxml";
 
@@ -59,7 +63,7 @@ public class LinkKeyBoardDialog extends EasyConduiteAbstractDialog {
 
     public LinkKeyBoardDialog(final AudioMediaUI anAudioMediaUI, final EasyconduiteController controller) throws IOException {
 
-        super(PATH_FXML, "Propriétes du morceaux",controller);
+        super(PATH_FXML, "Propriétes de la piste audio", controller);
 
         audioMediaUI = anAudioMediaUI;
 
@@ -70,7 +74,6 @@ public class LinkKeyBoardDialog extends EasyConduiteAbstractDialog {
         repeatTrack = (CheckBox) getScene().lookup("#repeattrack");
         repeatTrack.selectedProperty().setValue(audioMediaUI.getAudioMedia().getRepeat());
 
-        Label error = (Label) getScene().lookup("#error");
         TextField codeKeyboard = (TextField) getScene().lookup("#keytrackfield");
         codeKeyboard.textProperty().set(KeyCodeUtil.toString(audioMediaUI.getAudioMedia().getLinkedKeyCode()));
 
@@ -78,14 +81,16 @@ public class LinkKeyBoardDialog extends EasyConduiteAbstractDialog {
 
         // Event Handler for capture keycode
         codeKeyboard.setOnKeyReleased((KeyEvent event) -> {
-            codeKeyboard.setText(event.getCode().getName());
             chosenKey = event.getCode();
             if (controller.isExistKeyCode(chosenKey) && chosenKey != existingKeyCode) {
-                error.textProperty().setValue("Déja attribuée !");
-                ok.disableProperty().set(true);
+                Alert alertDeja = new Alert(Alert.AlertType.ERROR);
+                alertDeja.setTitle("Erreur attribution");
+                alertDeja.setHeaderText(null);
+                alertDeja.setContentText("Cette touche est déja attribuée");
+                alertDeja.showAndWait();
             } else {
-                error.textProperty().setValue(null);
-                ok.disableProperty().set(false);
+                codeKeyboard.setText(event.getCode().getName());
+                LOGGER.log(Level.FINE, "Assigned Keyboard {0} for AudioMedia {1}",new Object[]{chosenKey.toString(),audioMediaUI.getAudioMedia().getFilePathName()});
             }
         });
 

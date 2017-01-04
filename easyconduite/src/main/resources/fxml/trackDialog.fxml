@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.control.*?>
-<?import java.lang.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="400.0" styleClass="border-pane" stylesheets="@../../styles/trackdialog.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="400.0" styleClass="border-pane" stylesheets="@../../styles/trackdialog.css" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <GridPane BorderPane.alignment="CENTER_RIGHT">
         <columnConstraints>
@@ -60,11 +67,6 @@
                   <Font name="Arial Black" size="12.0" />
                </font>
             </Label>
-            <Label id="error" alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="167.0" textFill="#f20707" GridPane.columnIndex="1" GridPane.rowIndex="3">
-               <GridPane.margin>
-                  <Insets left="10.0" />
-               </GridPane.margin>
-            </Label>
          </children>
          <BorderPane.margin>
             <Insets />
@@ -82,7 +84,7 @@
                   <Image url="@../../icons/Help%20Blue%20Button.png" />
                </image>
             </ImageView>
-            <Label styleClass="Label" text="Configuration morceaux">
+            <Label styleClass="Label" text="Configuration Piste audio">
                <font>
                   <Font name="Arial Black" size="18.0" />
                </font>

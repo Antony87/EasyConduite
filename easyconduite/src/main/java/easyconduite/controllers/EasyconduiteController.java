@@ -12,6 +12,7 @@ import easyconduite.ui.AboutDialog;
 import easyconduite.ui.AudioMediaUI;
 import easyconduite.util.KeyCodeUtil;
 import easyconduite.ui.ParamConduiteDialog;
+import easyconduite.util.Config;
 import easyconduite.util.DurationUtil;
 import java.io.File;
 import java.io.IOException;
@@ -45,7 +46,8 @@ import javafx.scene.shape.Rectangle;
  */
 public class EasyconduiteController implements Initializable {
 
-    private static final Logger logger = Logger.getLogger(EasyconduiteController.class.getName());
+    private static final String CLASSNAME = EasyconduiteController.class.getName();
+    private static final Logger LOGGER = Config.getCustomLogger(CLASSNAME);
 
     @FXML
     private Label timer;
@@ -154,7 +156,7 @@ public class EasyconduiteController implements Initializable {
         audioMediaUI.getPlayer().dispose();
         table.getChildren().removeAll(audioMediaUI);
 
-        logger.log(Level.INFO, "AudioMedia {0} remove from audioMediaObsList", audioMediaUI.getAudioMedia().toString());
+        LOGGER.log(Level.INFO, "AudioMedia {0} remove from audioMedia List", audioMediaUI.getAudioMedia().toString());
 
     }
 
@@ -186,7 +188,7 @@ public class EasyconduiteController implements Initializable {
             try {
                 PersistenceUtil.save(file, audioTable);
             } catch (IOException ex) {
-                Logger.getLogger(EasyconduiteController.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.log(Level.SEVERE, "Error occured", ex);
             }
         }
     }
@@ -197,7 +199,7 @@ public class EasyconduiteController implements Initializable {
         try {
             AboutDialog aboutDialog = new AboutDialog();
         } catch (IOException ex) {
-            Logger.getLogger(EasyconduiteController.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, "Error occured", ex);
         }
 
     }
@@ -209,7 +211,7 @@ public class EasyconduiteController implements Initializable {
             System.out.println("Appel constructeur ParamDialog");
             ParamConduiteDialog conduiteDialog = new ParamConduiteDialog(audioTable, this);
         } catch (IOException ex) {
-            Logger.getLogger(EasyconduiteController.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, "Error occured", ex);
         }
 
     }
