@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -37,11 +38,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 /**
@@ -128,14 +133,17 @@ public class AudioMediaUI extends VBox {
 
         player.setOnPaused(() -> {
             buttonPlayPause.setPathNameOfIcon(NAME_ICON_PLAY);
+            this.setBackground(Config.STOP_BACKG);
         });
         
         player.setOnPlaying(() -> {
             buttonPlayPause.setPathNameOfIcon(NAME_ICON_PAUSE);
+            this.setBackground(Config.PLAY_BACKG);
         });
 
         player.setOnStopped(() -> {
             buttonPlayPause.setPathNameOfIcon(NAME_ICON_PLAY);
+            this.setBackground(Config.STOP_BACKG);
         });
 
         player.setOnReady(() -> {

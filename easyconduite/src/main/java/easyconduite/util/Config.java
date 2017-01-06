@@ -22,6 +22,11 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+import javafx.geometry.Insets;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
 
 /**
  * This class encapsulates behaviors for severals configurations.<br>As
@@ -31,9 +36,12 @@ import java.util.logging.SimpleFormatter;
  */
 public class Config {
 
+    public static final Background PLAY_BACKG = new Background(new BackgroundFill(Color.web("#455473"), CornerRadii.EMPTY, Insets.EMPTY));
+
+    public static final Background STOP_BACKG = new Background(new BackgroundFill(Color.web("#535965"), CornerRadii.EMPTY, Insets.EMPTY));
+
     /**
-     * This method return a custom logger who write to a easyconduite.log
-     * file.
+     * This method return a custom logger who write to a easyconduite.log file.
      *
      * @param className name of the class who call the logger.
      * @return
@@ -56,8 +64,10 @@ public class Config {
         private static FileHandler fileTxt;
 
         /**
-         * Method of the inner class that creates a Singleton pattern FileHandler.
-         * @return 
+         * Method of the inner class that creates a Singleton pattern
+         * FileHandler.
+         *
+         * @return
          */
         public static FileHandler getFileHandlerInstance() {
 
