@@ -31,6 +31,7 @@ import javafx.scene.shape.Rectangle;
 /**
  *
  * @author antony
+ * @deprecated 
  */
 public class CursorTimeLineConduite {
 

@@ -30,7 +30,7 @@ public class Chrono {
                     @Override
                     public void handle(ActionEvent event) {
                         calendar.add(Calendar.SECOND, 1);
-                        label.setText(format.format(calendar.getTime()));
+                        label.setText(format.format(calendar.getTime()));                        
                     }
                 ;
         }));

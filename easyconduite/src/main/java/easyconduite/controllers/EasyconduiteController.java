@@ -10,14 +10,12 @@ import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioTable;
 import easyconduite.ui.AboutDialog;
 import easyconduite.ui.AudioMediaUI;
+import easyconduite.ui.Chrono;
 import easyconduite.util.KeyCodeUtil;
-import easyconduite.ui.ParamConduiteDialog;
 import easyconduite.util.Config;
-import easyconduite.util.DurationUtil;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -37,8 +35,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Rectangle;
 
 /**
  *
@@ -59,20 +55,11 @@ public class EasyconduiteController implements Initializable {
     private HBox table;
 
     @FXML
-    private Rectangle timeLineRectangle;
-
-    @FXML
-    private Label timeLineLabel;
-
-    @FXML
-    private StackPane timelinepane;
-
-    @FXML
     private Label duration;
 
     private Timeline timeline;
 
-    private Timeline timeLineConduite;
+//    private Timeline timeLineConduite;
 
     private Scene scene;
 
@@ -87,6 +74,15 @@ public class EasyconduiteController implements Initializable {
      * Map of mapping from a KeyCode (Keyboard key) and an AudioMediaUI.
      */
     private Map<KeyCode, AudioMediaUI> keycodesAudioMap;
+    
+    @FXML
+    private void handleRazChrono(ActionEvent event){
+        timeline.stop();
+        timeline = null;
+        timeline= Chrono.getTimeline(timer);
+        timer.setText("00:00:00");
+        chronobutton.setSelected(false);
+    }
 
     @FXML
     private void handleMouseAction(MouseEvent event) {
@@ -204,18 +200,6 @@ public class EasyconduiteController implements Initializable {
 
     }
 
-    @FXML
-    private void handleParamConduite(ActionEvent event) {
-
-        try {
-            System.out.println("Appel constructeur ParamDialog");
-            ParamConduiteDialog conduiteDialog = new ParamConduiteDialog(audioTable, this);
-        } catch (IOException ex) {
-            LOGGER.log(Level.SEVERE, "Error occured", ex);
-        }
-
-    }
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -250,19 +234,6 @@ public class EasyconduiteController implements Initializable {
                 keycodesAudioMap.put(unAudioMediaUI.getAudioMedia().getLinkedKeyCode(), unAudioMediaUI);
             }
         }
-    }
-
-    public void updateConduiteDuration(Duration duree) {
-        if (null != duree) {
-            audioTable.setDuration(duree);
-            duration.setText(DurationUtil.toStringForConduite(duree));
-
-//            if(duree!=null && !duree.equals(Duration.ZERO)){
-//                CursorTimeLineConduite cursorConduite = CursorTimeLineConduite.getInstance(duree, timelinepane, timeLineRectangle);
-//                timeLineConduite=cursorConduite.getTimeLine();
-//            }
-        }
-
     }
 
     public boolean isExistKeyCode(KeyCode keycode) {

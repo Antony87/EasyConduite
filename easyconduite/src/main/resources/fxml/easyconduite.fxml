@@ -49,7 +49,11 @@
             </Menu>
         <Menu mnemonicParsing="false" text="Conduite">
           <items>
-            <MenuItem disable="true" mnemonicParsing="false" onAction="#handleParamConduite" text="Paramètres..." />
+                  <MenuItem mnemonicParsing="false" onAction="#handleRazChrono" text="RAZ Timer">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                     </accelerator>
+                  </MenuItem>
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">
@@ -78,24 +82,6 @@
                         <Insets right="20.0" />
                      </HBox.margin>
                   </StackPane>
-                  <Label fx:id="duration" alignment="CENTER" contentDisplay="CENTER" maxHeight="42.0" minHeight="42.0" prefHeight="42.0" prefWidth="143.0" style="-fx-border-color: #a8b0bb; -fx-background-color: #203029;" text="00:00" textAlignment="CENTER" textFill="#edf5ef">
-                     <effect>
-                        <Lighting>
-                           <bumpInput>
-                              <Shadow />
-                           </bumpInput>
-                           <light>
-                              <Light.Distant />
-                           </light>
-                        </Lighting>
-                     </effect>
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                     <padding>
-                        <Insets left="10.0" right="10.0" />
-                     </padding>
-                  </Label>
                   <Label fx:id="timer" alignment="CENTER" contentDisplay="RIGHT" maxHeight="42.0" minHeight="42.0" prefHeight="42.0" style="-fx-border-color: #a8b0bb; -fx-background-color: #203029;" text="00:00:00" textAlignment="CENTER" textFill="#00d936">
                      <font>
                         <Font size="24.0" />
