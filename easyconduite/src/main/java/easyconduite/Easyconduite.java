@@ -39,7 +39,7 @@ public class Easyconduite extends Application {
         controller.setScene(scene);
         controller.setAudioTable(new AudioTable());
 
-        stage.setTitle("EasyConduite 0.1");
+        stage.setTitle("EasyConduite 1.1");
         stage.setScene(scene);
         stage.show();
     }
