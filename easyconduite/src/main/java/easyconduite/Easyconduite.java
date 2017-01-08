@@ -14,6 +14,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 /**
@@ -24,6 +25,8 @@ public class Easyconduite extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/easyconduite32.png")));
 
         final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/easyconduite.fxml"));
 
