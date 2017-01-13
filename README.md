@@ -13,7 +13,7 @@ EasyConduite helps small drama troupe stage manager to play several audio tracks
  * Expose by grizzly server for REST command.
 
 
-For cross-platform, I chose Java FX and Java 8
+For cross-platform, I have chosen Java FX and Java 8
 
 ### Screenshot ###
 
