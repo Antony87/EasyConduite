@@ -23,10 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -59,13 +57,9 @@ public class EasyconduiteController implements Initializable {
     
     @FXML
     private HBox tableHbox;
-    
-    @FXML
-    private Label duration;
-    
+        
     private Timeline timeline;
 
-//    private Timeline timeLineConduite;
     private Scene scene;
     
     private AudioTable audioTable;
