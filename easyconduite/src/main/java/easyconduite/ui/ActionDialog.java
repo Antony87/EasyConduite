@@ -33,7 +33,15 @@ public class ActionDialog {
         alert.setHeaderText(message);
         alert.setContentText("confirmez-vous cette action ?");
         return alert;
-        
+
+    }
+
+    public static void displayErrorDialog(String message) {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Message d'erreur");
+        alert.setHeaderText("Une erreur est survenue :");
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
 }
