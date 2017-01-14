@@ -19,11 +19,13 @@ package easyconduite.util;
 
 import easyconduite.objects.AudioTable;
 import java.io.File;
+import java.nio.file.Paths;
 import javafx.scene.Scene;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 /**
  *
@@ -43,6 +45,7 @@ public class PersistenceUtilTest {
     }
     
     @Test
+    @Ignore
     public void testSave() throws Exception {
         System.out.println("save");
         AudioTable audioTable = new AudioTable();
@@ -54,11 +57,18 @@ public class PersistenceUtilTest {
     }
     
     @Test
+    @Ignore
     public void testOpen() {
         System.out.println("open");
         AudioTable audiotable = null;
         audiotable = PersistenceUtil.open(new File("saveTest.ecp"));
         assertEquals("test", audiotable.getName());
         
-    }    
+    }
+    
+    @Test
+    public void testCurrentRepertory(){
+        
+        System.out.println(Paths.get(".").toAbsolutePath().normalize().toString());
+    }
 }

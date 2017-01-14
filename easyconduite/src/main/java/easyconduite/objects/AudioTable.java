@@ -18,19 +18,21 @@
  */
 package easyconduite.objects;
 
-import java.io.Serializable;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This class manage an AudioMedia list and the entire drama Playing duration.
  *
  * @author A Fons
  */
-public class AudioTable implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+@XmlRootElement(name = "audiotable")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class AudioTable {
 
     private String name="";
 
@@ -43,7 +45,7 @@ public class AudioTable implements Serializable {
      * <br> Initialize the list of AudioFile.
      */
     public AudioTable() {
-        audioMediaList = new ArrayList<>();
+        this.audioMediaList = new ArrayList<>();
     }
 
     /**

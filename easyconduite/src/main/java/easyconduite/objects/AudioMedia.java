@@ -19,13 +19,22 @@
 package easyconduite.objects;
 
 import java.io.File;
-import java.io.Serializable;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.UUID;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
+import javafx.beans.property.ReadOnlyDoubleWrapper;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 import javafx.scene.input.KeyCode;
-import javafx.scene.media.MediaPlayer;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
  * Class POJO that encapsulate AudioMedia behavior.
@@ -33,47 +42,22 @@ import javafx.scene.media.MediaPlayer;
  * @author A.Fons
  *
  */
+@XmlAccessorType(XmlAccessType.PROPERTY)
+public class AudioMedia {
 
-public class AudioMedia implements Serializable{
-
-    private static final long serialVersionUID = 1L;
-    
-    /**
-     * Unique Id of the AudioMedia.
-     */
     private UUID uniqueId;
-    
-    /**
-     * Name of track, to be displayed on top of the pane.
-     *
-     */
-    private String name;
 
-    /**
-     * {@link KeyCode of the key linked with AudioMedia.
-     *
-     */
-    private KeyCode linkedKeyCode;
-
-    /**
-     * File audio. Able to read by {@link MediaPlayer}.
-     */
     private File audioFile;
 
-    /**
-     * Path of the audio file.
-     */
     private String filePathName;
 
-    /**
-     * Volume of the media.
-     */
-    private Double volume;
+    public final BooleanProperty repeatable = new ReadOnlyBooleanWrapper();
 
-    /**
-     * Is the media repeat ?.
-     */
-    private Boolean repeat;
+    private final DoubleProperty volume = new ReadOnlyDoubleWrapper();
+
+    private final StringProperty name = new ReadOnlyStringWrapper();
+
+    private final ObjectProperty<KeyCode> keycode = new ReadOnlyObjectWrapper<>();
 
     /**
      * Default constructor, to be conform bean specification.
@@ -81,75 +65,107 @@ public class AudioMedia implements Serializable{
     private AudioMedia() {
     }
 
-    public AudioMedia(final File audioFile) {
+    public AudioMedia(File file) {
 
         // set default values;
-        this.audioFile = audioFile;
-        this.filePathName = audioFile.getAbsolutePath();
-        uniqueId = UUID.randomUUID();
-        linkedKeyCode = KeyCode.UNDEFINED;
-        repeat = false;
-        volume = 0.5;
-        Path path = audioFile.toPath();
-        name = path.getFileName().toString();
-
+        this.audioFile = file;
+        this.filePathName = file.getAbsolutePath();
+        this.uniqueId = UUID.randomUUID();
+        setKeycode(KeyCode.UNDEFINED);
+        setRepeatable(Boolean.FALSE);
+        setVolume(0.5);
+        Path path = file.toPath();
+        setName(path.getFileName().toString());
     }
 
-    public String getName() {
-        return name;
+    ////////////////////////////////////////////////////////////////////////////
+    //                        Acesseurs
+    ////////////////////////////////////////////////////////////////////////////
+    public UUID getUniqueId() {
+        return uniqueId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public final void setUniqueId(UUID uniqueId) {
+        this.uniqueId = uniqueId;
     }
 
-    public KeyCode getLinkedKeyCode() {
-        return linkedKeyCode;
-    }
-
-    public void setLinkedKeyCode(final KeyCode linkedKeyCode) {
-        this.linkedKeyCode = linkedKeyCode;
-    }
-
+    ////////////////////////////////////////////////////////////////////////////
     public void setAudioFile(File audioFile) {
         this.audioFile = audioFile;
-    }
-
-    public void setFilePathName(String filePathName) {
-        this.filePathName = filePathName;
-    }
-
-    public String getFilePathName() {
-        return filePathName;
     }
 
     public File getAudioFile() {
         return audioFile;
     }
 
-    public final Double getVolume() {
+    public String getFilePathName() {
+        return filePathName;
+    }
+
+    public final void setFilePathName(String filePathName) {
+        this.filePathName = filePathName;
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    //                        JavaFX Properties
+    ////////////////////////////////////////////////////////////////////////////
+    public Boolean getRepeatable() {
+        return repeatable.getValue();
+    }
+
+    public final void setRepeatable(Boolean b) {
+        this.repeatable.setValue(b);
+    }
+
+    public BooleanProperty repeatableProperty() {
+        return repeatable;
+    }
+    ////////////////////////////////////////////////////////////////////////////
+
+    public Double getVolume() {
+        return volume.getValue();
+    }
+
+    public final void setVolume(Double volume) {
+        this.volume.setValue(volume);
+    }
+
+    public DoubleProperty volumeProperty() {
         return volume;
     }
+    ////////////////////////////////////////////////////////////////////////////
 
-    public final void setVolume(final Double volume) {
-        this.volume = volume;
+    public String getName() {
+        return name.get();
     }
 
-    public Boolean getRepeat() {
-        return repeat;
+    public final void setName(String name) {
+        this.name.set(name);
     }
 
-    public void setRepeat(Boolean repeat) {
-        this.repeat = repeat;
+    public StringProperty nameProperty() {
+        return name;
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    
+    public final void setKeycode(KeyCode keycode) {
+        this.keycode.set(keycode);
+    }
+
+    public KeyCode getKeycode() {
+        return keycode.get();
+    }
+
+    public ObjectProperty<KeyCode> keycodeProperty() {
+        return keycode;
     }
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 41 * hash + Objects.hashCode(this.uniqueId);
-        hash = 41 * hash + Objects.hashCode(this.name);
-        hash = 41 * hash + Objects.hashCode(this.linkedKeyCode);
-        hash = 41 * hash + Objects.hashCode(this.audioFile);
+        int hash = 7;
+        hash = 79 * hash + Objects.hashCode(this.uniqueId);
+        hash = 79 * hash + Objects.hashCode(this.audioFile);
+        hash = 79 * hash + Objects.hashCode(this.name);
+        hash = 79 * hash + Objects.hashCode(this.keycode);
         return hash;
     }
 
@@ -165,19 +181,16 @@ public class AudioMedia implements Serializable{
         if (!Objects.equals(this.uniqueId, other.uniqueId)) {
             return false;
         }
+        if (!Objects.equals(this.repeatable, other.repeatable)) {
+            return false;
+        }
+        if (!Objects.equals(this.volume, other.volume)) {
+            return false;
+        }
         if (!Objects.equals(this.name, other.name)) {
             return false;
         }
-        if (this.linkedKeyCode != other.linkedKeyCode) {
-            return false;
-        }
-        if (!Objects.equals(this.audioFile, other.audioFile)) {
-            return false;
-        }
-        if (!Objects.equals(this.filePathName, other.filePathName)) {
-            return false;
-        }
-        if (!Objects.equals(this.repeat, other.repeat)) {
+        if (!Objects.equals(this.keycode, other.keycode)) {
             return false;
         }
         return true;
@@ -185,7 +198,10 @@ public class AudioMedia implements Serializable{
 
     @Override
     public String toString() {
-        return "AudioMedia{" + "name=" + name + ", linkedKeyCode=" + linkedKeyCode + ", filePathName=" + filePathName + ", volume=" + volume + ", repeat=" + repeat + '}';
+        return "AudioMedia{" + "uniqueId=" + uniqueId + ", filePathName=" + filePathName + ", name=" + name + ", keycode=" + keycode + '}';
     }
 
+
+    
+    
 }

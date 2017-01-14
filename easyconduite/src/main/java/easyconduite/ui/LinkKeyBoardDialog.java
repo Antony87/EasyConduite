@@ -19,13 +19,12 @@ package easyconduite.ui;
 
 import easyconduite.util.KeyCodeUtil;
 import easyconduite.controllers.EasyconduiteController;
+import easyconduite.objects.AudioMedia;
 import easyconduite.ui.model.EasyConduiteAbstractDialog;
 import easyconduite.util.Config;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
@@ -40,7 +39,7 @@ import javafx.scene.input.MouseEvent;
  * @author antony Fons
  */
 public class LinkKeyBoardDialog extends EasyConduiteAbstractDialog {
-    
+
     private static final String CLASSNAME = LinkKeyBoardDialog.class.getName();
 
     private static final Logger LOGGER = Config.getCustomLogger(CLASSNAME);
@@ -49,100 +48,72 @@ public class LinkKeyBoardDialog extends EasyConduiteAbstractDialog {
 
     private KeyCode chosenKey;
 
-    private final AudioMediaUI audioMediaUI;
-
     private final KeyCode existingKeyCode;
 
     private final CheckBox repeatTrack;
 
     private final TextField name;
 
-    private boolean nameChange = false;
+    private final AudioMedia audioMedia;
 
-    private boolean repeatChange = false;
+    private final EasyconduiteController easycontroller;
 
-    public LinkKeyBoardDialog(final AudioMediaUI anAudioMediaUI, final EasyconduiteController controller) throws IOException {
+    public LinkKeyBoardDialog(AudioMedia media, EasyconduiteController controller) throws IOException {
 
         super(PATH_FXML, "Propriétes de la piste audio", controller);
 
-        audioMediaUI = anAudioMediaUI;
+        this.audioMedia = media;
 
+        this.easycontroller = controller;
+
+        //audioMediaUI = anAudioMediaUI;
         // initialize fields
         name = (TextField) getScene().lookup("#nametrackfield");
-        name.textProperty().set(audioMediaUI.getAudioMedia().getName());
+        name.setText(this.audioMedia.getName());
 
         repeatTrack = (CheckBox) getScene().lookup("#repeattrack");
-        repeatTrack.selectedProperty().setValue(audioMediaUI.getAudioMedia().getRepeat());
+        repeatTrack.setSelected(this.audioMedia.getRepeatable());
 
         TextField codeKeyboard = (TextField) getScene().lookup("#keytrackfield");
-        codeKeyboard.textProperty().set(KeyCodeUtil.toString(audioMediaUI.getAudioMedia().getLinkedKeyCode()));
+        codeKeyboard.setText(KeyCodeUtil.toString(audioMedia.getKeycode()));
 
-        existingKeyCode = audioMediaUI.getAudioMedia().getLinkedKeyCode();
+        existingKeyCode = this.audioMedia.getKeycode();
 
         // Event Handler for capture keycode
         codeKeyboard.setOnKeyReleased((KeyEvent event) -> {
             chosenKey = event.getCode();
-            if (controller.isExistKeyCode(chosenKey) && chosenKey != existingKeyCode) {
+            LOGGER.log(Level.INFO, "chosenKey {0}", chosenKey);
+            boolean keyExist = false;
+            keyExist = this.easycontroller.getAudioTable().getAudioMediaList().stream().anyMatch(x -> chosenKey.equals(x.getKeycode()));
+            if (keyExist && !chosenKey.equals(existingKeyCode)) {
+
                 Alert alertDeja = new Alert(Alert.AlertType.ERROR);
                 alertDeja.setTitle("Erreur attribution");
                 alertDeja.setHeaderText(null);
                 alertDeja.setContentText("Cette touche est déja attribuée");
                 alertDeja.showAndWait();
+                codeKeyboard.setText(null);
             } else {
                 codeKeyboard.setText(event.getCode().getName());
-                LOGGER.log(Level.FINE, "Assigned Keyboard {0} for AudioMedia {1}",new Object[]{chosenKey.toString(),audioMediaUI.getAudioMedia().getFilePathName()});
+                LOGGER.log(Level.FINE, "Assigned Keyboard {0} for AudioMedia {1}", new Object[]{chosenKey.toString(), this.audioMedia.getFilePathName()});
             }
         });
 
         codeKeyboard.setOnMousePressed((MouseEvent event) -> {
             codeKeyboard.clear();
         });
-
-        name.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-            if (!newValue.equals(oldValue)) {
-                setNameChange(true);
-            }
-        });
-
-        repeatTrack.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            if (!Objects.equals(newValue, oldValue)) {
-                setRepeatChange(true);
-            }
-        });
-
-    }
-
-    public final boolean isNameChange() {
-        return nameChange;
-    }
-
-    public final void setNameChange(boolean nameChange) {
-        this.nameChange = nameChange;
-    }
-
-    public final boolean isRepeatChange() {
-        return repeatChange;
-    }
-
-    public final void setRepeatChange(boolean repeatChange) {
-        this.repeatChange = repeatChange;
     }
 
     @Override
     public void onClickOkButton() {
         // update Map of KeyCode
         if (chosenKey != existingKeyCode) {
-            audioMediaUI.updateAffectedKeyCode(chosenKey);
-//                audioMediaUI.affectedKeyCodeProperty().set(chosenKey);
+            this.audioMedia.setKeycode(chosenKey);
         }
 
-        if (isRepeatChange()) {
-            audioMediaUI.updateRepeat(repeatTrack.selectedProperty().getValue());
-        }
+        this.audioMedia.setName(name.getText());
+        this.audioMedia.setRepeatable(repeatTrack.selectedProperty().getValue());
 
-        if (isNameChange()) {
-            audioMediaUI.updateName(name.getText());
-        }
         close();
     }
 
