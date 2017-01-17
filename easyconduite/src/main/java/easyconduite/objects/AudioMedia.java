@@ -29,7 +29,6 @@ import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.ReadOnlyDoubleWrapper;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 import javafx.scene.input.KeyCode;
@@ -105,9 +104,11 @@ public class AudioMedia {
     public final void setFilePathName(String filePathName) {
         this.filePathName = filePathName;
     }
+
     ////////////////////////////////////////////////////////////////////////////
     //                        JavaFX Properties
     ////////////////////////////////////////////////////////////////////////////
+
     public Boolean getRepeatable() {
         return repeatable.getValue();
     }
@@ -146,7 +147,7 @@ public class AudioMedia {
         return name;
     }
     ////////////////////////////////////////////////////////////////////////////
-    
+
     public final void setKeycode(KeyCode keycode) {
         this.keycode.set(keycode);
     }
@@ -201,7 +202,4 @@ public class AudioMedia {
         return "AudioMedia{" + "uniqueId=" + uniqueId + ", filePathName=" + filePathName + ", name=" + name + ", keycode=" + keycode + '}';
     }
 
-
-    
-    
 }
