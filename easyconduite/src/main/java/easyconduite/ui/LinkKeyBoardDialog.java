@@ -109,6 +109,7 @@ public class LinkKeyBoardDialog extends EasyConduiteAbstractDialog {
         // update Map of KeyCode
         if (chosenKey != existingKeyCode) {
             this.audioMedia.setKeycode(chosenKey);
+            this.easycontroller.updateKeycodeMap(audioMedia);
         }
 
         this.audioMedia.setName(name.getText());

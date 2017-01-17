@@ -12,16 +12,16 @@ import easyconduite.ui.AboutDialog;
 import easyconduite.ui.ActionDialog;
 import easyconduite.ui.AudioMediaUI;
 import easyconduite.ui.Chrono;
+import easyconduite.ui.EasyconduitePlayer;
 import easyconduite.util.Config;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.Timeline;
@@ -68,6 +68,8 @@ public class EasyconduiteController implements Initializable {
      */
     private List<AudioMediaUI> audioMediaUIList;
 
+    private EnumMap<KeyCode, EasyconduitePlayer> keyCodePlayersMap;
+
     @FXML
     private void handleRazChrono(ActionEvent event) {
         timeline.stop();
@@ -108,16 +110,19 @@ public class EasyconduiteController implements Initializable {
         }
 
         if (file != null) {
+
             audioTable = null;
             audioMediaUIList.clear();
+            keyCodePlayersMap.clear();
             audioTable = PersistenceUtil.open(file);
+
+            // reconstitution de la table de controle.
             List<AudioMedia> audioMedias = audioTable.getAudioMediaList();
             // avant d'ajouter les MediaUI, on vide la table
             tableHbox.getChildren().clear();
             audioMedias.stream().forEach((audioMedia) -> {
-                addMediaUI(audioMedia);
+                addMediaUIControl(audioMedia);
             });
-            //updateKeycodesAudioMap();
         }
     }
 
@@ -137,34 +142,30 @@ public class EasyconduiteController implements Initializable {
             // Add audioMedia to the AudioTable.
             audioTable.addIfNotPresent(audioMedia);
             // Create custom control.
-            addMediaUI(audioMedia);
+            addMediaUIControl(audioMedia);
         }
 
     }
 
     public void removeAudioMediaUI(AudioMediaUI audioMediaUI) {
 
+        final AudioMedia audioMedia = audioMediaUI.getAudioMedia();
+        if(null!=audioMedia.getKeycode()){
+            if(keyCodePlayersMap.containsKey(audioMedia.getKeycode())){
+                keyCodePlayersMap.remove(audioMedia.getKeycode());
+            }
+        }     
         // remove audioMedia from AudioTable.
-        audioTable.removeIfPresent(audioMediaUI.getAudioMedia());
-
+        audioTable.removeIfPresent(audioMedia);
         // remove from list aof AudioMediaUI
         audioMediaUIList.remove(audioMediaUI);
-
         // remove audioMediaUI from keycodesAudioMap
-        //keycodesAudioMap.remove(audioMediaUI.getAudioMedia().getLinkedKeyCode(), audioMediaUI);
-        audioMediaUI.getPlayer().dispose();
+        audioMediaUI.getPlayer().getPlayer().dispose();
         tableHbox.getChildren().removeAll(audioMediaUI);
-
         LOGGER.log(Level.INFO, "AudioMedia {0} remove from audioMedia List", audioMediaUI.getAudioMedia().toString());
 
     }
 
-    /**
-     * Cette méthode est appellé par l'action Quit du menu Fichier et ferme
-     * l'application.
-     *
-     * @param event
-     */
     @FXML
     private void handleQuit(ActionEvent event) {
         Platform.exit();
@@ -172,16 +173,9 @@ public class EasyconduiteController implements Initializable {
 
     @FXML
     private void handleKeyCodePlay(KeyEvent event) {
-
-        AudioMediaUI audioMediaUIOpt = findAudioMediaUI(audioMediaUIList, event.getCode());
-        if (audioMediaUIOpt != null) {
-            audioMediaUIOpt.playPause();
+        if (keyCodePlayersMap.containsKey(event.getCode())) {
+            keyCodePlayersMap.get(event.getCode()).playPause();
         }
-
-//        if (keycodesAudioMap.containsKey(event.getCode())) {
-//            AudioMediaUI audioMedia = keycodesAudioMap.get(event.getCode());
-//            audioMedia.playPause();
-//        }
     }
 
     @FXML
@@ -210,19 +204,9 @@ public class EasyconduiteController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
         audioMediaUIList = new ArrayList<>();
+        keyCodePlayersMap = new EnumMap(KeyCode.class);
 
-        // = new EnumMap<>(KeyCode.class);
-    }
-
-    public AudioMediaUI findAudioMediaUI(List<AudioMediaUI> list, KeyCode keycode) {
-        LOGGER.log(Level.FINE, "findAudioMediaUI by Keycode within {0} size list and Keycode {1}", new Object[]{list.size(), keycode.toString()});
-        AudioMediaUI audioMediaUIOpt = null;
-
-        audioMediaUIOpt = list.stream().filter(x -> keycode.equals(x.getAudioMedia().getKeycode())).findAny().orElse(null);
-
-        return audioMediaUIOpt;
     }
 
     /**
@@ -230,11 +214,14 @@ public class EasyconduiteController implements Initializable {
      *
      * @param audioMedia
      */
-    public void addMediaUI(AudioMedia audioMedia) {
+    private void addMediaUIControl(AudioMedia audioMedia) {
 
-        AudioMediaUI audioMediaUI = new AudioMediaUI(audioMedia, this);
+        final AudioMediaUI audioMediaUI;
+        audioMediaUI = new AudioMediaUI(audioMedia, this);
         try {
+            // add Audio UI control to List
             audioMediaUIList.add(audioMediaUI);
+            updateKeycodeMap(audioMedia);
             LOGGER.log(Level.INFO, "AudioMediaUI[{0}] added at {1}", new Object[]{audioMediaUI.getAudioMedia().getName(), audioMediaUIList.size()});
             //table.getChildren().add(table.getChildren().size(), audioMediaUI);
             tableHbox.getChildren().add(audioMediaUI);
@@ -246,16 +233,24 @@ public class EasyconduiteController implements Initializable {
             LOGGER.log(Level.SEVERE, "Immpossible d'ajouter NULL dans la liste AudioMediaUI", ne.getCause());
             ActionDialog.displayErrorDialog("Type d'objet incompatible avec liste AudioMediaUI");
         }
-
     }
 
-//    public void updateKeycodesAudioMap() {
-//
-//        keycodesAudioMap.clear();
-//        audioMediaUIList.stream().filter((unAudioMediaUI) -> (KeyCodeUtil.isValid(unAudioMediaUI.getAudioMedia().getLinkedKeyCode()))).forEach((unAudioMediaUI) -> {
-//            keycodesAudioMap.put(unAudioMediaUI.getAudioMedia().getLinkedKeyCode(), unAudioMediaUI);
-//        });
-//    }
+    /**
+     *
+     * @param audioMedia
+     */
+    public final void updateKeycodeMap(AudioMedia audioMedia) {
+        if (null != audioMedia.getKeycode()) {
+            if (!keyCodePlayersMap.containsKey(audioMedia.getKeycode())) {
+                // find AudioMediaUI and player
+                Optional<AudioMediaUI> optional = audioMediaUIList.stream().filter(x -> x.getAudioMedia().equals(audioMedia)).findAny();
+                if (optional.isPresent()) {
+                    keyCodePlayersMap.put(audioMedia.getKeycode(), optional.get().getPlayer());
+                }
+            }
+        }
+    }
+
     public void setTimeline(Timeline timeline) {
         this.timeline = timeline;
     }
