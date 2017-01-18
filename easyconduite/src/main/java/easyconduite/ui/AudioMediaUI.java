@@ -225,7 +225,7 @@ public class AudioMediaUI extends VBox {
         keycodeLabel.setText(KeyCodeUtil.toString(audioMedia.getKeycode()));
     }
 
-    public final EasyconduitePlayer getPlayer() {
+    public final EasyconduitePlayer getEasyPlayer() {
         return player;
     }
 

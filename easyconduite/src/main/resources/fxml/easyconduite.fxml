@@ -46,15 +46,8 @@
               <items>
                 <MenuItem id="addaudiomenu" disable="true" mnemonicParsing="false" onAction="#handleAddAudioMenu" text="Ajouter Piste audio" visible="false" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="Pauser toutes">
-                     <accelerator>
-                        <KeyCodeCombination alt="DOWN" code="P" control="UP" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator></MenuItem>
-                  <MenuItem mnemonicParsing="false" text="Stopper toutes">
-                     <accelerator>
-                        <KeyCodeCombination alt="DOWN" code="S" control="UP" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator>
-                  </MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#handlePauseAll" text="Pauser toutes" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleStopAll" text="Stopper toutes" />
               </items>
             </Menu>
         <Menu mnemonicParsing="false" text="Conduite">

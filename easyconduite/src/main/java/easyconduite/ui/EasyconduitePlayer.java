@@ -94,6 +94,10 @@ public class EasyconduitePlayer {
             }
             player.seek(player.getStartTime());
         });
+        
+        player.setOnStopped(() -> {
+            currentProgressProperty().set((double) 0);
+        });
 
         totalDuration = player.getTotalDuration();
 
@@ -103,7 +107,6 @@ public class EasyconduitePlayer {
 
     public final void stop() {
         player.stop();
-        this.setCurrentProgress(Double.valueOf(0));
     }
 
     public void playPause() {
@@ -142,6 +145,10 @@ public class EasyconduitePlayer {
 
     public MediaPlayer getPlayer() {
         return player;
+    }
+    
+    public final Status getStatus(){
+        return player.getStatus();
     }
 
     public boolean isRepeatable() {

@@ -1,7 +1,19 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2017 Antony Fons
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 package easyconduite.controllers;
 
@@ -38,6 +50,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.media.MediaPlayer.Status;
 
 /**
  *
@@ -150,17 +163,17 @@ public class EasyconduiteController implements Initializable {
     public void removeAudioMediaUI(AudioMediaUI audioMediaUI) {
 
         final AudioMedia audioMedia = audioMediaUI.getAudioMedia();
-        if(null!=audioMedia.getKeycode()){
-            if(keyCodePlayersMap.containsKey(audioMedia.getKeycode())){
+        if (null != audioMedia.getKeycode()) {
+            if (keyCodePlayersMap.containsKey(audioMedia.getKeycode())) {
                 keyCodePlayersMap.remove(audioMedia.getKeycode());
             }
-        }     
+        }
         // remove audioMedia from AudioTable.
         audioTable.removeIfPresent(audioMedia);
         // remove from list aof AudioMediaUI
         audioMediaUIList.remove(audioMediaUI);
         // remove audioMediaUI from keycodesAudioMap
-        audioMediaUI.getPlayer().getPlayer().dispose();
+        audioMediaUI.getEasyPlayer().getPlayer().dispose();
         tableHbox.getChildren().removeAll(audioMediaUI);
         LOGGER.log(Level.INFO, "AudioMedia {0} remove from audioMedia List", audioMediaUI.getAudioMedia().toString());
 
@@ -176,6 +189,17 @@ public class EasyconduiteController implements Initializable {
         if (keyCodePlayersMap.containsKey(event.getCode())) {
             keyCodePlayersMap.get(event.getCode()).playPause();
         }
+    }
+
+    @FXML
+    private void handlePauseAll(ActionEvent event) {
+        audioMediaUIList.stream().filter(x -> x.getEasyPlayer().getStatus().equals(Status.PLAYING)).forEach(x -> x.getEasyPlayer().playPause());
+    }
+    
+    @FXML
+    private void handleStopAll(ActionEvent event) {
+        audioMediaUIList.stream().filter(x -> x.getEasyPlayer().getStatus().equals(Status.PAUSED)).forEach(x -> x.getEasyPlayer().stop());
+        audioMediaUIList.stream().filter(x -> x.getEasyPlayer().getStatus().equals(Status.PLAYING)).forEach(x -> x.getEasyPlayer().stop());
     }
 
     @FXML
@@ -245,7 +269,7 @@ public class EasyconduiteController implements Initializable {
                 // find AudioMediaUI and player
                 Optional<AudioMediaUI> optional = audioMediaUIList.stream().filter(x -> x.getAudioMedia().equals(audioMedia)).findAny();
                 if (optional.isPresent()) {
-                    keyCodePlayersMap.put(audioMedia.getKeycode(), optional.get().getPlayer());
+                    keyCodePlayersMap.put(audioMedia.getKeycode(), optional.get().getEasyPlayer());
                 }
             }
         }

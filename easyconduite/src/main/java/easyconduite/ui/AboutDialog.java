@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 antony
+ * Copyright (C) 2016 antony
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,6 +29,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 /**
+ * This class exposes an About dialog box.
  *
  * @author antony
  */
@@ -42,8 +43,6 @@ public class AboutDialog extends Stage {
 
         BorderPane dialogPane = (BorderPane) loader.load();
 
-        loader = null;
-
         Stage dialogStage = new Stage();
         dialogStage.setTitle("A propos...");
         dialogStage.initModality(Modality.APPLICATION_MODAL);
@@ -53,19 +52,18 @@ public class AboutDialog extends Stage {
         Scene scene = new Scene(dialogPane);
 
         Button annuler = (Button) scene.lookup("#cancelbutton");
-        
+
         // Event Handler for cancel button
         annuler.setOnMouseClicked((MouseEvent event) -> {
             dialogStage.close();
         });
-        
-        Label abouttext = (Label)scene.lookup("#abouttext");
+
+        Label abouttext = (Label) scene.lookup("#abouttext");
         StringBuilder stb = new StringBuilder();
-        stb.append("Easyconduite developpé par A. Fons \n");
+        stb.append("Easyconduite v 1.1");
         stb.append("antony.fons@antonyweb.net \n");
-        stb.append("LGPL v2 Copyright Antony Fons 2014\n");
+        stb.append("LGPL v2 Copyright Antony Fons 2016\n");
         stb.append("\n");
-        stb.append("Easyconduite use Xstream (c) 2011 Xstream Committers");
         abouttext.setText(stb.toString());
 
         dialogStage.setScene(scene);
