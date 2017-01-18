@@ -158,7 +158,7 @@ public class PersistenceUtil {
 
         switch (type) {
             case OPEN_AUDIO:
-                title = "Ouvrir fichier audio";
+                title = "Importer fichier audio";
                 text = "Fichier audio";
                 extension = new String[]{"*.mp3", "*.wav"};
                 break;

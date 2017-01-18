@@ -25,14 +25,16 @@
       <menus>
         <Menu mnemonicParsing="false" text="Fichier">
           <items>
-            <MenuItem fx:id="fichierouvrir" mnemonicParsing="false" onAction="#handleFichierOuvrir" text="Ouvrir Conduite audio">
+            <MenuItem fx:id="fichierouvrir" mnemonicParsing="false" onAction="#handleFichierOuvrir" text="Ouvrir...">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#handleSave" text="Enregistrer Conduite audio">
+            <MenuItem mnemonicParsing="false" onAction="#handleSave" text="Enregistrer">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleAddAudioMenu" text="Importer..." />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" onAction="#handleQuit" text="Quitter">
                      <accelerator>
@@ -42,9 +44,17 @@
         </Menu>
             <Menu mnemonicParsing="false" text="Pistes">
               <items>
-                <MenuItem id="addaudiomenu" mnemonicParsing="false" onAction="#handleAddAudioMenu" text="Ajouter Piste audio" />
+                <MenuItem id="addaudiomenu" disable="true" mnemonicParsing="false" onAction="#handleAddAudioMenu" text="Ajouter Piste audio" visible="false" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem disable="true" mnemonicParsing="false" text="Propriétés" />
+                  <MenuItem mnemonicParsing="false" text="Pauser toutes">
+                     <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="P" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <MenuItem mnemonicParsing="false" text="Stopper toutes">
+                     <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="S" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                  </MenuItem>
               </items>
             </Menu>
         <Menu mnemonicParsing="false" text="Conduite">
