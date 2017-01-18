@@ -60,7 +60,7 @@ public class AboutDialog extends Stage {
 
         Label abouttext = (Label) scene.lookup("#abouttext");
         StringBuilder stb = new StringBuilder();
-        stb.append("Easyconduite v 1.1");
+        stb.append("Easyconduite v 1.1 \n");
         stb.append("antony.fons@antonyweb.net \n");
         stb.append("LGPL v2 Copyright Antony Fons 2016\n");
         stb.append("\n");
