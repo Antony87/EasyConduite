@@ -18,4 +18,5 @@ For cross-platform, I have chosen Java FX and Java 8
 
 ## prerequisites ##
 Java SE 8_0_x must be installed.
+
 https://www.java.com/fr/download/manual.jsp
