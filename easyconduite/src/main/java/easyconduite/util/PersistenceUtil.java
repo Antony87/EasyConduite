@@ -17,12 +17,11 @@
  */
 package easyconduite.util;
 
+import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioTable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.scene.Scene;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -31,6 +30,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
 import javax.xml.bind.Unmarshaller;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -38,16 +39,13 @@ import javax.xml.bind.Unmarshaller;
  */
 public class PersistenceUtil {
 
+    static final Logger LOG = LogManager.getLogger(PersistenceUtil.class);
+    
     private static final String SUFFIXE = ".ecp";
 
     private static Path lastDirectory;
 
-    private static final String CLASSNAME = PersistenceUtil.class.getName();
-
-    private static final Logger LOGGER = Config.getCustomLogger(CLASSNAME);
-
     public enum TypeFileChooser {
-
         SAVE, OPEN_AUDIO, OPEN_PROJECT
     }
 
@@ -58,14 +56,8 @@ public class PersistenceUtil {
      * @throws IOException
      */
     public static void save(File file, AudioTable audioTable) throws IOException {
-        LOGGER.log(Level.INFO, "Save project with file.name[{0}] AudioTable.name[{1}]", new Object[]{file.getName(), audioTable.getName()});
 
-        // ObjectOutputStream oos = null;
         try {
-//            final FileOutputStream fichier = new FileOutputStream(file);
-//            oos = new ObjectOutputStream(fichier);
-//            oos.writeObject(audioTable);
-//            oos.flush();
 
             JAXBContext context = JAXBContext.newInstance(AudioTable.class);
             Marshaller m = context.createMarshaller();
@@ -75,9 +67,9 @@ public class PersistenceUtil {
             m.marshal(audioTable, file);
 
         } catch (PropertyException ex) {
-            LOGGER.log(Level.SEVERE, "Erreur JAXB JAXB_FORMATTED_OUTPUT");
+            LOG.error("Erreur JAXB JAXB_FORMATTED_OUTPUT",ex);
         } catch (JAXBException ex) {
-            Logger.getLogger(PersistenceUtil.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error("Erreur JAXB",ex);
         }
 
     }
@@ -89,19 +81,23 @@ public class PersistenceUtil {
      * @return
      */
     public static AudioTable open(File file) {
-
-        LOGGER.log(Level.INFO, "Open {0} AudioTable file", file.getName());
-
+        LOG.debug("Open file {}",file.getAbsolutePath());
+        
         AudioTable audioTable = null;
         try {
             JAXBContext context = JAXBContext.newInstance(AudioTable.class);
             Unmarshaller um = context.createUnmarshaller();
             audioTable = (AudioTable) um.unmarshal(file);
+            
+            for (AudioMedia audioMedia  : audioTable.getAudioMediaList()) {
+                audioMedia.setAudioFile(new File(audioMedia.getFilePathName()));
+            }
+            
+            
         } catch (JAXBException ex) {
-            LOGGER.log(Level.SEVERE, "Une erreur est survenue lors de l'ouverture du fichier {0}",file.getName());
+            LOG.error("Erreur JAXB",ex);
         }
         return audioTable;
-
     }
 
     /**
@@ -138,12 +134,9 @@ public class PersistenceUtil {
     public static File getOpenAudioFile(final Scene scene) {
 
         File file = getFileChooser(TypeFileChooser.OPEN_AUDIO).showOpenDialog(scene.getWindow());
-       
-        
 
         if (file != null) {
             lastDirectory = file.toPath().getParent();
-            LOGGER.log(Level.INFO, "lastDirectory {0}", lastDirectory.toString());
         }
 
         return file;

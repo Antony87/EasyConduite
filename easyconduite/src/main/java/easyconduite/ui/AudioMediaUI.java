@@ -24,8 +24,8 @@ import easyconduite.objects.EasyconduiteException;
 import easyconduite.util.Config;
 import java.io.IOException;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -42,6 +42,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class encapsulates logics and behaviors about Custom UI Control of an
@@ -51,9 +53,7 @@ import javafx.scene.media.MediaPlayer.Status;
  */
 public class AudioMediaUI extends VBox {
 
-    private static final String CLASSNAME = AudioMediaUI.class.getName();
-
-    private static final Logger LOGGER = Config.getCustomLogger(CLASSNAME);
+    static final Logger LOG = LogManager.getLogger(AudioMediaUI.class);
 
     private static final String NAME_ICON_PLAY = "/icons/PlayGreenButton.png";
 
@@ -68,6 +68,8 @@ public class AudioMediaUI extends VBox {
     private static final Image REPEAT_IMAGE = new Image(AudioMediaUI.class.getResourceAsStream("/icons/repeat.png"), 18, 18, true, false);
 
     private final Label keycodeLabel = new Label();
+
+    private final ObjectProperty<KeyCode> keycode = new ReadOnlyObjectWrapper<>();
 
     private final Label nameLabel = new Label();
 
@@ -92,8 +94,7 @@ public class AudioMediaUI extends VBox {
      */
     public AudioMediaUI(AudioMedia media, EasyconduiteController controller) {
         super(10);
-
-        LOGGER.log(Level.INFO, "Create AudioMediaUI with {0}", media);
+        LOG.info("Construct an AudioMedia {}", media);
 
         audioMedia = media;
         ////////////////////////////////////////////////////////////////////////
@@ -124,8 +125,7 @@ public class AudioMediaUI extends VBox {
             });
 
         } catch (EasyconduiteException ex) {
-            // TODO Stop and display error dialog
-            Logger.getLogger(AudioMediaUI.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error("Error occurend during EasyPlayer construction", ex);
         }
 
         // attribution css for Track VBOX
@@ -143,7 +143,7 @@ public class AudioMediaUI extends VBox {
             Alert alert = ActionDialog.createActionDialog("Vous allez supprimer cette piste.");
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK) {
-                controller.removeAudioMediaUI(AudioMediaUI.this);
+                controller.removeAudioMedia(audioMedia,this);
             }
         });
 
@@ -158,7 +158,7 @@ public class AudioMediaUI extends VBox {
                 LinkKeyBoardDialog dialog = new LinkKeyBoardDialog(audioMedia, controller);
 
             } catch (IOException ex) {
-                LOGGER.log(Level.SEVERE, "Erreur chargement easyConduiteController");
+                LOG.error("Error loading LinkKeyBoardDialog", ex);
             }
         });
 
@@ -201,6 +201,7 @@ public class AudioMediaUI extends VBox {
         ////////////////////////////////////////////////////////////////////////
 
         // initialize KeyCodeLabel
+        keycode.bind(audioMedia.keycodeProperty());
         keycodeLabel.getStyleClass().add("labelkey-track");
         setKeycodeLabel();
 
@@ -235,5 +236,13 @@ public class AudioMediaUI extends VBox {
         hbox.setPrefWidth(100);
         hbox.setAlignment(Pos.CENTER);
         return hbox;
+    }
+
+    public ObjectProperty<KeyCode> keycodeProperty() {
+        return keycode;
+    }
+
+    public KeyCode getKeycode() {
+        return keycode.get();
     }
 }

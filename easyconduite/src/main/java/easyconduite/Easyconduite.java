@@ -16,15 +16,20 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  *
  * @author A. Fons
  */
 public class Easyconduite extends Application {
+    
+    static final Logger LOG = LogManager.getLogger(Easyconduite.class);
 
     @Override
     public void start(Stage stage) throws Exception {
+        LOG.info("Start Easyconduite with {}",stage.toString());
         
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/easyconduite32.png")));
 
@@ -40,7 +45,6 @@ public class Easyconduite extends Application {
         Timeline timeline = Chrono.getTimeline(ltimer);
         controller.setTimeline(timeline);
         controller.setScene(scene);
-        controller.setAudioTable(new AudioTable());
 
         stage.setTitle("EasyConduite 1.1");
         stage.setScene(scene);

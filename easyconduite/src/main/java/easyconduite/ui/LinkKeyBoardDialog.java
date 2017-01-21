@@ -21,16 +21,15 @@ import easyconduite.util.KeyCodeUtil;
 import easyconduite.controllers.EasyconduiteController;
 import easyconduite.objects.AudioMedia;
 import easyconduite.ui.model.EasyConduiteAbstractDialog;
-import easyconduite.util.Config;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class manage a dialog box, wich exposes affected key, name and repeat
@@ -40,15 +39,11 @@ import javafx.scene.input.MouseEvent;
  */
 public class LinkKeyBoardDialog extends EasyConduiteAbstractDialog {
 
-    private static final String CLASSNAME = LinkKeyBoardDialog.class.getName();
-
-    private static final Logger LOGGER = Config.getCustomLogger(CLASSNAME);
+    static final Logger LOG = LogManager.getLogger(LinkKeyBoardDialog.class);
 
     private static final String PATH_FXML = "/fxml/trackDialog.fxml";
 
-    private KeyCode chosenKey;
-
-    private final KeyCode existingKeyCode;
+    private KeyCode pressedKeyCode;
 
     private final CheckBox repeatTrack;
 
@@ -77,39 +72,43 @@ public class LinkKeyBoardDialog extends EasyConduiteAbstractDialog {
         TextField codeKeyboard = (TextField) getScene().lookup("#keytrackfield");
         codeKeyboard.setText(KeyCodeUtil.toString(audioMedia.getKeycode()));
 
-        existingKeyCode = this.audioMedia.getKeycode();
-
         // Event Handler for capture keycode
         codeKeyboard.setOnKeyReleased((KeyEvent event) -> {
-            chosenKey = event.getCode();
-            LOGGER.log(Level.INFO, "chosenKey {0}", chosenKey);
-            boolean keyExist = false;
-            keyExist = this.easycontroller.getAudioTable().getAudioMediaList().stream().anyMatch(x -> chosenKey.equals(x.getKeycode()));
-            if (keyExist && !chosenKey.equals(existingKeyCode)) {
-
-                Alert alertDeja = new Alert(Alert.AlertType.ERROR);
-                alertDeja.setTitle("Erreur attribution");
-                alertDeja.setHeaderText(null);
-                alertDeja.setContentText("Cette touche est déja attribuée");
-                alertDeja.showAndWait();
-                codeKeyboard.setText(null);
+            LOG.trace("Key {} was pressed", event.getCode());
+            codeKeyboard.clear();
+            pressedKeyCode = event.getCode();
+            if (pressedKeyCode != this.audioMedia.getKeycode()) {
+                boolean keyExist = this.easycontroller.isKeyCodeExist(pressedKeyCode);
+                if (keyExist) {
+                    Alert alertDeja = new Alert(Alert.AlertType.ERROR);
+                    alertDeja.setTitle("Erreur attribution");
+                    alertDeja.setHeaderText(null);
+                    alertDeja.setContentText("Cette touche est déja attribuée");
+                    alertDeja.showAndWait();
+                    codeKeyboard.setText(null);
+                    pressedKeyCode = null;
+                } else {
+                    codeKeyboard.setText(event.getCode().getName());
+                }
             } else {
-                codeKeyboard.setText(event.getCode().getName());
-                LOGGER.log(Level.FINE, "Assigned Keyboard {0} for AudioMedia {1}", new Object[]{chosenKey.toString(), this.audioMedia.getFilePathName()});
+                codeKeyboard.setText(KeyCodeUtil.toString(audioMedia.getKeycode()));
+                pressedKeyCode = null;
             }
+
         });
 
         codeKeyboard.setOnMousePressed((MouseEvent event) -> {
             codeKeyboard.clear();
+            pressedKeyCode = null;
         });
     }
 
     @Override
     public void onClickOkButton() {
         // update Map of KeyCode
-        if (chosenKey != existingKeyCode) {
-            this.audioMedia.setKeycode(chosenKey);
-            this.easycontroller.updateKeycodeMap(audioMedia);
+        if (pressedKeyCode != audioMedia.getKeycode()) {
+            this.audioMedia.setKeycode(pressedKeyCode);
+            LOG.debug("Key {} set for AudioMedia {}", pressedKeyCode, this.audioMedia);
         }
 
         this.audioMedia.setName(name.getText());

@@ -111,7 +111,7 @@
             </HBox>
          </top>
          <center>
-            <HBox fx:id="tableHbox" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" prefHeight="600.0" prefWidth="1024.0" spacing="5.0" BorderPane.alignment="CENTER_LEFT">
+            <HBox fx:id="tableLayout" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" prefHeight="600.0" prefWidth="1024.0" spacing="5.0" BorderPane.alignment="CENTER_LEFT">
                <BorderPane.margin>
                   <Insets />
                </BorderPane.margin>

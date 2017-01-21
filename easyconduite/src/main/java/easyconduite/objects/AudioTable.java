@@ -19,8 +19,8 @@
 package easyconduite.objects;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -34,44 +34,20 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AudioTable {
 
-    private String name="";
+    private String name = "";
 
     private Duration duration;
 
-    private List<AudioMedia> audioMediaList;
+    //private List<AudioMedia> audioMediaList;
+    private ObservableList<AudioMedia> audioMediaList;
 
     /**
      * Constructor.
-     * <br> Initialize the list of AudioFile.
+     * <br> Initialize the list of AudioMedia.
+     * <br> AudioMedia List is observable and have a callback for Keycode.
      */
     public AudioTable() {
-        this.audioMediaList = new ArrayList<>();
-    }
-
-    /**
-     * This method add an {@link AudioMedia} into the List if not already
-     * present.
-     *
-     * @param audioMedia Media audio to be put into de List.
-     */
-    public void addIfNotPresent(AudioMedia audioMedia) {
-
-        if (!audioMediaList.contains(audioMedia)) {
-            audioMediaList.add(audioMedia);
-        }
-    }
-
-    /**
-     * This method remove an {@link AudioMedia} from the list if present.
-     *
-     * @param audioMedia Media audio to be remove from the List.
-     */
-    public void removeIfPresent(AudioMedia audioMedia) {
-
-        if (audioMediaList.contains(audioMedia)) {
-            audioMediaList.remove(audioMedia);
-        }
-
+        audioMediaList = FXCollections.observableArrayList();
     }
 
     /**
@@ -97,7 +73,7 @@ public class AudioTable {
      *
      * @return
      */
-    public List<AudioMedia> getAudioMediaList() {
+    public ObservableList<AudioMedia> getAudioMediaList() {
         return audioMediaList;
     }
 
@@ -106,7 +82,7 @@ public class AudioTable {
      *
      * @param audioMediaList
      */
-    public void setAudioMediaList(List<AudioMedia> audioMediaList) {
+    public void setAudioMediaList(ObservableList<AudioMedia> audioMediaList) {
         this.audioMediaList = audioMediaList;
     }
 

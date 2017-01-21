@@ -34,6 +34,7 @@ import javafx.beans.property.StringProperty;
 import javafx.scene.input.KeyCode;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Class POJO that encapsulate AudioMedia behavior.
@@ -42,9 +43,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
  *
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public class AudioMedia {
+public class AudioMedia implements Comparable<AudioMedia> {
 
-    private UUID uniqueId;
+    private final UUID uniqueId = UUID.randomUUID();
 
     private File audioFile;
 
@@ -62,15 +63,13 @@ public class AudioMedia {
      * Default constructor, to be conform bean specification.
      */
     private AudioMedia() {
+        
     }
 
     public AudioMedia(File file) {
-
         // set default values;
         this.audioFile = file;
         this.filePathName = file.getAbsolutePath();
-        this.uniqueId = UUID.randomUUID();
-        setKeycode(KeyCode.UNDEFINED);
         setRepeatable(Boolean.FALSE);
         setVolume(0.5);
         Path path = file.toPath();
@@ -84,11 +83,8 @@ public class AudioMedia {
         return uniqueId;
     }
 
-    public final void setUniqueId(UUID uniqueId) {
-        this.uniqueId = uniqueId;
-    }
-
     ////////////////////////////////////////////////////////////////////////////
+    @XmlTransient
     public void setAudioFile(File audioFile) {
         this.audioFile = audioFile;
     }
@@ -108,7 +104,6 @@ public class AudioMedia {
     ////////////////////////////////////////////////////////////////////////////
     //                        JavaFX Properties
     ////////////////////////////////////////////////////////////////////////////
-
     public Boolean getRepeatable() {
         return repeatable.getValue();
     }
@@ -164,9 +159,9 @@ public class AudioMedia {
     public int hashCode() {
         int hash = 7;
         hash = 79 * hash + Objects.hashCode(this.uniqueId);
-        hash = 79 * hash + Objects.hashCode(this.audioFile);
-        hash = 79 * hash + Objects.hashCode(this.name);
-        hash = 79 * hash + Objects.hashCode(this.keycode);
+        hash = 79 * hash + Objects.hashCode(this.repeatable.get());
+        hash = 79 * hash + Objects.hashCode(this.name.getValue());
+        hash = 79 * hash + Objects.hashCode(this.keycode.getValue());
         return hash;
     }
 
@@ -199,7 +194,19 @@ public class AudioMedia {
 
     @Override
     public String toString() {
-        return "AudioMedia{" + "uniqueId=" + uniqueId + ", filePathName=" + filePathName + ", name=" + name + ", keycode=" + keycode + '}';
+        return "AudioMedia{" + "uniqueId=" + uniqueId + ", filePathName=" + filePathName + ", name=" + name.getValue() + ", keycode=" + keycode.getValue().getName() + '}';
+    }
+
+    @Override
+    public int compareTo(AudioMedia a) {
+        int diff = this.getUniqueId().compareTo(a.getUniqueId());
+        if (diff == 0) {
+            diff = this.getKeycode().compareTo(a.getKeycode());
+        }
+        if (diff == 0) {
+            diff = this.getName().compareTo(a.getName());
+        }
+        return diff;
     }
 
 }
