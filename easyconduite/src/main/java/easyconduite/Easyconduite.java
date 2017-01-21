@@ -6,7 +6,6 @@
 package easyconduite;
 
 import easyconduite.controllers.EasyconduiteController;
-import easyconduite.objects.AudioTable;
 import easyconduite.ui.Chrono;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -26,7 +25,7 @@ import org.apache.logging.log4j.LogManager;
 public class Easyconduite extends Application {
     
     static final Logger LOG = LogManager.getLogger(Easyconduite.class);
-
+    
     @Override
     public void start(Stage stage) throws Exception {
         LOG.info("Start Easyconduite with {}",stage.toString());
@@ -45,7 +44,6 @@ public class Easyconduite extends Application {
         Timeline timeline = Chrono.getTimeline(ltimer);
         controller.setTimeline(timeline);
         controller.setScene(scene);
-
         stage.setTitle("EasyConduite 1.1");
         stage.setScene(scene);
         stage.show();
@@ -56,6 +54,7 @@ public class Easyconduite extends Application {
      */
     public static void main(String[] args) {
 
+        
         launch(args);
     }
 
