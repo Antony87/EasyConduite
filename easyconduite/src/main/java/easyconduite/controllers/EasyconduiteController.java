@@ -167,14 +167,14 @@ public class EasyconduiteController implements Initializable {
     @FXML
     private void handlePauseAll(ActionEvent event) {
         mediaUIList.forEach(u -> {
-            u.getEasyPlayer().getPlayer().pause();
+            u.getEasyPlayer().pause();
         });
     }
 
     @FXML
     private void handleStopAll(ActionEvent event) {
         mediaUIList.forEach(u -> {
-            u.getEasyPlayer().getPlayer().stop();
+            u.getEasyPlayer().stop();
         });
     }
 

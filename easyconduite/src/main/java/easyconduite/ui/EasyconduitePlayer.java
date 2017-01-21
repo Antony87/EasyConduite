@@ -19,9 +19,6 @@ package easyconduite.ui;
 
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.EasyconduiteException;
-import easyconduite.util.Config;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyDoubleWrapper;
 import javafx.beans.value.ObservableValue;
@@ -30,6 +27,8 @@ import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -37,16 +36,15 @@ import javafx.util.Duration;
  */
 public class EasyconduitePlayer {
 
+    static final Logger LOG = LogManager.getLogger(EasyconduitePlayer.class);
+
     private final AudioMedia audioMedia;
 
-    private final MediaPlayer player;
+    private MediaPlayer player;
 
-    private final Duration totalDuration;
+    private Duration totalDuration;
 
     private DoubleProperty currentProgress = new ReadOnlyDoubleWrapper(0);
-
-    private static final String CLASSNAME = EasyconduitePlayer.class.getName();
-    private static final Logger LOGGER = Config.getCustomLogger(CLASSNAME);
 
     public static EasyconduitePlayer create(AudioMedia media) throws EasyconduiteException {
         return new EasyconduitePlayer(media);
@@ -54,29 +52,25 @@ public class EasyconduitePlayer {
 
     private EasyconduitePlayer(AudioMedia media) throws EasyconduiteException {
 
+        LOG.debug("Construct EasyconduitePlayer with AudioMedia[{}]", media);
+
         this.audioMedia = media;
         try {
             final Media mediaForPlayer = new Media(audioMedia.getAudioFile().toURI().toString());
             player = new MediaPlayer(mediaForPlayer);
         } catch (NullPointerException ne) {
-            LOGGER.log(Level.SEVERE, "File path for media is null or media is null for AUdioMedia[{0}]", audioMedia.getName());
             throw new EasyconduiteException("Impossible de trouver le fichier et de constituer le media", ne);
         } catch (IllegalArgumentException iae) {
-            LOGGER.log(Level.SEVERE, "File path for media is non-conform for AUdioMedia[{0}]", audioMedia.getName());
             throw new EasyconduiteException("Le chemin du fichier n'est pas conforme", iae);
         } catch (UnsupportedOperationException uoe) {
-            LOGGER.log(Level.SEVERE, "File acces isn't supported for AUdioMedia[{0}]", audioMedia.getName());
             throw new EasyconduiteException("Impossible d'acceder au fichier", uoe);
         } catch (MediaException me) {
-            LOGGER.log(Level.SEVERE, "File isn't supported for AUdioMedia[{0}]", audioMedia.getName());
             final String msg = "Impossible de charger le fichier [" + me.getType().toString() + "]";
             throw new EasyconduiteException(msg, me);
         }
 
         player.currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> {
-            if (newValue.greaterThan(oldValue)) {
-                setCurrentProgress(newValue.toSeconds() / player.getTotalDuration().toSeconds());
-            }
+            setCurrentProgress(newValue.toMillis() / totalDuration.toMillis());
         });
 
         player.setOnEndOfMedia(() -> {
@@ -92,45 +86,37 @@ public class EasyconduitePlayer {
             } else {
                 setRepeatable(false);
             }
-            player.seek(player.getStartTime());
+            setTotalDuration(player.getStopTime());
+            LOG.trace("Duration is {}", totalDuration.toMillis());
         });
         
-        player.setOnStopped(() -> {
-            currentProgressProperty().set((double) 0);
-        });
-
-        totalDuration = player.getTotalDuration();
-
         player.volumeProperty().bind(audioMedia.volumeProperty());
-
     }
 
     public final void stop() {
         player.stop();
     }
 
+    public final void pause() {
+        player.pause();
+    }
+
     public void playPause() {
 
         Status status = player.getStatus();
         if (status == null) {
-            LOGGER.warning("Play/pause with null status !");
         } else {
-            LOGGER.log(Level.FINE, "Play/pause action with {0}", status);
             switch (status) {
                 case PAUSED:
-                    LOGGER.log(Level.FINE, "Call Player play method");
                     player.play();
                     break;
                 case PLAYING:
-                    LOGGER.log(Level.FINE, "Call Player pause method");
                     player.pause();
                     break;
                 case READY:
-                    LOGGER.log(Level.FINE, "Call Player play method");
                     player.play();
                     break;
                 case STOPPED:
-                    LOGGER.log(Level.FINE, "Call Player play method");
                     player.play();
                     break;
                 case UNKNOWN:
@@ -146,8 +132,8 @@ public class EasyconduitePlayer {
     public MediaPlayer getPlayer() {
         return player;
     }
-    
-    public final Status getStatus(){
+
+    public final Status getStatus() {
         return player.getStatus();
     }
 
@@ -155,10 +141,7 @@ public class EasyconduitePlayer {
         if (player.getCycleCount() == MediaPlayer.INDEFINITE) {
             return false;
         }
-        if (player.getCycleCount() > 1) {
-            return true;
-        }
-        return false;
+        return player.getCycleCount() > 1;
     }
 
     public final void setRepeatable(boolean repeatable) {
@@ -167,6 +150,10 @@ public class EasyconduitePlayer {
         } else {
             player.setCycleCount(1);
         }
+    }
+
+    public final void setTotalDuration(Duration totalDuration) {
+        this.totalDuration = totalDuration;
     }
 
     public Duration getTotalDuration() {
@@ -178,7 +165,7 @@ public class EasyconduitePlayer {
     }
 
     public final void setCurrentProgress(Double current) {
-        currentProgress.set(current);
+        currentProgress.setValue(current);
     }
 
     public DoubleProperty currentProgressProperty() {
