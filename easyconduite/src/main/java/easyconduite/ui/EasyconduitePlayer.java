@@ -31,6 +31,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
+ * Class wraps a JavaFX MediaPlayer.<br>Offers severals features to
+ * EasyConduite.
  *
  * @author antony
  */
@@ -89,7 +91,7 @@ public class EasyconduitePlayer {
             setTotalDuration(player.getStopTime());
             LOG.trace("Duration is {}", totalDuration.toMillis());
         });
-        
+
         player.volumeProperty().bind(audioMedia.volumeProperty());
     }
 
