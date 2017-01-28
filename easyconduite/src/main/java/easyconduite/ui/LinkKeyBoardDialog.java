@@ -16,16 +16,16 @@
  */
 package easyconduite.ui;
 
-import easyconduite.util.KeyCodeUtil;
 import easyconduite.controllers.EasyconduiteController;
+import easyconduite.controllers.TrackConfigController;
 import easyconduite.objects.AudioMedia;
-import easyconduite.ui.model.EasyConduiteAbstractDialog;
 import java.io.IOException;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,85 +35,30 @@ import org.apache.logging.log4j.Logger;
  *
  * @author antony Fons
  */
-public class LinkKeyBoardDialog extends EasyConduiteAbstractDialog {
+public class LinkKeyBoardDialog extends Stage {
 
     static final Logger LOG = LogManager.getLogger(LinkKeyBoardDialog.class);
 
     private static final String PATH_FXML = "/fxml/trackDialog.fxml";
 
-    private KeyCode pressedKeyCode;
+    public LinkKeyBoardDialog(AudioMedia media, EasyconduiteController mainController) throws IOException {
+        
+        LOG.debug("LinkKeyBoardDialog with AudioMedia[{}] and EasyconduiteController[{}]", media.getFilePathName(), mainController);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(PATH_FXML));
 
-    private final CheckBox repeatTrack;
+        // Initialize controllers        
+        BorderPane dialogPane = (BorderPane) loader.load();
+        TrackConfigController configController = loader.getController();
 
-    private final TextField name;
+        this.setTitle("Configuration");
+        this.initModality(Modality.APPLICATION_MODAL);
+        this.initStyle(StageStyle.UTILITY);
+        this.setResizable(false);
 
-    private final AudioMedia audioMedia;
-
-    private final EasyconduiteController easycontroller;
-
-    public LinkKeyBoardDialog(AudioMedia media, EasyconduiteController controller) throws IOException {
-
-        super(PATH_FXML, "Propriétes de la piste audio", controller);
-
-        this.audioMedia = media;
-
-        this.easycontroller = controller;
-
-        //audioMediaUI = anAudioMediaUI;
-        // initialize fields
-        name = (TextField) getScene().lookup("#nametrackfield");
-        name.setText(this.audioMedia.getName());
-
-        repeatTrack = (CheckBox) getScene().lookup("#repeattrack");
-        repeatTrack.setSelected(this.audioMedia.getRepeatable());
-
-        TextField codeKeyboard = (TextField) getScene().lookup("#keytrackfield");
-        codeKeyboard.setText(KeyCodeUtil.toString(audioMedia.getKeycode()));
-
-        // Event Handler for capture keycode
-        codeKeyboard.setOnKeyReleased((KeyEvent event) -> {
-            LOG.trace("Key {} was pressed", event.getCode());
-            codeKeyboard.clear();
-            pressedKeyCode = event.getCode();
-            if (pressedKeyCode != this.audioMedia.getKeycode()) {
-                boolean keyExist = this.easycontroller.isKeyCodeExist(pressedKeyCode);
-                if (keyExist) {
-                    ActionDialog.showWarning("Cette touche est déjà attribuée", "Choisissez en une autre");
-                    codeKeyboard.setText(null);
-                    pressedKeyCode = null;
-                } else {
-                    codeKeyboard.setText(event.getCode().getName());
-                }
-            } else {
-                codeKeyboard.setText(KeyCodeUtil.toString(audioMedia.getKeycode()));
-                pressedKeyCode = null;
-            }
-
-        });
-
-        codeKeyboard.setOnMousePressed((MouseEvent event) -> {
-            codeKeyboard.clear();
-            pressedKeyCode = null;
-        });
+        this.setScene(new Scene(dialogPane));
+        
+        configController.setAudioConfig(media,mainController,LinkKeyBoardDialog.this);
+        
+        this.show();
     }
-
-    @Override
-    public void onClickOkButton() {
-        // update Map of KeyCode
-        if (pressedKeyCode != audioMedia.getKeycode()) {
-            this.audioMedia.setKeycode(pressedKeyCode);
-            LOG.debug("Key {} set for AudioMedia {}", pressedKeyCode, this.audioMedia);
-        }
-
-        this.audioMedia.setName(name.getText());
-        this.audioMedia.setRepeatable(repeatTrack.selectedProperty().getValue());
-
-        close();
-    }
-
-    @Override
-    public void onClickCancelButton() {
-        close();
-    }
-
 }

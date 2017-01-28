@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="400.0" styleClass="border-pane" stylesheets="@../../styles/trackdialog.css" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="400.0" styleClass="border-pane" stylesheets="@../../styles/trackdialog.css" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.TrackConfigController">
    <center>
       <GridPane BorderPane.alignment="CENTER_RIGHT">
         <columnConstraints>
@@ -33,7 +33,7 @@
                   <Insets left="10.0" right="10.0" />
                </GridPane.margin>
             </TextField>
-            <TextField fx:id="keytrackfield" alignment="CENTER" maxWidth="150.0" prefWidth="150.0" promptText="pressez une touche" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <TextField fx:id="keytrackfield" alignment="CENTER" maxWidth="150.0" onKeyReleased="#handleKeyReleasedTrack" onMouseReleased="#handleClickKeyField" prefWidth="150.0" promptText="pressez une touche" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets left="10.0" right="10.0" />
                </GridPane.margin>
@@ -94,8 +94,8 @@
    <bottom>
       <HBox alignment="CENTER" prefHeight="80.0" prefWidth="200.0" spacing="50.0" BorderPane.alignment="CENTER">
          <children>
-            <Button id="cancelbutton" fx:id="cancelbutton" cancelButton="true" maxWidth="90.0" minWidth="90.0" mnemonicParsing="false" styleClass="cancelbutton" text="Annuler" />
-            <Button id="okbutton" fx:id="okbutton" defaultButton="true" graphicTextGap="6.0" maxWidth="90.0" minWidth="90.0" mnemonicParsing="false" prefWidth="0.0" text="Ok" />
+            <Button id="cancelbutton" fx:id="cancelbutton" cancelButton="true" maxWidth="90.0" minWidth="90.0" mnemonicParsing="false" onMouseReleased="#handleClickCancel" styleClass="cancelbutton" text="Annuler" />
+            <Button id="okbutton" fx:id="okbutton" defaultButton="true" graphicTextGap="6.0" maxWidth="90.0" minWidth="90.0" mnemonicParsing="false" onMouseReleased="#handleClickOk" prefWidth="0.0" text="Ok" />
          </children>
          <BorderPane.margin>
             <Insets />
