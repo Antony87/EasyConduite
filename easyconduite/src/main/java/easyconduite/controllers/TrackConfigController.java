@@ -26,6 +26,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -38,41 +40,47 @@ import org.apache.logging.log4j.Logger;
  * @author antony
  */
 public class TrackConfigController implements Initializable {
-    
+
     static final Logger LOG = LogManager.getLogger(TrackConfigController.class);
-    
+
     private EasyconduiteController mainController;
-    
+
     private AudioMedia audioMedia;
-    
+
     private LinkKeyBoardDialog configDialog;
-    
+
     private KeyCode newKeyCode;
-    
+
     private boolean keyCodeChanged;
-    
+
     @FXML
     private TextField nametrackfield;
-    
+
     @FXML
     private TextField keytrackfield;
-    
+
     @FXML
     private CheckBox repeattrack;
-    
+
+    @FXML
+    private Spinner fadeInSpinner;
+
+    @FXML
+    private Spinner fadeOutSpinner;
+
     @FXML
     private Button cancelbutton;
-    
+
     @FXML
     private Button okbutton;
-    
+
     @FXML
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         LOG.trace("TrackConfigController initialized");
         keyCodeChanged = false;
     }
-    
+
     @FXML
     public void handleClickOk(MouseEvent event) {
         audioMedia.setName(nametrackfield.getText());
@@ -82,19 +90,19 @@ public class TrackConfigController implements Initializable {
         audioMedia.setRepeatable(repeattrack.selectedProperty().getValue());
         configDialog.close();
     }
-    
+
     @FXML
     public void handleClickCancel(MouseEvent event) {
         configDialog.close();
     }
-    
+
     @FXML
     public void handleClickKeyField(MouseEvent event) {
         keyCodeChanged = true;
         newKeyCode = null;
         keytrackfield.clear();
     }
-    
+
     @FXML
     public void handleKeyReleasedTrack(KeyEvent event) {
         final KeyCode typedKeycode = event.getCode();
@@ -108,20 +116,25 @@ public class TrackConfigController implements Initializable {
                 keyCodeChanged = true;
             }
         }
-        
+
     }
-    
+
     public void setAudioConfig(AudioMedia media, EasyconduiteController controller, LinkKeyBoardDialog configDialog) {
         this.mainController = controller;
         audioMedia = media;
         nametrackfield.setText(audioMedia.getName());
         keytrackfield.setText(KeyCodeUtil.toString(audioMedia.getKeycode()));
-        repeattrack.setSelected(audioMedia.getRepeatable());      
+        repeattrack.setSelected(audioMedia.getRepeatable());
         this.configDialog = configDialog;
+
+        SpinnerValueFactory<Integer> valueFadeInFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
+        fadeInSpinner.setValueFactory(valueFadeInFactory);
+        SpinnerValueFactory<Integer> valueFadeOutFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
+        fadeOutSpinner.setValueFactory(valueFadeOutFactory);
     }
-    
+
     public void setNewKeyCode(KeyCode newKeyCode) {
         this.newKeyCode = newKeyCode;
     }
-    
+
 }
