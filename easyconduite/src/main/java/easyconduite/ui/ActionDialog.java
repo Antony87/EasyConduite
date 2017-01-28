@@ -16,31 +16,46 @@
  */
 package easyconduite.ui;
 
+import java.util.Optional;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
+import javafx.stage.Modality;
 
 /**
  *
  * @author antony
  */
 public class ActionDialog {
-
-    public static Alert createActionDialog(String message) {
-
-        Alert alert = new Alert(AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation");
-        alert.setHeaderText(message);
-        alert.setContentText("confirmez-vous cette action ?");
-        return alert;
-
+    
+    private final static String INFORM_TITLE="Information";
+    private final static String CONFIRM_TITLE="Demande de confirmation";
+    private final static String WARNING_TITLE="Attention";
+        
+    public static Optional<ButtonType> showConfirmation(String header, String content) {
+        final Alert a = getAlert(CONFIRM_TITLE, header, content);
+        a.setAlertType(AlertType.CONFIRMATION);
+        return a.showAndWait();
     }
-
-    public static void displayErrorDialog(String message) {
-        Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle("Message d'erreur");
-        alert.setHeaderText("Une erreur est survenue :");
-        alert.setContentText(message);
-        alert.showAndWait();
+    
+    public static void showWarning(String header, String content) {
+        final Alert a = getAlert(WARNING_TITLE, header, content);
+        a.setAlertType(AlertType.WARNING);
+        a.showAndWait();
     }
-
+    
+    public static void showInformation(String header, String content) {
+        final Alert a = getAlert(INFORM_TITLE, header, content);
+        a.setAlertType(AlertType.INFORMATION);
+        a.showAndWait();
+    }
+    
+    private static Alert getAlert(String title, String header, String content) {
+        final Alert a = new Alert(AlertType.NONE);
+        a.initModality(Modality.APPLICATION_MODAL);
+        a.setHeaderText(header);
+        a.setTitle(title);
+        a.setContentText(content);
+        return a;
+    }
 }

@@ -36,7 +36,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
@@ -101,8 +100,8 @@ public class EasyconduiteController implements Initializable {
 
         File file = null;
         if (mediaUIList.size() > 0) {
-            Alert alert = ActionDialog.createActionDialog("Charger un projet écrasera l'actuel");
-            Optional<ButtonType> result = alert.showAndWait();
+
+            Optional<ButtonType> result = ActionDialog.showConfirmation("Charger un nouveau fichier écrasera l'existant.", "Voulez-vous continuer ?");
             if (result.get() == ButtonType.OK) {
                 file = PersistenceUtil.getOpenProjectFile(scene);
             }

@@ -25,10 +25,8 @@ import java.io.IOException;
 import java.util.Optional;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -38,7 +36,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
@@ -134,8 +131,7 @@ public class AudioMediaUI extends VBox {
         HBox topHbox = hBoxForTrack();
 
         button_delete.setOnMouseClicked((MouseEvent event) -> {
-            Alert alert = ActionDialog.createActionDialog("Vous allez supprimer cette piste.");
-            Optional<ButtonType> result = alert.showAndWait();
+            Optional<ButtonType> result = ActionDialog.showConfirmation("Vous allez supprimer cette piste", "Voulez-vous continuer ?");
             if (result.get() == ButtonType.OK) {
                 controller.removeAudioMedia(audioMedia, this);
             }

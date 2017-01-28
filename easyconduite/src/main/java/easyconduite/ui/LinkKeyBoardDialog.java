@@ -21,7 +21,6 @@ import easyconduite.controllers.EasyconduiteController;
 import easyconduite.objects.AudioMedia;
 import easyconduite.ui.model.EasyConduiteAbstractDialog;
 import java.io.IOException;
-import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -79,11 +78,7 @@ public class LinkKeyBoardDialog extends EasyConduiteAbstractDialog {
             if (pressedKeyCode != this.audioMedia.getKeycode()) {
                 boolean keyExist = this.easycontroller.isKeyCodeExist(pressedKeyCode);
                 if (keyExist) {
-                    Alert alertDeja = new Alert(Alert.AlertType.ERROR);
-                    alertDeja.setTitle("Erreur attribution");
-                    alertDeja.setHeaderText(null);
-                    alertDeja.setContentText("Cette touche est déja attribuée");
-                    alertDeja.showAndWait();
+                    ActionDialog.showWarning("Cette touche est déjà attribuée", "Choisissez en une autre");
                     codeKeyboard.setText(null);
                     pressedKeyCode = null;
                 } else {
