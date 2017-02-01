@@ -17,6 +17,7 @@
 package easyconduite.controllers;
 
 import easyconduite.objects.AudioMedia;
+import easyconduite.objects.AudioMediaConfigurator;
 import easyconduite.ui.ActionDialog;
 import easyconduite.ui.LinkKeyBoardDialog;
 import easyconduite.util.KeyCodeUtil;
@@ -51,8 +52,6 @@ public class TrackConfigController implements Initializable {
 
     private KeyCode newKeyCode;
 
-    private boolean keyCodeChanged;
-
     @FXML
     private TextField nametrackfield;
 
@@ -74,32 +73,35 @@ public class TrackConfigController implements Initializable {
     @FXML
     private Button okbutton;
 
+    private AudioMediaConfigurator mediaConfigurator;
+
     @FXML
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         LOG.trace("TrackConfigController initialized");
-        keyCodeChanged = false;
     }
 
     @FXML
     public void handleClickOk(MouseEvent event) {
-        audioMedia.setName(nametrackfield.getText());
-        if (keyCodeChanged) {
-            audioMedia.setKeycode(newKeyCode);
-        }
-        audioMedia.setRepeatable(repeattrack.selectedProperty().getValue());
+        mediaConfigurator = mediaConfigurator.withName(nametrackfield.getText());
+        mainController.updateAudioMedia(mediaConfigurator, audioMedia);
         configDialog.close();
     }
 
     @FXML
+    public void handleClickRepeat(MouseEvent event) {
+        mediaConfigurator = mediaConfigurator.withRepeat(repeattrack.selectedProperty().getValue());
+    }
+
+    @FXML
     public void handleClickCancel(MouseEvent event) {
+        mediaConfigurator = null;
         configDialog.close();
     }
 
     @FXML
     public void handleClickKeyField(MouseEvent event) {
-        keyCodeChanged = true;
-        newKeyCode = null;
+        mediaConfigurator = mediaConfigurator.withKeyCodeChanged(null);
         keytrackfield.clear();
     }
 
@@ -113,7 +115,7 @@ public class TrackConfigController implements Initializable {
             if (typedKeycode != audioMedia.getKeycode()) {
                 setNewKeyCode(typedKeycode);
                 keytrackfield.setText(KeyCodeUtil.toString(typedKeycode));
-                keyCodeChanged = true;
+                mediaConfigurator = mediaConfigurator.withKeyCodeChanged(newKeyCode);
             }
         }
 
@@ -131,6 +133,9 @@ public class TrackConfigController implements Initializable {
         fadeInSpinner.setValueFactory(valueFadeInFactory);
         SpinnerValueFactory<Integer> valueFadeOutFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
         fadeOutSpinner.setValueFactory(valueFadeOutFactory);
+
+        mediaConfigurator = new AudioMediaConfigurator();
+
     }
 
     public void setNewKeyCode(KeyCode newKeyCode) {

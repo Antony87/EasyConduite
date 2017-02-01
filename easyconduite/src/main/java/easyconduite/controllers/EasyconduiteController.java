@@ -16,13 +16,14 @@
  */
 package easyconduite.controllers;
 
-import easyconduite.util.PersistenceUtil;
 import easyconduite.objects.AudioMedia;
+import easyconduite.objects.AudioMediaConfigurator;
 import easyconduite.objects.AudioTable;
 import easyconduite.ui.AboutDialog;
 import easyconduite.ui.ActionDialog;
 import easyconduite.ui.AudioMediaUI;
 import easyconduite.ui.Chrono;
+import easyconduite.util.PersistenceUtil;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -197,7 +198,6 @@ public class EasyconduiteController implements Initializable {
         } catch (IOException ex) {
             LOG.error("An error occured", ex);
         }
-
     }
 
     @Override
@@ -205,6 +205,10 @@ public class EasyconduiteController implements Initializable {
         LOG.debug("Controler initialisation");
         audioTable = new AudioTable();
         mediaUIList = new ArrayList<>();
+    }
+    
+    public void updateAudioMedia(AudioMediaConfigurator configurator, AudioMedia audioMedia){
+        configurator.update(audioMedia);
     }
 
     public boolean isKeyCodeExist(KeyCode keycode) {

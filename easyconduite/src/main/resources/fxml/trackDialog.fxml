@@ -56,7 +56,7 @@
                   <Font name="Arial Black" size="12.0" />
                </font>
             </Label>
-            <CheckBox fx:id="repeattrack" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <CheckBox fx:id="repeattrack" mnemonicParsing="false" onMouseReleased="#handleClickRepeat" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <GridPane.margin>
                   <Insets left="20.0" />
                </GridPane.margin>
