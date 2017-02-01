@@ -16,9 +16,9 @@
  */
 package easyconduite.objects;
 
-import java.time.Duration;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.util.Duration;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author A Fons
  */
 @XmlRootElement(name = "audiotable")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class AudioTable {
 
     private String name = "";
