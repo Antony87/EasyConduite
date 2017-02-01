@@ -18,9 +18,6 @@ package easyconduite.ui;
 
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.EasyconduiteException;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ReadOnlyDoubleWrapper;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
@@ -43,10 +40,7 @@ public class EasyconduitePlayer {
 
     private MediaPlayer player;
 
-    private Duration totalDuration;
-
-    private DoubleProperty currentProgress = new ReadOnlyDoubleWrapper(0);
-
+    //private DoubleProperty currentProgress = new ReadOnlyDoubleWrapper(0);
     public static EasyconduitePlayer create(AudioMedia media) throws EasyconduiteException {
         return new EasyconduitePlayer(media);
     }
@@ -70,10 +64,6 @@ public class EasyconduitePlayer {
             throw new EasyconduiteException(msg, me);
         }
 
-        player.currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> {
-            setCurrentProgress(newValue.toMillis() / totalDuration.toMillis());
-        });
-
         player.setOnEndOfMedia(() -> {
             // if repeat is false, force to stop de player.
             if (!audioMedia.getRepeatable()) {
@@ -82,16 +72,13 @@ public class EasyconduitePlayer {
         });
 
         player.setOnReady(() -> {
-            if (audioMedia.getRepeatable()) {
-                setRepeatable(true);
-            } else {
-                setRepeatable(false);
-            }
-            setTotalDuration(player.getStopTime());
-            LOG.trace("Duration is {}", totalDuration.toMillis());
+            setRepeatable(audioMedia.getRepeatable());
+            // Get duration by StopTime and put to the AudioMedia property.
+            this.audioMedia.setAudioDuration(player.getStopTime());
+            player.setOnReady(null);
         });
 
-        player.volumeProperty().bind(audioMedia.volumeProperty());
+        player.volumeProperty().bind(audioMedia.volumeProperty().divide(100));
     }
 
     public final void stop() {
@@ -152,25 +139,4 @@ public class EasyconduitePlayer {
             player.setCycleCount(1);
         }
     }
-
-    public final void setTotalDuration(Duration totalDuration) {
-        this.totalDuration = totalDuration;
-    }
-
-    public Duration getTotalDuration() {
-        return totalDuration;
-    }
-
-    public Double getCurrentProgress() {
-        return currentProgress.doubleValue();
-    }
-
-    public final void setCurrentProgress(Double current) {
-        currentProgress.setValue(current);
-    }
-
-    public DoubleProperty currentProgressProperty() {
-        return currentProgress;
-    }
-
 }

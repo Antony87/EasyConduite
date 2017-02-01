@@ -16,12 +16,13 @@
  */
 package easyconduite.ui;
 
-import easyconduite.util.KeyCodeUtil;
 import easyconduite.controllers.EasyconduiteController;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.EasyconduiteException;
 import easyconduite.util.Const;
+import easyconduite.util.KeyCodeUtil;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -39,6 +40,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
+import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -140,13 +142,12 @@ public class AudioMediaUI extends VBox {
         // create button wich link a key to an AudioMedia
         button_config.setOnMouseClicked((MouseEvent event) -> {
             try {
-                this.audioMedia.keycodeProperty().addListener((ObservableValue<? extends KeyCode> observable, KeyCode oldValue, KeyCode newValue) -> {
+                AudioMediaUI.this.audioMedia.keycodeProperty().addListener((ObservableValue<? extends KeyCode> observable, KeyCode oldValue, KeyCode newValue) -> {
                     if (newValue != oldValue) {
                         keycodeLabel.setText(KeyCodeUtil.toString(newValue));
                     }
                 });
                 LinkKeyBoardDialog dialog = new LinkKeyBoardDialog(audioMedia, controller);
-
             } catch (IOException ex) {
                 LOG.error("Error loading LinkKeyBoardDialog", ex);
             }
@@ -156,14 +157,16 @@ public class AudioMediaUI extends VBox {
         ////////////////////////////////////////////////////////////////////////
 
         // Slider for volume control
-        Slider curseVolume = new Slider(0, 1, this.audioMedia.getVolume());
+        Slider curseVolume = new Slider(0, 100, this.audioMedia.getVolume());
         curseVolume.getStyleClass().add("slider-volume-track");
         curseVolume.valueProperty().bindBidirectional(this.audioMedia.volumeProperty());
 
         // Progressbar /////////////////////////////////////////////////////////
         progressTrack = new ProgressBar(0);
         progressTrack.getStyleClass().add("progress-bar-track");
-        progressTrack.progressProperty().bind(player.currentProgressProperty());
+        player.getPlayer().currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> {
+            progressTrack.setProgress(newValue.toMillis() / this.audioMedia.getAudioDuration().toMillis());
+        });
         ////////////////////////////////////////////////////////////////////////
 
         // ToolBar with Stop and play button ///////////////////////////////////
@@ -181,9 +184,11 @@ public class AudioMediaUI extends VBox {
         ////////////////////////////////////////////////////////////////////////
 
         //initialize repeat icon
-        setRepeatable(audioMedia.getRepeatable());
+        //setRepeatable(audioMedia.getRepeatable());
         audioMedia.repeatable.addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            setRepeatable(newValue);
+            if (!Objects.equals(newValue, oldValue)) {
+                setRepeatable(newValue);
+            }
         });
         // icone repeat for repeat /////////////////////////////////////////////
         repeatImageView.setFitHeight(18);
@@ -223,7 +228,7 @@ public class AudioMediaUI extends VBox {
     private HBox hBoxForTrack() {
 
         HBox hbox = new HBox(10);
-        hbox.setPrefWidth(100);
+        hbox.setPrefWidth(80);
         hbox.setAlignment(Pos.CENTER);
         return hbox;
     }

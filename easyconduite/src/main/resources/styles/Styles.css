@@ -23,7 +23,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 .track-vbox {
     -fx-padding: 10 0 10 0;
     -fx-alignment :CENTER;
-    -fx-pref-width : 100;
+    -fx-pref-width : 90;
+    -fx-pref-height : 400;
+    -fx-max-height : 400;
+    -fx-min-height : 400;
     -fx-background-color: #535965; 
 }
 
@@ -38,10 +41,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 .texte-track {
     -fx-font-size: 12;
-    -fx-pref-width: 80;
-    -fx-text-fill:whitesmoke;
-    -fx-text-alignment:center;
-    -fx-focus-traversable:false;  
+    -fx-pref-width: 85;
+    -fx-text-fill: whitesmoke;
+    -fx-text-alignment: center;
+    -fx-focus-traversable: false;  
 }
 
 .labelkey-track {
@@ -67,16 +70,23 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     -fx-focus-traversable:false;    
 }
 
-.check-box-repeat {
-
-}
-
 .slider-volume-track {
     -fx-orientation: vertical;
-    -fx-pref-height: 250;
-    -fx-block-increment: 0.05;
+    -fx-pref-height: 190;
+    -fx-block-increment: 10;
     -fx-show-tick-marks : true;
-    -fx-major-tick-unit:0.1;
-    -fx-snap-to-ticks:true;
+    -fx-major-tick-unit: 20;
+    //-fx-snap-to-ticks:true;
+}
+
+.slider-volume-track .thumb { 
+    -fx-scale-x : 1.4;
+    -fx-scale-y : 1.4;
+}
+.slider-volume-track .thumb:hover {
+    -fx-cursor: hand;
+}
+.slider-volume-track .thumb:pressed {
+    -fx-cursor: hand;
 }
 // fin de la css
