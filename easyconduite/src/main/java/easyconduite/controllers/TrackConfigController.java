@@ -44,43 +44,43 @@ import org.apache.logging.log4j.Logger;
  * @author antony
  */
 public class TrackConfigController extends BorderPane implements Initializable, AudioConfigChain {
-    
+
     static final Logger LOG = LogManager.getLogger(TrackConfigController.class);
-    
+
     private EasyconduiteController mainController;
-    
+
     private AudioMedia audioMedia;
-    
+
     private KeyCode newKeyCode;
-    
+
     @FXML
     private BorderPane configDialogPane;
-    
+
     @FXML
     private TextField nametrackfield;
-    
+
     @FXML
     private TextField keytrackfield;
-    
+
     @FXML
     private CheckBox repeattrack;
-    
+
     @FXML
     private Spinner fadeInSpinner;
-    
+
     @FXML
     private Spinner fadeOutSpinner;
-    
+
     @FXML
     private Button cancelbutton;
-    
+
     @FXML
     private Button okbutton;
-    
+
     private AudioMediaConfigurator mediaConfigurator;
-    
+
     private AudioConfigChain nextChain;
-    
+
     public TrackConfigController() {
         mediaConfigurator = new AudioMediaConfigurator();
     }
@@ -101,31 +101,31 @@ public class TrackConfigController extends BorderPane implements Initializable, 
         SpinnerValueFactory<Integer> valueFadeOutFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
         fadeOutSpinner.setValueFactory(valueFadeOutFactory);
     }
-    
+
     @FXML
     private void handleClickOk(MouseEvent event) {
         mediaConfigurator = mediaConfigurator.withName(nametrackfield.getText());
         this.chainConfigure(this.audioMedia);
         this.close();
     }
-    
-    @FXML
-    private void handleClickRepeat(MouseEvent event) {
-        mediaConfigurator = mediaConfigurator.withRepeat(repeattrack.selectedProperty().getValue());
-    }
-    
+
     @FXML
     private void handleClickCancel(MouseEvent event) {
         mediaConfigurator = null;
         this.close();
     }
-    
+
+    @FXML
+    private void handleClickRepeat(MouseEvent event) {
+        mediaConfigurator = mediaConfigurator.withRepeat(repeattrack.selectedProperty().getValue());
+    }
+
     @FXML
     private void handleClickKeyField(MouseEvent event) {
         mediaConfigurator = mediaConfigurator.withKeyCodeChanged(null);
         keytrackfield.clear();
     }
-    
+
     @FXML
     private void handleKeyReleasedTrack(KeyEvent event) {
         final KeyCode typedKeycode = event.getCode();
@@ -155,19 +155,19 @@ public class TrackConfigController extends BorderPane implements Initializable, 
         keytrackfield.setText(KeyCodeUtil.toString(media.getKeycode()));
         repeattrack.setSelected(media.getRepeatable());
     }
-    
+
     private void close() {
         final Stage stage = (Stage) configDialogPane.getScene().getWindow();
         stage.close();
     }
-    
+
     @Override
     public void setNext(AudioConfigChain next) {
         this.nextChain = next;
     }
-    
+
     @Override
-    public void chainConfigure(AudioMedia media) {  
+    public void chainConfigure(AudioMedia media) {
         mediaConfigurator.update(this.audioMedia);
         setNext(mainController);
         nextChain.chainConfigure(this.audioMedia);

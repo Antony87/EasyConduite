@@ -115,6 +115,7 @@ public class EasyconduiteController extends Pane implements Initializable, Audio
             for (AudioMedia audioMedia : audioTable.getAudioMediaList()) {
                 AudioMediaUI audioMediaUI = new AudioMediaUI(audioMedia, EasyconduiteController.this);
                 mediaUIList.add(audioMediaUI);
+                audioMediaUI.chainConfigure(audioMedia);
                 tableLayout.getChildren().add(audioMediaUI);
             }
         }
