@@ -17,12 +17,12 @@
 package easyconduite.ui;
 
 import easyconduite.controllers.EasyconduiteController;
+import easyconduite.model.AudioConfigChain;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.EasyconduiteException;
 import easyconduite.util.Const;
 import easyconduite.util.KeyCodeUtil;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.Optional;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -50,7 +50,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author A Fons
  */
-public class AudioMediaUI extends VBox {
+public class AudioMediaUI extends VBox implements AudioConfigChain {
 
     static final Logger LOG = LogManager.getLogger(AudioMediaUI.class);
 
@@ -76,6 +76,8 @@ public class AudioMediaUI extends VBox {
 
     private final ProgressIndicator progressTrack;
 
+    private AudioConfigChain nextChain;
+
     //private final EasyconduiteController easyConduiteController;
     /**
      * Constructor du UI custom control for an AudioMedia.<br>
@@ -98,7 +100,7 @@ public class AudioMediaUI extends VBox {
         try {
 
             player = EasyconduitePlayer.create(media);
-
+            
             // Listenning player Status property
             player.getPlayer().statusProperty().addListener((ObservableValue<? extends Status> observable, Status oldValue, Status newValue) -> {
                 switch (newValue) {
@@ -120,13 +122,14 @@ public class AudioMediaUI extends VBox {
         } catch (EasyconduiteException ex) {
             LOG.error("Error occurend during EasyPlayer construction", ex);
         }
+        // Positionne la chaine de responsabilité
+        this.setNext(player);
 
         // attribution css for Track VBOX
         this.getStyleClass().add("track-vbox");
 
         // Label for name of the track /////////////////////////////////////////
         nameLabel.getStyleClass().add("texte-track");
-        nameLabel.textProperty().bind(audioMedia.nameProperty());
         ////////////////////////////////////////////////////////////////////////
 
         // ToolBar with delete and confugure button ////////////////////////////
@@ -141,16 +144,17 @@ public class AudioMediaUI extends VBox {
 
         // create button wich link a key to an AudioMedia
         button_config.setOnMouseClicked((MouseEvent event) -> {
+            AudioMediaUI.this.audioMedia.keycodeProperty().addListener((ObservableValue<? extends KeyCode> observable, KeyCode oldValue, KeyCode newValue) -> {
+                if (newValue != oldValue) {
+                    keycodeLabel.setText(KeyCodeUtil.toString(newValue));
+                }
+            });
             try {
-                AudioMediaUI.this.audioMedia.keycodeProperty().addListener((ObservableValue<? extends KeyCode> observable, KeyCode oldValue, KeyCode newValue) -> {
-                    if (newValue != oldValue) {
-                        keycodeLabel.setText(KeyCodeUtil.toString(newValue));
-                    }
-                });
-                LinkKeyBoardDialog dialog = new LinkKeyBoardDialog(audioMedia, controller);
+                final TrackConfigDialog trackConfigDialog = new TrackConfigDialog(this.audioMedia, controller);
             } catch (IOException ex) {
-                LOG.error("Error loading LinkKeyBoardDialog", ex);
+                LOG.error("Error occurend during TrackConfigDialog construction", ex);
             }
+
         });
 
         topHbox.getChildren().addAll(button_delete, button_config);
@@ -185,20 +189,20 @@ public class AudioMediaUI extends VBox {
 
         //initialize repeat icon
         //setRepeatable(audioMedia.getRepeatable());
-        audioMedia.repeatable.addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            if (!Objects.equals(newValue, oldValue)) {
-                setRepeatable(newValue);
-            }
-        });
+//        audioMedia.repeatable.addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+//            if (!Objects.equals(newValue, oldValue)) {
+//                setRepeatable(newValue);
+//            }
+//        });
         // icone repeat for repeat /////////////////////////////////////////////
         repeatImageView.setFitHeight(18);
         repeatImageView.setFitWidth(18);
         ////////////////////////////////////////////////////////////////////////
 
         // initialize KeyCodeLabel
-        keycode.bind(audioMedia.keycodeProperty());
+//        keycode.bind(audioMedia.keycodeProperty());
         keycodeLabel.getStyleClass().add("labelkey-track");
-        setKeycodeLabel();
+//        setKeycodeLabel();
 
         this.getChildren().addAll(nameLabel, topHbox, curseVolume, progressTrack, bottomHbox, repeatImageView, keycodeLabel);
 
@@ -209,7 +213,7 @@ public class AudioMediaUI extends VBox {
     }
 
     private void setRepeatable(boolean repeatable) {
-        player.setRepeatable(repeatable);
+//        player.setRepeatable(repeatable);
         if (repeatable) {
             repeatImageView.setImage(Const.REPEAT_IMAGE);
         } else {
@@ -217,9 +221,9 @@ public class AudioMediaUI extends VBox {
         }
     }
 
-    private void setKeycodeLabel() {
-        keycodeLabel.setText(KeyCodeUtil.toString(audioMedia.getKeycode()));
-    }
+//    private void setKeycodeLabel() {
+//        keycodeLabel.setText(KeyCodeUtil.toString(audioMedia.getKeycode()));
+//    }
 
     public final EasyconduitePlayer getEasyPlayer() {
         return player;
@@ -239,5 +243,23 @@ public class AudioMediaUI extends VBox {
 
     public KeyCode getKeycode() {
         return keycode.get();
+    }
+
+    @Override
+    public void setNext(AudioConfigChain next) {
+        this.nextChain = next;
+    }
+
+    @Override
+    public void chainConfigure(AudioMedia media) {
+        if (this.audioMedia.equals(media)) {
+            nameLabel.setText(this.audioMedia.getName());
+            setRepeatable(this.audioMedia.getRepeatable());
+            keycodeLabel.setText(KeyCodeUtil.toString(this.audioMedia.getKeycode()));
+            keycode.setValue(this.audioMedia.getKeycode());
+            this.nextChain.chainConfigure(this.audioMedia);
+        } else {
+            ActionDialog.showWarning("Incohérence des objets", "Les objets AudioMedia ne sont pas egaux");
+        }
     }
 }
