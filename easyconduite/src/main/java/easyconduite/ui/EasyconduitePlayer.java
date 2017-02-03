@@ -16,6 +16,7 @@
  */
 package easyconduite.ui;
 
+import easyconduite.model.AudioConfigChain;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.EasyconduiteException;
 import javafx.scene.media.Media;
@@ -32,7 +33,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author antony
  */
-public class EasyconduitePlayer {
+public class EasyconduitePlayer implements AudioConfigChain {
 
     static final Logger LOG = LogManager.getLogger(EasyconduitePlayer.class);
 
@@ -40,7 +41,8 @@ public class EasyconduitePlayer {
 
     private MediaPlayer player;
 
-    //private DoubleProperty currentProgress = new ReadOnlyDoubleWrapper(0);
+    private AudioConfigChain nextChain;
+
     public static EasyconduitePlayer create(AudioMedia media) throws EasyconduiteException {
         return new EasyconduitePlayer(media);
     }
@@ -125,18 +127,25 @@ public class EasyconduitePlayer {
         return player.getStatus();
     }
 
-    public boolean isRepeatable() {
-        if (player.getCycleCount() == MediaPlayer.INDEFINITE) {
-            return false;
-        }
-        return player.getCycleCount() > 1;
-    }
-
     public final void setRepeatable(boolean repeatable) {
         if (repeatable) {
             player.setCycleCount(Integer.MAX_VALUE);
         } else {
             player.setCycleCount(1);
+        }
+    }
+
+    @Override
+    public void setNext(AudioConfigChain next) {
+        this.nextChain = next;
+    }
+
+    @Override
+    public void chainConfigure(AudioMedia media) {
+        if (this.audioMedia.equals(media)) {
+            setRepeatable(audioMedia.getRepeatable());
+        } else {
+            ActionDialog.showWarning("Incohérence des objets", "Les objets AudioMedia ne sont pas egaux");
         }
     }
 }
