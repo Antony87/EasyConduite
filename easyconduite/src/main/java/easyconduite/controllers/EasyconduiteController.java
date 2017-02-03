@@ -16,8 +16,8 @@
  */
 package easyconduite.controllers;
 
+import easyconduite.model.AudioConfigChain;
 import easyconduite.objects.AudioMedia;
-import easyconduite.objects.AudioMediaConfigurator;
 import easyconduite.objects.AudioTable;
 import easyconduite.ui.AboutDialog;
 import easyconduite.ui.ActionDialog;
@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -44,6 +43,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -51,9 +51,12 @@ import org.apache.logging.log4j.Logger;
  *
  * @author A Fons
  */
-public class EasyconduiteController implements Initializable {
+public class EasyconduiteController extends Pane implements Initializable, AudioConfigChain {
 
     static final Logger LOG = LogManager.getLogger(EasyconduiteController.class);
+
+    @FXML
+    Pane mainPane;
 
     @FXML
     private Label timer;
@@ -64,35 +67,31 @@ public class EasyconduiteController implements Initializable {
     @FXML
     private HBox tableLayout;
 
-    private Timeline timeline;
-
-    private Scene scene;
+    private Chrono chrono;
 
     private AudioTable audioTable;
 
     private List<AudioMediaUI> mediaUIList;
 
+    private AudioConfigChain nextChain;
+
+    public EasyconduiteController() {
+        audioTable = new AudioTable();
+        mediaUIList = new ArrayList<>();
+    }
+
     @FXML
     private void handleRazChrono(ActionEvent event) {
-        timeline.stop();
-        timeline = null;
-        timeline = Chrono.getTimeline(timer);
-        timer.setText("00:00:00");
+        chrono.raz();
         chronobutton.setSelected(false);
     }
 
     @FXML
     private void handleMouseAction(MouseEvent event) {
-        // TODO refactorer 
-        if (timeline != null) {
-            if (!chronobutton.isSelected()) {
-                timeline.pause();
-                //timeLineConduite.pause();
-                //chronobutton.setStyle(null);
-            } else {
-                timeline.play();
-                //timeLineConduite.play();
-            }
+        if (!chronobutton.isSelected()) {
+            chrono.pause();
+        } else {
+            chrono.play();
         }
     }
 
@@ -104,10 +103,10 @@ public class EasyconduiteController implements Initializable {
 
             Optional<ButtonType> result = ActionDialog.showConfirmation("Charger un nouveau fichier écrasera l'existant.", "Voulez-vous continuer ?");
             if (result.get() == ButtonType.OK) {
-                file = PersistenceUtil.getOpenProjectFile(scene);
+                file = PersistenceUtil.getOpenProjectFile(this.getMyScene());
             }
         } else if (mediaUIList.isEmpty()) {
-            file = PersistenceUtil.getOpenProjectFile(scene);
+            file = PersistenceUtil.getOpenProjectFile(this.getMyScene());
         }
         if (file != null) {
             audioTable = PersistenceUtil.open(file);
@@ -117,7 +116,7 @@ public class EasyconduiteController implements Initializable {
                 AudioMediaUI audioMediaUI = new AudioMediaUI(audioMedia, EasyconduiteController.this);
                 mediaUIList.add(audioMediaUI);
                 tableLayout.getChildren().add(audioMediaUI);
-            }   
+            }
         }
     }
 
@@ -130,7 +129,7 @@ public class EasyconduiteController implements Initializable {
     @FXML
     private void handleAddAudioMenu(ActionEvent event) {
 
-        File file = PersistenceUtil.getOpenAudioFile(scene);
+        File file = PersistenceUtil.getOpenAudioFile(this.getMyScene());
         if (file != null) {
             AudioMedia audioMedia = new AudioMedia(file);
             audioTable.getAudioMediaList().add(audioMedia);
@@ -138,6 +137,7 @@ public class EasyconduiteController implements Initializable {
             mediaUIList.add(audioMediaUI);
             tableLayout.getChildren().add(audioMediaUI);
             LOG.debug("AudioMedia {} added to AudioTable", audioMedia);
+            this.chainConfigure(audioMedia);
         }
 
     }
@@ -180,7 +180,7 @@ public class EasyconduiteController implements Initializable {
     @FXML
     private void handleSave(ActionEvent event) {
 
-        File file = PersistenceUtil.getSaveProjectFile(scene);
+        File file = PersistenceUtil.getSaveProjectFile(this.getMyScene());
         if (file != null) {
             try {
                 PersistenceUtil.save(file, audioTable);
@@ -203,28 +203,14 @@ public class EasyconduiteController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         LOG.debug("Controler initialisation");
-        audioTable = new AudioTable();
-        mediaUIList = new ArrayList<>();
-    }
-    
-    public void updateAudioMedia(AudioMediaConfigurator configurator, AudioMedia audioMedia){
-        configurator.update(audioMedia);
+        chrono = new Chrono(timer);
     }
 
+//    public void updateAudioMedia(AudioMediaConfigurator configurator, AudioMedia audioMedia) {
+//        configurator.update(audioMedia);
+//    }
     public boolean isKeyCodeExist(KeyCode keycode) {
         return mediaUIList.stream().anyMatch(u -> keycode == u.getKeycode());
-    }
-
-    public void setTimeline(Timeline timeline) {
-        this.timeline = timeline;
-    }
-
-    public Scene getScene() {
-        return scene;
-    }
-
-    public void setScene(Scene scene) {
-        this.scene = scene;
     }
 
     public AudioTable getAudioTable() {
@@ -238,4 +224,25 @@ public class EasyconduiteController implements Initializable {
     public List<AudioMediaUI> getMediaUIList() {
         return mediaUIList;
     }
+    
+    private Scene getMyScene(){
+        return (Scene)this.mainPane.getScene();
+    }
+
+    @Override
+    public void setNext(AudioConfigChain next) {
+        nextChain = next;
+    }
+
+    @Override
+    public void chainConfigure(AudioMedia media) {
+        LOG.trace("1er maillon : main controller");
+        // trouver le AudioMediaUI associé à l'AudioMedia
+        AudioMediaUI audioMediaUI = mediaUIList.stream().filter(ui -> ui.getAudioMedia().equals(media)).findFirst().get();
+        // initialisation de la chaine.
+        this.setNext(audioMediaUI);
+        audioMediaUI.setNext(audioMediaUI.getEasyPlayer());
+        nextChain.chainConfigure(media);
+    }
+
 }
