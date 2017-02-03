@@ -17,32 +17,64 @@
 package easyconduite.ui;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
-import javafx.animation.Animation;
+import java.util.Date;
+import java.util.TimeZone;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Label;
 import javafx.util.Duration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Chrono {
 
-    public static Timeline getTimeline(final Label label) {
+    static final Logger LOG = LogManager.getLogger(Chrono.class);
+    
+    private static final SimpleDateFormat CHRONO_FORMAT = new SimpleDateFormat("HH:mm:ss");
 
-        final SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-        final Calendar calendar = Calendar.getInstance();
-        calendar.set(0, 0, 0, 0, 0, 0);
+    private final Timeline timer;
 
-        final Timeline timeline = new Timeline(new KeyFrame(
+    private final Label label;
+
+    private long secondesDuration = 0;
+
+
+    public Chrono(Label label) {
+        this.label = label;
+        final TimeZone tz = TimeZone.getTimeZone("UTC");
+        CHRONO_FORMAT.setTimeZone(tz);
+        timer = new Timeline(new KeyFrame(
                 Duration.seconds(1), (ActionEvent event) -> {
-                    calendar.add(Calendar.SECOND, 1);
-                    label.setText(format.format(calendar.getTime()));
+                    secondesDuration = ++secondesDuration;
+                    this.label.setText(this.toLabel());
+                    //LOG.trace("Chrono {} s", secondesDuration);
                 }));
-        timeline.setCycleCount(Animation.INDEFINITE);
+        timer.setCycleCount(Timeline.INDEFINITE);
+    }
 
-        return timeline;
+    public void stop() {
+        timer.stop();
+    }
 
+    public void play() {
+        timer.play();
+    }
+
+    public void pause() {
+        timer.pause();
+    }
+
+    public void raz() {
+        timer.stop();
+        timer.jumpTo(Duration.ZERO);
+        secondesDuration = 0;
+        this.label.setText(this.toLabel());
+    }
+
+    private String toLabel() {
+        final String formatTime = CHRONO_FORMAT.format(new Date(secondesDuration * 1000));
+        return formatTime;
     }
 
 }
