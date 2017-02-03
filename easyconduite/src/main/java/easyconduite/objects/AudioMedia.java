@@ -280,18 +280,6 @@ public class AudioMedia implements Comparable<AudioMedia> {
         if (!Objects.equals(this.uniqueId, other.uniqueId)) {
             return false;
         }
-        if (!Objects.equals(this.repeatable, other.repeatable)) {
-            return false;
-        }
-        if (!Objects.equals(this.volume, other.volume)) {
-            return false;
-        }
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (!Objects.equals(this.keycode, other.keycode)) {
-            return false;
-        }
         return true;
     }
 

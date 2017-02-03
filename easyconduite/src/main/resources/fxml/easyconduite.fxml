@@ -14,112 +14,120 @@
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxWidth="1.7976931348623157E308" onKeyPressed="#handleKeyCodePlay" prefHeight="600.0" prefWidth="1024.0" style="-fx-background-color: #36383b;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.EasyconduiteController">
-  <children>
-    <MenuBar style="-fx-background-color: #727272;" VBox.vgrow="NEVER">
-      <menus>
-        <Menu mnemonicParsing="false" text="Fichier">
-          <items>
-            <MenuItem fx:id="fichierouvrir" mnemonicParsing="false" onAction="#handleFichierOuvrir" text="Ouvrir...">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator></MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#handleSave" text="Enregistrer">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator></MenuItem>
+<Pane fx:id="mainPane" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.EasyconduiteController">
+   <children>
+      <VBox maxWidth="1.7976931348623157E308" onKeyPressed="#handleKeyCodePlay" prefHeight="600.0" prefWidth="1024.0" style="-fx-background-color: #36383b;">
+        <children>
+          <MenuBar style="-fx-background-color: #727272;" VBox.vgrow="NEVER">
+            <menus>
+              <Menu mnemonicParsing="false" text="Fichier">
+                <items>
+                  <MenuItem fx:id="fichierouvrir" mnemonicParsing="false" onAction="#handleFichierOuvrir" text="Ouvrir...">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#handleSave" text="Enregistrer">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleAddAudioMenu" text="Importer..." />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" onAction="#handleAddAudioMenu" text="Importer..." />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" onAction="#handleQuit" text="Quitter">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="Q" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator></MenuItem>
-          </items>
-        </Menu>
-            <Menu mnemonicParsing="false" text="Pistes">
-              <items>
-                <MenuItem id="addaudiomenu" disable="true" mnemonicParsing="false" onAction="#handleAddAudioMenu" text="Ajouter Piste audio" visible="false" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" onAction="#handlePauseAll" text="Pauser toutes" />
-                  <MenuItem mnemonicParsing="false" onAction="#handleStopAll" text="Stopper toutes" />
-              </items>
-            </Menu>
-        <Menu mnemonicParsing="false" text="Conduite">
-          <items>
-                  <MenuItem mnemonicParsing="false" onAction="#handleRazChrono" text="RAZ Timer">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
-                     </accelerator>
-                  </MenuItem>
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Aide">
-          <items>
-            <MenuItem mnemonicParsing="false" onAction="#handleAbout" text="A propos..." />
-          </items>
-        </Menu>
-      </menus>
-         <effect>
-            <Blend />
-         </effect>
-    </MenuBar>
-      <BorderPane maxWidth="1.7976931348623157E308">
-         <top>
-            <HBox alignment="CENTER" maxHeight="80.0" prefHeight="80.0" spacing="20.0" BorderPane.alignment="CENTER">
-               <children>
-                  <StackPane fx:id="timelinepane" alignment="CENTER_LEFT" prefHeight="150.0" prefWidth="200.0">
+                  <MenuItem mnemonicParsing="false" onAction="#handleQuit" text="Quitter">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="Q" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                </items>
+              </Menu>
+                  <Menu mnemonicParsing="false" text="Pistes">
+                    <items>
+                      <MenuItem id="addaudiomenu" disable="true" mnemonicParsing="false" onAction="#handleAddAudioMenu" text="Ajouter Piste audio" visible="false" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#handlePauseAll" text="Pauser toutes" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleStopAll" text="Stopper toutes" />
+                    </items>
+                  </Menu>
+              <Menu mnemonicParsing="false" text="Conduite">
+                <items>
+                        <MenuItem mnemonicParsing="false" onAction="#handleRazChrono" text="RAZ Timer">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                </items>
+              </Menu>
+              <Menu mnemonicParsing="false" text="Aide">
+                <items>
+                  <MenuItem mnemonicParsing="false" onAction="#handleAbout" text="A propos..." />
+                </items>
+              </Menu>
+            </menus>
+               <effect>
+                  <Blend />
+               </effect>
+          </MenuBar>
+            <BorderPane maxWidth="1.7976931348623157E308">
+               <top>
+                  <HBox alignment="CENTER" maxHeight="80.0" prefHeight="80.0" spacing="20.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Rectangle fx:id="timeLineRectangle" arcHeight="5.0" arcWidth="5.0" fill="#203029" height="30.0" stroke="#a8b0bb" strokeType="INSIDE" width="500.0" />
-                        <Label fx:id="timeLineLabel" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" prefHeight="0.0" prefWidth="495.0" style="-fx-background-color: transparent;" textAlignment="CENTER" textFill="#00d936" />
+                        <StackPane fx:id="timelinepane" alignment="CENTER_LEFT" prefHeight="150.0" prefWidth="200.0">
+                           <children>
+                              <Rectangle fx:id="timeLineRectangle" arcHeight="5.0" arcWidth="5.0" fill="#203029" height="30.0" stroke="#a8b0bb" strokeType="INSIDE" width="500.0" />
+                              <Label fx:id="timeLineLabel" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" prefHeight="0.0" prefWidth="495.0" style="-fx-background-color: transparent;" textAlignment="CENTER" textFill="#00d936" />
+                           </children>
+                           <padding>
+                              <Insets right="20.0" />
+                           </padding>
+                           <HBox.margin>
+                              <Insets right="20.0" />
+                           </HBox.margin>
+                        </StackPane>
+                        <Label fx:id="timer" alignment="CENTER" contentDisplay="RIGHT" maxHeight="42.0" minHeight="42.0" prefHeight="42.0" style="-fx-border-color: #a8b0bb; -fx-background-color: #203029;" text="00:00:00" textAlignment="CENTER" textFill="#00d936">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                           <padding>
+                              <Insets left="10.0" right="10.0" />
+                           </padding>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                           <effect>
+                              <Lighting>
+                                 <bumpInput>
+                                    <Shadow />
+                                 </bumpInput>
+                                 <light>
+                                    <Light.Distant />
+                                 </light>
+                              </Lighting>
+                           </effect>
+                        </Label>
+                        <ToggleButton fx:id="chronobutton" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" onMouseClicked="#handleMouseAction" prefHeight="42.0" prefWidth="42.0" styleClass="chrono-button" stylesheets="@../../styles/Styles.css" text="ON" textAlignment="CENTER" />
                      </children>
-                     <padding>
-                        <Insets right="20.0" />
-                     </padding>
-                     <HBox.margin>
-                        <Insets right="20.0" />
-                     </HBox.margin>
-                  </StackPane>
-                  <Label fx:id="timer" alignment="CENTER" contentDisplay="RIGHT" maxHeight="42.0" minHeight="42.0" prefHeight="42.0" style="-fx-border-color: #a8b0bb; -fx-background-color: #203029;" text="00:00:00" textAlignment="CENTER" textFill="#00d936">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                     <padding>
-                        <Insets left="10.0" right="10.0" />
-                     </padding>
-                     <HBox.margin>
+                  </HBox>
+               </top>
+               <center>
+                  <HBox fx:id="tableLayout" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" prefHeight="600.0" prefWidth="1024.0" spacing="5.0" BorderPane.alignment="CENTER_LEFT">
+                     <BorderPane.margin>
                         <Insets />
-                     </HBox.margin>
-                     <effect>
-                        <Lighting>
-                           <bumpInput>
-                              <Shadow />
-                           </bumpInput>
-                           <light>
-                              <Light.Distant />
-                           </light>
-                        </Lighting>
-                     </effect>
-                  </Label>
-                  <ToggleButton fx:id="chronobutton" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" onMouseClicked="#handleMouseAction" prefHeight="42.0" prefWidth="42.0" styleClass="chrono-button" stylesheets="@../../styles/Styles.css" text="ON" textAlignment="CENTER" />
-               </children>
-            </HBox>
-         </top>
-         <center>
-            <HBox fx:id="tableLayout" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" prefHeight="600.0" prefWidth="1024.0" spacing="5.0" BorderPane.alignment="CENTER_LEFT">
-               <BorderPane.margin>
-                  <Insets />
-               </BorderPane.margin>
-               <padding>
-                  <Insets left="2.0" right="2.0" />
-               </padding>
-            </HBox>
-         </center>
-      </BorderPane>
-  </children>
-</VBox>
+                     </BorderPane.margin>
+                     <padding>
+                        <Insets left="2.0" right="2.0" />
+                     </padding>
+                  </HBox>
+               </center>
+            </BorderPane>
+        </children>
+      </VBox>
+   </children>
+</Pane>

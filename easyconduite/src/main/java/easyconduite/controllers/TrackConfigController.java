@@ -16,10 +16,10 @@
  */
 package easyconduite.controllers;
 
+import easyconduite.model.AudioConfigChain;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioMediaConfigurator;
 import easyconduite.ui.ActionDialog;
-import easyconduite.ui.LinkKeyBoardDialog;
 import easyconduite.util.KeyCodeUtil;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -33,113 +33,143 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
+ * This class is the controller for TrackConfigDialog.
  *
  * @author antony
  */
-public class TrackConfigController implements Initializable {
-
+public class TrackConfigController extends BorderPane implements Initializable, AudioConfigChain {
+    
     static final Logger LOG = LogManager.getLogger(TrackConfigController.class);
-
+    
     private EasyconduiteController mainController;
-
+    
     private AudioMedia audioMedia;
-
-    private LinkKeyBoardDialog configDialog;
-
+    
     private KeyCode newKeyCode;
-
+    
+    @FXML
+    private BorderPane configDialogPane;
+    
     @FXML
     private TextField nametrackfield;
-
+    
     @FXML
     private TextField keytrackfield;
-
+    
     @FXML
     private CheckBox repeattrack;
-
+    
     @FXML
     private Spinner fadeInSpinner;
-
+    
     @FXML
     private Spinner fadeOutSpinner;
-
+    
     @FXML
     private Button cancelbutton;
-
+    
     @FXML
     private Button okbutton;
-
+    
     private AudioMediaConfigurator mediaConfigurator;
+    
+    private AudioConfigChain nextChain;
+    
+    public TrackConfigController() {
+        mediaConfigurator = new AudioMediaConfigurator();
+    }
 
+    /**
+     * Initializes controller after DialogPane loaded.<br>
+     * Juts setting up the spinners.
+     *
+     * @param location
+     * @param resources
+     */
     @FXML
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         LOG.trace("TrackConfigController initialized");
+        SpinnerValueFactory<Integer> valueFadeInFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
+        fadeInSpinner.setValueFactory(valueFadeInFactory);
+        SpinnerValueFactory<Integer> valueFadeOutFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
+        fadeOutSpinner.setValueFactory(valueFadeOutFactory);
     }
-
+    
     @FXML
-    public void handleClickOk(MouseEvent event) {
+    private void handleClickOk(MouseEvent event) {
         mediaConfigurator = mediaConfigurator.withName(nametrackfield.getText());
-        mainController.updateAudioMedia(mediaConfigurator, audioMedia);
-        configDialog.close();
+        this.chainConfigure(this.audioMedia);
+        this.close();
     }
-
+    
     @FXML
-    public void handleClickRepeat(MouseEvent event) {
+    private void handleClickRepeat(MouseEvent event) {
         mediaConfigurator = mediaConfigurator.withRepeat(repeattrack.selectedProperty().getValue());
     }
-
+    
     @FXML
-    public void handleClickCancel(MouseEvent event) {
+    private void handleClickCancel(MouseEvent event) {
         mediaConfigurator = null;
-        configDialog.close();
+        this.close();
     }
-
+    
     @FXML
-    public void handleClickKeyField(MouseEvent event) {
+    private void handleClickKeyField(MouseEvent event) {
         mediaConfigurator = mediaConfigurator.withKeyCodeChanged(null);
         keytrackfield.clear();
     }
-
+    
     @FXML
-    public void handleKeyReleasedTrack(KeyEvent event) {
+    private void handleKeyReleasedTrack(KeyEvent event) {
         final KeyCode typedKeycode = event.getCode();
         if (mainController.isKeyCodeExist(typedKeycode)) {
             keytrackfield.clear();
             ActionDialog.showWarning(String.format("La touche %s est déja affectée", KeyCodeUtil.toString(typedKeycode)), "Cliquez sur OK pour recommencer");
         } else {
-            if (typedKeycode != audioMedia.getKeycode()) {
-                setNewKeyCode(typedKeycode);
+            if (typedKeycode != this.audioMedia.getKeycode()) {
+                this.newKeyCode = typedKeycode;
                 keytrackfield.setText(KeyCodeUtil.toString(typedKeycode));
                 mediaConfigurator = mediaConfigurator.withKeyCodeChanged(newKeyCode);
             }
         }
-
     }
 
-    public void setAudioConfig(AudioMedia media, EasyconduiteController controller, LinkKeyBoardDialog configDialog) {
-        this.mainController = controller;
-        audioMedia = media;
-        nametrackfield.setText(audioMedia.getName());
-        keytrackfield.setText(KeyCodeUtil.toString(audioMedia.getKeycode()));
-        repeattrack.setSelected(audioMedia.getRepeatable());
-        this.configDialog = configDialog;
-
-        SpinnerValueFactory<Integer> valueFadeInFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
-        fadeInSpinner.setValueFactory(valueFadeInFactory);
-        SpinnerValueFactory<Integer> valueFadeOutFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
-        fadeOutSpinner.setValueFactory(valueFadeOutFactory);
-
-        mediaConfigurator = new AudioMediaConfigurator();
-
+    /**
+     * This method sets up AudioMedia, MainController and fields for this
+     * controller.
+     *
+     * @param media
+     * @param controller
+     */
+    public void setup(AudioMedia media, EasyconduiteController controller) {
+        this.audioMedia = media;
+        mainController = controller;
+        nametrackfield.setText(media.getName());
+        keytrackfield.setText(KeyCodeUtil.toString(media.getKeycode()));
+        repeattrack.setSelected(media.getRepeatable());
     }
-
-    public void setNewKeyCode(KeyCode newKeyCode) {
-        this.newKeyCode = newKeyCode;
+    
+    private void close() {
+        final Stage stage = (Stage) configDialogPane.getScene().getWindow();
+        stage.close();
     }
-
+    
+    @Override
+    public void setNext(AudioConfigChain next) {
+        this.nextChain = next;
+    }
+    
+    @Override
+    public void chainConfigure(AudioMedia media) {  
+        mediaConfigurator.update(this.audioMedia);
+        setNext(mainController);
+        nextChain.chainConfigure(this.audioMedia);
+    }
 }

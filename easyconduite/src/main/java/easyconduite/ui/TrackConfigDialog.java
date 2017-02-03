@@ -35,30 +35,26 @@ import org.apache.logging.log4j.Logger;
  *
  * @author antony Fons
  */
-public class LinkKeyBoardDialog extends Stage {
+public class TrackConfigDialog extends Stage {
 
-    static final Logger LOG = LogManager.getLogger(LinkKeyBoardDialog.class);
+    static final Logger LOG = LogManager.getLogger(TrackConfigDialog.class);
 
     private static final String PATH_FXML = "/fxml/trackDialog.fxml";
 
-    public LinkKeyBoardDialog(AudioMedia media, EasyconduiteController mainController) throws IOException {
-        
+    public TrackConfigDialog(AudioMedia media, EasyconduiteController mainController) throws IOException {
+        super();
+
         LOG.debug("LinkKeyBoardDialog with AudioMedia[{}] and EasyconduiteController[{}]", media.getFilePathName(), mainController);
         FXMLLoader loader = new FXMLLoader(getClass().getResource(PATH_FXML));
-
         // Initialize controllers        
-        BorderPane dialogPane = (BorderPane) loader.load();
+        BorderPane dialogPane = loader.<BorderPane>load();
         TrackConfigController configController = loader.getController();
-
+        configController.setup(media, mainController);
         this.setTitle("Configuration");
         this.initModality(Modality.APPLICATION_MODAL);
         this.initStyle(StageStyle.UTILITY);
         this.setResizable(false);
-
         this.setScene(new Scene(dialogPane));
-        
-        configController.setAudioConfig(media,mainController,LinkKeyBoardDialog.this);
-        
         this.show();
     }
 }

@@ -72,17 +72,6 @@ public class AudioMediaConfigurator {
         return this;
     }
 
-//    public AudioMediaConfigurator build() {
-//        AudioMediaConfigurator updater = new AudioMediaConfigurator();
-//        updater.audioDuration = this.audioDuration;
-//        updater.fadeInDuration = this.fadeInDuration;
-//        updater.fadeOutDuration = this.fadeOutDuration;
-//        updater.keycode = this.keycode;
-//        updater.name = this.name;
-//        updater.repeatable = this.repeatable;
-//        updater.volume = this.volume;
-//        return updater;
-//    }
     public void update(AudioMedia media) {
         if (this.audioDuration != null) {
             media.setAudioDuration(this.audioDuration);
