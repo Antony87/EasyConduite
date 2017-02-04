@@ -40,38 +40,79 @@ public class AudioMediaConfigurator {
     private KeyCode keycode;
 
     private boolean keychanged;
-    
+
+    /**
+     * Set total duration for update an AudioMedia.
+     *
+     * @param duration the duration wich will replace current
+     * @return
+     */
     public AudioMediaConfigurator withDuration(Duration duration) {
         this.audioDuration = duration;
         return this;
     }
 
+    /**
+     * Set fade in duration for update an AudioMedia.
+     *
+     * @param duration the duration wich will replace current
+     * @return
+     */
     public AudioMediaConfigurator withfadeIn(Duration duration) {
         this.fadeInDuration = duration;
         return this;
     }
 
+    /**
+     * Set fade out duration for update an AudioMedia.
+     *
+     * @param duration the duration wich will replace current
+     * @return
+     */
     public AudioMediaConfigurator withfadeOut(Duration duration) {
         this.fadeOutDuration = duration;
         return this;
     }
 
+    /**
+     * Set repeatable for update an AudioMedia.
+     *
+     * @param repeat the repeat boolean wich will replace current
+     * @return
+     */
     public AudioMediaConfigurator withRepeat(Boolean repeat) {
         this.repeatable = repeat;
         return this;
     }
 
+    /**
+     * Set the name for update an AudioMedia.
+     *
+     * @param name the name wich will replace current
+     * @return
+     */
     public AudioMediaConfigurator withName(String name) {
         this.name = name;
         return this;
     }
 
+    /**
+     * Set if KeyCode changed for update an AudioMedia.
+     *
+     * @param code the Keycode wich will replace current
+     * @return
+     */
     public AudioMediaConfigurator withKeyCodeChanged(KeyCode code) {
         this.keychanged = true;
         this.keycode = code;
         return this;
     }
 
+    /**
+     * Apply change to the AudioMedia.
+     *
+     * @param media AudioMedia which will be changed
+     */
     public void update(AudioMedia media) {
         if (this.audioDuration != null) {
             media.setAudioDuration(this.audioDuration);

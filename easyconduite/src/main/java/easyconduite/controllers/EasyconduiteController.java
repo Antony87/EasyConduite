@@ -49,6 +49,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
+ * This class implements a controller for audio table and AudioMediUI behaviors.
  *
  * @author A Fons
  */
@@ -76,6 +77,9 @@ public class EasyconduiteController extends Pane implements Initializable, Audio
 
     private AudioConfigChain nextChain;
 
+    /**
+     * Constructor without arguments, to respect instantiating by FXML.
+     */
     public EasyconduiteController() {
         audioTable = new AudioTable();
         mediaUIList = new ArrayList<>();
@@ -208,27 +212,18 @@ public class EasyconduiteController extends Pane implements Initializable, Audio
         chrono = new Chrono(timer);
     }
 
-//    public void updateAudioMedia(AudioMediaConfigurator configurator, AudioMedia audioMedia) {
-//        configurator.update(audioMedia);
-//    }
+    /**
+     * Return if a keyboard keycode exists within AudioMediaUI List.
+     *
+     * @param keycode
+     * @return
+     */
     public boolean isKeyCodeExist(KeyCode keycode) {
         return mediaUIList.stream().anyMatch(u -> keycode == u.getKeycode());
     }
 
-    public AudioTable getAudioTable() {
-        return audioTable;
-    }
-
-    public HBox getTableLayout() {
-        return tableLayout;
-    }
-
-    public List<AudioMediaUI> getMediaUIList() {
-        return mediaUIList;
-    }
-    
-    private Scene getMyScene(){
-        return (Scene)this.mainPane.getScene();
+    private Scene getMyScene() {
+        return (Scene) this.mainPane.getScene();
     }
 
     @Override

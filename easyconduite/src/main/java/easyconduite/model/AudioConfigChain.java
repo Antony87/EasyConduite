@@ -19,13 +19,24 @@ package easyconduite.model;
 import easyconduite.objects.AudioMedia;
 
 /**
+ * Chain of responsability precises configuration chain along controllers, UI,
+ * players ; affected to AudioMedia.
  *
  * @author antony
  */
 public interface AudioConfigChain {
-    
+
+    /**
+     * Set next element concerned to AudioMedia.
+     *
+     * @param next
+     */
     public void setNext(AudioConfigChain next);
-    
-    public void chainConfigure(AudioMedia configurator);
-    
+
+    /**
+     * Element's configuration method uses AudioMedia.
+     * @param audioMedia 
+     */
+    public void chainConfigure(AudioMedia audioMedia);
+
 }
