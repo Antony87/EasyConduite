@@ -19,6 +19,7 @@ package easyconduite.util;
 import javafx.scene.input.KeyCode;
 
 /**
+ * Tools to manage keyboard KeyCode.
  *
  * @author antony
  */
@@ -27,7 +28,7 @@ public class KeyCodeUtil {
     public static String toString(final KeyCode code) {
         if (isValid(code)) {
 
-            String sCode = code.getName();
+            final String sCode = code.getName();
             if (sCode.startsWith("Numpad")) {
                 return sCode.substring(6);
             } else {
@@ -46,15 +47,8 @@ public class KeyCodeUtil {
         return KeyCode.getKeyCode(string);
     }
 
-    ;
-    
     public static boolean isValid(final KeyCode code) {
-
-        if (code == KeyCode.UNDEFINED || code == null) {
-            return false;
-        } else {
-            return true;
-        }
+        return !(code == KeyCode.UNDEFINED || code == null);
     }
 
 }

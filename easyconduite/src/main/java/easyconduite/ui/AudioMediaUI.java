@@ -33,6 +33,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Slider;
+import javafx.scene.effect.Bloom;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
@@ -91,7 +92,7 @@ public class AudioMediaUI extends VBox implements AudioConfigChain {
         super(10);
         LOG.info("Construct an AudioMedia {}", media);
 
-        audioMedia = media;
+        this.audioMedia = media;
         ////////////////////////////////////////////////////////////////////////
         //               Initialize MediaPlayer
         ////////////////////////////////////////////////////////////////////////
@@ -144,19 +145,12 @@ public class AudioMediaUI extends VBox implements AudioConfigChain {
 
         // create button wich link a key to an AudioMedia
         button_config.setOnMouseClicked((MouseEvent event) -> {
-            AudioMediaUI.this.audioMedia.keycodeProperty().addListener((ObservableValue<? extends KeyCode> observable, KeyCode oldValue, KeyCode newValue) -> {
-                if (newValue != oldValue) {
-                    keycodeLabel.setText(KeyCodeUtil.toString(newValue));
-                }
-            });
             try {
                 final TrackConfigDialog trackConfigDialog = new TrackConfigDialog(this.audioMedia, controller);
             } catch (IOException ex) {
                 LOG.error("Error occurend during TrackConfigDialog construction", ex);
             }
-
         });
-
         topHbox.getChildren().addAll(button_delete, button_config);
         ////////////////////////////////////////////////////////////////////////
 
@@ -179,33 +173,20 @@ public class AudioMediaUI extends VBox implements AudioConfigChain {
         buttonPlayPause.setOnMouseClicked((MouseEvent event) -> {
             player.playPause();
         });
-
         button_stop.setOnMouseClicked((MouseEvent event) -> {
             player.stop();
         });
-
         bottomHbox.getChildren().addAll(button_stop, buttonPlayPause);
-        ////////////////////////////////////////////////////////////////////////
 
-        //initialize repeat icon
-        //setRepeatable(audioMedia.getRepeatable());
-//        audioMedia.repeatable.addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-//            if (!Objects.equals(newValue, oldValue)) {
-//                setRepeatable(newValue);
-//            }
-//        });
         // icone repeat for repeat /////////////////////////////////////////////
         repeatImageView.setFitHeight(18);
         repeatImageView.setFitWidth(18);
         ////////////////////////////////////////////////////////////////////////
 
         // initialize KeyCodeLabel
-//        keycode.bind(audioMedia.keycodeProperty());
         keycodeLabel.getStyleClass().add("labelkey-track");
-//        setKeycodeLabel();
-
+        keycodeLabel.setEffect(new Bloom(0.4));
         this.getChildren().addAll(nameLabel, topHbox, curseVolume, progressTrack, bottomHbox, repeatImageView, keycodeLabel);
-
     }
 
     public final AudioMedia getAudioMedia() {
@@ -221,16 +202,11 @@ public class AudioMediaUI extends VBox implements AudioConfigChain {
         }
     }
 
-//    private void setKeycodeLabel() {
-//        keycodeLabel.setText(KeyCodeUtil.toString(audioMedia.getKeycode()));
-//    }
-
     public final EasyconduitePlayer getEasyPlayer() {
         return player;
     }
 
     private HBox hBoxForTrack() {
-
         HBox hbox = new HBox(10);
         hbox.setPrefWidth(80);
         hbox.setAlignment(Pos.CENTER);

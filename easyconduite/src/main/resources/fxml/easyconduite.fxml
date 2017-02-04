@@ -14,13 +14,13 @@
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<Pane fx:id="mainPane" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.EasyconduiteController">
+
+<StackPane fx:id="mainPane" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.EasyconduiteController">
    <children>
       <VBox maxWidth="1.7976931348623157E308" onKeyPressed="#handleKeyCodePlay" prefHeight="600.0" prefWidth="1024.0" style="-fx-background-color: #36383b;">
         <children>
@@ -130,4 +130,4 @@
         </children>
       </VBox>
    </children>
-</Pane>
+</StackPane>

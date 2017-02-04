@@ -44,6 +44,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -56,7 +57,7 @@ public class EasyconduiteController extends Pane implements Initializable, Audio
     static final Logger LOG = LogManager.getLogger(EasyconduiteController.class);
 
     @FXML
-    Pane mainPane;
+    StackPane mainPane;
 
     @FXML
     private Label timer;
