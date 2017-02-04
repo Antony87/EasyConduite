@@ -43,18 +43,18 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public class AudioMedia implements Comparable<AudioMedia> {
+public class AudioMedia {
 
     private final UUID uniqueId = UUID.randomUUID();
 
     private File audioFile;
 
     private String filePathName;
-    
-    private Duration audioDuration=Duration.ONE;
-    
+
+    private Duration audioDuration = Duration.ONE;
+
     private Duration fadeInDuration;
-    
+
     private Duration fadeOutDuration;
 
     public final BooleanProperty repeatable = new ReadOnlyBooleanWrapper();
@@ -89,7 +89,7 @@ public class AudioMedia implements Comparable<AudioMedia> {
     /**
      * Get Unique id.
      *
-     * @return
+     * @return the unique Id for this audio Media
      */
     public UUID getUniqueId() {
         return uniqueId;
@@ -99,7 +99,7 @@ public class AudioMedia implements Comparable<AudioMedia> {
      * Set the audio file (*.wav or *.mp3).<br>
      * It's XmlTransient cause not able to be xml serialized.
      *
-     * @param audioFile
+     * @param audioFile An audio media file (*.wav, *.mp3)
      */
     @XmlTransient
     public void setAudioFile(File audioFile) {
@@ -109,7 +109,7 @@ public class AudioMedia implements Comparable<AudioMedia> {
     /**
      * Return the audio file.
      *
-     * @return
+     * @return the audio media file.
      */
     public File getAudioFile() {
         return audioFile;
@@ -118,7 +118,7 @@ public class AudioMedia implements Comparable<AudioMedia> {
     /**
      * Return path of the audio file.
      *
-     * @return
+     * @return the string path of audio media (by getAbsolutePath).
      */
     public String getFilePathName() {
         return filePathName;
@@ -127,7 +127,7 @@ public class AudioMedia implements Comparable<AudioMedia> {
     /**
      * Set audio file's path.
      *
-     * @param filePathName
+     * @param filePathName Absolute path string of audio media
      */
     public final void setFilePathName(String filePathName) {
         this.filePathName = filePathName;
@@ -166,7 +166,7 @@ public class AudioMedia implements Comparable<AudioMedia> {
     ////////////////////////////////////////////////////////////////////////////
 
     /**
-     * Return playing volume's of audio (from 0 to 100).<br> 
+     * Return playing volume's of audio (from 0 to 100).<br>
      * Default is 50.
      *
      * @return
@@ -177,48 +177,78 @@ public class AudioMedia implements Comparable<AudioMedia> {
 
     /**
      * Set playing's volume of audio.<br>
-     * If volume > 100 then équal 100, if volume < 0 then 0.
-     * @param volume 
+     * If volume greater than 100 then équal 100, if volume less than 0 then 0.
+     *
+     * @param volume
      */
     public final void setVolume(Double volume) {
-        if(volume<0d){
-            volume=0d;
+        if (volume < 0d) {
+            volume = 0d;
         }
-        if(volume>100d){
-            volume=100d;
+        if (volume > 100d) {
+            volume = 100d;
         }
         this.volume.setValue(volume);
     }
 
+    /**
+     * Get the total duration of audio media.
+     *
+     * @return total duration (Duration ms) of the audio media
+     */
     public Duration getAudioDuration() {
         return audioDuration;
     }
 
+    /**
+     * Set the total duration of audio media.
+     *
+     * @param audioDuration
+     */
     public void setAudioDuration(Duration audioDuration) {
         this.audioDuration = audioDuration;
     }
 
+    /**
+     * Get the fade in duration uses during playing.
+     *
+     * @return
+     */
     public Duration getFadeInDuration() {
         return fadeInDuration;
     }
 
+    /**
+     * Set the fade in duration uses during playing.
+     *
+     * @param fadeInDuration
+     */
     public void setFadeInDuration(Duration fadeInDuration) {
         this.fadeInDuration = fadeInDuration;
     }
 
+    /**
+     * Get the fade out duration uses during playing.
+     *
+     * @return
+     */
     public Duration getFadeOutDuration() {
         return fadeOutDuration;
     }
 
+    /**
+     * Set the fade out duration uses during playing.
+     *
+     * @param fadeOutDuration
+     */
     public void setFadeOutDuration(Duration fadeOutDuration) {
         this.fadeOutDuration = fadeOutDuration;
     }
-    
-    
 
     /**
      * Observable property for audio volume.
-     * @return 
+     *
+     * @return
      */
     public DoubleProperty volumeProperty() {
         return volume;
@@ -227,7 +257,8 @@ public class AudioMedia implements Comparable<AudioMedia> {
 
     /**
      * Return the name of Audio Media object.
-     * @return 
+     *
+     * @return
      */
     public String getName() {
         return name.get();
@@ -235,7 +266,8 @@ public class AudioMedia implements Comparable<AudioMedia> {
 
     /**
      * Set Audio Media object name's.
-     * @param name 
+     *
+     * @param name
      */
     public final void setName(String name) {
         this.name.set(name);
@@ -246,10 +278,20 @@ public class AudioMedia implements Comparable<AudioMedia> {
     }
     ////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Set keyboard KeyCode matched to audio media player.
+     *
+     * @param keycode
+     */
     public final void setKeycode(KeyCode keycode) {
         this.keycode.set(keycode);
     }
 
+    /**
+     * Get keyboard KeyCode matched to audio media player.
+     *
+     * @return
+     */
     public KeyCode getKeycode() {
         return keycode.get();
     }
@@ -262,12 +304,15 @@ public class AudioMedia implements Comparable<AudioMedia> {
     public int hashCode() {
         int hash = 7;
         hash = 79 * hash + Objects.hashCode(this.uniqueId);
-        hash = 79 * hash + Objects.hashCode(this.repeatable.get());
-        hash = 79 * hash + Objects.hashCode(this.name.getValue());
-        hash = 79 * hash + Objects.hashCode(this.keycode.getValue());
         return hash;
     }
 
+    /**
+     * Equals for AudioMedia object, based on UniqueId.
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -287,17 +332,4 @@ public class AudioMedia implements Comparable<AudioMedia> {
     public String toString() {
         return "AudioMedia{" + "uniqueId=" + uniqueId + ", filePathName=" + filePathName + ", name=" + name.getValue() + ", keycode=" + keycode.getValue() + '}';
     }
-
-    @Override
-    public int compareTo(AudioMedia a) {
-        int diff = this.getUniqueId().compareTo(a.getUniqueId());
-        if (diff == 0) {
-            diff = this.getKeycode().compareTo(a.getKeycode());
-        }
-        if (diff == 0) {
-            diff = this.getName().compareTo(a.getName());
-        }
-        return diff;
-    }
-
 }
