@@ -21,12 +21,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 .track-vbox {
-    -fx-padding: 10 0 10 0;
+    -fx-padding: 5 0 5 0;
     -fx-alignment :CENTER;
     -fx-pref-width : 90;
-    -fx-pref-height : 400;
-    -fx-max-height : 400;
-    -fx-min-height : 400;
+    -fx-pref-height : 380;
+    -fx-max-height : 380;
+    -fx-min-height : 380;
     -fx-background-color: #535965; 
 }
 

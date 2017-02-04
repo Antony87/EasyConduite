@@ -42,7 +42,7 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -66,7 +66,7 @@ public class EasyconduiteController extends StackPane implements Initializable, 
     private ToggleButton chronobutton;
 
     @FXML
-    private HBox tableLayout;
+    private FlowPane tableLayout;
 
     private Chrono chrono;
 

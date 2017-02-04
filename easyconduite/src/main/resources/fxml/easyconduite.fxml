@@ -13,12 +13,12 @@
 <?import javafx.scene.effect.Shadow?>
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
-
 
 <StackPane fx:id="mainPane" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.EasyconduiteController">
    <children>
@@ -117,14 +117,7 @@
                   </HBox>
                </top>
                <center>
-                  <HBox fx:id="tableLayout" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" prefHeight="600.0" prefWidth="1024.0" spacing="5.0" BorderPane.alignment="CENTER_LEFT">
-                     <BorderPane.margin>
-                        <Insets />
-                     </BorderPane.margin>
-                     <padding>
-                        <Insets left="2.0" right="2.0" />
-                     </padding>
-                  </HBox>
+                  <FlowPane fx:id="tableLayout" hgap="5.0" prefHeight="714.0" prefWidth="1024.0" rowValignment="TOP" vgap="5.0" BorderPane.alignment="CENTER" />
                </center>
             </BorderPane>
         </children>

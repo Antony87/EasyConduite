@@ -19,6 +19,8 @@ package easyconduite.util;
 
 import easyconduite.ui.AudioMediaUI;
 import javafx.geometry.Insets;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -40,5 +42,7 @@ public class Const {
     public static final String NAME_ICON_PLAY = "/icons/PlayGreenButton.png";
 
     public static final String NAME_ICON_PAUSE = "/icons/PauseBlueButton.png";
+    
+    public static final Effect SHADOW_EFFECT = new DropShadow();
 
 }

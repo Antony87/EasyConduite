@@ -98,21 +98,24 @@ public class AudioMediaUI extends VBox implements AudioConfigChain {
         ////////////////////////////////////////////////////////////////////////
         player = null;
         try {
-            player = EasyconduitePlayer.create(media);            
+            player = EasyconduitePlayer.create(media);
             // Listenning player Status property
             player.getPlayer().statusProperty().addListener((ObservableValue<? extends Status> observable, Status oldValue, Status newValue) -> {
                 switch (newValue) {
                     case PAUSED:
                         buttonPlayPause.setPathNameOfIcon(Const.NAME_ICON_PLAY);
                         setBackground(Const.STOP_BACKG);
+                        setEffect(null);
                         break;
                     case PLAYING:
                         buttonPlayPause.setPathNameOfIcon(Const.NAME_ICON_PAUSE);
                         setBackground(Const.PLAY_BACKG);
+                        setEffect(Const.SHADOW_EFFECT);
                         break;
                     case STOPPED:
                         buttonPlayPause.setPathNameOfIcon(Const.NAME_ICON_PLAY);
                         setBackground(Const.STOP_BACKG);
+                        setEffect(null);
                         break;
                 }
             });
