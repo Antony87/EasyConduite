@@ -35,6 +35,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -104,7 +105,13 @@ public class TrackConfigController extends BorderPane implements Initializable, 
 
     @FXML
     private void handleClickOk(MouseEvent event) {
-        mediaConfigurator = mediaConfigurator.withName(nametrackfield.getText());
+        
+        final Integer iValueFadeOut = (Integer) fadeOutSpinner.getValue();
+        final Integer iValueFadeIn = (Integer) fadeInSpinner.getValue();
+        mediaConfigurator = mediaConfigurator
+                .withName(nametrackfield.getText())
+                .withfadeIn(Duration.seconds(iValueFadeIn))
+                .withfadeOut(Duration.seconds(iValueFadeOut));
         this.chainConfigure(this.audioMedia);
         this.close();
     }

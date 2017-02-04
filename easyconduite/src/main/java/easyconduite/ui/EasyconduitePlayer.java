@@ -42,15 +42,13 @@ public class EasyconduitePlayer implements AudioConfigChain {
     private MediaPlayer player;
 
     private AudioConfigChain nextChain;
-
+    
     public static EasyconduitePlayer create(AudioMedia media) throws EasyconduiteException {
         return new EasyconduitePlayer(media);
     }
 
     private EasyconduitePlayer(AudioMedia media) throws EasyconduiteException {
-
         LOG.debug("Construct EasyconduitePlayer with AudioMedia[{}]", media);
-
         this.audioMedia = media;
         try {
             final Media mediaForPlayer = new Media(audioMedia.getAudioFile().toURI().toString());
@@ -134,7 +132,7 @@ public class EasyconduitePlayer implements AudioConfigChain {
             player.setCycleCount(1);
         }
     }
-
+    
     @Override
     public void setNext(AudioConfigChain next) {
         this.nextChain = next;

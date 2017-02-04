@@ -43,7 +43,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,7 +52,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author A Fons
  */
-public class EasyconduiteController extends Pane implements Initializable, AudioConfigChain {
+public class EasyconduiteController extends StackPane implements Initializable, AudioConfigChain {
 
     static final Logger LOG = LogManager.getLogger(EasyconduiteController.class);
 
@@ -73,7 +72,7 @@ public class EasyconduiteController extends Pane implements Initializable, Audio
 
     private AudioTable audioTable;
 
-    private List<AudioMediaUI> mediaUIList;
+    private final List<AudioMediaUI> mediaUIList;
 
     private AudioConfigChain nextChain;
 
@@ -117,12 +116,9 @@ public class EasyconduiteController extends Pane implements Initializable, Audio
             audioTable = PersistenceUtil.open(file);
             mediaUIList.clear();
             tableLayout.getChildren().clear();
-            for (AudioMedia audioMedia : audioTable.getAudioMediaList()) {
-                AudioMediaUI audioMediaUI = new AudioMediaUI(audioMedia, EasyconduiteController.this);
-                mediaUIList.add(audioMediaUI);
-                audioMediaUI.chainConfigure(audioMedia);
-                tableLayout.getChildren().add(audioMediaUI);
-            }
+            audioTable.getAudioMediaList().stream().forEach((audioMedia) -> {
+                addAudioMediaUI(audioMedia);
+            });
         }
     }
 
@@ -134,18 +130,20 @@ public class EasyconduiteController extends Pane implements Initializable, Audio
      */
     @FXML
     private void handleAddAudioMenu(ActionEvent event) {
-
         File file = PersistenceUtil.getOpenAudioFile(this.getMyScene());
         if (file != null) {
             AudioMedia audioMedia = new AudioMedia(file);
             audioTable.getAudioMediaList().add(audioMedia);
-            AudioMediaUI audioMediaUI = new AudioMediaUI(audioMedia, EasyconduiteController.this);
-            mediaUIList.add(audioMediaUI);
-            tableLayout.getChildren().add(audioMediaUI);
-            LOG.debug("AudioMedia {} added to AudioTable", audioMedia);
-            this.chainConfigure(audioMedia);
+            addAudioMediaUI(audioMedia);
         }
+    }
 
+    private void addAudioMediaUI(AudioMedia audioMedia) {
+        AudioMediaUI audioMediaUI = new AudioMediaUI(audioMedia, EasyconduiteController.this);
+        mediaUIList.add(audioMediaUI);
+        tableLayout.getChildren().add(audioMediaUI);
+        LOG.debug("AudioMedia {} added to AudioTable", audioMedia);
+        this.chainConfigure(audioMedia);
     }
 
     public void removeAudioMedia(AudioMedia audioMedia, AudioMediaUI ui) {
@@ -233,7 +231,6 @@ public class EasyconduiteController extends Pane implements Initializable, Audio
 
     @Override
     public void chainConfigure(AudioMedia media) {
-        LOG.trace("1er maillon : main controller");
         // trouver le AudioMediaUI associé à l'AudioMedia
         AudioMediaUI audioMediaUI = mediaUIList.stream().filter(ui -> ui.getAudioMedia().equals(media)).findFirst().get();
         // initialisation de la chaine.

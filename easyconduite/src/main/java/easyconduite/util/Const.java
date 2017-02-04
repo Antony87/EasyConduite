@@ -26,8 +26,6 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 
 /**
- * This class encapsulates behaviors for severals configurations.<br>As
- * properties, logger...
  *
  * @author antony fons
  */

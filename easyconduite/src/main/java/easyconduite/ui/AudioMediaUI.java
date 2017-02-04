@@ -97,11 +97,8 @@ public class AudioMediaUI extends VBox implements AudioConfigChain {
         //               Initialize MediaPlayer
         ////////////////////////////////////////////////////////////////////////
         player = null;
-
         try {
-
-            player = EasyconduitePlayer.create(media);
-            
+            player = EasyconduitePlayer.create(media);            
             // Listenning player Status property
             player.getPlayer().statusProperty().addListener((ObservableValue<? extends Status> observable, Status oldValue, Status newValue) -> {
                 switch (newValue) {
@@ -119,31 +116,30 @@ public class AudioMediaUI extends VBox implements AudioConfigChain {
                         break;
                 }
             });
-
         } catch (EasyconduiteException ex) {
             LOG.error("Error occurend during EasyPlayer construction", ex);
         }
         // Positionne la chaine de responsabilité
         this.setNext(player);
 
+        ////////////////////////////////////////////////////////////////////////
+        //                 Construction de l'UI
+        ////////////////////////////////////////////////////////////////////////
         // attribution css for Track VBOX
         this.getStyleClass().add("track-vbox");
-
         // Label for name of the track /////////////////////////////////////////
         nameLabel.getStyleClass().add("texte-track");
+        nameLabel.setAlignment(Pos.CENTER);
         ////////////////////////////////////////////////////////////////////////
-
         // ToolBar with delete and confugure button ////////////////////////////
         HBox topHbox = hBoxForTrack();
-
         button_delete.setOnMouseClicked((MouseEvent event) -> {
             Optional<ButtonType> result = ActionDialog.showConfirmation("Vous allez supprimer cette piste", "Voulez-vous continuer ?");
             if (result.get() == ButtonType.OK) {
                 controller.removeAudioMedia(audioMedia, this);
             }
         });
-
-        // create button wich link a key to an AudioMedia
+        // creation bouton pour la configuration de la piste.
         button_config.setOnMouseClicked((MouseEvent event) -> {
             try {
                 final TrackConfigDialog trackConfigDialog = new TrackConfigDialog(this.audioMedia, controller);
@@ -153,7 +149,6 @@ public class AudioMediaUI extends VBox implements AudioConfigChain {
         });
         topHbox.getChildren().addAll(button_delete, button_config);
         ////////////////////////////////////////////////////////////////////////
-
         // Slider for volume control
         Slider curseVolume = new Slider(0, 100, this.audioMedia.getVolume());
         curseVolume.getStyleClass().add("slider-volume-track");
@@ -182,7 +177,6 @@ public class AudioMediaUI extends VBox implements AudioConfigChain {
         repeatImageView.setFitHeight(18);
         repeatImageView.setFitWidth(18);
         ////////////////////////////////////////////////////////////////////////
-
         // initialize KeyCodeLabel
         keycodeLabel.getStyleClass().add("labelkey-track");
         keycodeLabel.setEffect(new Bloom(0.4));
