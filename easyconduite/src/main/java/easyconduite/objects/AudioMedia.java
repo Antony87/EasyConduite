@@ -330,6 +330,6 @@ public class AudioMedia {
 
     @Override
     public String toString() {
-        return "AudioMedia{" + "uniqueId=" + uniqueId + ", filePathName=" + filePathName + ", name=" + name.getValue() + ", keycode=" + keycode.getValue() + '}';
+        return "AudioMedia{uniqueId=" + uniqueId + ", filePathName=" + filePathName + ", name=" + name.getValue() + ", keycode=" + keycode.getValue() + '}';
     }
 }
