@@ -19,6 +19,7 @@ package easyconduite.util;
 
 import easyconduite.ui.AudioMediaUI;
 import javafx.geometry.Insets;
+import javafx.scene.effect.Bloom;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
@@ -44,5 +45,7 @@ public class Const {
     public static final String NAME_ICON_PAUSE = "/icons/PauseBlueButton.png";
     
     public static final Effect SHADOW_EFFECT = new DropShadow();
+    
+    public static final Effect KEYCODE_LABEL_BLOOM = new Bloom(0.4);
 
 }
