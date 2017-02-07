@@ -33,7 +33,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Slider;
-import javafx.scene.effect.Bloom;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
@@ -71,7 +70,7 @@ public class AudioMediaUI extends VBox implements AudioConfigChain {
 
     private final AudioMedia audioMedia;
 
-    private IconButton buttonPlayPause;
+    private final IconButton buttonPlayPause;
 
     private final ImageView repeatImageView = new ImageView();
 
@@ -103,19 +102,13 @@ public class AudioMediaUI extends VBox implements AudioConfigChain {
             player.getPlayer().statusProperty().addListener((ObservableValue<? extends Status> observable, Status oldValue, Status newValue) -> {
                 switch (newValue) {
                     case PAUSED:
-                        buttonPlayPause.setPathNameOfIcon(Const.NAME_ICON_PLAY);
-                        setBackground(Const.STOP_BACKG);
-                        setEffect(null);
+                        decoratePlaying(false);
                         break;
                     case PLAYING:
-                        buttonPlayPause.setPathNameOfIcon(Const.NAME_ICON_PAUSE);
-                        setBackground(Const.PLAY_BACKG);
-                        setEffect(Const.SHADOW_EFFECT);
+                        decoratePlaying(true);
                         break;
                     case STOPPED:
-                        buttonPlayPause.setPathNameOfIcon(Const.NAME_ICON_PLAY);
-                        setBackground(Const.STOP_BACKG);
-                        setEffect(null);
+                        decoratePlaying(false);
                         break;
                 }
             });
@@ -139,7 +132,7 @@ public class AudioMediaUI extends VBox implements AudioConfigChain {
         button_delete.setOnMouseClicked((MouseEvent event) -> {
             Optional<ButtonType> result = ActionDialog.showConfirmation("Vous allez supprimer cette piste", "Voulez-vous continuer ?");
             if (result.get() == ButtonType.OK) {
-                controller.removeAudioMedia(audioMedia, this);
+                controller.removeAudioMedia(audioMedia, AudioMediaUI.this);
             }
         });
         // creation bouton pour la configuration de la piste.
@@ -182,7 +175,6 @@ public class AudioMediaUI extends VBox implements AudioConfigChain {
         ////////////////////////////////////////////////////////////////////////
         // initialize KeyCodeLabel
         keycodeLabel.getStyleClass().add("labelkey-track");
-        keycodeLabel.setEffect(new Bloom(0.4));
         this.getChildren().addAll(nameLabel, topHbox, curseVolume, progressTrack, bottomHbox, repeatImageView, keycodeLabel);
     }
 
@@ -208,6 +200,19 @@ public class AudioMediaUI extends VBox implements AudioConfigChain {
         hbox.setPrefWidth(80);
         hbox.setAlignment(Pos.CENTER);
         return hbox;
+    }
+
+    private void decoratePlaying(boolean decorate) {
+        buttonPlayPause.setPathNameOfIcon(Const.NAME_ICON_PAUSE);
+        this.setEffect(null);
+        keycodeLabel.setEffect(null);
+        this.setBackground(Const.STOP_BACKG);
+        if (decorate) {
+            buttonPlayPause.setPathNameOfIcon(Const.NAME_ICON_PLAY);
+            this.setBackground(Const.PLAY_BACKG);
+            this.setEffect(Const.SHADOW_EFFECT);
+            keycodeLabel.setEffect(Const.KEYCODE_LABEL_BLOOM);
+        }
     }
 
     public ObjectProperty<KeyCode> keycodeProperty() {
