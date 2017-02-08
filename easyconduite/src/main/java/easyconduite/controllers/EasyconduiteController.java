@@ -147,7 +147,8 @@ public class EasyconduiteController extends StackPane implements Initializable, 
     }
 
     public void removeAudioMedia(AudioMedia audioMedia, AudioMediaUI ui) {
-
+        ui.getEasyPlayer().stop();
+        ui.getEasyPlayer().getPlayer().dispose();
         tableLayout.getChildren().remove(ui);
         mediaUIList.remove(ui);
         audioTable.getAudioMediaList().remove(audioMedia);
@@ -236,6 +237,7 @@ public class EasyconduiteController extends StackPane implements Initializable, 
         // initialisation de la chaine.
         this.setNext(audioMediaUI);
         audioMediaUI.setNext(audioMediaUI.getEasyPlayer());
+        LOG.trace("After config, AudioMedia is {}", media);
         nextChain.chainConfigure(media);
     }
 
