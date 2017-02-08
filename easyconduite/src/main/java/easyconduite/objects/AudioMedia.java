@@ -81,7 +81,7 @@ public class AudioMedia {
         this.audioFile = audioFile;
         this.filePathName = audioFile.getAbsolutePath();
         setRepeatable(Boolean.FALSE);
-        setVolume(50.0);
+        setVolume(0.5d);
         Path path = audioFile.toPath();
         setName(path.getFileName().toString());
     }
@@ -330,6 +330,6 @@ public class AudioMedia {
 
     @Override
     public String toString() {
-        return "AudioMedia{uniqueId=" + uniqueId + ", filePathName=" + filePathName + ", name=" + name.getValue() + ", keycode=" + keycode.getValue() + '}';
+        return "AudioMedia{" + "uniqueId=" + uniqueId + ", filePathName=" + filePathName + ", audioDuration=" + audioDuration + ", fadeInDuration=" + fadeInDuration + ", fadeOutDuration=" + fadeOutDuration + ", repeatable=" + repeatable + ", volume=" + volume + ", name=" + name + ", keycode=" + keycode + '}';
     }
 }

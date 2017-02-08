@@ -18,6 +18,7 @@
 package easyconduite.util;
 
 import easyconduite.ui.AudioMediaUI;
+import javafx.animation.Transition;
 import javafx.geometry.Insets;
 import javafx.scene.effect.Bloom;
 import javafx.scene.effect.DropShadow;
@@ -27,12 +28,18 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
 
 /**
  *
  * @author antony fons
  */
 public class Const {
+
+    public enum Fade {
+
+        IN, OUT;
+    }
 
     public static final Background PLAY_BACKG = new Background(new BackgroundFill(Color.web("#455473"), CornerRadii.EMPTY, Insets.EMPTY));
 
@@ -43,9 +50,25 @@ public class Const {
     public static final String NAME_ICON_PLAY = "/icons/PlayGreenButton.png";
 
     public static final String NAME_ICON_PAUSE = "/icons/PauseBlueButton.png";
-    
-    public static final Effect SHADOW_EFFECT = new DropShadow();
-    
+
+    public static final Effect SHADOW_EFFECT = new DropShadow(5d, 2d, 2d, Color.BLACK);
+
     public static final Effect KEYCODE_LABEL_BLOOM = new Bloom(0.4);
+
+    public static Transition createFade(Fade fade, Duration duration) {
+
+        Transition transition = new Transition() {
+            {
+                setCycleDuration(Duration.millis(duration.toMillis()));
+            }
+            @Override
+            protected void interpolate(double frac) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        };
+
+        return null;
+
+    }
 
 }

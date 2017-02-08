@@ -19,6 +19,11 @@ package easyconduite.ui;
 import easyconduite.model.AudioConfigChain;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.EasyconduiteException;
+import easyconduite.util.EasyFadeTransition;
+import easyconduite.util.EasyFadeTransition.Way;
+import java.util.HashMap;
+import java.util.Map;
+import javafx.animation.Transition;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
@@ -41,8 +46,14 @@ public class EasyconduitePlayer implements AudioConfigChain {
 
     private MediaPlayer player;
 
+    private Transition fadeInTransition;
+
+    private Transition fadeOutTransition;
+
+    private Map<Way, EasyFadeTransition> mapFade;
+
     private AudioConfigChain nextChain;
-    
+
     public static EasyconduitePlayer create(AudioMedia media) throws EasyconduiteException {
         return new EasyconduitePlayer(media);
     }
@@ -50,6 +61,7 @@ public class EasyconduitePlayer implements AudioConfigChain {
     private EasyconduitePlayer(AudioMedia media) throws EasyconduiteException {
         LOG.debug("Construct EasyconduitePlayer with AudioMedia[{}]", media);
         this.audioMedia = media;
+        this.mapFade = new HashMap<>();
         try {
             final Media mediaForPlayer = new Media(audioMedia.getAudioFile().toURI().toString());
             player = new MediaPlayer(mediaForPlayer);
@@ -78,7 +90,8 @@ public class EasyconduitePlayer implements AudioConfigChain {
             player.setOnReady(null);
         });
 
-        player.volumeProperty().bind(audioMedia.volumeProperty().divide(100));
+        player.volumeProperty().bindBidirectional(audioMedia.volumeProperty());
+
     }
 
     public final void stop() {
@@ -96,15 +109,18 @@ public class EasyconduitePlayer implements AudioConfigChain {
         } else {
             switch (status) {
                 case PAUSED:
+                    playFade(Way.IN);
                     player.play();
                     break;
                 case PLAYING:
                     player.pause();
                     break;
                 case READY:
+                    playFade(Way.IN);
                     player.play();
                     break;
                 case STOPPED:
+                    playFade(Way.IN);
                     player.play();
                     break;
                 case UNKNOWN:
@@ -132,7 +148,17 @@ public class EasyconduitePlayer implements AudioConfigChain {
             player.setCycleCount(1);
         }
     }
-    
+
+    private void playFade(Way sens) {
+        final EasyFadeTransition fadeTransition = mapFade.get(sens);
+        if (fadeTransition != null) {
+            if (sens.equals(Way.IN)) {
+                player.setVolume(fadeTransition.getStartVolume());
+            }
+            fadeTransition.play();
+        }
+    }
+
     @Override
     public void setNext(AudioConfigChain next) {
         this.nextChain = next;
@@ -142,6 +168,11 @@ public class EasyconduitePlayer implements AudioConfigChain {
     public void chainConfigure(AudioMedia media) {
         if (this.audioMedia.equals(media)) {
             setRepeatable(audioMedia.getRepeatable());
+            mapFade.clear();
+            if (audioMedia.getFadeInDuration() != null) {
+                mapFade.put(EasyFadeTransition.Way.IN, new EasyFadeTransition(player, audioMedia.getFadeInDuration(), EasyFadeTransition.Way.IN));
+            }
+
         } else {
             ActionDialog.showWarning("Incohérence des objets", "Les objets AudioMedia ne sont pas egaux");
         }

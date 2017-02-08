@@ -146,10 +146,10 @@ public class AudioMediaUI extends VBox implements AudioConfigChain {
         topHbox.getChildren().addAll(button_delete, button_config);
         ////////////////////////////////////////////////////////////////////////
         // Slider for volume control
-        Slider curseVolume = new Slider(0, 100, this.audioMedia.getVolume());
+        Slider curseVolume = new Slider(0, 1, this.audioMedia.getVolume());
         curseVolume.getStyleClass().add("slider-volume-track");
-        curseVolume.valueProperty().bindBidirectional(this.audioMedia.volumeProperty());
-
+        curseVolume.valueProperty().bindBidirectional(audioMedia.volumeProperty());
+        
         // Progressbar /////////////////////////////////////////////////////////
         progressTrack = new ProgressBar(0);
         progressTrack.getStyleClass().add("progress-bar-track");
@@ -203,12 +203,12 @@ public class AudioMediaUI extends VBox implements AudioConfigChain {
     }
 
     private void decoratePlaying(boolean decorate) {
-        buttonPlayPause.setPathNameOfIcon(Const.NAME_ICON_PAUSE);
+        buttonPlayPause.setPathNameOfIcon(Const.NAME_ICON_PLAY);
         this.setEffect(null);
         keycodeLabel.setEffect(null);
         this.setBackground(Const.STOP_BACKG);
         if (decorate) {
-            buttonPlayPause.setPathNameOfIcon(Const.NAME_ICON_PLAY);
+            buttonPlayPause.setPathNameOfIcon(Const.NAME_ICON_PAUSE);
             this.setBackground(Const.PLAY_BACKG);
             this.setEffect(Const.SHADOW_EFFECT);
             keycodeLabel.setEffect(Const.KEYCODE_LABEL_BLOOM);

@@ -78,7 +78,7 @@ public class TrackConfigController extends BorderPane implements Initializable, 
     @FXML
     private Button okbutton;
 
-    private AudioMediaConfigurator mediaConfigurator;
+    private final AudioMediaConfigurator mediaConfigurator;
 
     private AudioConfigChain nextChain;
 
@@ -105,10 +105,10 @@ public class TrackConfigController extends BorderPane implements Initializable, 
 
     @FXML
     private void handleClickOk(MouseEvent event) {
-        
+
         final Integer iValueFadeOut = (Integer) fadeOutSpinner.getValue();
         final Integer iValueFadeIn = (Integer) fadeInSpinner.getValue();
-        mediaConfigurator = mediaConfigurator
+        mediaConfigurator
                 .withName(nametrackfield.getText())
                 .withfadeIn(Duration.seconds(iValueFadeIn))
                 .withfadeOut(Duration.seconds(iValueFadeOut));
@@ -118,18 +118,17 @@ public class TrackConfigController extends BorderPane implements Initializable, 
 
     @FXML
     private void handleClickCancel(MouseEvent event) {
-        mediaConfigurator = null;
         this.close();
     }
 
     @FXML
     private void handleClickRepeat(MouseEvent event) {
-        mediaConfigurator = mediaConfigurator.withRepeat(repeattrack.selectedProperty().getValue());
+        mediaConfigurator.withRepeat(repeattrack.selectedProperty().getValue());
     }
 
     @FXML
     private void handleClickKeyField(MouseEvent event) {
-        mediaConfigurator = mediaConfigurator.withKeyCodeChanged(null);
+        mediaConfigurator.withKeyCodeChanged(null);
         keytrackfield.clear();
     }
 
@@ -143,7 +142,7 @@ public class TrackConfigController extends BorderPane implements Initializable, 
             if (typedKeycode != this.audioMedia.getKeycode()) {
                 this.newKeyCode = typedKeycode;
                 keytrackfield.setText(KeyCodeUtil.toString(typedKeycode));
-                mediaConfigurator = mediaConfigurator.withKeyCodeChanged(newKeyCode);
+                mediaConfigurator.withKeyCodeChanged(newKeyCode);
             }
         }
     }
@@ -157,6 +156,12 @@ public class TrackConfigController extends BorderPane implements Initializable, 
      */
     public void setup(AudioMedia media, EasyconduiteController controller) {
         this.audioMedia = media;
+        if (this.audioMedia.getFadeInDuration() != null) {
+            fadeInSpinner.getValueFactory().setValue((int) this.audioMedia.getFadeInDuration().toSeconds());
+        }
+        if (this.audioMedia.getFadeOutDuration() != null) {
+            fadeOutSpinner.getValueFactory().setValue((int) this.audioMedia.getFadeOutDuration().toSeconds());
+        }
         mainController = controller;
         nametrackfield.setText(media.getName());
         keytrackfield.setText(KeyCodeUtil.toString(media.getKeycode()));
@@ -177,6 +182,7 @@ public class TrackConfigController extends BorderPane implements Initializable, 
     public void chainConfigure(AudioMedia media) {
         mediaConfigurator.update(this.audioMedia);
         setNext(mainController);
+        LOG.trace("After config, AudioMedia is {}", this.audioMedia);
         nextChain.chainConfigure(this.audioMedia);
     }
 }
