@@ -64,7 +64,6 @@ public class AudioMediaConfigurator {
      */
     public AudioMediaConfigurator withfadeIn(Duration duration) {
         this.fadeInDuration = duration;
-        LOG.trace("fadeInDuration {}",this.fadeInDuration);
         return this;
     }
 
