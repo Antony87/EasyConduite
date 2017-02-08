@@ -19,6 +19,8 @@ package easyconduite.objects;
 import java.util.Objects;
 import javafx.scene.input.KeyCode;
 import javafx.util.Duration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Class provides a builder pattern's for update an AudioMedia.
@@ -26,6 +28,8 @@ import javafx.util.Duration;
  * @author antony
  */
 public class AudioMediaConfigurator {
+    
+    static final Logger LOG = LogManager.getLogger(AudioMediaConfigurator.class);
 
     private Duration audioDuration;
 
@@ -60,6 +64,7 @@ public class AudioMediaConfigurator {
      */
     public AudioMediaConfigurator withfadeIn(Duration duration) {
         this.fadeInDuration = duration;
+        LOG.trace("fadeInDuration {}",this.fadeInDuration);
         return this;
     }
 
@@ -121,7 +126,7 @@ public class AudioMediaConfigurator {
             media.setFadeInDuration(this.fadeInDuration);
         }
         if (this.fadeOutDuration != null) {
-            media.setFadeInDuration(this.fadeOutDuration);
+            media.setFadeOutDuration(this.fadeOutDuration);
         }
         if (this.repeatable != null) {
             media.setRepeatable(this.repeatable);
