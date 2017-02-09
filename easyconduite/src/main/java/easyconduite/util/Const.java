@@ -44,7 +44,7 @@ public class Const {
 
     public static final String NAME_ICON_PAUSE = "/icons/PauseBlueButton.png";
     
-    public static final Effect SHADOW_EFFECT = new DropShadow();
+    public static final Effect SHADOW_EFFECT = new DropShadow(5d, -1d, -1d, Color.BLACK);
     
     public static final Effect KEYCODE_LABEL_BLOOM = new Bloom(0.4);
 

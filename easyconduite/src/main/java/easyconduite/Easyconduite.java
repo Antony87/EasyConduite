@@ -46,6 +46,8 @@ public class Easyconduite extends Application {
 //        specificConfig.setLevel(Level.ERROR);
 //        ctx.updateLoggers();
 
+// TODO dialog box for setting up log level
+
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/easyconduite32.png")));
 
         final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/easyconduite.fxml"));
