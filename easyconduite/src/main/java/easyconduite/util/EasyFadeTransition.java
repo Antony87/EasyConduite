@@ -68,7 +68,6 @@ public class EasyFadeTransition extends Transition {
     @Override
     protected void interpolate(double frac) {
         easyPlayer.getPlayer().setVolume(frac * easyPlayer.getInitialVolume());
-        System.out.println(frac);
     }
 
 }
