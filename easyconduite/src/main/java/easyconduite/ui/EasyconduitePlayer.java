@@ -28,7 +28,6 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
-import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -61,7 +60,7 @@ public class EasyconduitePlayer implements AudioConfigChain {
     private EasyconduitePlayer(AudioMedia media) throws EasyconduiteException {
         LOG.debug("Construct EasyconduitePlayer with AudioMedia[{}]", media);
         this.audioMedia = media;
-        this.mapFade = new HashMap<>();
+        this.mapFade = new HashMap<>(2);
         try {
             final Media mediaForPlayer = new Media(audioMedia.getAudioFile().toURI().toString());
             player = new MediaPlayer(mediaForPlayer);
@@ -95,6 +94,9 @@ public class EasyconduitePlayer implements AudioConfigChain {
     }
 
     public final void stop() {
+        mapFade.values().stream().forEach((EasyFadeTransition t) -> {
+            t.stop();
+        });
         player.stop();
     }
 
@@ -102,34 +104,28 @@ public class EasyconduitePlayer implements AudioConfigChain {
         player.pause();
     }
 
-    public void playPause() {
+    public final void play() {
+        playFade(Way.IN);
+        player.play();
+    }
 
+    public final void playPause() {
         Status status = player.getStatus();
-        if (status == null) {
-        } else {
-            switch (status) {
-                case PAUSED:
-                    playFade(Way.IN);
-                    player.play();
-                    break;
-                case PLAYING:
-                    player.pause();
-                    break;
-                case READY:
-                    playFade(Way.IN);
-                    player.play();
-                    break;
-                case STOPPED:
-                    playFade(Way.IN);
-                    player.play();
-                    break;
-                case UNKNOWN:
-                    player.seek(Duration.ZERO);
-                    player.play();
-                    break;
-                default:
-                    break;
-            }
+        switch (status) {
+            case PAUSED:
+                this.play();
+                break;
+            case PLAYING:
+                player.pause();
+                break;
+            case READY:
+                this.play();
+                break;
+            case STOPPED:
+                this.play();
+                break;
+            default:
+                break;
         }
     }
 
@@ -170,9 +166,11 @@ public class EasyconduitePlayer implements AudioConfigChain {
             setRepeatable(audioMedia.getRepeatable());
             mapFade.clear();
             if (audioMedia.getFadeInDuration() != null) {
-                mapFade.put(EasyFadeTransition.Way.IN, new EasyFadeTransition(player, audioMedia.getFadeInDuration(), EasyFadeTransition.Way.IN));
+                mapFade.put(Way.IN, new EasyFadeTransition(player, audioMedia.getFadeInDuration(), Way.IN));
             }
-
+            if (audioMedia.getFadeOutDuration() != null) {
+                mapFade.put(Way.OUT, new EasyFadeTransition(player, audioMedia.getFadeOutDuration(), Way.OUT));
+            }
         } else {
             ActionDialog.showWarning("Incohérence des objets", "Les objets AudioMedia ne sont pas egaux");
         }
