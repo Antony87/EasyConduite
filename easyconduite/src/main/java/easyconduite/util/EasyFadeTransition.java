@@ -16,8 +16,10 @@
  */
 package easyconduite.util;
 
+import easyconduite.ui.EasyconduitePlayer;
 import javafx.animation.Transition;
-import javafx.scene.media.MediaPlayer;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.util.Duration;
 
 /**
@@ -26,34 +28,47 @@ import javafx.util.Duration;
  */
 public class EasyFadeTransition extends Transition {
 
-    public static enum Way {
-
-        IN, OUT;
-    }
+    private final EasyconduitePlayer easyPlayer;
     
-    private final double startVolume;
-
-    private final MediaPlayer player;
-
-    public EasyFadeTransition(MediaPlayer player, Duration fadeDuration, Way sens) {
+    public EasyFadeTransition(EasyconduitePlayer player) {
         super();
-        this.player = player;
-        setCycleDuration(fadeDuration);
-        if(sens.equals(Way.IN)){
-            this.startVolume=0.0d;
-        }else{
-          this.startVolume=this.player.getVolume();  
-        }
+        easyPlayer = player;
     }
 
-    public double getStartVolume() {
-        return startVolume;
+    public void fadeOut(Duration fadeDuration) {
+        this.setRate(-1d);
+        this.setCycleDuration(fadeDuration);
+        this.jumpTo(getCycleDuration());
+        this.setOnFinished(getFadeOutHandler());
+        this.play();
     }
-    
-    
+
+    public void fadeIn(Duration fadeDuration) {
+        easyPlayer.getPlayer().setVolume(0d);
+        this.setRate(1d);
+        this.setCycleDuration(fadeDuration);
+        this.setOnFinished(getFadeInHandler());
+        this.play();
+    }
+
+    private EventHandler<ActionEvent> getFadeOutHandler() {
+        return (ActionEvent event) -> {
+            easyPlayer.getPlayer().pause();
+            setOnFinished(null);
+        };
+    }
+
+    private EventHandler<ActionEvent> getFadeInHandler() {
+        return (ActionEvent event) -> {
+            easyPlayer.getPlayer().setVolume(easyPlayer.getInitialVolume());
+            setOnFinished(null);
+        };
+    }
 
     @Override
     protected void interpolate(double frac) {
-        this.player.setVolume(frac);
+        easyPlayer.getPlayer().setVolume(frac * easyPlayer.getInitialVolume());
+        System.out.println(frac);
     }
+
 }

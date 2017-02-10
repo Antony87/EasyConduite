@@ -24,19 +24,19 @@ import easyconduite.objects.AudioMedia;
  *
  * @author antony
  */
-public interface AudioConfigChain {
+public interface ConfigurableFromAudio {
 
     /**
      * Set next element concerned to AudioMedia.
      *
      * @param next
      */
-    public void setNext(AudioConfigChain next);
+    public void setNext(ConfigurableFromAudio next);
 
     /**
      * Element's configuration method uses AudioMedia.
      * @param audioMedia 
      */
-    public void chainConfigure(AudioMedia audioMedia);
+    public void updateFromAudioMedia(AudioMedia audioMedia);
 
 }

@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
  * @author antony
  */
 public class AudioMediaConfigurator {
-    
+
     static final Logger LOG = LogManager.getLogger(AudioMediaConfigurator.class);
 
     private Duration audioDuration;

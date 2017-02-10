@@ -16,18 +16,17 @@
  */
 package easyconduite.ui;
 
-import easyconduite.model.AudioConfigChain;
+import easyconduite.model.ConfigurableFromAudio;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.EasyconduiteException;
 import easyconduite.util.EasyFadeTransition;
-import easyconduite.util.EasyFadeTransition.Way;
-import java.util.HashMap;
-import java.util.Map;
-import javafx.animation.Transition;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ReadOnlyDoubleWrapper;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
+import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,21 +36,19 @@ import org.apache.logging.log4j.Logger;
  *
  * @author antony
  */
-public class EasyconduitePlayer implements AudioConfigChain {
+public class EasyconduitePlayer implements ConfigurableFromAudio {
 
     static final Logger LOG = LogManager.getLogger(EasyconduitePlayer.class);
 
-    private final AudioMedia audioMedia;
+    private AudioMedia audioMedia;
 
     private MediaPlayer player;
 
-    private Transition fadeInTransition;
+    private EasyFadeTransition fadeHandler;
 
-    private Transition fadeOutTransition;
+    private final DoubleProperty initialVolume = new ReadOnlyDoubleWrapper();
 
-    private Map<Way, EasyFadeTransition> mapFade;
-
-    private AudioConfigChain nextChain;
+    private ConfigurableFromAudio nextChain;
 
     public static EasyconduitePlayer create(AudioMedia media) throws EasyconduiteException {
         return new EasyconduitePlayer(media);
@@ -59,8 +56,11 @@ public class EasyconduitePlayer implements AudioConfigChain {
 
     private EasyconduitePlayer(AudioMedia media) throws EasyconduiteException {
         LOG.debug("Construct EasyconduitePlayer with AudioMedia[{}]", media);
-        this.audioMedia = media;
-        this.mapFade = new HashMap<>(2);
+        
+        audioMedia = media;
+        
+        fadeHandler = new EasyFadeTransition(EasyconduitePlayer.this);
+        
         try {
             final Media mediaForPlayer = new Media(audioMedia.getAudioFile().toURI().toString());
             player = new MediaPlayer(mediaForPlayer);
@@ -79,33 +79,40 @@ public class EasyconduitePlayer implements AudioConfigChain {
             // if repeat is false, force to stop de player.
             if (!audioMedia.getRepeatable()) {
                 this.stop();
+                player.volumeProperty().setValue(initialVolume.getValue());
             }
         });
 
+        //initialize player when ready.
         player.setOnReady(() -> {
-            setRepeatable(audioMedia.getRepeatable());
+            updateFromAudioMedia(audioMedia);
             // Get duration by StopTime and put to the AudioMedia property.
-            this.audioMedia.setAudioDuration(player.getStopTime());
+            audioMedia.setAudioDuration(player.getStopTime());
             player.setOnReady(null);
         });
-
-        player.volumeProperty().bindBidirectional(audioMedia.volumeProperty());
-
+        
+        this.initialVolume.bind(audioMedia.volumeProperty());
     }
 
     public final void stop() {
-        mapFade.values().stream().forEach((EasyFadeTransition t) -> {
-            t.stop();
-        });
+        fadeHandler.stop();
         player.stop();
+        player.volumeProperty().setValue(initialVolume.getValue());
     }
 
     public final void pause() {
-        player.pause();
+        // si existe une transition fade out
+        if (audioMedia.getFadeOutDuration() != Duration.ZERO) {
+            fadeHandler.fadeOut(audioMedia.getFadeOutDuration());
+        } else {
+            player.pause();
+        }
     }
 
     public final void play() {
-        playFade(Way.IN);
+        if (audioMedia.getFadeInDuration() != Duration.ZERO) {
+            fadeHandler.fadeIn(audioMedia.getFadeInDuration());
+        }
         player.play();
     }
 
@@ -116,7 +123,7 @@ public class EasyconduitePlayer implements AudioConfigChain {
                 this.play();
                 break;
             case PLAYING:
-                player.pause();
+                this.pause();
                 break;
             case READY:
                 this.play();
@@ -133,44 +140,38 @@ public class EasyconduitePlayer implements AudioConfigChain {
         return player;
     }
 
-    public final Status getStatus() {
-        return player.getStatus();
+    public final Double getInitialVolume() {
+        return initialVolume.getValue();
     }
 
-    public final void setRepeatable(boolean repeatable) {
-        if (repeatable) {
-            player.setCycleCount(Integer.MAX_VALUE);
-        } else {
-            player.setCycleCount(1);
-        }
+    public final void setInitialVolume(Double initialVolume) {
+        this.initialVolume.setValue(initialVolume);
     }
 
-    private void playFade(Way sens) {
-        final EasyFadeTransition fadeTransition = mapFade.get(sens);
-        if (fadeTransition != null) {
-            if (sens.equals(Way.IN)) {
-                player.setVolume(fadeTransition.getStartVolume());
-            }
-            fadeTransition.play();
-        }
+    public DoubleProperty InitialVolumeProperty() {
+        return initialVolume;
     }
 
     @Override
-    public void setNext(AudioConfigChain next) {
+    public void setNext(ConfigurableFromAudio next) {
         this.nextChain = next;
     }
 
     @Override
-    public void chainConfigure(AudioMedia media) {
-        if (this.audioMedia.equals(media)) {
-            setRepeatable(audioMedia.getRepeatable());
-            mapFade.clear();
-            if (audioMedia.getFadeInDuration() != null) {
-                mapFade.put(Way.IN, new EasyFadeTransition(player, audioMedia.getFadeInDuration(), Way.IN));
+    public final void updateFromAudioMedia(AudioMedia media) {
+        if (audioMedia.equals(media)) {
+
+            audioMedia = media;
+
+            // configuration de EasyconduitePlayer en fonction de AudioMedia
+            if (audioMedia.getRepeatable()) {
+                player.setCycleCount(Integer.MAX_VALUE);
+            } else {
+                player.setCycleCount(1);
             }
-            if (audioMedia.getFadeOutDuration() != null) {
-                mapFade.put(Way.OUT, new EasyFadeTransition(player, audioMedia.getFadeOutDuration(), Way.OUT));
-            }
+
+            player.setVolume(getInitialVolume());
+
         } else {
             ActionDialog.showWarning("Incohérence des objets", "Les objets AudioMedia ne sont pas egaux");
         }

@@ -16,7 +16,7 @@
  */
 package easyconduite.controllers;
 
-import easyconduite.model.AudioConfigChain;
+import easyconduite.model.ConfigurableFromAudio;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioMediaConfigurator;
 import easyconduite.ui.ActionDialog;
@@ -44,7 +44,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author antony
  */
-public class TrackConfigController extends BorderPane implements Initializable, AudioConfigChain {
+public class TrackConfigController extends BorderPane implements Initializable, ConfigurableFromAudio {
 
     static final Logger LOG = LogManager.getLogger(TrackConfigController.class);
 
@@ -80,7 +80,7 @@ public class TrackConfigController extends BorderPane implements Initializable, 
 
     private final AudioMediaConfigurator mediaConfigurator;
 
-    private AudioConfigChain nextChain;
+    private ConfigurableFromAudio nextChain;
 
     public TrackConfigController() {
         mediaConfigurator = new AudioMediaConfigurator();
@@ -106,13 +106,13 @@ public class TrackConfigController extends BorderPane implements Initializable, 
     @FXML
     private void handleClickOk(MouseEvent event) {
 
-        final Integer iValueFadeOut = (Integer) fadeOutSpinner.getValue();
-        final Integer iValueFadeIn = (Integer) fadeInSpinner.getValue();
+        Integer iValueFadeOut = (Integer) fadeOutSpinner.getValue();
+        Integer iValueFadeIn = (Integer) fadeInSpinner.getValue();
         mediaConfigurator
                 .withName(nametrackfield.getText())
                 .withfadeIn(Duration.seconds(iValueFadeIn))
                 .withfadeOut(Duration.seconds(iValueFadeOut));
-        this.chainConfigure(this.audioMedia);
+        this.updateFromAudioMedia(this.audioMedia);
         this.close();
     }
 
@@ -174,15 +174,15 @@ public class TrackConfigController extends BorderPane implements Initializable, 
     }
 
     @Override
-    public void setNext(AudioConfigChain next) {
+    public void setNext(ConfigurableFromAudio next) {
         this.nextChain = next;
     }
 
     @Override
-    public void chainConfigure(AudioMedia media) {
+    public void updateFromAudioMedia(AudioMedia media) {
         mediaConfigurator.update(this.audioMedia);
         setNext(mainController);
         LOG.trace("After config, AudioMedia is {}", this.audioMedia);
-        nextChain.chainConfigure(this.audioMedia);
+        nextChain.updateFromAudioMedia(this.audioMedia);
     }
 }

@@ -53,9 +53,9 @@ public class AudioMedia {
 
     private Duration audioDuration = Duration.ONE;
 
-    private Duration fadeInDuration;
+    private Duration fadeInDuration = Duration.ZERO;
 
-    private Duration fadeOutDuration;
+    private Duration fadeOutDuration= Duration.ZERO;
 
     public final BooleanProperty repeatable = new ReadOnlyBooleanWrapper();
 
@@ -182,12 +182,6 @@ public class AudioMedia {
      * @param volume
      */
     public final void setVolume(Double volume) {
-        if (volume < 0d) {
-            volume = 0d;
-        }
-        if (volume > 100d) {
-            volume = 100d;
-        }
         this.volume.setValue(volume);
     }
 
