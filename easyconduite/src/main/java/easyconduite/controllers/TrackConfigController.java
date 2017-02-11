@@ -137,7 +137,7 @@ public class TrackConfigController extends BorderPane implements Initializable, 
         final KeyCode typedKeycode = event.getCode();
         if (mainController.isKeyCodeExist(typedKeycode)) {
             keytrackfield.clear();
-            ActionDialog.showWarning(String.format("La touche %s est déja affectée", KeyCodeUtil.toString(typedKeycode)), "Cliquez sur OK pour recommencer");
+            ActionDialog.showWarning(String.format("La touche %s est déja attribuée", KeyCodeUtil.toString(typedKeycode)), "Cliquez sur OK pour recommencer");
         } else {
             if (typedKeycode != this.audioMedia.getKeycode()) {
                 this.newKeyCode = typedKeycode;

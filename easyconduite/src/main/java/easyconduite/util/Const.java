@@ -18,7 +18,9 @@
 package easyconduite.util;
 
 import easyconduite.ui.AudioMediaUI;
-import javafx.animation.Transition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 import javafx.geometry.Insets;
 import javafx.scene.effect.Bloom;
 import javafx.scene.effect.DropShadow;
@@ -36,11 +38,6 @@ import javafx.util.Duration;
  */
 public class Const {
 
-    public enum Fade {
-
-        IN, OUT;
-    }
-
     public static final Background PLAY_BACKG = new Background(new BackgroundFill(Color.web("#455473"), CornerRadii.EMPTY, Insets.EMPTY));
 
     public static final Background STOP_BACKG = new Background(new BackgroundFill(Color.web("#535965"), CornerRadii.EMPTY, Insets.EMPTY));
@@ -55,20 +52,14 @@ public class Const {
 
     public static final Effect KEYCODE_LABEL_BLOOM = new Bloom(0.4);
 
-    public static Transition createFade(Fade fade, Duration duration) {
+    public static final TimeZone TZ = TimeZone.getTimeZone("UTC");
 
-        Transition transition = new Transition() {
-            {
-                setCycleDuration(Duration.millis(duration.toMillis()));
-            }
-            @Override
-            protected void interpolate(double frac) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        };
+    public Const() {
 
-        return null;
+    }
 
+    public static String getFormatedDuration(Duration duration, SimpleDateFormat formater) {
+        return formater.format(new Date((long) duration.toMillis()));
     }
 
 }

@@ -19,9 +19,7 @@ package easyconduite.ui;
 import easyconduite.model.ConfigurableFromAudio;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.EasyconduiteException;
-import easyconduite.util.EasyFadeTransition;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ReadOnlyDoubleWrapper;
+import easyconduite.util.PlayerVolumeFader;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
@@ -44,11 +42,7 @@ public class EasyconduitePlayer implements ConfigurableFromAudio {
 
     private MediaPlayer player;
 
-    private EasyFadeTransition fadeHandler;
-
-    private final DoubleProperty initialVolume = new ReadOnlyDoubleWrapper();
-
-    private ConfigurableFromAudio nextChain;
+    private PlayerVolumeFader fadeHandler;
 
     public static EasyconduitePlayer create(AudioMedia media) throws EasyconduiteException {
         return new EasyconduitePlayer(media);
@@ -56,11 +50,11 @@ public class EasyconduitePlayer implements ConfigurableFromAudio {
 
     private EasyconduitePlayer(AudioMedia media) throws EasyconduiteException {
         LOG.debug("Construct EasyconduitePlayer with AudioMedia[{}]", media);
-        
+
         audioMedia = media;
-        
-        fadeHandler = new EasyFadeTransition(EasyconduitePlayer.this);
-        
+
+        fadeHandler = new PlayerVolumeFader(EasyconduitePlayer.this, audioMedia);
+
         try {
             final Media mediaForPlayer = new Media(audioMedia.getAudioFile().toURI().toString());
             player = new MediaPlayer(mediaForPlayer);
@@ -79,7 +73,7 @@ public class EasyconduitePlayer implements ConfigurableFromAudio {
             // if repeat is false, force to stop de player.
             if (!audioMedia.getRepeatable()) {
                 this.stop();
-                player.volumeProperty().setValue(initialVolume.getValue());
+                player.volumeProperty().setValue(audioMedia.getVolume());
             }
         });
 
@@ -90,14 +84,12 @@ public class EasyconduitePlayer implements ConfigurableFromAudio {
             audioMedia.setAudioDuration(player.getStopTime());
             player.setOnReady(null);
         });
-        
-        this.initialVolume.bind(audioMedia.volumeProperty());
     }
 
     public final void stop() {
         fadeHandler.stop();
         player.stop();
-        player.volumeProperty().setValue(initialVolume.getValue());
+        player.volumeProperty().setValue(audioMedia.getVolume());
     }
 
     public final void pause() {
@@ -140,21 +132,8 @@ public class EasyconduitePlayer implements ConfigurableFromAudio {
         return player;
     }
 
-    public final Double getInitialVolume() {
-        return initialVolume.getValue();
-    }
-
-    public final void setInitialVolume(Double initialVolume) {
-        this.initialVolume.setValue(initialVolume);
-    }
-
-    public DoubleProperty InitialVolumeProperty() {
-        return initialVolume;
-    }
-
     @Override
     public void setNext(ConfigurableFromAudio next) {
-        this.nextChain = next;
     }
 
     @Override
@@ -170,7 +149,7 @@ public class EasyconduitePlayer implements ConfigurableFromAudio {
                 player.setCycleCount(1);
             }
 
-            player.setVolume(getInitialVolume());
+            player.setVolume(audioMedia.getVolume());
 
         } else {
             ActionDialog.showWarning("Incohérence des objets", "Les objets AudioMedia ne sont pas egaux");

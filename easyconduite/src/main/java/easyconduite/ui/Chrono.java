@@ -16,9 +16,8 @@
  */
 package easyconduite.ui;
 
+import easyconduite.util.Const;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -32,22 +31,20 @@ public class Chrono {
     static final Logger LOG = LogManager.getLogger(Chrono.class);
     
     private static final SimpleDateFormat CHRONO_FORMAT = new SimpleDateFormat("HH:mm:ss");
-
+    
     private final Timeline timer;
 
     private final Label label;
 
     private long secondesDuration = 0;
-
-
+        
     public Chrono(Label label) {
         this.label = label;
-        final TimeZone tz = TimeZone.getTimeZone("UTC");
-        CHRONO_FORMAT.setTimeZone(tz);
+        CHRONO_FORMAT.setTimeZone(Const.TZ);
         timer = new Timeline(new KeyFrame(
                 Duration.seconds(1), (ActionEvent event) -> {
                     secondesDuration = ++secondesDuration;
-                    this.label.setText(this.toLabel());
+                    this.label.setText(this.toLabel(Duration.seconds(secondesDuration)));
                     //LOG.trace("Chrono {} s", secondesDuration);
                 }));
         timer.setCycleCount(Timeline.INDEFINITE);
@@ -69,12 +66,11 @@ public class Chrono {
         timer.stop();
         timer.jumpTo(Duration.ZERO);
         secondesDuration = 0;
-        this.label.setText(this.toLabel());
+        this.label.setText(this.toLabel(Duration.ZERO));
     }
 
-    private String toLabel() {
-        final String formatTime = CHRONO_FORMAT.format(new Date(secondesDuration * 1000));
-        return formatTime;
+    private String toLabel(Duration duration) {
+        return  Const.getFormatedDuration(duration, CHRONO_FORMAT);
     }
 
 }

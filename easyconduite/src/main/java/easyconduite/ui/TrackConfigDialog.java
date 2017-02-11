@@ -55,6 +55,5 @@ public class TrackConfigDialog extends Stage {
         this.initStyle(StageStyle.UTILITY);
         this.setResizable(false);
         this.setScene(new Scene(dialogPane));
-        this.show();
     }
 }

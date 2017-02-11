@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 }
 
 .texte-track {
+    -fx-alignment :CENTER;
     -fx-font-size: 12;
     -fx-pref-width: 85;
     -fx-text-fill: whitesmoke;
@@ -48,6 +49,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 }
 
 .labelkey-track {
+    -fx-alignment :CENTER;
     -fx-font:'sans-serif';
     -fx-font-size: 28;
     -fx-text-fill:#00d936;
