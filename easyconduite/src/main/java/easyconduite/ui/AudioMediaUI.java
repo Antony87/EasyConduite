@@ -27,8 +27,8 @@ import java.text.SimpleDateFormat;
 import java.util.Optional;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.geometry.Pos;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -50,31 +50,25 @@ import org.apache.logging.log4j.Logger;
  * @author A Fons
  */
 public class AudioMediaUI extends VBox implements ConfigurableFromAudio {
-    
-    private final SimpleDateFormat PROGRESS_TIME_FORMAT = new SimpleDateFormat("mm:ss:SSS");
-    
+
     static final Logger LOG = LogManager.getLogger(AudioMediaUI.class);
-    
-    private final IconButton button_config = new IconButton("/icons/Gear.png");
-    
-    private final IconButton button_stop = new IconButton("/icons/StopRedButton.png");
-    
-    private final IconButton button_delete = new IconButton("/icons/MinusRedButton.png");
-    
-    private final Label keycodeLabel = new Label();
-    
+
+    private final SimpleDateFormat PROGRESS_TIME_FORMAT = new SimpleDateFormat("mm:ss:SSS");
+
     private final ObjectProperty<KeyCode> keycode = new ReadOnlyObjectWrapper<>();
-    
+
     private final Label nameLabel = new Label();
-    
-    private final Label timeLabel = new Label(Const.getFormatedDuration(Duration.ZERO, PROGRESS_TIME_FORMAT));
-    
+
+    private final Label timeLabel = new Label();
+
+    private final PlayPauseHbox playPauseHbox;
+
+    private final Label keycodeLabel = new Label();
+
     private EasyconduitePlayer player;
-    
+
     private AudioMedia audioMedia;
-    
-    private final IconButton buttonPlayPause;
-    
+
     private final ImageView repeatImageView = new ImageView();
 
     private ConfigurableFromAudio nextChain;
@@ -88,10 +82,12 @@ public class AudioMediaUI extends VBox implements ConfigurableFromAudio {
      * @param controller
      */
     public AudioMediaUI(AudioMedia media, EasyconduiteController controller) {
-        super(10);
+        super();
         LOG.info("Construct an AudioMedia {}", media);
-        
-        audioMedia = media;
+
+        PROGRESS_TIME_FORMAT.setTimeZone(Const.TZ);
+
+        this.audioMedia = media;
         ////////////////////////////////////////////////////////////////////////
         //               Initialize MediaPlayer
         ////////////////////////////////////////////////////////////////////////
@@ -99,29 +95,12 @@ public class AudioMediaUI extends VBox implements ConfigurableFromAudio {
         try {
             player = EasyconduitePlayer.create(media);
             // Listenning player Status property
-            
-            player.getPlayer().statusProperty().addListener((ObservableValue<? extends Status> observable, Status oldValue, Status newValue) -> {
-                switch (newValue) {
-                    case PAUSED:
-                        decoratePlaying(false);
-                        break;
-                    case PLAYING:
-                        decoratePlaying(true);
-                        break;
-                    case STOPPED:
-                        decoratePlaying(false);
-                        break;
-                    case READY:
-                        PROGRESS_TIME_FORMAT.setTimeZone(Const.TZ); 
-                        timeLabel.setText(Const.getFormatedDuration(player.getPlayer().getStopTime(), PROGRESS_TIME_FORMAT));
-                        break;
-                }
-            });
+            player.getPlayer().statusProperty().addListener(getPlayerStatusListener());
         } catch (EasyconduiteException ex) {
             LOG.error("Error occurend during EasyPlayer construction", ex);
         }
         // Positionne la chaine de responsabilité
-        nextChain = player;
+        this.nextChain = player;
 
         ////////////////////////////////////////////////////////////////////////
         //                 Construction de l'UI
@@ -130,25 +109,9 @@ public class AudioMediaUI extends VBox implements ConfigurableFromAudio {
         this.getStyleClass().add("track-vbox");
         // Label for name of the track /////////////////////////////////////////
         nameLabel.getStyleClass().add("texte-track");
-        ////////////////////////////////////////////////////////////////////////
-        // ToolBar with delete and confugure button ////////////////////////////
-        HBox topHbox = hBoxForTrack();
-        button_delete.setOnMouseClicked((MouseEvent event) -> {
-            Optional<ButtonType> result = ActionDialog.showConfirmation("Vous allez supprimer cette piste", "Voulez-vous continuer ?");
-            if (result.get() == ButtonType.OK) {
-                controller.removeAudioMedia(AudioMediaUI.this);
-            }
-        });
-        // creation bouton pour la configuration de la piste.
-        button_config.setOnMouseClicked((MouseEvent event) -> {
-            try {
-                final TrackConfigDialog trackConfigDialog = new TrackConfigDialog(audioMedia, controller);
-                trackConfigDialog.show();
-            } catch (IOException ex) {
-                LOG.error("Error occurend during TrackConfigDialog construction", ex);
-            }
-        });
-        topHbox.getChildren().addAll(button_delete, button_config);
+        // Construction du TopHbox qui offren boutons delete et configure
+        TopHbox topHbox = new TopHbox(controller);
+
         ////////////////////////////////////////////////////////////////////////
         // Slider for volume control
         Slider curseVolume = new Slider(0, 1, audioMedia.getVolume());
@@ -162,98 +125,152 @@ public class AudioMediaUI extends VBox implements ConfigurableFromAudio {
                 player.updateFromAudioMedia(media);
             }
         });
-
         ////////////////////////////////////////////////////////////////////////
         ///////////// current Time label               
-        timeLabel.getStyleClass().add("texte-track");       
+        timeLabel.getStyleClass().add("texte-time");
         player.getPlayer().currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> {
-            timeLabel.textProperty().unbind();
             timeLabel.setText(Const.getFormatedDuration(audioMedia.getAudioDuration().subtract(newValue), PROGRESS_TIME_FORMAT));
         });
-
         // ToolBar with Stop and play button ///////////////////////////////////
-        HBox bottomHbox = hBoxForTrack();
-        buttonPlayPause = new IconButton(Const.NAME_ICON_PLAY);
-        buttonPlayPause.setOnMouseClicked((MouseEvent event) -> {
-            player.playPause();
-        });
-        button_stop.setOnMouseClicked((MouseEvent event) -> {
-            player.stop();
-        });
-        bottomHbox.getChildren().addAll(button_stop, buttonPlayPause);
-
+        playPauseHbox = new PlayPauseHbox(player);
         // icone repeat for repeat /////////////////////////////////////////////
         repeatImageView.setFitHeight(18);
-        repeatImageView.setFitWidth(18);
         ////////////////////////////////////////////////////////////////////////
         // initialize KeyCodeLabel
         keycodeLabel.getStyleClass().add("labelkey-track");
-        this.getChildren().addAll(nameLabel, topHbox, curseVolume, timeLabel, bottomHbox, repeatImageView, keycodeLabel);
+        this.getChildren().addAll(nameLabel, topHbox, curseVolume, timeLabel, playPauseHbox, repeatImageView, keycodeLabel);
     }
-    
+
     public final AudioMedia getAudioMedia() {
         return audioMedia;
     }
-    
+
     public final EasyconduitePlayer getEasyPlayer() {
         return player;
     }
-    
-    private HBox hBoxForTrack() {
-        HBox hbox = new HBox(10);
-        hbox.setPrefWidth(80);
-        hbox.setAlignment(Pos.CENTER);
-        return hbox;
-    }
-    
-    private void decoratePlaying(boolean decorate) {
-        if (decorate) {
-            buttonPlayPause.setPathNameOfIcon(Const.NAME_ICON_PAUSE);
-            this.setEffect(Const.SHADOW_EFFECT);
-            keycodeLabel.setEffect(Const.KEYCODE_LABEL_BLOOM);
-            this.setBackground(Const.PLAY_BACKG);
-        } else {
-            buttonPlayPause.setPathNameOfIcon(Const.NAME_ICON_PLAY);
-            this.setEffect(null);
-            keycodeLabel.setEffect(null);
-            this.setBackground(Const.STOP_BACKG);
-        }
-    }
-    
+
     public ObjectProperty<KeyCode> keycodeProperty() {
         return keycode;
     }
-    
+
     public KeyCode getKeycode() {
         return keycode.get();
     }
-    
+
     @Override
     public void setNext(ConfigurableFromAudio next) {
         nextChain = next;
     }
-    
+
     @Override
     public void updateFromAudioMedia(AudioMedia media) {
         if (audioMedia.equals(media)) {
-            
+            // positionne tous les champs quand AudioMedi a changé et que la 
+            // "chain of responsability" est déclenchée.
             audioMedia = media;
-            
             nameLabel.setText(audioMedia.getName());
-            
+            timeLabel.setText(Const.getFormatedDuration(audioMedia.getAudioDuration(), PROGRESS_TIME_FORMAT));
             if (audioMedia.getRepeatable()) {
                 repeatImageView.setImage(Const.REPEAT_IMAGE);
             } else {
                 repeatImageView.setImage(null);
             }
-            
             keycodeLabel.setText(KeyCodeUtil.toString(this.audioMedia.getKeycode()));
             keycode.setValue(this.audioMedia.getKeycode());
-            
+            // on passe la responsabilité au next (EasyconduitePlayer).
             nextChain.updateFromAudioMedia(this.audioMedia);
-            
+
         } else {
             ActionDialog.showWarning("Incohérence des objets", "Les objets AudioMedia ne sont pas egaux");
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Listener
+    ////////////////////////////////////////////////////////////////////////////
+    private ChangeListener<Status> getPlayerStatusListener() {
+        return (ObservableValue<? extends Status> observable, Status oldValue, Status newValue) -> {
+            switch (newValue) {
+                case PAUSED:
+                    playPauseHbox.decoratePlaying(false);
+                    AudioMediaUI.this.setEffect(Const.SHADOW_EFFECT);
+                    keycodeLabel.setEffect(null);
+                    AudioMediaUI.this.setBackground(Const.PAUSE_BACKG);
+                    break;
+                case PLAYING:
+                    playPauseHbox.decoratePlaying(true);
+                    AudioMediaUI.this.setEffect(Const.SHADOW_EFFECT);
+                    keycodeLabel.setEffect(Const.KEYCODE_LABEL_BLOOM);
+                    AudioMediaUI.this.setBackground(Const.PLAY_BACKG);
+                    break;
+                case STOPPED:
+                    playPauseHbox.decoratePlaying(false);
+                    AudioMediaUI.this.setEffect(null);
+                    keycodeLabel.setEffect(null);
+                    AudioMediaUI.this.setBackground(Const.STOP_BACKG);
+                    break;
+                case READY:
+                    // if player ready, update AudioMedia duration an UI.
+                    audioMedia.setAudioDuration(player.getPlayer().getStopTime());
+                    updateFromAudioMedia(AudioMediaUI.this.audioMedia);
+                    break;
+            }
+        };
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    //                    inner class for Ui components
+    ////////////////////////////////////////////////////////////////////////////
+    private class TopHbox extends HBox {
+
+        protected TopHbox(EasyconduiteController controller) {
+            super();
+            TopHbox.this.getStyleClass().add("track-inner-hbox");
+            final IconButton button_delete = new IconButton("/icons/MinusRedButton.png");
+            button_delete.setOnMouseClicked((MouseEvent event) -> {
+                Optional<ButtonType> result = ActionDialog.showConfirmation("Vous allez supprimer cette piste", "Voulez-vous continuer ?");
+                if (result.get() == ButtonType.OK) {
+                    controller.removeAudioMedia(AudioMediaUI.this);
+                }
+            });
+            final IconButton button_config = new IconButton("/icons/Gear.png");
+            button_config.setOnMouseClicked((MouseEvent event) -> {
+                try {
+                    final TrackConfigDialog trackConfigDialog = new TrackConfigDialog(audioMedia, controller);
+                    trackConfigDialog.show();
+                } catch (IOException ex) {
+                    LOG.error("Error occurend during TrackConfigDialog construction", ex);
+                }
+            });
+            TopHbox.this.getChildren().addAll(button_delete, button_config);
+        }
+    }
+
+    private class PlayPauseHbox extends HBox {
+
+        private final IconButton button_stop = new IconButton("/icons/StopRedButton.png");
+
+        private final IconButton buttonPlayPause;
+
+        protected PlayPauseHbox(EasyconduitePlayer player) {
+            super();
+            PlayPauseHbox.this.getStyleClass().add("track-inner-hbox");
+            buttonPlayPause = new IconButton(Const.NAME_ICON_PLAY);
+            buttonPlayPause.setOnMouseClicked((MouseEvent event) -> {
+                player.playPause();
+            });
+            button_stop.setOnMouseClicked((MouseEvent event) -> {
+                player.stop();
+            });
+            PlayPauseHbox.this.getChildren().addAll(button_stop, buttonPlayPause);
+        }
+
+        protected void decoratePlaying(boolean decorate) {
+            if (decorate) {
+                buttonPlayPause.setPathNameOfIcon(Const.NAME_ICON_PAUSE);
+            } else {
+                buttonPlayPause.setPathNameOfIcon(Const.NAME_ICON_PLAY);
+            }
         }
     }
 }

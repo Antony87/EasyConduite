@@ -39,6 +39,8 @@ import javafx.util.Duration;
 public class Const {
 
     public static final Background PLAY_BACKG = new Background(new BackgroundFill(Color.web("#455473"), CornerRadii.EMPTY, Insets.EMPTY));
+    
+    public static final Background PAUSE_BACKG = new Background(new BackgroundFill(Color.web("#4c576c"), CornerRadii.EMPTY, Insets.EMPTY));
 
     public static final Background STOP_BACKG = new Background(new BackgroundFill(Color.web("#535965"), CornerRadii.EMPTY, Insets.EMPTY));
 

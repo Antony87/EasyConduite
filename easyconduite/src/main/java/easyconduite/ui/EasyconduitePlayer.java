@@ -76,14 +76,6 @@ public class EasyconduitePlayer implements ConfigurableFromAudio {
                 player.volumeProperty().setValue(audioMedia.getVolume());
             }
         });
-
-        //initialize player when ready.
-        player.setOnReady(() -> {
-            updateFromAudioMedia(audioMedia);
-            // Get duration by StopTime and put to the AudioMedia property.
-            audioMedia.setAudioDuration(player.getStopTime());
-            player.setOnReady(null);
-        });
     }
 
     public final void stop() {
