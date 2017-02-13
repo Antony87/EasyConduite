@@ -64,6 +64,8 @@ public class AudioMediaUI extends VBox implements ConfigurableFromAudio {
     private final PlayPauseHbox playPauseHbox;
 
     private final Label keycodeLabel = new Label();
+    
+    private final Slider sliderVolume = new Slider(0, 1, 0.5d);
 
     private EasyconduitePlayer player;
 
@@ -114,13 +116,12 @@ public class AudioMediaUI extends VBox implements ConfigurableFromAudio {
 
         ////////////////////////////////////////////////////////////////////////
         // Slider for volume control
-        Slider curseVolume = new Slider(0, 1, audioMedia.getVolume());
-        curseVolume.getStyleClass().add("slider-volume-track");
-        // FIXME encadrer le binding par une exception car possible déréférencement pointeur null.
-        curseVolume.valueProperty().bindBidirectional(player.getPlayer().volumeProperty());
-        curseVolume.setOnMouseReleased((MouseEvent event) -> {
+        sliderVolume.setValue(audioMedia.getVolume());
+        sliderVolume.getStyleClass().add("slider-volume-track");
+        sliderVolume.valueProperty().bindBidirectional(player.getPlayer().volumeProperty());
+        sliderVolume.setOnMouseReleased((MouseEvent event) -> {
             if (event.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
-                audioMedia.setVolume(curseVolume.getValue());
+                audioMedia.setVolume(sliderVolume.getValue());
                 // propagation au EasyconduitePlayer.
                 player.updateFromAudioMedia(media);
             }
@@ -138,7 +139,7 @@ public class AudioMediaUI extends VBox implements ConfigurableFromAudio {
         ////////////////////////////////////////////////////////////////////////
         // initialize KeyCodeLabel
         keycodeLabel.getStyleClass().add("labelkey-track");
-        this.getChildren().addAll(nameLabel, topHbox, curseVolume, timeLabel, playPauseHbox, repeatImageView, keycodeLabel);
+        this.getChildren().addAll(nameLabel, topHbox, sliderVolume, timeLabel, playPauseHbox, repeatImageView, keycodeLabel);
     }
 
     public final AudioMedia getAudioMedia() {
