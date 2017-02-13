@@ -54,7 +54,7 @@ public class Easyconduite extends Application {
         Scene scene = new Scene(root);
 
         scene.getStylesheets().add("/styles/Styles.css");
-        stage.setTitle("EasyConduite 1.1");
+        stage.setTitle("EasyConduite 1.2");
         stage.setScene(scene);
         stage.show();
     }
