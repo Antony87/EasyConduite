@@ -28,7 +28,7 @@
             <menus>
               <Menu mnemonicParsing="false" text="Fichier">
                 <items>
-                  <MenuItem fx:id="fichierouvrir" mnemonicParsing="false" onAction="#handleFichierOuvrir" text="Ouvrir...">
+                  <MenuItem fx:id="fichierouvrir" mnemonicParsing="false" onAction="#handleOpen" text="Ouvrir...">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
@@ -38,8 +38,10 @@
                               <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#handleSaveAs" text="Enregistrer sous..." />
+                        <MenuItem mnemonicParsing="false" onAction="#handleCloseTab" text="Fermer" />
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#handleAddAudioMenu" text="Importer..." />
+                        <MenuItem mnemonicParsing="false" onAction="#handleImportAudio" text="Importer..." />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" onAction="#handleQuit" text="Quitter">
                            <accelerator>
@@ -50,8 +52,6 @@
               </Menu>
                   <Menu mnemonicParsing="false" text="Pistes">
                     <items>
-                      <MenuItem id="addaudiomenu" disable="true" mnemonicParsing="false" onAction="#handleAddAudioMenu" text="Ajouter Piste audio" visible="false" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#handlePauseAll" text="Pauser toutes" />
                         <MenuItem mnemonicParsing="false" onAction="#handleStopAll" text="Stopper toutes" />
                     </items>

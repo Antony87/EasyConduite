@@ -16,7 +16,8 @@
  */
 package easyconduite.ui;
 
-import easyconduite.model.ConfigurableFromAudio;
+import easyconduite.ui.commons.ActionDialog;
+import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.EasyconduiteException;
 import easyconduite.util.PlayerVolumeFader;
@@ -34,7 +35,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author antony
  */
-public class EasyconduitePlayer implements ConfigurableFromAudio {
+public class EasyconduitePlayer implements EasyAudioChain {
 
     static final Logger LOG = LogManager.getLogger(EasyconduitePlayer.class);
 
@@ -125,15 +126,13 @@ public class EasyconduitePlayer implements ConfigurableFromAudio {
     }
 
     @Override
-    public void setNext(ConfigurableFromAudio next) {
+    public void setNext(EasyAudioChain next) {
     }
 
     @Override
     public final void updateFromAudioMedia(AudioMedia media) {
         if (audioMedia.equals(media)) {
-
             audioMedia = media;
-
             // configuration de EasyconduitePlayer en fonction de AudioMedia
             if (audioMedia.getRepeatable()) {
                 player.setCycleCount(Integer.MAX_VALUE);
@@ -147,4 +146,12 @@ public class EasyconduitePlayer implements ConfigurableFromAudio {
             ActionDialog.showWarning("Incohérence des objets", "Les objets AudioMedia ne sont pas egaux");
         }
     }
+
+    @Override
+    public void removeChilds(AudioMedia audioMedia) {
+        fadeHandler.stop();
+        fadeHandler=null;
+        player.dispose();
+    }
+
 }

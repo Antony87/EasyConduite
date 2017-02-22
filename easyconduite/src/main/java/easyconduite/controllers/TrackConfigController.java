@@ -16,10 +16,10 @@
  */
 package easyconduite.controllers;
 
-import easyconduite.model.ConfigurableFromAudio;
+import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioMediaConfigurator;
-import easyconduite.ui.ActionDialog;
+import easyconduite.ui.commons.ActionDialog;
 import easyconduite.util.KeyCodeUtil;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -44,7 +44,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author antony
  */
-public class TrackConfigController extends BorderPane implements Initializable, ConfigurableFromAudio {
+public class TrackConfigController extends BorderPane implements Initializable, EasyAudioChain {
 
     static final Logger LOG = LogManager.getLogger(TrackConfigController.class);
 
@@ -80,7 +80,7 @@ public class TrackConfigController extends BorderPane implements Initializable, 
 
     private final AudioMediaConfigurator mediaConfigurator;
 
-    private ConfigurableFromAudio nextChain;
+    private EasyAudioChain nextChain;
 
     public TrackConfigController() {
         mediaConfigurator = new AudioMediaConfigurator();
@@ -174,7 +174,7 @@ public class TrackConfigController extends BorderPane implements Initializable, 
     }
 
     @Override
-    public void setNext(ConfigurableFromAudio next) {
+    public void setNext(EasyAudioChain next) {
         this.nextChain = next;
     }
 
@@ -184,5 +184,9 @@ public class TrackConfigController extends BorderPane implements Initializable, 
         setNext(mainController);
         LOG.trace("After config, AudioMedia is {}", this.audioMedia);
         nextChain.updateFromAudioMedia(this.audioMedia);
+    }
+
+    @Override
+    public void removeChilds(AudioMedia audioMedia) {
     }
 }

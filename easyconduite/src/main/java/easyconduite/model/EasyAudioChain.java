@@ -24,19 +24,27 @@ import easyconduite.objects.AudioMedia;
  *
  * @author antony
  */
-public interface ConfigurableFromAudio {
+public interface EasyAudioChain {
 
     /**
      * Set next element concerned to AudioMedia.
      *
      * @param next
      */
-    public void setNext(ConfigurableFromAudio next);
+    public void setNext(EasyAudioChain next);
 
     /**
      * Element's configuration method uses AudioMedia.
-     * @param audioMedia 
+     *
+     * @param audioMedia
      */
     public void updateFromAudioMedia(AudioMedia audioMedia);
+
+    /**
+     * Method to remove childs and dependencies along AudioMedia chain of
+     * responsability.
+     * @param audioMedia
+     */
+    public void removeChilds(AudioMedia audioMedia);
 
 }

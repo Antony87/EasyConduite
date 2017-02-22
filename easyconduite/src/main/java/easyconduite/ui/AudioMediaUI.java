@@ -16,8 +16,10 @@
  */
 package easyconduite.ui;
 
+import easyconduite.ui.commons.ActionDialog;
+import easyconduite.ui.commons.IconButton;
 import easyconduite.controllers.EasyconduiteController;
-import easyconduite.model.ConfigurableFromAudio;
+import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.EasyconduiteException;
 import easyconduite.util.Const;
@@ -49,7 +51,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author A Fons
  */
-public class AudioMediaUI extends VBox implements ConfigurableFromAudio {
+public class AudioMediaUI extends VBox implements EasyAudioChain {
 
     static final Logger LOG = LogManager.getLogger(AudioMediaUI.class);
 
@@ -71,7 +73,7 @@ public class AudioMediaUI extends VBox implements ConfigurableFromAudio {
 
     private final ImageView repeatImageView = new ImageView();
 
-    private ConfigurableFromAudio nextChain;
+    private EasyAudioChain nextChain;
 
     /**
      * Constructor du UI custom control for an AudioMedia.<br>
@@ -158,7 +160,7 @@ public class AudioMediaUI extends VBox implements ConfigurableFromAudio {
     }
 
     @Override
-    public void setNext(ConfigurableFromAudio next) {
+    public void setNext(EasyAudioChain next) {
         nextChain = next;
     }
 
@@ -183,6 +185,12 @@ public class AudioMediaUI extends VBox implements ConfigurableFromAudio {
         } else {
             ActionDialog.showWarning("Incohérence des objets", "Les objets AudioMedia ne sont pas egaux");
         }
+    }
+
+    @Override
+    public void removeChilds(AudioMedia audioMedia) {
+        setNext(getEasyPlayer());
+        nextChain.removeChilds(audioMedia);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -230,7 +238,7 @@ public class AudioMediaUI extends VBox implements ConfigurableFromAudio {
             button_delete.setOnMouseClicked((MouseEvent event) -> {
                 Optional<ButtonType> result = ActionDialog.showConfirmation("Vous allez supprimer cette piste", "Voulez-vous continuer ?");
                 if (result.get() == ButtonType.OK) {
-                    controller.removeAudioMedia(AudioMediaUI.this);
+                    controller.removeAudioMedia(audioMedia);
                 }
             });
             final IconButton button_config = new IconButton("/icons/Gear.png");
