@@ -46,8 +46,9 @@ public class PersistenceUtil {
      * @throws IOException
      */
     public static void save(File file, AudioTable audioTable) throws IOException {
+
         audioTable.setName(file.getName());
-        audioTable.setTablePathFile(file.toPath().toUri());
+        audioTable.setTablePathFile(file.getAbsolutePath());
         serializeAsXML(file, audioTable);
     }
 
@@ -90,11 +91,11 @@ public class PersistenceUtil {
         return audioTable;
     }
 
-
     public static boolean isFileEmpty(AudioTable audioTable) {
         if (audioTable.getTablePathFile() == null) {
             return true;
         }
         return !Paths.get(audioTable.getTablePathFile()).toFile().exists();
     }
+
 }

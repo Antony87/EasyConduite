@@ -24,8 +24,8 @@ import javafx.stage.FileChooser;
  */
 public class EasyFileChooser {
 
-    public final static String SAVE_TITLE = "Sauvegarder le projet";
-    public final static String SAVEAS_TITLE = "Sauvegarder le projet sous...";
+    public final static String SAVE_TITLE = "Enregistrer le projet";
+    public final static String SAVEAS_TITLE = "Enregistrer le projet sous...";
     public final static String OPEN_TITLE = "Ouvrir un projet";
     public final static String IMPORT_TITLE = "Importer un fichier audio";
 

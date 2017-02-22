@@ -16,7 +16,6 @@
  */
 package easyconduite.objects;
 
-import java.net.URI;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.Duration;
@@ -37,7 +36,7 @@ public class AudioTable {
 
     private Duration duration;
 
-    private URI tablePathFile;
+    private String tablePathFile;
 
     //private List<AudioMedia> audioMediaList;
     private ObservableList<AudioMedia> audioMediaList;
@@ -110,11 +109,11 @@ public class AudioTable {
      *
      * @return
      */
-    public URI getTablePathFile() {
+    public String getTablePathFile() {
         return tablePathFile;
     }
 
-    public void setTablePathFile(URI tablePathFile) {
+    public void setTablePathFile(String tablePathFile) {
         this.tablePathFile = tablePathFile;
     }
 
