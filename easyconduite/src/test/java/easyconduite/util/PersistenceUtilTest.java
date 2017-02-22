@@ -18,9 +18,9 @@
 package easyconduite.util;
 
 import easyconduite.objects.AudioTable;
+import easyconduite.objects.PersistenceException;
 import java.io.File;
 import java.nio.file.Paths;
-import javafx.scene.Scene;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +58,7 @@ public class PersistenceUtilTest {
     
     @Test
     @Ignore
-    public void testOpen() {
+    public void testOpen() throws PersistenceException {
         System.out.println("open");
         AudioTable audiotable = null;
         audiotable = PersistenceUtil.open(new File("saveTest.ecp"));

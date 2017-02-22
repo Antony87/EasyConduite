@@ -16,12 +16,12 @@
  */
 package easyconduite.ui;
 
-import easyconduite.ui.commons.ActionDialog;
-import easyconduite.ui.commons.IconButton;
 import easyconduite.controllers.EasyconduiteController;
 import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.EasyconduiteException;
+import easyconduite.ui.commons.ActionDialog;
+import easyconduite.ui.commons.IconButton;
 import easyconduite.util.Const;
 import easyconduite.util.KeyCodeUtil;
 import java.io.IOException;
@@ -140,6 +140,8 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
         ////////////////////////////////////////////////////////////////////////
         // initialize KeyCodeLabel
         keycodeLabel.getStyleClass().add("labelkey-track");
+        // All childs are built. Call updateFromAudio to set there.
+        this.updateFromAudioMedia(audioMedia);
         this.getChildren().addAll(nameLabel, topHbox, curseVolume, timeLabel, playPauseHbox, repeatImageView, keycodeLabel);
     }
 
@@ -169,7 +171,6 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
         if (audioMedia.equals(media)) {
             // positionne tous les champs quand AudioMedi a changé et que la 
             // "chain of responsability" est déclenchée.
-            audioMedia = media;
             nameLabel.setText(audioMedia.getName());
             timeLabel.setText(Const.getFormatedDuration(audioMedia.getAudioDuration(), PROGRESS_TIME_FORMAT));
             if (audioMedia.getRepeatable()) {
@@ -189,7 +190,6 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
 
     @Override
     public void removeChilds(AudioMedia audioMedia) {
-        setNext(getEasyPlayer());
         nextChain.removeChilds(audioMedia);
     }
 

@@ -16,8 +16,8 @@
  */
 package easyconduite.objects;
 
+import easyconduite.util.PersistenceUtil;
 import java.io.File;
-import java.nio.file.Path;
 import java.util.Objects;
 import java.util.UUID;
 import javafx.beans.property.BooleanProperty;
@@ -32,22 +32,19 @@ import javafx.scene.input.KeyCode;
 import javafx.util.Duration;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Class POJO that encapsulate AudioMedia behavior.<br>
  * This class instantiats an marshallable/unmarsallable object for JAXB.
  *
  * @author A.Fons
- * @version 1.1
+ * @version 1.2
  *
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class AudioMedia {
 
     private final UUID uniqueId = UUID.randomUUID();
-
-    private File audioFile;
 
     private String filePathName;
 
@@ -78,12 +75,10 @@ public class AudioMedia {
      */
     public AudioMedia(File audioFile) {
         // set default values;
-        this.audioFile = audioFile;
-        this.filePathName = audioFile.getAbsolutePath();
+        this.filePathName = PersistenceUtil.getRelativePath(audioFile).toString();
         setRepeatable(Boolean.FALSE);
         setVolume(0.5d);
-        Path path = audioFile.toPath();
-        setName(path.getFileName().toString());
+        setName(audioFile.getName());
     }
 
     /**
@@ -93,26 +88,6 @@ public class AudioMedia {
      */
     public UUID getUniqueId() {
         return uniqueId;
-    }
-
-    /**
-     * Set the audio file (*.wav or *.mp3).<br>
-     * It's XmlTransient cause not able to be xml serialized.
-     *
-     * @param audioFile An audio media file (*.wav, *.mp3)
-     */
-    @XmlTransient
-    public void setAudioFile(File audioFile) {
-        this.audioFile = audioFile;
-    }
-
-    /**
-     * Return the audio file.
-     *
-     * @return the audio media file.
-     */
-    public File getAudioFile() {
-        return audioFile;
     }
 
     /**

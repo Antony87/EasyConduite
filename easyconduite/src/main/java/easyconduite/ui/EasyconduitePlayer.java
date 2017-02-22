@@ -16,10 +16,11 @@
  */
 package easyconduite.ui;
 
-import easyconduite.ui.commons.ActionDialog;
 import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.EasyconduiteException;
+import easyconduite.ui.commons.ActionDialog;
+import easyconduite.util.PersistenceUtil;
 import easyconduite.util.PlayerVolumeFader;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaException;
@@ -36,28 +37,28 @@ import org.apache.logging.log4j.Logger;
  * @author antony
  */
 public class EasyconduitePlayer implements EasyAudioChain {
-
+    
     static final Logger LOG = LogManager.getLogger(EasyconduitePlayer.class);
-
+    
     private AudioMedia audioMedia;
-
+    
     private MediaPlayer player;
-
+    
     private PlayerVolumeFader fadeHandler;
-
+    
     public static EasyconduitePlayer create(AudioMedia media) throws EasyconduiteException {
         return new EasyconduitePlayer(media);
     }
-
+    
     private EasyconduitePlayer(AudioMedia media) throws EasyconduiteException {
         LOG.debug("Construct EasyconduitePlayer with AudioMedia[{}]", media);
-
+        
         audioMedia = media;
-
+        
         fadeHandler = new PlayerVolumeFader(EasyconduitePlayer.this, audioMedia);
-
+        
         try {
-            final Media mediaForPlayer = new Media(audioMedia.getAudioFile().toURI().toString());
+            final Media mediaForPlayer = new Media(PersistenceUtil.getRealPathURIString(audioMedia.getFilePathName()));
             player = new MediaPlayer(mediaForPlayer);
         } catch (NullPointerException ne) {
             throw new EasyconduiteException("Impossible de trouver le fichier et de constituer le media", ne);
@@ -69,7 +70,7 @@ public class EasyconduitePlayer implements EasyAudioChain {
             final String msg = "Impossible de charger le fichier [" + me.getType().toString() + "]";
             throw new EasyconduiteException(msg, me);
         }
-
+        
         player.setOnEndOfMedia(() -> {
             // if repeat is false, force to stop de player.
             if (!audioMedia.getRepeatable()) {
@@ -78,13 +79,13 @@ public class EasyconduitePlayer implements EasyAudioChain {
             }
         });
     }
-
+    
     public final void stop() {
         fadeHandler.stop();
         player.stop();
         player.volumeProperty().setValue(audioMedia.getVolume());
     }
-
+    
     public final void pause() {
         // si existe une transition fade out
         if (audioMedia.getFadeOutDuration() != Duration.ZERO) {
@@ -93,14 +94,14 @@ public class EasyconduitePlayer implements EasyAudioChain {
             player.pause();
         }
     }
-
+    
     public final void play() {
         if (audioMedia.getFadeInDuration() != Duration.ZERO) {
             fadeHandler.fadeIn(audioMedia.getFadeInDuration());
         }
         player.play();
     }
-
+    
     public final void playPause() {
         Status status = player.getStatus();
         switch (status) {
@@ -120,15 +121,15 @@ public class EasyconduitePlayer implements EasyAudioChain {
                 break;
         }
     }
-
+    
     public MediaPlayer getPlayer() {
         return player;
     }
-
+    
     @Override
     public void setNext(EasyAudioChain next) {
     }
-
+    
     @Override
     public final void updateFromAudioMedia(AudioMedia media) {
         if (audioMedia.equals(media)) {
@@ -139,19 +140,19 @@ public class EasyconduitePlayer implements EasyAudioChain {
             } else {
                 player.setCycleCount(1);
             }
-
+            
             player.setVolume(audioMedia.getVolume());
-
+            
         } else {
             ActionDialog.showWarning("Incohérence des objets", "Les objets AudioMedia ne sont pas egaux");
         }
     }
-
+    
     @Override
     public void removeChilds(AudioMedia audioMedia) {
         fadeHandler.stop();
-        fadeHandler=null;
+        fadeHandler = null;
         player.dispose();
     }
-
+    
 }

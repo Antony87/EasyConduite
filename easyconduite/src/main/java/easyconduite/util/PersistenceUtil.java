@@ -16,15 +16,15 @@
  */
 package easyconduite.util;
 
-import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioTable;
+import easyconduite.objects.PersistenceException;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
 import javax.xml.bind.Unmarshaller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,29 +40,21 @@ public class PersistenceUtil {
     private static final String SUFFIXE = ".ecp";
 
     /**
+     * This method save AudioTable to a file.
      *
-     * @param file
+     * @param file file to save to.
      * @param audioTable
-     * @throws IOException
+     * @throws easyconduite.objects.PersistenceException
      */
-    public static void save(File file, AudioTable audioTable) throws IOException {
-
-        audioTable.setName(file.getName());
-        audioTable.setTablePathFile(file.getAbsolutePath());
-        serializeAsXML(file, audioTable);
-    }
-
-    private static void serializeAsXML(File file, AudioTable audioTable) {
+    public static void save(File file, AudioTable audioTable) throws PersistenceException {
 
         try {
-            JAXBContext context = JAXBContext.newInstance(AudioTable.class);
-            Marshaller m = context.createMarshaller();
-            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            m.marshal(audioTable, file);
-        } catch (PropertyException ex) {
-            LOG.error("Erreur JAXB JAXB_FORMATTED_OUTPUT", ex);
-        } catch (JAXBException ex) {
-            LOG.error("Erreur JAXB", ex);
+            audioTable.setName(file.toPath().getFileName().toString());
+            audioTable.setTablePathFile(getRelativePath(file).toString());
+            serializeAsXML(file, audioTable);
+        } catch (IOException ex) {
+            LOG.error("JAXB error", ex);
+            throw new PersistenceException(ex);
         }
     }
 
@@ -71,31 +63,69 @@ public class PersistenceUtil {
      *
      * @param file a xml file, suffixed by "ecp"
      * @return
+     * @throws easyconduite.objects.PersistenceException
      */
-    public static AudioTable open(File file) {
+    public static AudioTable open(File file) throws PersistenceException {
         LOG.debug("Open file {}", file.getAbsolutePath());
-
-        AudioTable audioTable = null;
-        try {
-            JAXBContext context = JAXBContext.newInstance(AudioTable.class);
-            Unmarshaller um = context.createUnmarshaller();
-            audioTable = (AudioTable) um.unmarshal(file);
-
-            for (AudioMedia audioMedia : audioTable.getAudioMediaList()) {
-                audioMedia.setAudioFile(new File(audioMedia.getFilePathName()));
-            }
-
-        } catch (JAXBException ex) {
-            LOG.error("Erreur JAXB", ex);
-        }
+        AudioTable audioTable = (AudioTable) deserialiseFromXML(file, AudioTable.class);
         return audioTable;
     }
 
-    public static boolean isFileEmpty(AudioTable audioTable) {
+    public static boolean isFileEmpty(AudioTable audioTable) throws IOException {
         if (audioTable.getTablePathFile() == null) {
             return true;
         }
-        return !Paths.get(audioTable.getTablePathFile()).toFile().exists();
+        return !Paths.get(audioTable.getTablePathFile()).toRealPath().toFile().exists();
+    }
+
+    public static Path getRelativePath(File file) {
+
+        Path path = null;
+        try {
+            Path currentPath = Paths.get(".").toRealPath().normalize();
+            path = currentPath.relativize(file.toPath()).normalize();
+        } catch (IOException ex) {
+            LOG.error("Failed to ge relative path form", file, ex);
+        }
+        return path;
+    }
+
+    public static String getRealPathURIString(String relativePath) {
+
+        String realUri = null;
+        try {
+            Path realPath = Paths.get(relativePath).toRealPath();
+            realUri = realPath.toUri().toString();
+        } catch (IOException ex) {
+            LOG.error("Fail to get real path from {}", relativePath, ex);
+        }
+        return realUri;
+    }
+
+    private static <T> void serializeAsXML(File file, T t) throws IOException {
+        Class c = t.getClass();
+        try {
+            JAXBContext context = JAXBContext.newInstance(c);
+            Marshaller m = context.createMarshaller();
+            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            m.marshal(t, file);
+        } catch (JAXBException ex) {
+            LOG.error("JAXB error", ex);
+            throw new IOException(ex);
+        }
+    }
+
+    private static <T> T deserialiseFromXML(File file, Class<T> t) throws PersistenceException {
+        T o = null;
+        try {
+            JAXBContext context = JAXBContext.newInstance(t);
+            Unmarshaller um = context.createUnmarshaller();
+            o = (T) um.unmarshal(file);
+        } catch (JAXBException ex) {
+            LOG.error("JAXB error", ex);
+            throw new PersistenceException(ex);
+        }
+        return o;
     }
 
 }

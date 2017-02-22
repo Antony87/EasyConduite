@@ -19,6 +19,7 @@ package easyconduite.controllers;
 import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioTable;
+import easyconduite.objects.PersistenceException;
 import easyconduite.ui.AboutDialog;
 import easyconduite.ui.AudioMediaUI;
 import easyconduite.ui.Chrono;
@@ -104,6 +105,7 @@ public class EasyconduiteController extends StackPane implements Initializable, 
 
     @FXML
     private void handleOpen(ActionEvent event) {
+        LOG.debug("Menu Open called");
 
         if (audioMediaUIs.size() > 0) {
             Optional<ButtonType> result = ActionDialog.showConfirmation("Charger un nouveau fichier écrasera l'existant.", "Voulez-vous continuer ?");
@@ -117,7 +119,12 @@ public class EasyconduiteController extends StackPane implements Initializable, 
         if (file != null) {
             // clear audiotable and childs (ui, player, etc)
             handleCloseTab(event);
-            audioTable = PersistenceUtil.open(file);
+            try {
+                audioTable = PersistenceUtil.open(file);
+            } catch (PersistenceException ex) {
+                LOG.error("Error occured during opening project file[{}]",file);
+                ActionDialog.showWarning("Une erreur est survenue", "Erreur durant l'ouverture du projet");
+            }
             audioTable.getAudioMediaList().stream().forEach((audioMedia) -> {
                 addAudioMediaUI(audioMedia);
             });
@@ -126,29 +133,31 @@ public class EasyconduiteController extends StackPane implements Initializable, 
 
     @FXML
     private void handleSave(ActionEvent event) {
+        LOG.debug("Menu save called");
 
-        if (PersistenceUtil.isFileEmpty(audioTable)) {
-            handleSaveAs(event);
-        } else {
-            try {
-                File fileAudioTable = Paths.get(audioTable.getTablePathFile()).toFile();
+        try {
+            if (PersistenceUtil.isFileEmpty(audioTable)) {
+                handleSaveAs(event);
+            } else {
+                File fileAudioTable = Paths.get(audioTable.getTablePathFile()).toRealPath().toFile();
                 PersistenceUtil.save(fileAudioTable, audioTable);
-            } catch (IOException ex) {
-                ActionDialog.showWarning("Une erreur est survenu", "Erreur durant l'enregistrement du projet");
-                LOG.error("An error occured", ex);
             }
+        } catch (IOException | PersistenceException ex) {
+            ActionDialog.showWarning("Une erreur est survenu", "Erreur durant l'enregistrement du projet");
+            LOG.error("An error occured", ex);
         }
     }
 
     @FXML
     private void handleSaveAs(ActionEvent event) {
+        LOG.debug("Menu save as.. called");
 
         FileChooser fileChooser = new EasyFileChooser.FileChooserBuilder().asType(EasyFileChooser.Type.SAVE_AS).build();
         File file = fileChooser.showSaveDialog(getMyScene().getWindow());
         if (file != null) {
             try {
                 PersistenceUtil.save(file, audioTable);
-            } catch (IOException ex) {
+            } catch (PersistenceException ex) {
                 ActionDialog.showWarning("Une erreur est survenu", "Erreur durant l'enregistrement du projet");
                 LOG.error("An error occured", ex);
             }
@@ -189,7 +198,7 @@ public class EasyconduiteController extends StackPane implements Initializable, 
         audioMediaUIs.add(audioMediaUI);
         tableLayout.getChildren().add(audioMediaUI);
         LOG.debug("AudioMedia {} added to AudioTable", audioMedia);
-        this.updateFromAudioMedia(audioMedia);
+        //this.updateFromAudioMedia(audioMedia);
     }
 
     public void removeAudioMedia(AudioMedia audioMedia) {
@@ -269,7 +278,7 @@ public class EasyconduiteController extends StackPane implements Initializable, 
         final AudioMediaUI audioMediaUI = findAudioMediaUI(media);
         // initialisation de la chaine.
         this.setNext(audioMediaUI);
-        audioMediaUI.setNext(audioMediaUI.getEasyPlayer());
+        //audioMediaUI.setNext(audioMediaUI.getEasyPlayer());
         LOG.trace("After config, AudioMedia is {}", media);
         nextChain.updateFromAudioMedia(media);
     }
@@ -283,6 +292,6 @@ public class EasyconduiteController extends StackPane implements Initializable, 
         tableLayout.getChildren().remove(ui);
         audioMediaUIs.remove(ui);
         audioTable.getAudioMediaList().remove(audioMedia);
-        LOG.trace("New audioMediaUI list size is {} and AudioMediaList size is {}",audioMediaUIs.size(),audioTable.getAudioMediaList().size());
+        LOG.trace("New audioMediaUI list size is {} and AudioMediaList size is {}", audioMediaUIs.size(), audioTable.getAudioMediaList().size());
     }
 }
