@@ -43,7 +43,7 @@ public class AboutDialog extends Stage {
         BorderPane dialogPane = (BorderPane) loader.load();
 
         Stage dialogStage = new Stage();
-        dialogStage.setTitle("A propos de Easyconduite v 1.1");
+        dialogStage.setTitle("A propos de Easyconduite v 1.2");
         dialogStage.initModality(Modality.APPLICATION_MODAL);
         dialogStage.initStyle(StageStyle.UTILITY);
         dialogStage.setResizable(false);
@@ -59,7 +59,7 @@ public class AboutDialog extends Stage {
 
         Label abouttext = (Label) scene.lookup("#abouttext");
         StringBuilder stb = new StringBuilder();
-        stb.append("Easyconduite v 1.1 \n");
+        stb.append("Easyconduite v 1.2 \n");
         stb.append("antony.fons@antonyweb.net \n");
         stb.append("Copyright (C) 2017 Antony Fons\n");
         stb.append("Ce programme est un logiciel libre ; vous pouvez le redistribuer ou le modifier suivant les termes de la GNU General Public License telle que publiée par la Free Software Foundation, version 3 de la licence\n");
