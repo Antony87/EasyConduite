@@ -16,12 +16,18 @@
  */
 package easyconduite.objects;
 
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.util.Callback;
 import javafx.util.Duration;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class manage an AudioMedia list and the entire drama Playing duration.
@@ -41,13 +47,31 @@ public class AudioTable {
     //private List<AudioMedia> audioMediaList;
     private ObservableList<AudioMedia> audioMediaList;
 
+    @XmlTransient
+    private boolean updated = false;
+
+    @XmlTransient
+    static final Logger LOG = LogManager.getLogger(AudioTable.class);
+
     /**
      * Constructor.
      * <br> Initialize the list of AudioMedia.
      * <br> AudioMedia List is observable and have a callback for Keycode.
      */
     public AudioTable() {
-        audioMediaList = FXCollections.observableArrayList();
+
+        Callback<AudioMedia, Observable[]> cb = (AudioMedia a) -> new Observable[]{
+            a.keycodeProperty(),
+            a.nameProperty(),
+            a.repeatableProperty(),
+            a.volumeProperty(),
+            a.fadeOutDurationProperty(),
+            a.fadeInDurationProperty()
+        };
+        
+        audioMediaList = FXCollections.observableArrayList(cb);
+        audioMediaList.addListener(new AudioMediaChangeListerner());
+
     }
 
     /**
@@ -115,6 +139,27 @@ public class AudioTable {
 
     public void setTablePathFile(String tablePathFile) {
         this.tablePathFile = tablePathFile;
+    }
+
+    public boolean isUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(boolean updated) {
+        this.updated = updated;
+    }
+
+    private class AudioMediaChangeListerner implements ListChangeListener<AudioMedia> {
+
+        @Override
+        public void onChanged(Change<? extends AudioMedia> c) {
+            while (c.next()) {
+                if (c.wasUpdated()) {
+                    LOG.trace("AudioTable updated...");
+                    setUpdated(true);
+                }
+            }
+        }
     }
 
 }
