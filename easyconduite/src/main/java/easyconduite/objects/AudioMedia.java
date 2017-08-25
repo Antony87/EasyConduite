@@ -50,9 +50,11 @@ public class AudioMedia {
 
     private Duration audioDuration = Duration.ONE;
 
-    private Duration fadeInDuration = Duration.ZERO;
+    //private Duration fadeInDuration = Duration.ZERO;
+    private final ObjectProperty<Duration> fadeInDuration = new ReadOnlyObjectWrapper<>(Duration.ZERO);
 
-    private Duration fadeOutDuration= Duration.ZERO;
+    //private Duration fadeOutDuration= Duration.ZERO;
+    private final ObjectProperty<Duration> fadeOutDuration = new ReadOnlyObjectWrapper<>(Duration.ZERO);
 
     public final BooleanProperty repeatable = new ReadOnlyBooleanWrapper();
 
@@ -161,6 +163,15 @@ public class AudioMedia {
     }
 
     /**
+     * Observable property for audio volume.
+     *
+     * @return
+     */
+    public DoubleProperty volumeProperty() {
+        return volume;
+    }
+
+    /**
      * Get the total duration of audio media.
      *
      * @return total duration (Duration ms) of the audio media
@@ -184,7 +195,7 @@ public class AudioMedia {
      * @return
      */
     public Duration getFadeInDuration() {
-        return fadeInDuration;
+        return fadeInDuration.getValue();
     }
 
     /**
@@ -193,7 +204,16 @@ public class AudioMedia {
      * @param fadeInDuration
      */
     public void setFadeInDuration(Duration fadeInDuration) {
-        this.fadeInDuration = fadeInDuration;
+        this.fadeInDuration.setValue(fadeInDuration);
+    }
+
+    /**
+     * Observable fadeInDuration porperty.
+     *
+     * @return
+     */
+    public ObjectProperty<Duration> fadeInDurationProperty() {
+        return fadeInDuration;
     }
 
     /**
@@ -202,7 +222,7 @@ public class AudioMedia {
      * @return
      */
     public Duration getFadeOutDuration() {
-        return fadeOutDuration;
+        return fadeOutDuration.getValue();
     }
 
     /**
@@ -211,19 +231,19 @@ public class AudioMedia {
      * @param fadeOutDuration
      */
     public void setFadeOutDuration(Duration fadeOutDuration) {
-        this.fadeOutDuration = fadeOutDuration;
+        this.fadeOutDuration.setValue(fadeOutDuration);
     }
 
     /**
-     * Observable property for audio volume.
+     * Observable fadeOutDuration porperty.
      *
      * @return
      */
-    public DoubleProperty volumeProperty() {
-        return volume;
+    public ObjectProperty<Duration> fadeOutDurationProperty() {
+        return fadeOutDuration;
     }
-    ////////////////////////////////////////////////////////////////////////////
 
+    ////////////////////////////////////////////////////////////////////////////
     /**
      * Return the name of Audio Media object.
      *
