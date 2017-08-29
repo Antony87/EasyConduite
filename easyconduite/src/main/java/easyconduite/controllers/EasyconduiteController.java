@@ -136,10 +136,10 @@ public class EasyconduiteController extends StackPane implements Initializable, 
         LOG.debug("Menu save called");
 
         try {
-            if (PersistenceUtil.isFileEmpty(audioTable)) {
+            if (PersistenceUtil.isFileNotExists(audioTable)) {
                 handleSaveAs(event);
             } else {
-                File fileAudioTable = Paths.get(audioTable.getTablePathFile()).toRealPath().toFile();
+                File fileAudioTable = Paths.get(audioTable.getTablePathFile()).toFile();
                 PersistenceUtil.save(fileAudioTable, audioTable);
             }
         } catch (IOException | PersistenceException ex) {

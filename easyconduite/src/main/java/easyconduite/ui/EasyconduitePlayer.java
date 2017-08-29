@@ -58,7 +58,7 @@ public class EasyconduitePlayer implements EasyAudioChain {
         fadeHandler = new PlayerVolumeFader(EasyconduitePlayer.this, audioMedia);
         
         try {
-            final Media mediaForPlayer = new Media(PersistenceUtil.getRealPathURIString(audioMedia.getFilePathName()));
+            final Media mediaForPlayer = new Media(PersistenceUtil.getPathURIString(audioMedia.getFilePathName()));
             player = new MediaPlayer(mediaForPlayer);
         } catch (NullPointerException ne) {
             throw new EasyconduiteException("Impossible de trouver le fichier et de constituer le media", ne);

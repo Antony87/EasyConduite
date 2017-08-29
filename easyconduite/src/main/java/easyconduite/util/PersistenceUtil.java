@@ -20,6 +20,7 @@ import easyconduite.objects.AudioTable;
 import easyconduite.objects.PersistenceException;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.xml.bind.JAXBContext;
@@ -49,8 +50,8 @@ public class PersistenceUtil {
     public static void save(File file, AudioTable audioTable) throws PersistenceException {
 
         try {
-            audioTable.setName(file.toPath().getFileName().toString());
-            audioTable.setTablePathFile(getRelativePath(file).toString());
+            audioTable.setName(file.getName());
+            audioTable.setTablePathFile(file.getAbsolutePath());
             serializeAsXML(file, audioTable);
         } catch (IOException ex) {
             LOG.error("JAXB error", ex);
@@ -71,34 +72,19 @@ public class PersistenceUtil {
         return audioTable;
     }
 
-    public static boolean isFileEmpty(AudioTable audioTable) throws IOException {
+    public static boolean isFileNotExists(AudioTable audioTable) throws IOException {
         if (audioTable.getTablePathFile() == null) {
             return true;
         }
-        return !Paths.get(audioTable.getTablePathFile()).toRealPath().toFile().exists();
+        final Path filePath = Paths.get(audioTable.getTablePathFile());
+        return !Files.exists(filePath);
     }
 
-    public static Path getRelativePath(File file) {
+    
+    public static String getPathURIString(String absolutePath) {
 
-        Path path = null;
-        try {
-            Path currentPath = Paths.get(".").toRealPath().normalize();
-            path = currentPath.relativize(file.toPath()).normalize();
-        } catch (IOException ex) {
-            LOG.error("Failed to ge relative path form", file, ex);
-        }
-        return path;
-    }
-
-    public static String getRealPathURIString(String relativePath) {
-
-        String realUri = null;
-        try {
-            Path realPath = Paths.get(relativePath).toRealPath();
-            realUri = realPath.toUri().toString();
-        } catch (IOException ex) {
-            LOG.error("Fail to get real path from {}", relativePath, ex);
-        }
+        final Path realPath = Paths.get(absolutePath);
+        final String realUri = realPath.toUri().toString();
         return realUri;
     }
 
@@ -127,5 +113,4 @@ public class PersistenceUtil {
         }
         return o;
     }
-
 }

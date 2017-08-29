@@ -16,7 +16,6 @@
  */
 package easyconduite.objects;
 
-import easyconduite.util.PersistenceUtil;
 import java.io.File;
 import java.util.Objects;
 import java.util.UUID;
@@ -77,7 +76,7 @@ public class AudioMedia {
      */
     public AudioMedia(File audioFile) {
         // set default values;
-        this.filePathName = PersistenceUtil.getRelativePath(audioFile).toString();
+        this.filePathName = audioFile.getAbsolutePath();
         setRepeatable(Boolean.FALSE);
         setVolume(0.5d);
         setName(audioFile.getName());
