@@ -17,58 +17,76 @@
  */
 package easyconduite.util;
 
+import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioTable;
 import easyconduite.objects.PersistenceException;
 import java.io.File;
-import java.nio.file.Paths;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import org.apache.logging.log4j.LogManager;
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.Ignore;
 
 /**
  *
  * @author antony
  */
 public class PersistenceUtilTest {
-    
-    public PersistenceUtilTest() {
-    }
-    
+
+    private File tempFile;
+
+    static final org.apache.logging.log4j.Logger LOG = LogManager.getLogger(PersistenceUtilTest.class);
+
     @Before
     public void setUp() {
+        try {
+            Path tempPath = Files.createTempFile("testEasyConduite", ".ecp");
+            tempFile = tempPath.toFile();
+            LOG.trace("create {} file within setUp", tempFile.getName());
+        } catch (IOException ex) {
+            LOG.error("Error create temp file testEasyConduite.ecp", ex);
+        }
     }
-    
+
     @After
     public void tearDown() {
+        if (Files.exists(tempFile.toPath())) {
+            if (tempFile.delete()) {
+                LOG.trace("delete file within tearDown");
+            }
+        }
     }
-    
+
     @Test
-    @Ignore
     public void testSave() throws Exception {
-        System.out.println("save");
         AudioTable audioTable = new AudioTable();
-        audioTable.setName("test");
-        PersistenceUtil.save(new File("saveTest.ecp"), audioTable);
-        
-        File saved = new File("saveTest.ecp");
-        assertTrue(saved.exists());
+        audioTable.setName("testEasyConduite");
+        PersistenceUtil.save(tempFile, audioTable);
+
+        assertTrue(Files.exists(tempFile.toPath()));
+        assertTrue(Files.size(tempFile.toPath()) > 5L);
+
     }
-    
+
     @Test
-    @Ignore
     public void testOpen() throws PersistenceException {
-        System.out.println("open");
-        AudioTable audiotable = null;
-        audiotable = PersistenceUtil.open(new File("saveTest.ecp"));
-        assertEquals("test", audiotable.getName());
+        // save before open
+        final AudioMedia mediaExpected = new AudioMedia(tempFile);
+        mediaExpected.repeatableProperty().setValue(Boolean.TRUE);
+        mediaExpected.nameProperty().setValue("mediatest");
         
-    }
-    
-    @Test
-    public void testCurrentRepertory(){
-        
-        System.out.println(Paths.get(".").toAbsolutePath().normalize().toString());
+        final AudioTable tableExpected = new AudioTable();
+        tableExpected.getAudioMediaList().add(mediaExpected);
+        tableExpected.setName("testEasyConduite");
+        PersistenceUtil.save(tempFile, tableExpected);
+
+        final AudioTable audiotable = PersistenceUtil.open(tempFile);
+        assertEquals(tableExpected.getName(), audiotable.getName());
+        final AudioMedia media = audiotable.getAudioMediaList().get(0);
+        assertNotNull(media);
+        assertEquals(mediaExpected.getName(), media.getName());
     }
 }

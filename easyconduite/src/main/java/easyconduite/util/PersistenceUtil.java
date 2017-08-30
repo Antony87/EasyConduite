@@ -80,12 +80,9 @@ public class PersistenceUtil {
         return !Files.exists(filePath);
     }
 
-    
-    public static String getPathURIString(String absolutePath) {
-
-        final Path realPath = Paths.get(absolutePath);
-        final String realUri = realPath.toUri().toString();
-        return realUri;
+    public static String getPathURIString(String path) {
+        final Path realPath = Paths.get(path);
+        return realPath.toUri().toString();
     }
 
     private static <T> void serializeAsXML(File file, T t) throws IOException {
