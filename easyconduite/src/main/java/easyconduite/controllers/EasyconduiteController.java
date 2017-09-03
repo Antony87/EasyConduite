@@ -48,6 +48,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -121,8 +122,12 @@ public class EasyconduiteController extends StackPane implements Initializable, 
             handleCloseTab(event);
             try {
                 audioTable = PersistenceUtil.open(file);
+
+                Stage primStage = (Stage) getMyScene().getWindow();
+                primStage.setTitle("EasyConduite 1.2 -- Projet : " + audioTable.getName());
+
             } catch (PersistenceException ex) {
-                LOG.error("Error occured during opening project file[{}]",file);
+                LOG.error("Error occured during opening project file[{}]", file, ex);
                 ActionDialog.showWarning("Une erreur est survenue", "Erreur durant l'ouverture du projet");
             }
             audioTable.getAudioMediaList().stream().forEach((audioMedia) -> {
@@ -136,13 +141,13 @@ public class EasyconduiteController extends StackPane implements Initializable, 
         LOG.debug("Menu save called");
 
         try {
-            if (PersistenceUtil.isFileNotExists(audioTable)) {
-                handleSaveAs(event);
-            } else {
+            if (PersistenceUtil.isFileExists(audioTable)) {
                 File fileAudioTable = Paths.get(audioTable.getTablePathFile()).toFile();
                 PersistenceUtil.save(fileAudioTable, audioTable);
+            } else {
+                handleSaveAs(event);
             }
-        } catch (IOException | PersistenceException ex) {
+        } catch (PersistenceException ex) {
             ActionDialog.showWarning("Une erreur est survenu", "Erreur durant l'enregistrement du projet");
             LOG.error("An error occured", ex);
         }
@@ -207,8 +212,18 @@ public class EasyconduiteController extends StackPane implements Initializable, 
     }
 
     @FXML
-    private void handleQuit(ActionEvent event) {
-        Platform.exit();
+    public void handleQuit(ActionEvent event) {
+
+        if (PersistenceUtil.isClosable(this.audioTable)) {
+            Platform.exit();
+        } else {
+            Optional<ButtonType> response = ActionDialog.showConfirmation("Enregistrer le projet", "Le projet n'est pas sauvegardé.\rVoulez-vous l'enregistrer ?");
+            if (response.isPresent() && response.get().equals(ButtonType.YES)) {
+                handleSave(event);
+            } else {
+                Platform.exit();
+            }
+        }
     }
 
     @FXML
