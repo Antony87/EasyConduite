@@ -35,7 +35,7 @@ import org.apache.logging.log4j.Logger;
  * @author A Fons
  */
 @XmlRootElement(name = "audiotable")
-@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlAccessorType(XmlAccessType.FIELD)
 public class AudioTable {
 
     private String name = "";
@@ -44,7 +44,6 @@ public class AudioTable {
 
     private String tablePathFile;
 
-    //private List<AudioMedia> audioMediaList;
     private ObservableList<AudioMedia> audioMediaList;
 
     @XmlTransient
