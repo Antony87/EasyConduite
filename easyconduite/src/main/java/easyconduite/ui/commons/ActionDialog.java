@@ -34,6 +34,8 @@ public class ActionDialog {
         
     public static Optional<ButtonType> showConfirmation(String header, String content) {
         final Alert a = getAlert(CONFIRM_TITLE, header, content);
+        a.getButtonTypes().add(ButtonType.NO);
+        a.getButtonTypes().add(ButtonType.YES);
         a.setAlertType(AlertType.CONFIRMATION);
         return a.showAndWait();
     }
