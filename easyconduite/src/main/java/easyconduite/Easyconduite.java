@@ -16,12 +16,15 @@
  */
 package easyconduite;
 
+import easyconduite.controllers.EasyconduiteController;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,6 +34,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class Easyconduite extends Application {
 
+    
     static final Logger LOG = LogManager.getLogger(Easyconduite.class);
 
     @Override
@@ -52,13 +56,21 @@ public class Easyconduite extends Application {
 
         Pane root = loader.load(); 
         Scene scene = new Scene(root);
-
+        
+        EasyconduiteController controler = loader.getController();
+        
+        stage.setOnCloseRequest((WindowEvent event) -> {          
+            controler.handleQuit(new ActionEvent());
+            event.consume();
+        });
+        
         scene.getStylesheets().add("/styles/Styles.css");
         stage.setTitle("EasyConduite 1.2");
         stage.setScene(scene);
+        
         stage.show();
     }
-
+    
     /**
      * @param args the command line arguments
      */
