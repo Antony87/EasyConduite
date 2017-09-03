@@ -29,6 +29,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  *
@@ -49,10 +50,14 @@ public class PersistenceUtil {
      */
     public static void save(File file, AudioTable audioTable) throws PersistenceException {
 
+        // TODO forcer le suffixe a ecp.
+        
         try {
             audioTable.setName(file.getName());
             audioTable.setTablePathFile(file.getAbsolutePath());
             serializeAsXML(file, audioTable);
+            // audiotable saving, so set updated to false
+            audioTable.setUpdated(false);
         } catch (IOException ex) {
             LOG.error("JAXB error", ex);
             throw new PersistenceException(ex);
@@ -71,20 +76,51 @@ public class PersistenceUtil {
         AudioTable audioTable = (AudioTable) deserialiseFromXML(file, AudioTable.class);
         return audioTable;
     }
-
-    public static boolean isFileNotExists(AudioTable audioTable) throws IOException {
-        if (audioTable.getTablePathFile() == null) {
+    
+        /**
+     * This method tests when application may be closed without project's saving.
+     *
+     * @param audioTable
+     * @return
+     */
+    public static boolean isClosable(AudioTable audioTable) {
+        if(audioTable.getAudioMediaList().isEmpty()){
+            LOG.debug("list vide");
             return true;
         }
+        if (audioTable.isUpdated()) {
+            LOG.debug("table update");
+            return false;
+        }
+        if (Strings.isEmpty(audioTable.getTablePathFile())) {
+            LOG.debug("pathfile vide");
+            return false;
+        }
+        if (!PersistenceUtil.isFileExists(audioTable)) {
+            LOG.debug("ifchier inexistant");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * This method return TRUE if file describe by getTablePathFile EXISTS.
+     * @param audioTable
+     * @return 
+     */
+    public static boolean isFileExists(AudioTable audioTable) {
+        if (Strings.isEmpty(audioTable.getTablePathFile())) {
+            return false;
+        }
         final Path filePath = Paths.get(audioTable.getTablePathFile());
-        return !Files.exists(filePath);
+        return Files.exists(filePath);
     }
 
     public static String getPathURIString(String path) {
         final Path realPath = Paths.get(path);
         return realPath.toUri().toString();
     }
-
+    
     private static <T> void serializeAsXML(File file, T t) throws IOException {
         Class c = t.getClass();
         try {
