@@ -64,7 +64,7 @@ public class PersistenceUtilTest {
     public void testSave() throws Exception {
         AudioTable audioTable = new AudioTable();
         audioTable.setName("testEasyConduite");
-        PersistenceUtil.save(tempFile, audioTable);
+        PersistenceUtil.saveAudioTable(tempFile, audioTable);
 
         assertTrue(Files.exists(tempFile.toPath()));
         assertTrue(Files.size(tempFile.toPath()) > 5L);
@@ -73,7 +73,7 @@ public class PersistenceUtilTest {
 
     @Test
     public void testOpen() throws PersistenceException {
-        // save before open
+        // saveAudioTable before openAudioTable
         final AudioMedia mediaExpected = new AudioMedia(tempFile);
         mediaExpected.repeatableProperty().setValue(Boolean.TRUE);
         mediaExpected.nameProperty().setValue("mediatest");
@@ -81,9 +81,9 @@ public class PersistenceUtilTest {
         final AudioTable tableExpected = new AudioTable();
         tableExpected.getAudioMediaList().add(mediaExpected);
         tableExpected.setName("testEasyConduite");
-        PersistenceUtil.save(tempFile, tableExpected);
+        PersistenceUtil.saveAudioTable(tempFile, tableExpected);
 
-        final AudioTable audiotable = PersistenceUtil.open(tempFile);
+        final AudioTable audiotable = PersistenceUtil.openAudioTable(tempFile);
         assertEquals(tableExpected.getName(), audiotable.getName());
         final AudioMedia media = audiotable.getAudioMediaList().get(0);
         assertNotNull(media);

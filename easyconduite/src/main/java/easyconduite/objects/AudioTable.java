@@ -16,6 +16,7 @@
  */
 package easyconduite.objects;
 
+import easyconduite.util.PersistenceUtil;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -28,6 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * This class manage an AudioMedia list and the entire drama Playing duration.
@@ -67,7 +69,7 @@ public class AudioTable {
             a.fadeOutDurationProperty(),
             a.fadeInDurationProperty()
         };
-        
+
         audioMediaList = FXCollections.observableArrayList(cb);
         audioMediaList.addListener(new AudioMediaChangeListerner());
 
@@ -146,6 +148,32 @@ public class AudioTable {
 
     public void setUpdated(boolean updated) {
         this.updated = updated;
+    }
+
+    /**
+     * This method tests when application may be closed without project's
+     * saving.
+     *
+     * @return
+     */
+    public boolean isClosable() {
+        if (this.getAudioMediaList().isEmpty()) {
+            LOG.debug("list vide");
+            return true;
+        }
+        if (this.isUpdated()) {
+            LOG.debug("table update");
+            return false;
+        }
+        if (Strings.isEmpty(this.getTablePathFile())) {
+            LOG.debug("pathfile vide");
+            return false;
+        }
+        if (!PersistenceUtil.isFileExists(this.getTablePathFile())) {
+            LOG.debug("ifchier inexistant");
+            return false;
+        }
+        return true;
     }
 
     private class AudioMediaChangeListerner implements ListChangeListener<AudioMedia> {

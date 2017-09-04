@@ -121,7 +121,7 @@ public class EasyconduiteController extends StackPane implements Initializable, 
             // clear audiotable and childs (ui, player, etc)
             handleCloseTab(event);
             try {
-                audioTable = PersistenceUtil.open(file);
+                audioTable = PersistenceUtil.openAudioTable(file);
 
                 Stage primStage = (Stage) getMyScene().getWindow();
                 primStage.setTitle("EasyConduite 1.2 -- Projet : " + audioTable.getName());
@@ -141,9 +141,9 @@ public class EasyconduiteController extends StackPane implements Initializable, 
         LOG.debug("Menu save called");
 
         try {
-            if (PersistenceUtil.isFileExists(audioTable)) {
+            if (PersistenceUtil.isFileExists(audioTable.getTablePathFile())) {
                 File fileAudioTable = Paths.get(audioTable.getTablePathFile()).toFile();
-                PersistenceUtil.save(fileAudioTable, audioTable);
+                PersistenceUtil.saveAudioTable(fileAudioTable, audioTable);
             } else {
                 handleSaveAs(event);
             }
@@ -161,7 +161,7 @@ public class EasyconduiteController extends StackPane implements Initializable, 
         File file = fileChooser.showSaveDialog(getMyScene().getWindow());
         if (file != null) {
             try {
-                PersistenceUtil.save(file, audioTable);
+                PersistenceUtil.saveAudioTable(file, audioTable);
             } catch (PersistenceException ex) {
                 ActionDialog.showWarning("Une erreur est survenu", "Erreur durant l'enregistrement du projet");
                 LOG.error("An error occured", ex);
@@ -214,7 +214,7 @@ public class EasyconduiteController extends StackPane implements Initializable, 
     @FXML
     public void handleQuit(ActionEvent event) {
 
-        if (PersistenceUtil.isClosable(this.audioTable)) {
+        if (this.audioTable.isClosable()) {
             Platform.exit();
         } else {
             Optional<ButtonType> response = ActionDialog.showConfirmation("Enregistrer le projet", "Le projet n'est pas sauvegardé.\rVoulez-vous l'enregistrer ?");
