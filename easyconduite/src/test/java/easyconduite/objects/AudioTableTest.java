@@ -25,6 +25,7 @@ import javax.xml.bind.JAXB;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -47,6 +48,7 @@ public class AudioTableTest {
     }
 
     @Test
+    @Ignore
     public void JabxTest() throws URISyntaxException {
 
         File file = new File(this.getClass().getResource("../../testfile.ecp").toURI());

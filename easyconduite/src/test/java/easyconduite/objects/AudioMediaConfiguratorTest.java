@@ -32,7 +32,7 @@ public class AudioMediaConfiguratorTest {
 
     @Before
     public void setUp() throws URISyntaxException {
-        file = new File(this.getClass().getResource("../../testfile.ecp").toURI());
+       
     }
 
     @After
