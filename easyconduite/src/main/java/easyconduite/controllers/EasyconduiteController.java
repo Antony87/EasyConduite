@@ -121,7 +121,7 @@ public class EasyconduiteController extends StackPane implements Initializable, 
             // clear audiotable and childs (ui, player, etc)
             handleCloseTab(event);
             try {
-                audioTable = PersistenceUtil.openAudioTable(file);
+                audioTable = (AudioTable)PersistenceUtil.readFromFile(file, AudioTable.class, PersistenceUtil.FILE_TYPE.XML);
 
                 Stage primStage = (Stage) getMyScene().getWindow();
                 primStage.setTitle("EasyConduite 1.2 -- Projet : " + audioTable.getName());
@@ -143,7 +143,8 @@ public class EasyconduiteController extends StackPane implements Initializable, 
         try {
             if (PersistenceUtil.isFileExists(audioTable.getTablePathFile())) {
                 File fileAudioTable = Paths.get(audioTable.getTablePathFile()).toFile();
-                PersistenceUtil.saveAudioTable(fileAudioTable, audioTable);
+                //PersistenceUtil.saveAudioTable(fileAudioTable, audioTable);
+                PersistenceUtil.writeToFile(fileAudioTable, audioTable, PersistenceUtil.FILE_TYPE.XML);
             } else {
                 handleSaveAs(event);
             }
@@ -161,7 +162,8 @@ public class EasyconduiteController extends StackPane implements Initializable, 
         File file = fileChooser.showSaveDialog(getMyScene().getWindow());
         if (file != null) {
             try {
-                PersistenceUtil.saveAudioTable(file, audioTable);
+                //PersistenceUtil.saveAudioTable(file, audioTable);
+                PersistenceUtil.writeToFile(file, audioTable, PersistenceUtil.FILE_TYPE.XML);
             } catch (PersistenceException ex) {
                 ActionDialog.showWarning("Une erreur est survenu", "Erreur durant l'enregistrement du projet");
                 LOG.error("An error occured", ex);

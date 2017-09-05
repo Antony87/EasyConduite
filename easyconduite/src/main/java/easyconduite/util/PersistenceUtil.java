@@ -16,7 +16,6 @@
  */
 package easyconduite.util;
 
-import easyconduite.objects.AudioTable;
 import easyconduite.objects.PersistenceException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,36 +43,8 @@ public class PersistenceUtil {
 
     static final Logger LOG = LogManager.getLogger(PersistenceUtil.class);
 
-    private enum FILE_TYPE {
+    public enum FILE_TYPE {
         BIN, XML
-    }
-
-    /**
-     * This method saves AudioTable to a file.
-     *
-     * @param file file to saveAudioTable to.
-     * @param audioTable
-     * @throws easyconduite.objects.PersistenceException
-     */
-    public static void saveAudioTable(File file, AudioTable audioTable) throws PersistenceException {
-        audioTable.setName(file.getName());
-        audioTable.setTablePathFile(file.getAbsolutePath());
-        writeToFile(file, audioTable, FILE_TYPE.XML);
-        // audiotable saving, so set updated to false
-        audioTable.setUpdated(false);
-    }
-
-    /**
-     * This method creates an AudioTable by file unmarshalling.
-     *
-     * @param file a xml file, suffixed by "ecp"
-     * @return
-     * @throws easyconduite.objects.PersistenceException
-     */
-    public static AudioTable openAudioTable(File file) throws PersistenceException {
-        LOG.debug("Open file {}", file.getAbsolutePath());
-        AudioTable audioTable = (AudioTable) readFromFile(file, AudioTable.class, FILE_TYPE.XML);
-        return audioTable;
     }
 
     /**
@@ -95,7 +66,16 @@ public class PersistenceUtil {
         return realPath.toUri().toString();
     }
 
-    private static <T> void writeToFile(File file, T t, FILE_TYPE type) throws PersistenceException {
+    /**
+     * This method writes an object to file (xml ou bin).
+     *
+     * @param <T>
+     * @param file
+     * @param t
+     * @param type
+     * @throws PersistenceException
+     */
+    public static <T> void writeToFile(File file, T t, FILE_TYPE type) throws PersistenceException {
         Class c = t.getClass();
         if (type.equals(FILE_TYPE.XML)) {
             final JAXBContext context;
@@ -114,7 +94,7 @@ public class PersistenceUtil {
                 oos = new ObjectOutputStream(new FileOutputStream(file));
                 oos.writeObject(t);
             } catch (FileNotFoundException ex) {
-                LOG.error("File {} not found", file.getName(), ex);
+                LOG.error("File {} not found for Outputstream", file.getAbsolutePath(), ex);
                 throw new PersistenceException(ex);
             } catch (IOException ex) {
                 throw new PersistenceException(ex);
@@ -124,13 +104,24 @@ public class PersistenceUtil {
                         oos.close();
                     }
                 } catch (IOException ex) {
+                    LOG.error("Error occured during close Outputstream", ex);
                     throw new PersistenceException(ex);
                 }
             }
         }
     }
 
-    private static <T> T readFromFile(File file, Class<T> t, FILE_TYPE type) throws PersistenceException {
+    /**
+     * This method reads an object from a xml or bin file.
+     *
+     * @param <T>
+     * @param file
+     * @param t
+     * @param type
+     * @return
+     * @throws PersistenceException
+     */
+    public static <T> T readFromFile(File file, Class<T> t, FILE_TYPE type) throws PersistenceException {
         T objet = null;
         if (type.equals(FILE_TYPE.XML)) {
             try {
@@ -147,20 +138,21 @@ public class PersistenceUtil {
                 ois = new ObjectInputStream(new FileInputStream(file));
                 objet = (T) ois.readObject();
             } catch (FileNotFoundException ex) {
-
+                LOG.error("File {} not found for Inputstream", file.getAbsolutePath(), ex);
+                throw new PersistenceException(ex);
             } catch (IOException | ClassNotFoundException ex) {
-
+                throw new PersistenceException(ex);
             } finally {
                 try {
                     if (ois != null) {
                         ois.close();
                     }
                 } catch (IOException ex) {
+                    LOG.error("Error occured during close Inputstream", ex);
                     throw new PersistenceException(ex);
                 }
             }
         }
         return objet;
     }
-
 }

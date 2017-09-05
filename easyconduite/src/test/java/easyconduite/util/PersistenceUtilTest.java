@@ -20,11 +20,14 @@ package easyconduite.util;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioTable;
 import easyconduite.objects.PersistenceException;
+import easyconduite.objects.UserData;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Locale;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -38,7 +41,7 @@ public class PersistenceUtilTest {
 
     private File tempFile;
 
-    static final org.apache.logging.log4j.Logger LOG = LogManager.getLogger(PersistenceUtilTest.class);
+    static final Logger LOG = LogManager.getLogger(PersistenceUtilTest.class);
 
     @Before
     public void setUp() {
@@ -61,10 +64,11 @@ public class PersistenceUtilTest {
     }
 
     @Test
-    public void testSave() throws Exception {
+    public void testSaveAudioTable() throws Exception {
         AudioTable audioTable = new AudioTable();
         audioTable.setName("testEasyConduite");
-        PersistenceUtil.saveAudioTable(tempFile, audioTable);
+        //PersistenceUtil.saveAudioTable(tempFile, audioTable);
+        PersistenceUtil.writeToFile(tempFile, audioTable, PersistenceUtil.FILE_TYPE.XML);
 
         assertTrue(Files.exists(tempFile.toPath()));
         assertTrue(Files.size(tempFile.toPath()) > 5L);
@@ -72,21 +76,47 @@ public class PersistenceUtilTest {
     }
 
     @Test
-    public void testOpen() throws PersistenceException {
+    public void testOpenAudioTable() throws PersistenceException {
         // saveAudioTable before openAudioTable
         final AudioMedia mediaExpected = new AudioMedia(tempFile);
         mediaExpected.repeatableProperty().setValue(Boolean.TRUE);
         mediaExpected.nameProperty().setValue("mediatest");
-        
+
         final AudioTable tableExpected = new AudioTable();
         tableExpected.getAudioMediaList().add(mediaExpected);
         tableExpected.setName("testEasyConduite");
-        PersistenceUtil.saveAudioTable(tempFile, tableExpected);
+        //PersistenceUtil.saveAudioTable(tempFile, tableExpected);
+        PersistenceUtil.writeToFile(tempFile, tableExpected, PersistenceUtil.FILE_TYPE.XML);
 
-        final AudioTable audiotable = PersistenceUtil.openAudioTable(tempFile);
+        final AudioTable audiotable = PersistenceUtil.readFromFile(tempFile, AudioTable.class, PersistenceUtil.FILE_TYPE.XML);
         assertEquals(tableExpected.getName(), audiotable.getName());
         final AudioMedia media = audiotable.getAudioMediaList().get(0);
         assertNotNull(media);
         assertEquals(mediaExpected.getName(), media.getName());
+    }
+
+    @Test
+    public void testSaveUserData() throws PersistenceException {
+        final UserData userData = new UserData();
+        userData.setLocale(Locale.FRENCH);
+        userData.setWindowWith(300);
+        //PersistenceUtil.saveUserData(tempFile, userData);
+        PersistenceUtil.writeToFile(tempFile, userData, PersistenceUtil.FILE_TYPE.BIN);
+        assertTrue(Files.exists(tempFile.toPath()));
+    }
+
+    @Test
+    public void testOpenUserData() throws PersistenceException {
+        final UserData userData = new UserData();
+        userData.setLocale(Locale.FRENCH);
+        userData.setWindowWith(300);
+        //PersistenceUtil.saveUserData(tempFile, userData);
+        PersistenceUtil.writeToFile(tempFile, userData, PersistenceUtil.FILE_TYPE.BIN);
+
+        final UserData userDataread = PersistenceUtil.readFromFile(tempFile, UserData.class, PersistenceUtil.FILE_TYPE.BIN);
+
+        assertNotNull(userDataread);
+        assertEquals(userData.getWindowWith(), userDataread.getWindowWith());
+
     }
 }
