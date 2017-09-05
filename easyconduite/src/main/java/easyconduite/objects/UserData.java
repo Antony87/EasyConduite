@@ -39,7 +39,26 @@ public class UserData implements Serializable {
 
     private Queue<Path> recentsPaths;
 
-    private Level logLevel = Level.ERROR;
+    private Level logLevel;
+
+    /**
+     * Constructor with parameters.
+     *
+     * @param WindowWith
+     * @param windowHeight
+     * @param logLevel
+     */
+    public UserData(int WindowWith, int windowHeight, Level logLevel) {
+        this.WindowWith = WindowWith;
+        this.windowHeight = windowHeight;
+        this.logLevel = logLevel;
+    }
+
+    /**
+     * Default constructor.
+     */
+    public UserData() {
+    }
 
     public Locale getLocale() {
         return locale;
@@ -75,7 +94,7 @@ public class UserData implements Serializable {
 
     @Override
     public String toString() {
-        return "UserData{" + "locale=" + locale + ", WindowWith=" + WindowWith + ", windowHeight=" + windowHeight + '}';
+        return "UserData{" + "locale=" + locale + ", WindowWith=" + WindowWith + ", windowHeight=" + windowHeight + ", recentsPaths=" + recentsPaths + ", logLevel=" + logLevel + '}';
     }
 
 }

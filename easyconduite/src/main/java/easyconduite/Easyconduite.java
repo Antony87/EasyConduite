@@ -73,7 +73,7 @@ public class Easyconduite extends Application {
     
     private void initUserData(Stage stage){
         final UserData userdatas = UserDataHandler.getInstance().getUserData();
-        UserDataHandler.getInstance().setLog4jLevel(Level.ERROR);
+        UserDataHandler.getInstance().setLog4jLevel(Level.ALL);
         stage.setWidth(userdatas.getWindowWith());
         stage.setHeight(userdatas.getWindowHeight());
     }

@@ -223,7 +223,7 @@ public class EasyconduiteController extends StackPane implements Initializable, 
         userdatas.setWindowHeight(getMyScene().heightProperty().intValue());
         userdatas.setWindowWith(getMyScene().widthProperty().intValue());
         try {
-            PersistenceUtil.writeToFile(Constants.FILE_USER_DATA.toFile(), userdatas, PersistenceUtil.FILE_TYPE.BIN);
+            PersistenceUtil.writeToFile(Constants.FILE_USER_DATA, userdatas, PersistenceUtil.FILE_TYPE.BIN);
         } catch (PersistenceException ex) {
                 LOG.error("Error occured", ex);
         }

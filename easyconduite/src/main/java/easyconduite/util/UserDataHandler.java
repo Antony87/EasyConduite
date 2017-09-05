@@ -18,7 +18,6 @@ package easyconduite.util;
 
 import easyconduite.exception.PersistenceException;
 import easyconduite.objects.UserData;
-import java.nio.file.Files;
 import java.util.Locale;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -37,35 +36,36 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
  */
 public class UserDataHandler {
 
-    private UserData userData;
+    private UserData userDatas;
 
     static final Logger LOG = LogManager.getLogger(UserDataHandler.class);
 
     private UserDataHandler() {
 
-        if (Files.exists(Constants.FILE_USER_DATA)) {
+        if (Constants.FILE_USER_DATA.exists()) {
             try {
-                userData = PersistenceUtil.readFromFile(Constants.FILE_USER_DATA.toFile(), UserData.class, PersistenceUtil.FILE_TYPE.BIN);
+                LOG.debug("Found user.data file");
+                userDatas = PersistenceUtil.readFromFile(Constants.FILE_USER_DATA, UserData.class, PersistenceUtil.FILE_TYPE.BIN);
+                setLog4jLevel(userDatas.getLogLevel());
+                LOG.trace("UserData [{}]",userDatas);
             } catch (PersistenceException ex) {
                 LOG.error("An error occured during user.dat loading", ex);
             }
         } else {
-            userData = new UserData();
-            userData.setWindowWith(800);
-            userData.setWindowHeight(600);
-            userData.setLocale(new Locale(System.getProperty("user.language"), System.getProperty("user.country")));
-            userData.setLogLevel(Level.ALL);
+            LOG.debug("user.data file not found, create default UserData object");
+            userDatas = new UserData(800, 600, Level.ALL);
+            userDatas.setLocale(new Locale(System.getProperty("user.language"), System.getProperty("user.country")));
+            LOG.trace("UserData [{}]",userDatas);
         }
-
     }
-
+    
     /**
      * This method return UserData.
      *
      * @return
      */
     public UserData getUserData() {
-        return userData;
+        return userDatas;
     }
 
     /**
@@ -73,8 +73,9 @@ public class UserDataHandler {
      *
      * @param level
      */
-    public void setLog4jLevel(Level level) {
+    public final void setLog4jLevel(Level level) {
 
+        userDatas.setLogLevel(level);
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         final Configuration config = ctx.getConfiguration();
         final LoggerConfig loggerConfig = config.getLoggerConfig(LOG.getName());

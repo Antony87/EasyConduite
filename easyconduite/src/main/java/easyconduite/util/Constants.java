@@ -18,7 +18,7 @@
 package easyconduite.util;
 
 import easyconduite.ui.AudioMediaUI;
-import java.nio.file.Path;
+import java.io.File;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -86,7 +86,7 @@ public class Constants {
     /**
      * Constant Path for user datas.
      */
-    public static final Path FILE_USER_DATA = Paths.get("user.dat");
+    public static final File FILE_USER_DATA = Paths.get("user.data").toFile();
 
     /**
      * Format a Duration with SimpleDateFormat.
