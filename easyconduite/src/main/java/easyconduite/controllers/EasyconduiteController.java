@@ -16,16 +16,19 @@
  */
 package easyconduite.controllers;
 
+import easyconduite.exception.PersistenceException;
 import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioTable;
-import easyconduite.exception.PersistenceException;
+import easyconduite.objects.UserData;
 import easyconduite.ui.AboutDialog;
 import easyconduite.ui.AudioMediaUI;
 import easyconduite.ui.Chrono;
 import easyconduite.ui.commons.ActionDialog;
+import easyconduite.util.Constants;
 import easyconduite.util.EasyFileChooser;
 import easyconduite.util.PersistenceUtil;
+import easyconduite.util.UserDataHandler;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -216,6 +219,14 @@ public class EasyconduiteController extends StackPane implements Initializable, 
     @FXML
     public void handleQuit(ActionEvent event) {
 
+        final UserData userdatas = UserDataHandler.getInstance().getUserData();
+        userdatas.setWindowHeight(getMyScene().heightProperty().intValue());
+        userdatas.setWindowWith(getMyScene().widthProperty().intValue());
+        try {
+            PersistenceUtil.writeToFile(Constants.FILE_USER_DATA.toFile(), userdatas, PersistenceUtil.FILE_TYPE.BIN);
+        } catch (PersistenceException ex) {
+                LOG.error("Error occured", ex);
+        }
         if (this.audioTable.isClosable()) {
             Platform.exit();
         } else {

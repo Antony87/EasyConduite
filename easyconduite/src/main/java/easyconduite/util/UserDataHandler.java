@@ -19,8 +19,6 @@ package easyconduite.util;
 import easyconduite.exception.PersistenceException;
 import easyconduite.objects.UserData;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Locale;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -41,22 +39,20 @@ public class UserDataHandler {
 
     private UserData userData;
 
-    private static final Path FILE_PATH = Paths.get("user.dat");
-
     static final Logger LOG = LogManager.getLogger(UserDataHandler.class);
 
     private UserDataHandler() {
 
-        if (Files.exists(FILE_PATH)) {
+        if (Files.exists(Constants.FILE_USER_DATA)) {
             try {
-                userData = PersistenceUtil.readFromFile(FILE_PATH.toFile(), UserData.class, PersistenceUtil.FILE_TYPE.BIN);
+                userData = PersistenceUtil.readFromFile(Constants.FILE_USER_DATA.toFile(), UserData.class, PersistenceUtil.FILE_TYPE.BIN);
             } catch (PersistenceException ex) {
                 LOG.error("An error occured during user.dat loading", ex);
             }
         } else {
             userData = new UserData();
-            userData.setWindowWith(0);
-            userData.setWindowHeight(0);
+            userData.setWindowWith(800);
+            userData.setWindowHeight(600);
             userData.setLocale(new Locale(System.getProperty("user.language"), System.getProperty("user.country")));
             userData.setLogLevel(Level.ALL);
         }

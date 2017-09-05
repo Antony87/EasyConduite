@@ -18,6 +18,8 @@
 package easyconduite.util;
 
 import easyconduite.ui.AudioMediaUI;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -80,6 +82,11 @@ public class Constants {
     public static final Effect KEYCODE_LABEL_BLOOM = new Bloom(0.4);
 
     public static final TimeZone TZ = TimeZone.getTimeZone("UTC");
+
+    /**
+     * Constant Path for user datas.
+     */
+    public static final Path FILE_USER_DATA = Paths.get("user.dat");
 
     /**
      * Format a Duration with SimpleDateFormat.

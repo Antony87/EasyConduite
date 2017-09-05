@@ -17,6 +17,8 @@
 package easyconduite;
 
 import easyconduite.controllers.EasyconduiteController;
+import easyconduite.objects.UserData;
+import easyconduite.util.UserDataHandler;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -25,6 +27,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,13 +36,12 @@ import org.apache.logging.log4j.Logger;
  * @author A. Fons
  */
 public class Easyconduite extends Application {
-
     
     static final Logger LOG = LogManager.getLogger(Easyconduite.class);
 
     @Override
     public void start(Stage stage) throws Exception {
-        LOG.info("Start Easyconduite with {}", stage.toString());
+        initUserData(stage);
         
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/easyconduite32.png")));
 
@@ -50,16 +52,16 @@ public class Easyconduite extends Application {
         
         EasyconduiteController controler = loader.getController();
         
-        stage.setOnCloseRequest((WindowEvent event) -> {          
+        stage.setOnCloseRequest((WindowEvent event) -> {
             controler.handleQuit(new ActionEvent());
             event.consume();
         });
-        
+         
         scene.getStylesheets().add("/styles/Styles.css");
         stage.setTitle("EasyConduite 1.2");
         stage.setScene(scene);
-        
         stage.show();
+        
     }
     
     /**
@@ -67,6 +69,13 @@ public class Easyconduite extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+    }
+    
+    private void initUserData(Stage stage){
+        final UserData userdatas = UserDataHandler.getInstance().getUserData();
+        UserDataHandler.getInstance().setLog4jLevel(Level.ERROR);
+        stage.setWidth(userdatas.getWindowWith());
+        stage.setHeight(userdatas.getWindowHeight());
     }
 
 }
