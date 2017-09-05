@@ -17,7 +17,10 @@
 package easyconduite.objects;
 
 import java.io.Serializable;
+import java.nio.file.Path;
 import java.util.Locale;
+import java.util.Queue;
+import org.apache.logging.log4j.Level;
 
 /**
  * This class implements properties for user datas.
@@ -31,6 +34,12 @@ public class UserData implements Serializable {
     private Locale locale;
 
     private int WindowWith;
+
+    private int windowHeight;
+
+    private Queue<Path> recentsPaths;
+
+    private Level logLevel = Level.ERROR;
 
     public Locale getLocale() {
         return locale;
@@ -46,6 +55,27 @@ public class UserData implements Serializable {
 
     public void setWindowWith(int WindowWith) {
         this.WindowWith = WindowWith;
+    }
+
+    public int getWindowHeight() {
+        return windowHeight;
+    }
+
+    public void setWindowHeight(int windowHeight) {
+        this.windowHeight = windowHeight;
+    }
+
+    public Level getLogLevel() {
+        return logLevel;
+    }
+
+    public void setLogLevel(Level logLevel) {
+        this.logLevel = logLevel;
+    }
+
+    @Override
+    public String toString() {
+        return "UserData{" + "locale=" + locale + ", WindowWith=" + WindowWith + ", windowHeight=" + windowHeight + '}';
     }
 
 }

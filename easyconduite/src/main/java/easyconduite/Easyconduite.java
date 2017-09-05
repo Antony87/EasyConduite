@@ -41,15 +41,6 @@ public class Easyconduite extends Application {
     public void start(Stage stage) throws Exception {
         LOG.info("Start Easyconduite with {}", stage.toString());
         
-//        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-//        final Configuration config = ctx.getConfiguration();
-//
-//        LoggerConfig loggerConfig = config.getLoggerConfig(LOG.getName());
-//        LoggerConfig specificConfig = loggerConfig;
-//
-//        specificConfig.setLevel(Level.ERROR);
-//        ctx.updateLoggers();
-
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/easyconduite32.png")));
 
         final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/easyconduite.fxml"));

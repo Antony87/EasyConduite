@@ -16,7 +16,7 @@
  */
 package easyconduite.ui;
 
-import easyconduite.util.Const;
+import easyconduite.util.Constants;
 import java.text.SimpleDateFormat;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -40,7 +40,7 @@ public class Chrono {
         
     public Chrono(Label label) {
         this.label = label;
-        CHRONO_FORMAT.setTimeZone(Const.TZ);
+        CHRONO_FORMAT.setTimeZone(Constants.TZ);
         timer = new Timeline(new KeyFrame(
                 Duration.seconds(1), (ActionEvent event) -> {
                     secondesDuration = ++secondesDuration;
@@ -70,7 +70,7 @@ public class Chrono {
     }
 
     private String toLabel(Duration duration) {
-        return  Const.getFormatedDuration(duration, CHRONO_FORMAT);
+        return  Constants.getFormatedDuration(duration, CHRONO_FORMAT);
     }
 
 }

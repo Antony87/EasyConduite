@@ -22,7 +22,7 @@ import easyconduite.objects.AudioMedia;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.ui.commons.ActionDialog;
 import easyconduite.ui.commons.IconButton;
-import easyconduite.util.Const;
+import easyconduite.util.Constants;
 import easyconduite.util.KeyCodeUtil;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -89,7 +89,7 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
         super();
         LOG.info("Construct an AudioMedia {}", media);
 
-        PROGRESS_TIME_FORMAT.setTimeZone(Const.TZ);
+        PROGRESS_TIME_FORMAT.setTimeZone(Constants.TZ);
 
         this.audioMedia = media;
         ////////////////////////////////////////////////////////////////////////
@@ -132,7 +132,7 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
         ///////////// current Time label               
         timeLabel.getStyleClass().add("texte-time");
         player.getPlayer().currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> {
-            timeLabel.setText(Const.getFormatedDuration(audioMedia.getAudioDuration().subtract(newValue), PROGRESS_TIME_FORMAT));
+            timeLabel.setText(Constants.getFormatedDuration(audioMedia.getAudioDuration().subtract(newValue), PROGRESS_TIME_FORMAT));
         });
         // ToolBar with Stop and play button ///////////////////////////////////
         playPauseHbox = new PlayPauseHbox(player);
@@ -173,9 +173,9 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
             // positionne tous les champs quand AudioMedi a changé et que la 
             // "chain of responsability" est déclenchée.
             nameLabel.setText(audioMedia.getName());
-            timeLabel.setText(Const.getFormatedDuration(audioMedia.getAudioDuration(), PROGRESS_TIME_FORMAT));
+            timeLabel.setText(Constants.getFormatedDuration(audioMedia.getAudioDuration(), PROGRESS_TIME_FORMAT));
             if (audioMedia.getRepeatable()) {
-                repeatImageView.setImage(Const.REPEAT_IMAGE);
+                repeatImageView.setImage(Constants.REPEAT_IMAGE);
             } else {
                 repeatImageView.setImage(null);
             }
@@ -202,21 +202,21 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
             switch (newValue) {
                 case PAUSED:
                     playPauseHbox.decoratePlaying(false);
-                    AudioMediaUI.this.setEffect(Const.SHADOW_EFFECT);
+                    AudioMediaUI.this.setEffect(Constants.SHADOW_EFFECT);
                     keycodeLabel.setEffect(null);
-                    AudioMediaUI.this.setBackground(Const.PAUSE_BACKG);
+                    AudioMediaUI.this.setBackground(Constants.PAUSE_BACKG);
                     break;
                 case PLAYING:
                     playPauseHbox.decoratePlaying(true);
-                    AudioMediaUI.this.setEffect(Const.SHADOW_EFFECT);
-                    keycodeLabel.setEffect(Const.KEYCODE_LABEL_BLOOM);
-                    AudioMediaUI.this.setBackground(Const.PLAY_BACKG);
+                    AudioMediaUI.this.setEffect(Constants.SHADOW_EFFECT);
+                    keycodeLabel.setEffect(Constants.KEYCODE_LABEL_BLOOM);
+                    AudioMediaUI.this.setBackground(Constants.PLAY_BACKG);
                     break;
                 case STOPPED:
                     playPauseHbox.decoratePlaying(false);
                     AudioMediaUI.this.setEffect(null);
                     keycodeLabel.setEffect(null);
-                    AudioMediaUI.this.setBackground(Const.STOP_BACKG);
+                    AudioMediaUI.this.setBackground(Constants.STOP_BACKG);
                     break;
                 case READY:
                     // if player ready, update AudioMedia duration an UI.
@@ -264,7 +264,7 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
         protected PlayPauseHbox(EasyconduitePlayer player) {
             super();
             PlayPauseHbox.this.getStyleClass().add("track-inner-hbox");
-            buttonPlayPause = new IconButton(Const.NAME_ICON_PLAY);
+            buttonPlayPause = new IconButton(Constants.NAME_ICON_PLAY);
             buttonPlayPause.setOnMouseClicked((MouseEvent event) -> {
                 player.playPause();
             });
@@ -276,9 +276,9 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
 
         protected void decoratePlaying(boolean decorate) {
             if (decorate) {
-                buttonPlayPause.setPathNameOfIcon(Const.NAME_ICON_PAUSE);
+                buttonPlayPause.setPathNameOfIcon(Constants.NAME_ICON_PAUSE);
             } else {
-                buttonPlayPause.setPathNameOfIcon(Const.NAME_ICON_PLAY);
+                buttonPlayPause.setPathNameOfIcon(Constants.NAME_ICON_PLAY);
             }
         }
     }

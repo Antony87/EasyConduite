@@ -37,7 +37,7 @@ import javafx.util.Duration;
  *
  * @author antony fons
  */
-public class Const {
+public class Constants {
 
     /**
      * Background color for AudioMedia UI when playings.
