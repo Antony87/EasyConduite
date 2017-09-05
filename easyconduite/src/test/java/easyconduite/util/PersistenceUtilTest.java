@@ -19,12 +19,13 @@ package easyconduite.util;
 
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioTable;
-import easyconduite.objects.PersistenceException;
+import easyconduite.exception.PersistenceException;
 import easyconduite.objects.UserData;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Locale;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -103,9 +104,6 @@ public class PersistenceUtilTest {
         //PersistenceUtil.saveUserData(tempFile, userData);
         PersistenceUtil.writeToFile(tempFile, userData, PersistenceUtil.FILE_TYPE.BIN);
         assertTrue(Files.exists(tempFile.toPath()));
-        //test pour overwriting
-        userData.setWindowWith(400);
-        PersistenceUtil.writeToFile(tempFile, userData, PersistenceUtil.FILE_TYPE.BIN);
     }
 
     @Test

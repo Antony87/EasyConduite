@@ -19,7 +19,7 @@ package easyconduite.controllers;
 import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioTable;
-import easyconduite.objects.PersistenceException;
+import easyconduite.exception.PersistenceException;
 import easyconduite.ui.AboutDialog;
 import easyconduite.ui.AudioMediaUI;
 import easyconduite.ui.Chrono;

@@ -16,7 +16,7 @@
  */
 package easyconduite.util;
 
-import easyconduite.objects.PersistenceException;
+import easyconduite.exception.PersistenceException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

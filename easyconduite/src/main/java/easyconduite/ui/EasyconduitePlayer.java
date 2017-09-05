@@ -18,7 +18,7 @@ package easyconduite.ui;
 
 import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
-import easyconduite.objects.EasyconduiteException;
+import easyconduite.exception.EasyconduiteException;
 import easyconduite.ui.commons.ActionDialog;
 import easyconduite.util.PersistenceUtil;
 import easyconduite.util.PlayerVolumeFader;

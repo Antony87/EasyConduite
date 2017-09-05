@@ -19,7 +19,7 @@ package easyconduite.ui;
 import easyconduite.controllers.EasyconduiteController;
 import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
-import easyconduite.objects.EasyconduiteException;
+import easyconduite.exception.EasyconduiteException;
 import easyconduite.ui.commons.ActionDialog;
 import easyconduite.ui.commons.IconButton;
 import easyconduite.util.Const;
