@@ -103,6 +103,9 @@ public class PersistenceUtilTest {
         //PersistenceUtil.saveUserData(tempFile, userData);
         PersistenceUtil.writeToFile(tempFile, userData, PersistenceUtil.FILE_TYPE.BIN);
         assertTrue(Files.exists(tempFile.toPath()));
+        //test pour overwriting
+        userData.setWindowWith(400);
+        PersistenceUtil.writeToFile(tempFile, userData, PersistenceUtil.FILE_TYPE.BIN);
     }
 
     @Test
