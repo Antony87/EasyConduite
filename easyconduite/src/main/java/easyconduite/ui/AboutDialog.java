@@ -40,7 +40,7 @@ public class AboutDialog extends Stage {
 
     public AboutDialog() throws IOException {
 
-        ResourceBundle bundle = UserDataHandler.getInstance().getLocaleBundle();
+        final ResourceBundle bundle = UserDataHandler.getInstance().getLocaleBundle();
         
         FXMLLoader loader = new FXMLLoader(getClass().getResource(PATH_FXML),bundle);
 

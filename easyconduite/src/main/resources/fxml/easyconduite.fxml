@@ -5,7 +5,6 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.effect.Light.Distant?>
@@ -26,37 +25,35 @@
         <children>
           <MenuBar style="-fx-background-color: #727272;" VBox.vgrow="NEVER">
             <menus>
-              <Menu mnemonicParsing="false" text="Fichier">
+              <Menu mnemonicParsing="false" text="%menu.file.title">
                 <items>
-                  <MenuItem fx:id="fichierouvrir" mnemonicParsing="false" onAction="#handleOpen" text="Ouvrir...">
+                  <MenuItem fx:id="fichierouvrir" mnemonicParsing="false" onAction="#handleOpen" text="%menu.file.open">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
-                  <MenuItem mnemonicParsing="false" onAction="#handleSave" text="Enregistrer">
+                  <MenuItem mnemonicParsing="false" onAction="#handleSave" text="%menu.file.save">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#handleSaveAs" text="Enregistrer sous..." />
-                        <MenuItem mnemonicParsing="false" onAction="#handleCloseTab" text="Fermer" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#handleImportAudio" text="Importer..." />
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" onAction="#handleQuit" text="Quitter">
+                        <MenuItem mnemonicParsing="false" onAction="#handleSaveAs" text="%menu.file.saveas" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleCloseTab" text="%menu.file.close" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleQuit" text="%menu.file.quit">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="Q" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
                 </items>
               </Menu>
-                  <Menu mnemonicParsing="false" text="Pistes">
+                  <Menu mnemonicParsing="false" text="%menu.track.title">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#handlePauseAll" text="Pauser toutes" />
-                        <MenuItem mnemonicParsing="false" onAction="#handleStopAll" text="Stopper toutes" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleImportAudio" text="%menu.track.import" />
+                        <MenuItem mnemonicParsing="false" onAction="#handlePauseAll" text="%menu.track.pause" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleStopAll" text="%menu.track.stop" />
                     </items>
                   </Menu>
-              <Menu mnemonicParsing="false" text="Conduite">
+              <Menu mnemonicParsing="false" text="%menu.cue.title">
                 <items>
                         <MenuItem mnemonicParsing="false" onAction="#handleRazChrono" text="RAZ Timer">
                            <accelerator>
@@ -65,9 +62,9 @@
                         </MenuItem>
                 </items>
               </Menu>
-              <Menu mnemonicParsing="false" text="Aide">
+              <Menu mnemonicParsing="false" text="%menu.help.title">
                 <items>
-                  <MenuItem mnemonicParsing="false" onAction="#handleAbout" text="A propos..." />
+                  <MenuItem mnemonicParsing="false" onAction="#handleAbout" text="%menu.help.about" />
                 </items>
               </Menu>
             </menus>

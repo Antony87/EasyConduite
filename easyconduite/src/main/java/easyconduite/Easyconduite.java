@@ -19,6 +19,7 @@ package easyconduite;
 import easyconduite.controllers.EasyconduiteController;
 import easyconduite.objects.UserData;
 import easyconduite.util.UserDataHandler;
+import java.util.ResourceBundle;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -45,7 +46,9 @@ public class Easyconduite extends Application {
         
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/easyconduite32.png")));
 
-        final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/easyconduite.fxml"));
+        final ResourceBundle bundle = UserDataHandler.getInstance().getLocaleBundle();
+        
+        final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/easyconduite.fxml"),bundle);
 
         Pane root = loader.load(); 
         Scene scene = new Scene(root);
