@@ -89,6 +89,11 @@ public class Constants {
     public static final File FILE_USER_DATA = Paths.get("user.data").toFile();
 
     /**
+     * Constant for resource bundle basename.
+     */
+    public static final String RESOURCE_BASENAME = "locale.LabelsBundle";
+
+    /**
      * Format a Duration with SimpleDateFormat.
      *
      * @param duration

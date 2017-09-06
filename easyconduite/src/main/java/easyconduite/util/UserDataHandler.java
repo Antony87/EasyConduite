@@ -19,6 +19,7 @@ package easyconduite.util;
 import easyconduite.exception.PersistenceException;
 import easyconduite.objects.UserData;
 import java.util.Locale;
+import java.util.ResourceBundle;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,6 +39,8 @@ public class UserDataHandler {
 
     private UserData userDatas;
 
+    private final ResourceBundle localeBundle;
+
     static final Logger LOG = LogManager.getLogger(UserDataHandler.class);
 
     private UserDataHandler() {
@@ -47,7 +50,7 @@ public class UserDataHandler {
                 LOG.debug("Found user.data file");
                 userDatas = PersistenceUtil.readFromFile(Constants.FILE_USER_DATA, UserData.class, PersistenceUtil.FILE_TYPE.BIN);
                 setLog4jLevel(userDatas.getLogLevel());
-                LOG.trace("UserData [{}]",userDatas);
+                LOG.trace("UserData [{}]", userDatas);
             } catch (PersistenceException ex) {
                 LOG.error("An error occured during user.dat loading", ex);
             }
@@ -55,10 +58,17 @@ public class UserDataHandler {
             LOG.debug("user.data file not found, create default UserData object");
             userDatas = new UserData(800, 600, Level.ALL);
             userDatas.setLocale(new Locale(System.getProperty("user.language"), System.getProperty("user.country")));
-            LOG.trace("UserData [{}]",userDatas);
+            LOG.trace("UserData [{}]", userDatas);
         }
+        
+        localeBundle = ResourceBundle.getBundle(Constants.RESOURCE_BASENAME);
+        
     }
-    
+
+    public ResourceBundle getLocaleBundle() {
+        return localeBundle;
+    }
+
     /**
      * This method return UserData.
      *

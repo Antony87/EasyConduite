@@ -16,7 +16,9 @@
  */
 package easyconduite.ui;
 
+import easyconduite.util.UserDataHandler;
 import java.io.IOException;
+import java.util.ResourceBundle;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -38,12 +40,15 @@ public class AboutDialog extends Stage {
 
     public AboutDialog() throws IOException {
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(PATH_FXML));
+        ResourceBundle bundle = UserDataHandler.getInstance().getLocaleBundle();
+        
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(PATH_FXML),bundle);
 
         BorderPane dialogPane = (BorderPane) loader.load();
 
         Stage dialogStage = new Stage();
-        dialogStage.setTitle("A propos de Easyconduite v 1.2");
+        //dialogStage.setTitle("A propos de Easyconduite v 1.2");
+        dialogStage.setTitle(bundle.getString("about.title"));
         dialogStage.initModality(Modality.APPLICATION_MODAL);
         dialogStage.initStyle(StageStyle.UTILITY);
         dialogStage.setResizable(false);
