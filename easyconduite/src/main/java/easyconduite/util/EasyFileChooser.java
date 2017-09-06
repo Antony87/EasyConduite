@@ -16,6 +16,7 @@
  */
 package easyconduite.util;
 
+import java.util.ResourceBundle;
 import javafx.stage.FileChooser;
 
 /**
@@ -24,8 +25,6 @@ import javafx.stage.FileChooser;
  */
 public class EasyFileChooser {
 
-    public final static String SAVE_TITLE = "Enregistrer le projet";
-    public final static String SAVEAS_TITLE = "Enregistrer le projet sous...";
     public final static String OPEN_TITLE = "Ouvrir un projet";
     public final static String IMPORT_TITLE = "Importer un fichier audio";
 
@@ -39,6 +38,8 @@ public class EasyFileChooser {
         private String title;
         private String text;
         private String extension[];
+        
+        private final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getBundle();
 
         public FileChooserBuilder asType(Type type) {
             switch (type) {
@@ -53,31 +54,16 @@ public class EasyFileChooser {
                     extension = new String[]{"*.ecp"};
                     break;
                 case SAVE:
-                    title = SAVE_TITLE;
+                    title = bundle.getString("easyfilechoose.title.save");
                     text = "Fichier *.ecp";
                     extension = new String[]{"*.ecp"};
                     break;
                 case SAVE_AS:
-                    title = SAVEAS_TITLE;
+                    title = bundle.getString("easyfilechoose.title.saveas");
                     text = "Fichier *.ecp";
                     extension = new String[]{"*.ecp"};
                     break;
             }
-            return this;
-        }
-
-        public FileChooserBuilder title(String title) {
-            this.title = title;
-            return this;
-        }
-
-        public FileChooserBuilder text(String text) {
-            this.text = text;
-            return this;
-        }
-
-        public FileChooserBuilder extensions(String[] extensions) {
-            this.extension = extensions;
             return this;
         }
 

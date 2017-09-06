@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Level;
  *
  * @author antony
  */
-public class UserData implements Serializable {
+public class EasyconduiteProperty implements Serializable {
 
     private static final long serialVersionUID = 42L;
 
@@ -48,7 +48,7 @@ public class UserData implements Serializable {
      * @param windowHeight
      * @param logLevel
      */
-    public UserData(int WindowWith, int windowHeight, Level logLevel) {
+    public EasyconduiteProperty(int WindowWith, int windowHeight, Level logLevel) {
         this.WindowWith = WindowWith;
         this.windowHeight = windowHeight;
         this.logLevel = logLevel;
@@ -57,7 +57,7 @@ public class UserData implements Serializable {
     /**
      * Default constructor.
      */
-    public UserData() {
+    public EasyconduiteProperty() {
     }
 
     public Locale getLocale() {

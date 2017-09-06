@@ -16,7 +16,7 @@
  */
 package easyconduite.ui;
 
-import easyconduite.util.UserDataHandler;
+import easyconduite.util.EasyConduitePropertiesHandler;
 import java.io.IOException;
 import java.util.ResourceBundle;
 import javafx.fxml.FXMLLoader;
@@ -40,7 +40,7 @@ public class AboutDialog extends Stage {
 
     public AboutDialog() throws IOException {
 
-        final ResourceBundle bundle = UserDataHandler.getInstance().getLocaleBundle();
+        final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getBundle();
         
         FXMLLoader loader = new FXMLLoader(getClass().getResource(PATH_FXML),bundle);
 

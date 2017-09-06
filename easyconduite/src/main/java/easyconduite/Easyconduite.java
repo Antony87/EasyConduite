@@ -17,8 +17,9 @@
 package easyconduite;
 
 import easyconduite.controllers.EasyconduiteController;
-import easyconduite.objects.UserData;
-import easyconduite.util.UserDataHandler;
+import easyconduite.objects.EasyconduiteProperty;
+import easyconduite.util.Constants;
+import easyconduite.util.EasyConduitePropertiesHandler;
 import java.util.ResourceBundle;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -31,52 +32,73 @@ import javafx.stage.WindowEvent;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 
 /**
  *
  * @author A. Fons
  */
 public class Easyconduite extends Application {
-    
+
+    private ResourceBundle localeBundle;
+
     static final Logger LOG = LogManager.getLogger(Easyconduite.class);
 
     @Override
     public void start(Stage stage) throws Exception {
         initUserData(stage);
-        
+
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/easyconduite32.png")));
 
-        final ResourceBundle bundle = UserDataHandler.getInstance().getLocaleBundle();
-        
-        final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/easyconduite.fxml"),bundle);
+        final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/easyconduite.fxml"), localeBundle);
 
-        Pane root = loader.load(); 
+        Pane root = loader.load();
         Scene scene = new Scene(root);
-        
+
         EasyconduiteController controler = loader.getController();
-        
+
         stage.setOnCloseRequest((WindowEvent event) -> {
             controler.handleQuit(new ActionEvent());
             event.consume();
         });
-         
+
         scene.getStylesheets().add("/styles/Styles.css");
         stage.setTitle("EasyConduite 1.2");
         stage.setScene(scene);
         stage.show();
-        
+
     }
-    
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         launch(args);
     }
-    
-    private void initUserData(Stage stage){
-        final UserData userdatas = UserDataHandler.getInstance().getUserData();
-        UserDataHandler.getInstance().setLog4jLevel(Level.ALL);
+
+    /**
+     * This method sets log4j level for easyconduite logger.
+     *
+     * @param level
+     */
+    public static void setLog4jLevel(Level level) {
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final Configuration config = ctx.getConfiguration();
+        final LoggerConfig loggerConfig = config.getLoggerConfig(LOG.getName());
+        loggerConfig.setLevel(level);
+        ctx.updateLoggers();
+    }
+
+    public ResourceBundle getLocaleBundle() {
+        return localeBundle;
+    }
+
+    private void initUserData(Stage stage) {
+        final EasyconduiteProperty userdatas = EasyConduitePropertiesHandler.getInstance().getProperties();
+        setLog4jLevel(Level.ALL);
+        localeBundle=ResourceBundle.getBundle(Constants.RESOURCE_BASENAME);
         stage.setWidth(userdatas.getWindowWith());
         stage.setHeight(userdatas.getWindowHeight());
     }

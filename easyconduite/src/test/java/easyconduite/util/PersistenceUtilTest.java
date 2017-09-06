@@ -20,7 +20,7 @@ package easyconduite.util;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioTable;
 import easyconduite.exception.PersistenceException;
-import easyconduite.objects.UserData;
+import easyconduite.objects.EasyconduiteProperty;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -98,7 +98,7 @@ public class PersistenceUtilTest {
 
     @Test
     public void testSaveUserData() throws PersistenceException {
-        final UserData userData = new UserData();
+        final EasyconduiteProperty userData = new EasyconduiteProperty();
         userData.setLocale(Locale.FRENCH);
         userData.setWindowWith(300);
         //PersistenceUtil.saveUserData(tempFile, userData);
@@ -108,13 +108,13 @@ public class PersistenceUtilTest {
 
     @Test
     public void testOpenUserData() throws PersistenceException {
-        final UserData userData = new UserData();
+        final EasyconduiteProperty userData = new EasyconduiteProperty();
         userData.setLocale(Locale.FRENCH);
         userData.setWindowWith(300);
         //PersistenceUtil.saveUserData(tempFile, userData);
         PersistenceUtil.writeToFile(tempFile, userData, PersistenceUtil.FILE_TYPE.BIN);
 
-        final UserData userDataread = PersistenceUtil.readFromFile(tempFile, UserData.class, PersistenceUtil.FILE_TYPE.BIN);
+        final EasyconduiteProperty userDataread = PersistenceUtil.readFromFile(tempFile, EasyconduiteProperty.class, PersistenceUtil.FILE_TYPE.BIN);
 
         assertNotNull(userDataread);
         assertEquals(userData.getWindowWith(), userDataread.getWindowWith());

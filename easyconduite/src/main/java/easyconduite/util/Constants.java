@@ -86,7 +86,7 @@ public class Constants {
     /**
      * Constant Path for user datas.
      */
-    public static final File FILE_USER_DATA = Paths.get("user.data").toFile();
+    public static final File FILE_EASYCONDUITE_PROPS = Paths.get("easyconduite.dat").toFile();
 
     /**
      * Constant for resource bundle basename.

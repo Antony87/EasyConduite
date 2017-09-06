@@ -16,7 +16,7 @@
  */
 package easyconduite.util;
 
-import easyconduite.objects.UserData;
+import easyconduite.objects.EasyconduiteProperty;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -51,23 +51,23 @@ public class UserDataHandlerTest {
     }
 
     /**
-     * Test of getUserData method, of class UserDataHandler.
+     * Test of getProperties method, of class EasyConduitePropertiesHandler.
      */
     @Test
     public void testGetUserData() {
-        UserDataHandler handler = UserDataHandler.getInstance();
-        UserData userdata = handler.getUserData();
+        EasyConduitePropertiesHandler handler = EasyConduitePropertiesHandler.getInstance();
+        EasyconduiteProperty userdata = handler.getProperties();
         assertNotNull(userdata.getLocale());
         LOG.debug("Locale {}",userdata.getLocale());
     }
 
     /**
-     * Test of getInstance method, of class UserDataHandler.
+     * Test of getInstance method, of class EasyConduitePropertiesHandler.
      */
     @Test
     public void testGetInstance() {
 
-        UserDataHandler handler = UserDataHandler.getInstance();
+        EasyConduitePropertiesHandler handler = EasyConduitePropertiesHandler.getInstance();
         assertNotNull(handler);
 
     }

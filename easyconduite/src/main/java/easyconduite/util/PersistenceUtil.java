@@ -84,6 +84,7 @@ public class PersistenceUtil {
                 final Marshaller m = context.createMarshaller();
                 m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
                 m.marshal(t, file);
+                
             } catch (JAXBException ex) {
                 LOG.error("JAXB marshalling occured", ex);
                 throw new PersistenceException(ex);
