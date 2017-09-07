@@ -124,7 +124,7 @@ public class EasyconduiteController extends StackPane implements Initializable, 
             // clear audiotable and childs (ui, player, etc)
             handleCloseTab(event);
             try {
-                audioTable = (AudioTable)PersistenceUtil.readFromFile(file, AudioTable.class, PersistenceUtil.FILE_TYPE.XML);
+                audioTable = (AudioTable) PersistenceUtil.readFromFile(file, AudioTable.class, PersistenceUtil.FILE_TYPE.XML);
 
                 Stage primStage = (Stage) getMyScene().getWindow();
                 primStage.setTitle("EasyConduite 1.2 -- Projet : " + audioTable.getName());
@@ -141,13 +141,14 @@ public class EasyconduiteController extends StackPane implements Initializable, 
 
     @FXML
     private void handleSave(ActionEvent event) {
-        LOG.debug("Menu save called");
+        LOG.debug("Save called");
 
         try {
             if (PersistenceUtil.isFileExists(audioTable.getTablePathFile())) {
+                audioTable.setUpdated(false);
                 File fileAudioTable = Paths.get(audioTable.getTablePathFile()).toFile();
-                //PersistenceUtil.saveAudioTable(fileAudioTable, audioTable);
                 PersistenceUtil.writeToFile(fileAudioTable, audioTable, PersistenceUtil.FILE_TYPE.XML);
+
             } else {
                 handleSaveAs(event);
             }
@@ -159,13 +160,14 @@ public class EasyconduiteController extends StackPane implements Initializable, 
 
     @FXML
     private void handleSaveAs(ActionEvent event) {
-        LOG.debug("Menu save as.. called");
+        LOG.debug("Save as.. called");
 
         FileChooser fileChooser = new EasyFileChooser.FileChooserBuilder().asType(EasyFileChooser.Type.SAVE_AS).build();
         File file = fileChooser.showSaveDialog(getMyScene().getWindow());
         if (file != null) {
             try {
-                //PersistenceUtil.saveAudioTable(file, audioTable);
+                audioTable.setUpdated(false);
+                audioTable.setTablePathFile(file.getAbsolutePath());
                 PersistenceUtil.writeToFile(file, audioTable, PersistenceUtil.FILE_TYPE.XML);
             } catch (PersistenceException ex) {
                 ActionDialog.showWarning("Une erreur est survenu", "Erreur durant l'enregistrement du projet");
@@ -225,7 +227,7 @@ public class EasyconduiteController extends StackPane implements Initializable, 
         try {
             PersistenceUtil.writeToFile(Constants.FILE_EASYCONDUITE_PROPS, userdatas, PersistenceUtil.FILE_TYPE.BIN);
         } catch (PersistenceException ex) {
-                LOG.error("Error occured", ex);
+            LOG.error("Error occured during easyconduite properties saving", ex);
         }
         if (this.audioTable.isClosable()) {
             Platform.exit();
