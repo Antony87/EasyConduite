@@ -16,7 +16,9 @@
  */
 package easyconduite.ui.commons;
 
+import easyconduite.util.EasyConduitePropertiesHandler;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -28,12 +30,13 @@ import javafx.stage.Modality;
  */
 public class ActionDialog {
     
+    private static final ResourceBundle BUNDLE = EasyConduitePropertiesHandler.getInstance().getBundle();
+    
     private final static String INFORM_TITLE="Information";
-    private final static String CONFIRM_TITLE="Demande de confirmation";
     private final static String WARNING_TITLE="Attention";
         
     public static Optional<ButtonType> showConfirmation(String header, String content) {
-        final Alert a = getAlert(CONFIRM_TITLE, header, content);
+        final Alert a = getAlert(BUNDLE.getString("dialog.confirmation.title"), header, content);
         a.getButtonTypes().add(ButtonType.NO);
         a.getButtonTypes().add(ButtonType.YES);
         a.setAlertType(AlertType.CONFIRMATION);
@@ -41,13 +44,13 @@ public class ActionDialog {
     }
     
     public static void showWarning(String header, String content) {
-        final Alert a = getAlert(WARNING_TITLE, header, content);
+        final Alert a = getAlert(BUNDLE.getString("dialog.warning.title"), header, content);
         a.setAlertType(AlertType.WARNING);
         a.showAndWait();
     }
     
     public static void showInformation(String header, String content) {
-        final Alert a = getAlert(INFORM_TITLE, header, content);
+        final Alert a = getAlert(BUNDLE.getString("dialog.information.title"), header, content);
         a.setAlertType(AlertType.INFORMATION);
         a.showAndWait();
     }
