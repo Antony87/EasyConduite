@@ -84,6 +84,8 @@ public class EasyconduiteController extends StackPane implements Initializable, 
 
     private EasyAudioChain nextChain;
 
+    private final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getBundle();
+
     /**
      * Constructor without arguments, to respect instantiating by FXML.
      */
@@ -146,7 +148,7 @@ public class EasyconduiteController extends StackPane implements Initializable, 
         try {
             if (PersistenceUtil.isFileExists(audioTable.getTablePathFile())) {
                 audioTable.setUpdated(false);
-                File fileAudioTable = Paths.get(audioTable.getTablePathFile()).toFile();
+                final File fileAudioTable = Paths.get(audioTable.getTablePathFile()).toFile();
                 PersistenceUtil.writeToFile(fileAudioTable, audioTable, PersistenceUtil.FILE_TYPE.XML);
 
             } else {
@@ -163,7 +165,7 @@ public class EasyconduiteController extends StackPane implements Initializable, 
         LOG.debug("Save as.. called");
 
         FileChooser fileChooser = new EasyFileChooser.FileChooserBuilder().asType(EasyFileChooser.Type.SAVE_AS).build();
-        File file = fileChooser.showSaveDialog(getMyScene().getWindow());
+        final File file = fileChooser.showSaveDialog(getMyScene().getWindow());
         if (file != null) {
             try {
                 audioTable.setUpdated(false);
@@ -232,7 +234,7 @@ public class EasyconduiteController extends StackPane implements Initializable, 
         if (this.audioTable.isClosable()) {
             Platform.exit();
         } else {
-            Optional<ButtonType> response = ActionDialog.showConfirmation("Enregistrer le projet", "Le projet n'est pas sauvegardé.\rVoulez-vous l'enregistrer ?");
+            Optional<ButtonType> response = ActionDialog.showConfirmation(bundle.getString("dialog.warning.save.header"), bundle.getString("dialog.warning.save.content"));
             if (response.isPresent() && response.get().equals(ButtonType.YES)) {
                 handleSave(event);
             } else {
