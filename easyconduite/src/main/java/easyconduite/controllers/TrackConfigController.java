@@ -16,6 +16,7 @@
  */
 package easyconduite.controllers;
 
+import easyconduite.model.DialogAbstractController;
 import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioMediaConfigurator;
@@ -23,9 +24,11 @@ import easyconduite.ui.commons.ActionDialog;
 import easyconduite.util.KeyCodeUtil;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
@@ -34,7 +37,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,13 +46,9 @@ import org.apache.logging.log4j.Logger;
  *
  * @author antony
  */
-public class TrackConfigController extends BorderPane implements Initializable, EasyAudioChain {
-
-    static final Logger LOG = LogManager.getLogger(TrackConfigController.class);
+public class TrackConfigController extends DialogAbstractController implements Initializable, EasyAudioChain {
 
     private EasyconduiteController mainController;
-
-    private AudioMedia audioMedia;
 
     private KeyCode newKeyCode;
 
@@ -71,18 +69,19 @@ public class TrackConfigController extends BorderPane implements Initializable, 
 
     @FXML
     private Spinner fadeOutSpinner;
+    
+    private EasyAudioChain nextChain;
+    
+    private ResourceBundle bundle;
 
-    @FXML
-    private Button cancelbutton;
-
-    @FXML
-    private Button okbutton;
+    private final ObjectProperty<AudioMedia> audioMedia = new ReadOnlyObjectWrapper<>();
 
     private final AudioMediaConfigurator mediaConfigurator;
 
-    private EasyAudioChain nextChain;
+    static final Logger LOG = LogManager.getLogger(TrackConfigController.class);
 
     public TrackConfigController() {
+        super();
         mediaConfigurator = new AudioMediaConfigurator();
     }
 
@@ -97,10 +96,30 @@ public class TrackConfigController extends BorderPane implements Initializable, 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         LOG.trace("TrackConfigController initialized");
+        
+        bundle=resources;
+        
         SpinnerValueFactory<Integer> valueFadeInFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
         fadeInSpinner.setValueFactory(valueFadeInFactory);
         SpinnerValueFactory<Integer> valueFadeOutFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
         fadeOutSpinner.setValueFactory(valueFadeOutFactory);
+
+        // listener to detect AudioMedia setting up and forward values to UI controls.
+        audioMediaProperty().addListener((ObservableValue<? extends AudioMedia> observable, AudioMedia oldMedia, AudioMedia newMedia) -> {
+            if (newMedia != null) {
+                LOG.trace("UI initialized, setting up UI with newMedia values");
+                nametrackfield.setText(newMedia.getName());
+                keytrackfield.setText(KeyCodeUtil.toString(newMedia.getKeycode()));
+                repeattrack.setSelected(newMedia.getRepeatable());
+                if (newMedia.getFadeInDuration() != null) {
+                    fadeInSpinner.getValueFactory().setValue((int) newMedia.getFadeInDuration().toSeconds());
+                }
+                if (newMedia.getFadeOutDuration() != null) {
+                    fadeOutSpinner.getValueFactory().setValue((int) newMedia.getFadeOutDuration().toSeconds());
+                }
+            }
+        });
+
     }
 
     @FXML
@@ -112,13 +131,13 @@ public class TrackConfigController extends BorderPane implements Initializable, 
                 .withName(nametrackfield.getText())
                 .withfadeIn(Duration.seconds(iValueFadeIn))
                 .withfadeOut(Duration.seconds(iValueFadeOut));
-        this.updateFromAudioMedia(this.audioMedia);
-        this.close();
+        this.updateFromAudioMedia(audioMedia.get());
+        this.close(configDialogPane);
     }
 
     @FXML
     private void handleClickCancel(MouseEvent event) {
-        this.close();
+        this.close(configDialogPane);
     }
 
     @FXML
@@ -139,7 +158,7 @@ public class TrackConfigController extends BorderPane implements Initializable, 
             keytrackfield.clear();
             ActionDialog.showWarning(String.format("La touche %s est déja attribuée", KeyCodeUtil.toString(typedKeycode)), "Cliquez sur OK pour recommencer");
         } else {
-            if (typedKeycode != this.audioMedia.getKeycode()) {
+            if (typedKeycode != audioMedia.getValue().getKeycode()) {
                 this.newKeyCode = typedKeycode;
                 keytrackfield.setText(KeyCodeUtil.toString(typedKeycode));
                 mediaConfigurator.withKeyCodeChanged(newKeyCode);
@@ -147,30 +166,20 @@ public class TrackConfigController extends BorderPane implements Initializable, 
         }
     }
 
-    /**
-     * This method sets up AudioMedia, MainController and fields for this
-     * controller.
-     *
-     * @param media
-     * @param controller
-     */
-    public void setup(AudioMedia media, EasyconduiteController controller) {
-        this.audioMedia = media;
-        if (this.audioMedia.getFadeInDuration() != null) {
-            fadeInSpinner.getValueFactory().setValue((int) this.audioMedia.getFadeInDuration().toSeconds());
-        }
-        if (this.audioMedia.getFadeOutDuration() != null) {
-            fadeOutSpinner.getValueFactory().setValue((int) this.audioMedia.getFadeOutDuration().toSeconds());
-        }
-        mainController = controller;
-        nametrackfield.setText(media.getName());
-        keytrackfield.setText(KeyCodeUtil.toString(media.getKeycode()));
-        repeattrack.setSelected(media.getRepeatable());
+    public void setMainController(EasyconduiteController mainController) {
+        this.mainController = mainController;
     }
 
-    private void close() {
-        final Stage stage = (Stage) configDialogPane.getScene().getWindow();
-        stage.close();
+    public AudioMedia getAudioMediaObs() {
+        return audioMedia.get();
+    }
+
+    public void setAudioMedia(AudioMedia audioMedia) {
+        this.audioMedia.setValue(audioMedia);
+    }
+
+    public ObjectProperty<AudioMedia> audioMediaProperty() {
+        return audioMedia;
     }
 
     @Override
@@ -180,10 +189,10 @@ public class TrackConfigController extends BorderPane implements Initializable, 
 
     @Override
     public void updateFromAudioMedia(AudioMedia media) {
-        mediaConfigurator.update(this.audioMedia);
+        mediaConfigurator.update(audioMedia.getValue());
         setNext(mainController);
         LOG.trace("After config, AudioMedia is {}", this.audioMedia);
-        nextChain.updateFromAudioMedia(this.audioMedia);
+        nextChain.updateFromAudioMedia(audioMedia.getValue());
     }
 
     @Override
