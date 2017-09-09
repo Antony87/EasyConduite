@@ -19,6 +19,7 @@ package easyconduite.controllers;
 import easyconduite.model.DialogAbstractController;
 import easyconduite.objects.EasyconduiteProperty;
 import easyconduite.util.EasyConduitePropertiesHandler;
+import easyconduite.util.LoggingUtil;
 import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -89,7 +90,7 @@ public class PreferencesController extends DialogAbstractController implements I
         EasyconduiteProperty properties = EasyConduitePropertiesHandler.getInstance().getProperties();
         properties.setLocale(prefLang.getValue());
         properties.setLogLevel(prefLogLevel.getValue());
-        
+        LoggingUtil.setLog4jLevel(prefLogLevel.getValue());
         this.close(prefsDialogPane);
     }
     

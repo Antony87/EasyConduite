@@ -20,6 +20,7 @@ import easyconduite.controllers.EasyconduiteController;
 import easyconduite.objects.EasyconduiteProperty;
 import easyconduite.util.Constants;
 import easyconduite.util.EasyConduitePropertiesHandler;
+import easyconduite.util.LoggingUtil;
 import java.util.ResourceBundle;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -29,12 +30,8 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.LoggerConfig;
 
 /**
  *
@@ -51,7 +48,7 @@ public class Easyconduite extends Application {
         final EasyconduiteProperty userdatas = EasyConduitePropertiesHandler.getInstance().getProperties();
         final ResourceBundle localeBundle = ResourceBundle.getBundle(Constants.RESOURCE_BASENAME, userdatas.getLocale());
         
-        setLog4jLevel(userdatas.getLogLevel());
+        LoggingUtil.setLog4jLevel(userdatas.getLogLevel());
 
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/easyconduite32.png")));
 
@@ -68,34 +65,18 @@ public class Easyconduite extends Application {
         });
 
         scene.getStylesheets().add("/styles/Styles.css");
-        stage.setTitle("EasyConduite 1.2");
+        stage.setTitle("EasyConduite" + localeBundle.getString("easyconduite.version"));
         stage.setScene(scene);
 
         stage.setWidth(userdatas.getWindowWith());
         stage.setHeight(userdatas.getWindowHeight());
 
         stage.show();
-
     }
-
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         launch(args);
-    }
-
-    /**
-     * This method sets log4j level for easyconduite logger.
-     *
-     * @param level
-     */
-    public static void setLog4jLevel(Level level) {
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        final Configuration config = ctx.getConfiguration();
-        final LoggerConfig loggerConfig = config.getLoggerConfig(LOG.getName());
-        loggerConfig.setLevel(level);
-        
-        ctx.updateLoggers();
     }
 }

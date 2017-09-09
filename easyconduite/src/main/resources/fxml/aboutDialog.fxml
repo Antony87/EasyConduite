@@ -49,7 +49,12 @@
    <top>
       <AnchorPane prefHeight="133.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
-            <Label layoutX="231.0" layoutY="53.0" style="-fx-text-fill: white;" text="Easyconduite v 1.2">
+            <Label layoutX="231.0" layoutY="53.0" style="-fx-text-fill: white;" text="Easyconduite v">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <Label layoutX="398.0" layoutY="53.0" style="-fx-text-fill: white;" text="%easyconduite.version">
                <font>
                   <Font size="24.0" />
                </font>

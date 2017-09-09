@@ -74,8 +74,8 @@
    <bottom>
       <HBox alignment="CENTER" prefHeight="73.0" prefWidth="300.0" spacing="50.0" BorderPane.alignment="CENTER">
          <children>
-            <Button id="cancelbutton" cancelButton="true" maxWidth="90.0" minWidth="90.0" mnemonicParsing="false" onMouseReleased="#handleClickCancel" styleClass="cancelbutton" text="Annuler" />
-            <Button id="okbutton" defaultButton="true" graphicTextGap="6.0" maxWidth="90.0" minWidth="90.0" mnemonicParsing="false" onMouseReleased="#handleClickOk" prefWidth="0.0" text="Ok" />
+            <Button id="cancelbutton" cancelButton="true" maxWidth="90.0" minWidth="90.0" mnemonicParsing="false" onMouseReleased="#handleClickCancel" styleClass="cancelbutton" text="%dialog.button.cancel" />
+            <Button id="okbutton" defaultButton="true" graphicTextGap="6.0" maxWidth="90.0" minWidth="90.0" mnemonicParsing="false" onMouseReleased="#handleClickOk" prefWidth="0.0" text="%dialog.button.apply" />
          </children>
          <BorderPane.margin>
             <Insets />

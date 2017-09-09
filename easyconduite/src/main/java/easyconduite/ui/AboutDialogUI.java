@@ -64,10 +64,10 @@ public class AboutDialogUI extends Stage {
 
         Label abouttext = (Label) scene.lookup("#abouttext");
         StringBuilder stb = new StringBuilder();
-        stb.append("Easyconduite v 1.2 \n");
+        stb.append("Easyconduite").append(bundle.getString("easyconduite.version")).append("\n");
         stb.append("antony.fons@antonyweb.net \n");
         stb.append("Copyright (C) 2017 Antony Fons\n");
-        stb.append("Ce programme est un logiciel libre ; vous pouvez le redistribuer ou le modifier suivant les termes de la GNU General Public License telle que publiée par la Free Software Foundation, version 3 de la licence\n");
+        stb.append(bundle.getString("about.licence.text"));
         abouttext.setText(stb.toString());
 
         dialogStage.setScene(scene);

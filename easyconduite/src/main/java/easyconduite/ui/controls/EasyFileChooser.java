@@ -26,9 +26,6 @@ import javafx.stage.FileChooser;
  */
 public class EasyFileChooser {
 
-    public final static String OPEN_TITLE = "Ouvrir un projet";
-    public final static String IMPORT_TITLE = "Importer un fichier audio";
-
     public enum Type {
 
         SAVE, SAVE_AS, OPEN_AUDIO, OPEN_PROJECT
@@ -45,12 +42,12 @@ public class EasyFileChooser {
         public FileChooserBuilder asType(Type type) {
             switch (type) {
                 case OPEN_AUDIO:
-                    title = IMPORT_TITLE;
-                    text = "Fichier audio";
+                    title = bundle.getString("easyfilechoose.title.import");
+                    text = "Fichier audio";                
                     extension = new String[]{"*.mp3", "*.wav"};
                     break;
                 case OPEN_PROJECT:
-                    title = OPEN_TITLE;
+                    title = bundle.getString("easyfilechoose.title.open");
                     text = "Fichier *.ecp";
                     extension = new String[]{"*.ecp"};
                     break;

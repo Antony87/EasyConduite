@@ -35,12 +35,12 @@
                   <Insets left="10.0" right="10.0" />
                </GridPane.margin>
             </TextField>
-            <TextField fx:id="keytrackfield" alignment="CENTER" maxWidth="150.0" onKeyReleased="#handleKeyReleasedTrack" onMouseReleased="#handleClickKeyField" prefHeight="25.0" prefWidth="127.0" promptText="pressez une touche" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <TextField fx:id="keytrackfield" alignment="CENTER" maxWidth="150.0" onKeyReleased="#handleKeyReleasedTrack" onMouseReleased="#handleClickKeyField" prefHeight="25.0" prefWidth="127.0" promptText="%configuration.associatedkey.text" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets left="20.0" right="10.0" />
                </GridPane.margin>
             </TextField>
-            <Label styleClass="Label" text="Nom du morceaux" textAlignment="RIGHT">
+            <Label styleClass="Label" text="%configuration.name.label" textAlignment="RIGHT">
                <GridPane.margin>
                   <Insets right="20.0" />
                </GridPane.margin>
@@ -48,7 +48,7 @@
                   <Font name="Arial Black" size="12.0" />
                </font>
             </Label>
-            <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="116.0" styleClass="Label" text="Touche associée" textAlignment="RIGHT" GridPane.rowIndex="1">
+            <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="116.0" styleClass="Label" text="%configuration.associatedkey.label" textAlignment="RIGHT" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets right="20.0" />
                </GridPane.margin>
@@ -118,7 +118,7 @@
                   <Image url="@../icons/Get%20Info%20Blue%20Button.png" />
                </image>
             </ImageView>
-            <Label contentDisplay="CENTER" styleClass="Label" text="Configuration Piste audio" textAlignment="CENTER">
+            <Label contentDisplay="CENTER" styleClass="Label" text="%configuration.title.label" textAlignment="CENTER">
                <font>
                   <Font name="Arial Black" size="18.0" />
                </font>
@@ -131,8 +131,8 @@
    <bottom>
       <HBox alignment="CENTER" prefHeight="80.0" prefWidth="200.0" spacing="50.0" BorderPane.alignment="CENTER">
          <children>
-            <Button id="cancelbutton" cancelButton="true" maxWidth="90.0" minWidth="90.0" mnemonicParsing="false" onMouseReleased="#handleClickCancel" styleClass="cancelbutton" text="Annuler" />
-            <Button id="okbutton" defaultButton="true" graphicTextGap="6.0" maxWidth="90.0" minWidth="90.0" mnemonicParsing="false" onMouseReleased="#handleClickOk" prefWidth="0.0" text="Ok" />
+            <Button id="cancelbutton" cancelButton="true" maxWidth="90.0" minWidth="90.0" mnemonicParsing="false" onMouseReleased="#handleClickCancel" styleClass="cancelbutton" text="%dialog.button.cancel" />
+            <Button id="okbutton" defaultButton="true" graphicTextGap="6.0" maxWidth="90.0" minWidth="90.0" mnemonicParsing="false" onMouseReleased="#handleClickOk" prefWidth="0.0" text="%dialog.button.apply" />
          </children>
          <BorderPane.margin>
             <Insets />
