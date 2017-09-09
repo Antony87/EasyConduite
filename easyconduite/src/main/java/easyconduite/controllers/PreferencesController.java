@@ -61,7 +61,7 @@ public class PreferencesController extends DialogAbstractController implements I
         
         EasyconduiteProperty userData = EasyConduitePropertiesHandler.getInstance().getProperties();
         
-        ObservableList<Locale> listeLocale = FXCollections.observableArrayList(Locale.FRENCH, Locale.ENGLISH, Locale.GERMAN);
+        ObservableList<Locale> listeLocale = FXCollections.observableArrayList(Locale.FRENCH, Locale.ENGLISH);
         
         prefLang.setItems(listeLocale);
         prefLang.getSelectionModel().select(listeLocale.stream().filter((Locale t) -> t.getDisplayLanguage().equals(userData.getLocale().getDisplayLanguage())).findFirst().get());
