@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package easyconduite.util;
+package easyconduite.ui.controls;
 
+import easyconduite.util.EasyConduitePropertiesHandler;
 import java.util.ResourceBundle;
 import javafx.stage.FileChooser;
 
@@ -39,7 +40,7 @@ public class EasyFileChooser {
         private String text;
         private String extension[];
         
-        private final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getBundle();
+        private final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
 
         public FileChooserBuilder asType(Type type) {
             switch (type) {

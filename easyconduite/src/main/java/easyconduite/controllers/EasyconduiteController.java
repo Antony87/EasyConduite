@@ -21,14 +21,15 @@ import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioTable;
 import easyconduite.objects.EasyconduiteProperty;
-import easyconduite.ui.AboutDialog;
+import easyconduite.ui.AboutDialogUI;
 import easyconduite.ui.AudioMediaUI;
-import easyconduite.ui.Chrono;
+import easyconduite.ui.PreferencesDialogUI;
 import easyconduite.ui.commons.ActionDialog;
+import easyconduite.ui.controls.Chrono;
 import easyconduite.util.Constants;
-import easyconduite.util.EasyFileChooser;
-import easyconduite.util.PersistenceUtil;
 import easyconduite.util.EasyConduitePropertiesHandler;
+import easyconduite.ui.controls.EasyFileChooser;
+import easyconduite.util.PersistenceUtil;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -62,8 +63,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class EasyconduiteController extends StackPane implements Initializable, EasyAudioChain {
 
-    static final Logger LOG = LogManager.getLogger(EasyconduiteController.class);
-
     @FXML
     StackPane mainPane;
 
@@ -80,11 +79,14 @@ public class EasyconduiteController extends StackPane implements Initializable, 
 
     private AudioTable audioTable;
 
-    private final List<AudioMediaUI> audioMediaUIs;
-
     private EasyAudioChain nextChain;
 
-    private final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getBundle();
+    //private final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
+    private ResourceBundle bundle;
+    
+    private final List<AudioMediaUI> audioMediaUIs;
+    
+    private static final Logger LOG = LogManager.getLogger(EasyconduiteController.class);
 
     /**
      * Constructor without arguments, to respect instantiating by FXML.
@@ -111,10 +113,10 @@ public class EasyconduiteController extends StackPane implements Initializable, 
 
     @FXML
     private void handleOpen(ActionEvent event) {
-        LOG.debug("Menu Open called");
+        LOG.debug("handleOpen called");
 
         if (audioMediaUIs.size() > 0) {
-            Optional<ButtonType> result = ActionDialog.showConfirmation("Charger un nouveau fichier écrasera l'existant.", "Voulez-vous continuer ?");
+            Optional<ButtonType> result = ActionDialog.showConfirmation(bundle.getString("easyconduitecontroler.open.header"),bundle.getString("easyconduitecontroler.open.content"));
             if (!result.isPresent() || result.get() == ButtonType.CANCEL) {
                 return;
             }
@@ -133,7 +135,7 @@ public class EasyconduiteController extends StackPane implements Initializable, 
 
             } catch (PersistenceException ex) {
                 LOG.error("Error occured during opening project file[{}]", file, ex);
-                ActionDialog.showWarning("Une erreur est survenue", "Erreur durant l'ouverture du projet");
+                ActionDialog.showWarning(bundle.getString("easyconduitecontroler.open.error"),"");
             }
             audioTable.getAudioMediaList().stream().forEach((audioMedia) -> {
                 addAudioMediaUI(audioMedia);
@@ -143,7 +145,7 @@ public class EasyconduiteController extends StackPane implements Initializable, 
 
     @FXML
     private void handleSave(ActionEvent event) {
-        LOG.debug("Save called");
+        LOG.debug("handleSave called");
 
         try {
             if (PersistenceUtil.isFileExists(audioTable.getTablePathFile())) {
@@ -187,6 +189,17 @@ public class EasyconduiteController extends StackPane implements Initializable, 
             this.removeChilds(audioMedia);
         }
     }
+    
+    @FXML
+    private void handlePreferences(ActionEvent event){
+        LOG.debug("handlePreferences called");
+        try {
+            PreferencesDialogUI prefsUI = new PreferencesDialogUI(bundle);
+            prefsUI.show();
+        } catch (IOException ex) {
+            LOG.debug("Error occurend ",ex);
+        }
+    }
 
     /**
      * Cette méthode est appellée par l'événement du menu ajout d'une média dans
@@ -224,8 +237,9 @@ public class EasyconduiteController extends StackPane implements Initializable, 
     public void handleQuit(ActionEvent event) {
 
         final EasyconduiteProperty userdatas = EasyConduitePropertiesHandler.getInstance().getProperties();
-        userdatas.setWindowHeight(getMyScene().heightProperty().intValue());
-        userdatas.setWindowWith(getMyScene().widthProperty().intValue());
+        userdatas.setWindowHeight((int) getMyScene().windowProperty().getValue().getHeight());
+        userdatas.setWindowWith((int) getMyScene().windowProperty().getValue().getWidth());
+           
         try {
             PersistenceUtil.writeToFile(Constants.FILE_EASYCONDUITE_PROPS, userdatas, PersistenceUtil.FILE_TYPE.BIN);
         } catch (PersistenceException ex) {
@@ -237,6 +251,7 @@ public class EasyconduiteController extends StackPane implements Initializable, 
             Optional<ButtonType> response = ActionDialog.showConfirmation(bundle.getString("dialog.warning.save.header"), bundle.getString("dialog.warning.save.content"));
             if (response.isPresent() && response.get().equals(ButtonType.YES)) {
                 handleSave(event);
+                Platform.exit();
             } else {
                 Platform.exit();
             }
@@ -269,7 +284,7 @@ public class EasyconduiteController extends StackPane implements Initializable, 
     private void handleAbout(ActionEvent event) {
 
         try {
-            AboutDialog aboutDialog = new AboutDialog();
+            AboutDialogUI aboutDialog = new AboutDialogUI();
         } catch (IOException ex) {
             LOG.error("An error occured", ex);
         }
@@ -279,6 +294,8 @@ public class EasyconduiteController extends StackPane implements Initializable, 
     public void initialize(URL url, ResourceBundle rb) {
         LOG.debug("Controler initialisation");
         chrono = new Chrono(timer);
+        bundle=rb;
+        LOG.trace("Bundle {} loaded", rb.getLocale());
     }
 
     /**

@@ -25,6 +25,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 .label{
     -fx-text-fill:whitesmoke;
 }
+
+.choice-box .label {
+-fx-text-fill: black;
+-fx-font-size: 10pt;
+}
+
 #cancelbutton{
     -fx-graphic: url("../icons/cancelbutton.png");
     -fx-content-display:left;

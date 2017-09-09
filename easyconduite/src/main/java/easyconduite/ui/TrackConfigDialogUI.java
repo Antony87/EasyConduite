@@ -48,7 +48,7 @@ public class TrackConfigDialogUI extends Stage {
 
         LOG.debug("TrackConfigDialogUI with AudioMedia[{}] and EasyconduiteController[{}]", media.getFilePathName(), mainController);
         
-        final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getBundle();
+        final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
         final FXMLLoader loader = new FXMLLoader(getClass().getResource(PATH_FXML),bundle);
         // Initialize controllers        
         final BorderPane dialogPane = loader.<BorderPane>load();

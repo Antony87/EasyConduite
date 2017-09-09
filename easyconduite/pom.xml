@@ -37,7 +37,7 @@
     </dependencies>
     <build>
         <plugins>
-            <plugin>
+<!--            <plugin>
     <groupId>org.codehaus.mojo</groupId>
     <artifactId>native2ascii-maven-plugin</artifactId>
     <version>1.0-alpha-1</version>
@@ -55,7 +55,7 @@
             </configuration>
         </execution>
     </executions>
-</plugin>
+</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>

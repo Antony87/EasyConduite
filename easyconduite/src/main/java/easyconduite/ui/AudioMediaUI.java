@@ -17,11 +17,12 @@
 package easyconduite.ui;
 
 import easyconduite.controllers.EasyconduiteController;
+import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
-import easyconduite.exception.EasyconduiteException;
 import easyconduite.ui.commons.ActionDialog;
 import easyconduite.ui.commons.IconButton;
+import easyconduite.ui.controls.EasyconduitePlayer;
 import easyconduite.util.Constants;
 import easyconduite.util.KeyCodeUtil;
 import java.io.IOException;
@@ -238,14 +239,14 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
             final IconButton button_delete = new IconButton("/icons/MinusRedButton.png");
             button_delete.setOnMouseClicked((MouseEvent event) -> {
                 Optional<ButtonType> result = ActionDialog.showConfirmation("Vous allez supprimer cette piste", "Voulez-vous continuer ?");
-                if (result.get() == ButtonType.OK) {
+                if (result.get() == ButtonType.OK || result.get() == ButtonType.YES) {
                     controller.removeAudioMedia(audioMedia);
                 }
             });
             final IconButton button_config = new IconButton("/icons/Gear.png");
             button_config.setOnMouseClicked((MouseEvent event) -> {
                 try {
-                    final TrackConfigDialog trackConfigDialog = new TrackConfigDialog(audioMedia, controller);
+                    final TrackConfigDialogUI trackConfigDialog = new TrackConfigDialogUI(audioMedia, controller);
                     trackConfigDialog.show();
                 } catch (IOException ex) {
                     LOG.error("Error occurend during TrackConfigDialog construction", ex);

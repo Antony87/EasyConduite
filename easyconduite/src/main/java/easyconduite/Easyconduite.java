@@ -41,14 +41,17 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
  * @author A. Fons
  */
 public class Easyconduite extends Application {
-
-    private ResourceBundle localeBundle;
-
+    
+    //private ResourceBundle localeBundle;
     static final Logger LOG = LogManager.getLogger(Easyconduite.class);
 
     @Override
     public void start(Stage stage) throws Exception {
-        initUserData(stage);
+
+        final EasyconduiteProperty userdatas = EasyConduitePropertiesHandler.getInstance().getProperties();
+        final ResourceBundle localeBundle = ResourceBundle.getBundle(Constants.RESOURCE_BASENAME, userdatas.getLocale());
+        
+        setLog4jLevel(userdatas.getLogLevel());
 
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/easyconduite32.png")));
 
@@ -67,6 +70,10 @@ public class Easyconduite extends Application {
         scene.getStylesheets().add("/styles/Styles.css");
         stage.setTitle("EasyConduite 1.2");
         stage.setScene(scene);
+
+        stage.setWidth(userdatas.getWindowWith());
+        stage.setHeight(userdatas.getWindowHeight());
+
         stage.show();
 
     }
@@ -88,19 +95,7 @@ public class Easyconduite extends Application {
         final Configuration config = ctx.getConfiguration();
         final LoggerConfig loggerConfig = config.getLoggerConfig(LOG.getName());
         loggerConfig.setLevel(level);
+        
         ctx.updateLoggers();
     }
-
-    public ResourceBundle getLocaleBundle() {
-        return localeBundle;
-    }
-
-    private void initUserData(Stage stage) {
-        final EasyconduiteProperty userdatas = EasyConduitePropertiesHandler.getInstance().getProperties();
-        setLog4jLevel(Level.ALL);
-        localeBundle=ResourceBundle.getBundle(Constants.RESOURCE_BASENAME);
-        stage.setWidth(userdatas.getWindowWith());
-        stage.setHeight(userdatas.getWindowHeight());
-    }
-
 }

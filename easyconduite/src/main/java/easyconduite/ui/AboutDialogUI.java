@@ -34,13 +34,13 @@ import javafx.stage.StageStyle;
  *
  * @author antony
  */
-public class AboutDialog extends Stage {
+public class AboutDialogUI extends Stage {
 
     private final String PATH_FXML = "/fxml/aboutDialog.fxml";
 
-    public AboutDialog() throws IOException {
+    public AboutDialogUI() throws IOException {
 
-        final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getBundle();
+        final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
         
         FXMLLoader loader = new FXMLLoader(getClass().getResource(PATH_FXML),bundle);
 

@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package easyconduite.util;
+package easyconduite.ui.controls;
 
 import easyconduite.objects.AudioMedia;
-import easyconduite.ui.EasyconduitePlayer;
+import easyconduite.ui.controls.EasyconduitePlayer;
 import javafx.animation.Transition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

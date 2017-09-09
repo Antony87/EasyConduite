@@ -13,19 +13,17 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="configDialogPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="336.0" prefWidth="400.0" styleClass="border-pane" stylesheets="@../../styles/trackdialog.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.easyconduite.controllers">
+<BorderPane fx:id="prefsDialogPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="247.0" prefWidth="400.0" styleClass="border-pane" stylesheets="@../../styles/trackdialog.css" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.PreferencesController">
    <center>
-      <GridPane alignment="CENTER" BorderPane.alignment="CENTER_RIGHT">
+      <GridPane alignment="CENTER" prefHeight="129.0" prefWidth="400.0" BorderPane.alignment="CENTER_RIGHT">
         <columnConstraints>
           <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
           <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="41.0" minHeight="15.0" prefHeight="41.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="80.0" minHeight="10.0" prefHeight="39.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="16.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
             <Label styleClass="Label" text="%preferences.label.language" textAlignment="RIGHT">
@@ -74,10 +72,10 @@
          </children></HBox>
    </top>
    <bottom>
-      <HBox alignment="CENTER" prefHeight="80.0" prefWidth="200.0" spacing="50.0" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" prefHeight="73.0" prefWidth="300.0" spacing="50.0" BorderPane.alignment="CENTER">
          <children>
-            <Button id="cancelbutton" fx:id="cancelbutton" cancelButton="true" maxWidth="90.0" minWidth="90.0" mnemonicParsing="false" onMouseReleased="#handleClickCancel" styleClass="cancelbutton" text="Annuler" />
-            <Button id="okbutton" fx:id="okbutton" defaultButton="true" graphicTextGap="6.0" maxWidth="90.0" minWidth="90.0" mnemonicParsing="false" onMouseReleased="#handleClickOk" prefWidth="0.0" text="Ok" />
+            <Button id="cancelbutton" cancelButton="true" maxWidth="90.0" minWidth="90.0" mnemonicParsing="false" onMouseReleased="#handleClickCancel" styleClass="cancelbutton" text="Annuler" />
+            <Button id="okbutton" defaultButton="true" graphicTextGap="6.0" maxWidth="90.0" minWidth="90.0" mnemonicParsing="false" onMouseReleased="#handleClickOk" prefWidth="0.0" text="Ok" />
          </children>
          <BorderPane.margin>
             <Insets />

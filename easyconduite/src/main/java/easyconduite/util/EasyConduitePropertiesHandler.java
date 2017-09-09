@@ -36,29 +36,31 @@ public class EasyConduitePropertiesHandler {
 
     private EasyconduiteProperty properties;
 
-    private ResourceBundle bundle;
+    private final ResourceBundle localBundle;
 
-    static final Logger LOG = LogManager.getLogger(EasyConduitePropertiesHandler.class);
+    private static final Logger LOG = LogManager.getLogger(EasyConduitePropertiesHandler.class);
 
     private EasyConduitePropertiesHandler() {
+        LOG.debug("EasyConduitePropertiesHandler singleton construct");
 
         if (Constants.FILE_EASYCONDUITE_PROPS.exists()) {
             try {
-                LOG.debug("easyconduite.dat file is found");
                 properties = PersistenceUtil.readFromFile(Constants.FILE_EASYCONDUITE_PROPS, EasyconduiteProperty.class, PersistenceUtil.FILE_TYPE.BIN);
-                easyconduite.Easyconduite.setLog4jLevel(properties.getLogLevel());
-                LOG.trace("EasyconduiteProperty loaded [{}]", properties);
+                LOG.trace("easyconduite.dat file found. EasyconduiteProperty [{}]",properties);
             } catch (PersistenceException ex) {
                 LOG.error("An error occured during easyconduite.dat loading", ex);
+                setDefaultProperties();
             }
         } else {
-            LOG.debug("easyconduite.dat file not found, create default EasyconduiteProperty object");
-            properties = new EasyconduiteProperty(800, 600, Level.ALL);
-            properties.setLocale(new Locale(System.getProperty("user.language"), System.getProperty("user.country")));
-            LOG.trace("EasyconduiteProperty loaded [{}]", properties);
+            setDefaultProperties();
         }
-        bundle = ResourceBundle.getBundle(Constants.RESOURCE_BASENAME);
+        localBundle = ResourceBundle.getBundle(Constants.RESOURCE_BASENAME, properties.getLocale());
+    }
 
+    private void setDefaultProperties() {
+        properties = new EasyconduiteProperty(800, 600, Level.ALL);
+        properties.setLocale(new Locale(System.getProperty("user.language"), System.getProperty("user.country")));
+        LOG.trace("easyconduite.dat file not found or an error occured, create default EasyconduiteProperty [{}]",properties);
     }
 
     /**
@@ -70,8 +72,8 @@ public class EasyConduitePropertiesHandler {
         return properties;
     }
 
-    public ResourceBundle getBundle() {
-        return bundle;
+    public ResourceBundle getLocalBundle() {
+        return localBundle;
     }
 
     /**

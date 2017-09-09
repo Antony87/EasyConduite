@@ -92,7 +92,7 @@ public class PersistenceUtil {
         } else if (type.equals(FILE_TYPE.BIN)) {
             ObjectOutputStream oos = null;
             try {
-                oos = new ObjectOutputStream(new FileOutputStream(file));
+                oos = new ObjectOutputStream(new FileOutputStream(file,false));
                 oos.writeObject(t);
             } catch (FileNotFoundException ex) {
                 LOG.error("File {} not found for Outputstream", file.getAbsolutePath(), ex);

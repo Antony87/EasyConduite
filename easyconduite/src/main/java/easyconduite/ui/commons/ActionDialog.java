@@ -29,14 +29,10 @@ import javafx.stage.Modality;
  * @author antony
  */
 public class ActionDialog {
-    
-    private static final ResourceBundle BUNDLE = EasyConduitePropertiesHandler.getInstance().getBundle();
-    
-    private final static String INFORM_TITLE="Information";
-    private final static String WARNING_TITLE="Attention";
-        
+            
     public static Optional<ButtonType> showConfirmation(String header, String content) {
-        final Alert a = getAlert(BUNDLE.getString("dialog.confirmation.title"), header, content);
+        final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
+        final Alert a = getAlert("dialog.confirmation.title", header, content);
         a.getButtonTypes().add(ButtonType.NO);
         a.getButtonTypes().add(ButtonType.YES);
         a.setAlertType(AlertType.CONFIRMATION);
@@ -44,22 +40,23 @@ public class ActionDialog {
     }
     
     public static void showWarning(String header, String content) {
-        final Alert a = getAlert(BUNDLE.getString("dialog.warning.title"), header, content);
+        final Alert a = getAlert("dialog.warning.title", header, content);
         a.setAlertType(AlertType.WARNING);
         a.showAndWait();
     }
     
     public static void showInformation(String header, String content) {
-        final Alert a = getAlert(BUNDLE.getString("dialog.information.title"), header, content);
+        final Alert a = getAlert("dialog.information.title", header, content);
         a.setAlertType(AlertType.INFORMATION);
         a.showAndWait();
     }
     
-    private static Alert getAlert(String title, String header, String content) {
+    private static Alert getAlert(String key_title, String header, String content) {
+        final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
         final Alert a = new Alert(AlertType.NONE);
         a.initModality(Modality.APPLICATION_MODAL);
         a.setHeaderText(header);
-        a.setTitle(title);
+        a.setTitle(bundle.getString(key_title));
         a.setContentText(content);
         return a;
     }

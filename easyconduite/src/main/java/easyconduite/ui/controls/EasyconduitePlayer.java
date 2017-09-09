@@ -14,14 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package easyconduite.ui;
+package easyconduite.ui.controls;
 
 import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.ui.commons.ActionDialog;
 import easyconduite.util.PersistenceUtil;
-import easyconduite.util.PlayerVolumeFader;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
