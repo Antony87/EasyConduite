@@ -23,4 +23,4 @@ https://www.java.com/fr/download/manual.jsp
 ## Author's site ##
 (French) http://site.antonyweb.net/index.php?static1/easyconduite
 
-!(http://site.antonyweb.net/data/medias/easyconduite/easyconduiteMac_500.jpg)
+![EasyConduite on stage](http://site.antonyweb.net/data/medias/easyconduite/easyconduiteMac_500.jpg)
