@@ -74,6 +74,9 @@ public class EasyconduiteController extends StackPane implements Initializable, 
 
     @FXML
     private FlowPane tableLayout;
+    
+    @FXML
+    private Label timeLineLabel;
 
     private Chrono chrono;
 
@@ -127,32 +130,36 @@ public class EasyconduiteController extends StackPane implements Initializable, 
         if (file != null) {
             // clear audiotable and childs (ui, player, etc)
             handleCloseTab(event);
+
             try {
                 audioTable = (AudioTable) PersistenceUtil.readFromFile(file, AudioTable.class, PersistenceUtil.FILE_TYPE.XML);
-
                 Stage primStage = (Stage) getMyScene().getWindow();
                 primStage.setTitle("EasyConduite" + bundle.getString("easyconduite.version") + " : " + audioTable.getName());
+                
+                timeLineLabel.setText(bundle.getString("easyconduitecontroler.open.loading"));
 
+                Platform.runLater(() -> {
+                    audioTable.getAudioMediaList().forEach((audioMedia) -> {
+                        addAudioMediaUI(audioMedia);
+                    });
+                    timeLineLabel.setText("");
+                });
+                
             } catch (PersistenceException ex) {
                 LOG.error("Error occured during opening project file[{}]", file, ex);
                 ActionDialog.showWarning(bundle.getString("dialog.error.header"), bundle.getString("easyconduitecontroler.open.error"));
             }
-            audioTable.getAudioMediaList().stream().forEach((audioMedia) -> {
-                addAudioMediaUI(audioMedia);
-            });
         }
     }
 
     @FXML
     private void handleSave(ActionEvent event) {
         LOG.debug("handleSave called");
-
         try {
             if (PersistenceUtil.isFileExists(audioTable.getTablePathFile())) {
                 audioTable.setUpdated(false);
                 final File fileAudioTable = Paths.get(audioTable.getTablePathFile()).toFile();
                 PersistenceUtil.writeToFile(fileAudioTable, audioTable, PersistenceUtil.FILE_TYPE.XML);
-
             } else {
                 handleSaveAs(event);
             }
