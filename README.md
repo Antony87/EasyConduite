@@ -1,22 +1,22 @@
-# EasyConduite #
+# EasyConduite - a super simple sampler #
 
-EasyConduite helps small drama troupe stage manager to play several audio tracks during the drama, at right time.
+EasyConduite helps the stage manager of small theatre companies to play several audio tracks at the right time during the performance.
 
 ## Features v 1.2 (current) ##
-* Loading several audio.
-* Assign it to a key of keyboard for play/stop with.
+* Loading several audio tracks independently.
+* Play/stop a track from a keyboard key.
 * Adjust volume during playing.
-* Use a chrono for the drama timing.
+* Use a chronometer for the performance timing.
 * Manage Fade In/Out
 
 ### TODO v 2 ###
- * Manage audio tracks on a drama timeline.
- * Message to inform stage manager few minutes before playing.
- * Adjust volume and balance from smartphone (websockets HTML5 appli)
+ * Manage audio tracks on the timeline of the performance.
+ * Message to show the next track before playing it.
+ * Adjustment of volume and balance from a smartphone (websockets HTML5 appli)
 
 Cross-platform by using Java 8. JavaFX
 
-## prerequisites ##
+## Prerequisites ##
 Java SE 8_0_x must be installed.
 https://www.java.com/fr/download/manual.jsp
 
