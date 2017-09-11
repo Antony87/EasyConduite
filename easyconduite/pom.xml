@@ -37,29 +37,10 @@
     </dependencies>
     <build>
         <plugins>
-<!--            <plugin>
-    <groupId>org.codehaus.mojo</groupId>
-    <artifactId>native2ascii-maven-plugin</artifactId>
-    <version>1.0-alpha-1</version>
-    <executions>
-        <execution>
-            <id>native2ascii-utf8-resources</id>
-            <goals>
-                <goal>native2ascii</goal>
-            </goals>
-            <configuration>
-                <dest>target/resources</dest>
-                <src>src/main/resources</src>
-                <encoding>UTF8</encoding>
-                <includes>/locale/*.properties</includes>
-            </configuration>
-        </execution>
-    </executions>
-</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.6</version>
+                <version>3.0.1</version>
                 <executions>
                     <execution>
                         <id>unpack-dependencies</id>
@@ -78,7 +59,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>1.2.1</version>
+                <version>1.6.0</version>
                 <executions>
                     <execution>
                         <id>unpack-dependencies</id>
@@ -118,7 +99,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.6.2</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -130,7 +111,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.16</version>
+                <version>2.20</version>
                 <configuration>
                     <additionalClasspathElements>
                         <additionalClasspathElement>${java.home}/lib/jfxrt.jar</additionalClasspathElement>
