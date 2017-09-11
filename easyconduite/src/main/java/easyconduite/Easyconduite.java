@@ -21,6 +21,8 @@ import easyconduite.objects.EasyconduiteProperty;
 import easyconduite.util.Constants;
 import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.LoggingUtil;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -30,6 +32,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,41 +41,51 @@ import org.apache.logging.log4j.Logger;
  * @author A. Fons
  */
 public class Easyconduite extends Application {
-    
+
     //private ResourceBundle localeBundle;
     static final Logger LOG = LogManager.getLogger(Easyconduite.class);
-
+    
     @Override
     public void start(Stage stage) throws Exception {
-
+        
         final EasyconduiteProperty userdatas = EasyConduitePropertiesHandler.getInstance().getProperties();
         final ResourceBundle localeBundle = ResourceBundle.getBundle(Constants.RESOURCE_BASENAME, userdatas.getLocale());
+
+        // Pass args to describe using logging context :
+        // --context=user
+        // OR --logctx=dev (default)
+        final Map<String, String> arguments = this.getParameters().getNamed();
+        // if lgctx=dev
+        if (arguments.containsKey("logctx") && arguments.get("logctx").equals("dev")) {
+            LoggingUtil.setLog4jLevel(Level.ALL);
+        }else{
+            LoggingUtil.setLog4jLevel(userdatas.getLogLevel());
+        }
         
-        LoggingUtil.setLog4jLevel(userdatas.getLogLevel());
-
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/easyconduite32.png")));
-
+        
         final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/easyconduite.fxml"), localeBundle);
-
+        
         Pane root = loader.load();
         Scene scene = new Scene(root);
-
+        
         EasyconduiteController controler = loader.getController();
-
+        
         stage.setOnCloseRequest((WindowEvent event) -> {
             controler.handleQuit(new ActionEvent());
             event.consume();
         });
-
+        
         scene.getStylesheets().add("/styles/Styles.css");
         stage.setTitle("EasyConduite" + localeBundle.getString("easyconduite.version"));
         stage.setScene(scene);
-
+        
         stage.setWidth(userdatas.getWindowWith());
         stage.setHeight(userdatas.getWindowHeight());
-
+        
         stage.show();
     }
+
     /**
      * @param args the command line arguments
      */

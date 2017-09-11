@@ -58,7 +58,7 @@ public class EasyConduitePropertiesHandler {
     }
 
     private void setDefaultProperties() {
-        properties = new EasyconduiteProperty(800, 600, Level.ALL);
+        properties = new EasyconduiteProperty(800, 600, Level.OFF);
         properties.setLocale(new Locale(System.getProperty("user.language"), System.getProperty("user.country")));
         LOG.trace("easyconduite.dat file not found or an error occured, create default EasyconduiteProperty [{}]",properties);
     }
