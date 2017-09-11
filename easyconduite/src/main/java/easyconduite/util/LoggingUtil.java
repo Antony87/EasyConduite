@@ -22,6 +22,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * This class manages Appenders and Level for Log4j
@@ -29,10 +30,12 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
  * @author antony
  */
 public class LoggingUtil {
-    
+
     private static final Logger LOG = LogManager.getLogger(LoggingUtil.class);
-    
-        /**
+
+    private static final Logger ROOT = LogManager.getRootLogger();
+
+    /**
      * This method sets log4j level for easyconduite logger.
      *
      * @param level
@@ -41,7 +44,11 @@ public class LoggingUtil {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         final Configuration config = ctx.getConfiguration();
         final LoggerConfig loggerConfig = config.getLoggerConfig(LOG.getName());
-        loggerConfig.setLevel(level);   
+        loggerConfig.setLevel(level);
+        
+        final LoggerConfig loggerConfigRoot = config.getLoggerConfig(ROOT.getName());
+        loggerConfigRoot.setLevel(level);
+        
         ctx.updateLoggers();
     }
 
