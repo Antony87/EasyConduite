@@ -23,9 +23,10 @@ import java.nio.file.Paths;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  *
@@ -33,7 +34,7 @@ import static org.junit.Assert.*;
  */
 public class UserDataHandlerTest {
 
-    private static final Path FILE_PATH = Paths.get("user.dat");
+    private static final Path FILE_PATH = Paths.get("userdata.dat");
 
     static final Logger LOG = LogManager.getLogger(UserDataHandlerTest.class);
 
@@ -54,6 +55,7 @@ public class UserDataHandlerTest {
      * Test of getProperties method, of class EasyConduitePropertiesHandler.
      */
     @Test
+    @Ignore
     public void testGetUserData() {
         EasyConduitePropertiesHandler handler = EasyConduitePropertiesHandler.getInstance();
         EasyconduiteProperty userdata = handler.getProperties();
