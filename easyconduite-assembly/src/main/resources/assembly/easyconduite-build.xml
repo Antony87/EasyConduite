@@ -17,5 +17,9 @@ and open the template in the editor.
             <source>src/main/resources/assembly/easyconduite-build.xml</source>
             <outputDirectory>/</outputDirectory>
         </file>
+        <file>
+            <source>../easyconduite/target/easyconduite-1.2.jar</source>
+            <outputDirectory>bin</outputDirectory>
+        </file>
     </files>
 </assembly>
