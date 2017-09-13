@@ -16,6 +16,15 @@ OutputBaseFilename=install_Easyconduite
 CloseApplications=False
 Compression=lzma2/normal
 VersionInfoVersion=1.2
+AppPublisher=Antony Fons
+AppPublisherURL=http://site.antonyweb.net/index.php?static1/easyconduite
+DisableStartupPrompt=False
+UsePreviousGroup=False
+DisableProgramGroupPage=yes
+DisableReadyPage=True
+
+[Tasks]
+Name: desktopicon; Description: "{cm:CreateDesktopIcon}"
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -28,3 +37,4 @@ Source: "images\*"; DestDir: "{app}\images"
 
 [Icons]
 Name: "{app}\EasyConduite-1.2"; Filename: "{app}\bin\easyconduite-1.2.bat"; WorkingDir: "{app}"; IconFilename: "{app}\images\easyconduite32.ico"
+Name: "{userdesktop}\EasyConduite-1.2"; Filename: "{app}\bin\easyconduite-1.2.bat"; WorkingDir: "{app}"; IconFilename: "{app}\images\easyconduite32.ico"; Tasks: desktopicon
