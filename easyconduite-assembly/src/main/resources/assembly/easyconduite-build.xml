@@ -12,14 +12,42 @@ and open the template in the editor.
     <formats>
         <format>zip</format>
     </formats>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>/bin</outputDirectory>
+            <includes>
+                <include>com.antonyweb:easyconduite:jar</include>
+            </includes>
+        </dependencySet>
+    </dependencySets>
+    <fileSets>
+        <fileSet>
+            <directory>src/main/resources</directory>
+            <includes>
+                <include>images/*.*</include>
+            </includes>
+            <outputDirectory>/</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>src/main/resources/docs</directory>
+            <includes>
+                <include>*.*</include>
+            </includes>
+            <outputDirectory>docs</outputDirectory>
+        </fileSet>
+    </fileSets>
     <files>
         <file>
-            <source>src/main/resources/assembly/easyconduite-build.xml</source>
-            <outputDirectory>/</outputDirectory>
+            <source>src/main/resources/scripts/easyconduite.bat</source>
+            <destName>easyconduite-${project.version}.bat</destName>
+            <outputDirectory>bin</outputDirectory>
+            <filtered>true</filtered>
         </file>
         <file>
-            <source>../easyconduite/target/easyconduite-1.2.jar</source>
+            <source>src/main/resources/scripts/easyconduite.sh</source>
+            <destName>easyconduite-${project.version}.sh</destName>
             <outputDirectory>bin</outputDirectory>
-        </file>
+            <filtered>true</filtered>
+        </file>        
     </files>
 </assembly>

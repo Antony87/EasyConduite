@@ -10,6 +10,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>easyconduite</artifactId>
             <version>1.2</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
     <properties>
