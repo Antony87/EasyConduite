@@ -25,7 +25,7 @@ goto :end
 )
 
 :starteasyconduite
-start /B java -jar ./bin/easyconduite-${project.version}.jar -spalsh:images/easyconduitelarge.png
+start /B javaw -jar ./bin/easyconduite-${project.version}.jar -spalsh:images/easyconduitelarge.png
 
 goto :end
 
