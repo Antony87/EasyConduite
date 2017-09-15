@@ -156,7 +156,7 @@ public class TrackConfigController extends DialogAbstractController implements I
         final KeyCode typedKeycode = event.getCode();
         if (mainController.isKeyCodeExist(typedKeycode)) {
             keytrackfield.clear();
-            ActionDialog.showWarning(String.format("La touche %s est déja attribuée", KeyCodeUtil.toString(typedKeycode)), "Cliquez sur OK pour recommencer");
+            ActionDialog.showWarning(String.format(bundle.getString("trackconfigcontroller.key.error"), KeyCodeUtil.toString(typedKeycode)), bundle.getString("trackconfigcontroller.key.other"));
         } else {
             if (typedKeycode != audioMedia.getValue().getKeycode()) {
                 this.newKeyCode = typedKeycode;

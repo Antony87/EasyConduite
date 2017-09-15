@@ -24,10 +24,12 @@ import easyconduite.ui.commons.ActionDialog;
 import easyconduite.ui.commons.IconButton;
 import easyconduite.ui.controls.EasyconduitePlayer;
 import easyconduite.util.Constants;
+import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.KeyCodeUtil;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
@@ -235,10 +237,12 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
 
         protected TopHbox(EasyconduiteController controller) {
             super();
+            
             TopHbox.this.getStyleClass().add("track-inner-hbox");
             final IconButton button_delete = new IconButton("/icons/MinusRedButton.png");
             button_delete.setOnMouseClicked((MouseEvent event) -> {
-                Optional<ButtonType> result = ActionDialog.showConfirmation("Vous allez supprimer cette piste", "Voulez-vous continuer ?");
+                final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
+                Optional<ButtonType> result = ActionDialog.showConfirmation(bundle.getString("audiomediaui.delete.header"), bundle.getString("audiomediaui.delete.content"));
                 if (result.get() == ButtonType.OK || result.get() == ButtonType.YES) {
                     controller.removeAudioMedia(audioMedia);
                 }
