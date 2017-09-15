@@ -74,7 +74,7 @@ public class EasyconduiteController extends StackPane implements Initializable, 
 
     @FXML
     private FlowPane tableLayout;
-    
+
     @FXML
     private Label timeLineLabel;
 
@@ -133,18 +133,15 @@ public class EasyconduiteController extends StackPane implements Initializable, 
 
             try {
                 audioTable = (AudioTable) PersistenceUtil.readFromFile(file, AudioTable.class, PersistenceUtil.FILE_TYPE.XML);
-                Stage primStage = (Stage) getMyScene().getWindow();
-                primStage.setTitle("EasyConduite" + bundle.getString("easyconduite.version") + " : " + audioTable.getName());
-                
+                updateStageTitle(audioTable);
                 timeLineLabel.setText(bundle.getString("easyconduitecontroler.open.loading"));
-
                 Platform.runLater(() -> {
                     audioTable.getAudioMediaList().forEach((audioMedia) -> {
                         addAudioMediaUI(audioMedia);
                     });
                     timeLineLabel.setText("");
                 });
-                
+
             } catch (PersistenceException ex) {
                 LOG.error("Error occured during opening project file[{}]", file, ex);
                 ActionDialog.showWarning(bundle.getString("dialog.error.header"), bundle.getString("easyconduitecontroler.open.error"));
@@ -177,10 +174,12 @@ public class EasyconduiteController extends StackPane implements Initializable, 
         final File file = fileChooser.showSaveDialog(getMyScene().getWindow());
         if (file != null) {
             try {
+                final File checkedFile = PersistenceUtil.suffixForEcp(file);
                 audioTable.setUpdated(false);
-                audioTable.setName(file.getName());
-                audioTable.setTablePathFile(file.getAbsolutePath());
-                PersistenceUtil.writeToFile(file, audioTable, PersistenceUtil.FILE_TYPE.XML);
+                audioTable.setName(checkedFile.getName());
+                audioTable.setTablePathFile(checkedFile.getAbsolutePath());
+                PersistenceUtil.writeToFile(checkedFile, audioTable, PersistenceUtil.FILE_TYPE.XML);
+                updateStageTitle(audioTable);
             } catch (PersistenceException ex) {
                 ActionDialog.showWarning(bundle.getString("dialog.error.header"), bundle.getString("easyconduitecontroler.save.error"));
                 LOG.error("An error occured", ex);
@@ -322,6 +321,11 @@ public class EasyconduiteController extends StackPane implements Initializable, 
 
     private AudioMediaUI findAudioMediaUI(AudioMedia audioMedia) {
         return audioMediaUIs.stream().filter(ui -> ui.getAudioMedia().equals(audioMedia)).findFirst().get();
+    }
+
+    private void updateStageTitle(AudioTable audioTable) {
+        Stage primStage = (Stage) getMyScene().getWindow();
+        primStage.setTitle("EasyConduite" + bundle.getString("easyconduite.version") + " : " + audioTable.getName());
     }
 
     @Override

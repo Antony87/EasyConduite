@@ -17,15 +17,14 @@
  */
 package easyconduite.util;
 
+import easyconduite.exception.PersistenceException;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioTable;
-import easyconduite.exception.PersistenceException;
 import easyconduite.objects.EasyconduiteProperty;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Locale;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -118,6 +117,20 @@ public class PersistenceUtilTest {
 
         assertNotNull(userDataread);
         assertEquals(userData.getWindowWith(), userDataread.getWindowWith());
+
+    }
+
+    @Test
+    public void testSuffixeECP() throws PersistenceException {
+        File file = new File("john");
+        File checkedFile = PersistenceUtil.suffixForEcp(file);
+        assertEquals("john.ecp", checkedFile.getName());
+        assertTrue(checkedFile.getAbsolutePath().endsWith(PersistenceUtil.ECP_SUFFIXE));
+
+        File file2 = new File("john.ecp");
+        File checkedFile2 = PersistenceUtil.suffixForEcp(file2);
+        assertEquals("john.ecp", checkedFile2.getName());
+        assertTrue(checkedFile2.getAbsolutePath().endsWith(PersistenceUtil.ECP_SUFFIXE));
 
     }
 }

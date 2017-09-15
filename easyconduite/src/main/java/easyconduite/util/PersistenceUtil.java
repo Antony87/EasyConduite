@@ -42,6 +42,11 @@ import org.apache.logging.log4j.util.Strings;
 public class PersistenceUtil {
 
     static final Logger LOG = LogManager.getLogger(PersistenceUtil.class);
+    
+    /**
+     *Suffixe for Easyconduite project file.
+     */
+    public static final String ECP_SUFFIXE = ".ecp";
 
     public enum FILE_TYPE {
         BIN, XML
@@ -84,7 +89,7 @@ public class PersistenceUtil {
                 final Marshaller m = context.createMarshaller();
                 m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
                 m.marshal(t, file);
-                
+
             } catch (JAXBException ex) {
                 LOG.error("JAXB marshalling occured", ex);
                 throw new PersistenceException(ex);
@@ -92,7 +97,7 @@ public class PersistenceUtil {
         } else if (type.equals(FILE_TYPE.BIN)) {
             ObjectOutputStream oos = null;
             try {
-                oos = new ObjectOutputStream(new FileOutputStream(file,false));
+                oos = new ObjectOutputStream(new FileOutputStream(file, false));
                 oos.writeObject(t);
             } catch (FileNotFoundException ex) {
                 LOG.error("File {} not found for Outputstream", file.getAbsolutePath(), ex);
@@ -155,5 +160,27 @@ public class PersistenceUtil {
             }
         }
         return objet;
+    }
+
+    /**
+     * This method tests if a file ends with .ecp, if not, adds .ecp
+     *
+     * @param file
+     * @return
+     * @throws PersistenceException
+     */
+    public static File suffixForEcp(File file) throws PersistenceException {
+        File checkedFile = null;
+        if (file == null) {
+            throw new PersistenceException("File is NULL");
+        } else {
+            final String path = file.getAbsolutePath();
+            final String name = file.getName();
+            if(path.endsWith(ECP_SUFFIXE)&& name.endsWith(ECP_SUFFIXE)){
+                return file;
+            }
+            checkedFile = new File(path+ECP_SUFFIXE);
+        }
+        return checkedFile;
     }
 }
