@@ -16,20 +16,88 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    
     <build>
         <plugins>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.1.0</version>
-                <goals>single></goals>
-                <configuration>
-                    <finalName>easyconduite-${project.version}</finalName>
-                    <appendAssemblyId>false</appendAssemblyId>        
-                    <descriptors>
-                        <descriptor>src/main/resources/assembly/easyconduite-build.xml</descriptor>
-                    </descriptors>
-                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>                            
+                        <configuration>
+                            <finalName>easyconduite-${project.version}</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>        
+                            <descriptors>
+                                <descriptor>src/main/resources/assembly/easyconduite-build.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>                        
+                </executions>
             </plugin>
         </plugins>       
     </build>
+    <profiles>
+        <profile>
+            <id>exe</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.6.0</version>
+                        <executions>
+                            <execution>
+                                <id>create_exe</id>                      
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>"C:/Program Files (x86)/Inno Setup 5/ISCC.exe"</executable>
+                                    <arguments>
+                                        <argument>${basedir}/target/easyconduite-${project.version}/installer_src/install_easyconduite.iss</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>  
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>scp</id>
+                                <phase>install</phase>
+                                <configuration>
+                                    <tasks>
+                                        <scp todir="${username}:${password}@${host}:${todir}" trust="true" sftp="true">    
+                                            <fileset dir="${basedir}/target/easyconduite-${project.version}/installer_src/">
+                                                <include name="**\*.exe"/>
+                                            </fileset>
+                                            <fileset dir="${basedir}/target/easyconduite-${project.version}/docs/">
+                                                <include name="**\*.pdf"/>
+                                            </fileset>                             
+                                        </scp>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.ant</groupId>
+                                <artifactId>ant-jsch</artifactId>
+                                <version>1.10.1</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>               
+            </build>        
+        </profile>        
+    </profiles>
 </project>
