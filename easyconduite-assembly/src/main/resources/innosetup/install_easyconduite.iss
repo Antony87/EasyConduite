@@ -32,7 +32,8 @@ Name: "french"; MessagesFile: "compiler:Languages\French.isl"; InfoBeforeFile: "
 
 [Files]
 Source: "..\bin\*"; DestDir: "{app}\bin"
-Source: "..\docs\*"; DestDir: "{app}\docs"
+Source: "..\docs\*.pdf"; DestDir: "{app}\docs"
+Source: "..\docs\*.txt"; DestDir: "{app}\docs"
 Source: "..\images\*"; DestDir: "{app}\images"
 
 [Icons]
