@@ -35,6 +35,14 @@ and open the template in the editor.
             </includes>
             <outputDirectory>docs</outputDirectory>
         </fileSet>
+                <fileSet>
+            <directory>src/main/resources/innosetup</directory>
+            <includes>
+                <include>*.*</include>
+            </includes>
+            <filtered>true</filtered>
+            <outputDirectory>installer_src</outputDirectory>
+        </fileSet>
     </fileSets>
     <files>
         <file>
