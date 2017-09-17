@@ -35,13 +35,21 @@ and open the template in the editor.
             </includes>
             <outputDirectory>docs</outputDirectory>
         </fileSet>
-                <fileSet>
+        <fileSet>
             <directory>src/main/resources/innosetup</directory>
             <includes>
                 <include>*.*</include>
             </includes>
             <filtered>true</filtered>
             <outputDirectory>installer_src</outputDirectory>
+        </fileSet>
+                <fileSet>
+            <directory>src/main/resources/script/i18_linux</directory>
+            <includes>
+                <include>*.*</include>
+            </includes>
+            <filtered>true</filtered>
+            <outputDirectory>bin/i18_linux</outputDirectory>
         </fileSet>
     </fileSets>
     <files>
