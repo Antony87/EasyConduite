@@ -10,10 +10,11 @@
 
 # get system language
 langue=$LANGUAGE
+
 # get home's owner
 homeOwner=$(find $HOME -maxdepth 0 -printf '%u')
 # import internationalization bundles
-source ./i18_linux/bundle_$langue.conf
+source ./installer/i18_linux/bundle_$langue.conf
 
 # Functions
 installer () {

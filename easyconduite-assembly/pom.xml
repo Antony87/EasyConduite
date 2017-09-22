@@ -59,15 +59,14 @@
                                     <executable>${basedir}/src/main/resources/scripts/makeself-2.3.1/makeself.sh</executable>
                                     <arguments>
                                         <argument>${basedir}/target/easyconduite-${project.version}</argument>
-                                        <argument>Easyconduite_setup.sh</argument>
+                                        <argument>easyconduite_setup.sh</argument>
                                         <argument>"A super simple sampler"</argument>
-                                        <argument>./install_easyconduite.sh</argument>
+                                        <argument>./installer/setup.sh</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
                         </executions>  
-                    </plugin>
-                    
+                    </plugin>                    
                 </plugins>               
             </build>        
         </profile>   
@@ -89,7 +88,7 @@
                                 <configuration>
                                     <executable>"C:/Program Files (x86)/Inno Setup 5/ISCC.exe"</executable>
                                     <arguments>
-                                        <argument>${basedir}/target/easyconduite-${project.version}/installer_src/install_easyconduite.iss</argument>
+                                        <argument>${basedir}/target/easyconduite-${project.version}/installer/install_easyconduite.iss</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
@@ -104,7 +103,7 @@
                                 <configuration>
                                     <tasks>
                                         <scp todir="${username}:${password}@${host}:${todir}" trust="true" sftp="true">    
-                                            <fileset dir="${basedir}/target/easyconduite-${project.version}/installer_src/">
+                                            <fileset dir="${basedir}/target/easyconduite-${project.version}/installer/">
                                                 <include name="**\*.exe"/>
                                             </fileset>
                                             <fileset dir="${basedir}/target/easyconduite-${project.version}/docs/">

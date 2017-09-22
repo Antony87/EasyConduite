@@ -14,7 +14,7 @@ and open the template in the editor.
     </formats>
     <dependencySets>
         <dependencySet>
-            <outputDirectory>/bin</outputDirectory>
+            <outputDirectory>/lib</outputDirectory>
             <includes>
                 <include>com.antonyweb:easyconduite:jar</include>
             </includes>
@@ -22,17 +22,11 @@ and open the template in the editor.
     </dependencySets>
     <fileSets>
         <fileSet>
-            <directory>src/main/resources</directory>
-            <includes>
-                <include>images/*.*</include>
-            </includes>
-            <outputDirectory>/</outputDirectory>
+            <directory>src/main/resources/images</directory>
+            <outputDirectory>images</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>src/main/resources/docs</directory>
-            <includes>
-                <include>*.*</include>
-            </includes>
             <outputDirectory>docs</outputDirectory>
         </fileSet>
         <fileSet>
@@ -41,7 +35,7 @@ and open the template in the editor.
                 <include>*.*</include>
             </includes>
             <filtered>true</filtered>
-            <outputDirectory>installer_src</outputDirectory>
+            <outputDirectory>installer</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>src/main/resources/scripts</directory>
@@ -49,20 +43,23 @@ and open the template in the editor.
                 <include>*.*</include>
             </includes>
             <filtered>true</filtered>
-            <outputDirectory>installer_src</outputDirectory>
+            <outputDirectory>installer</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>src/main/resources/scripts/makeself-2.3.1/</directory>
+            <outputDirectory>installer/makeself-2.3.1</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>src/main/resources/scripts/i18_linux/</directory>
+            <outputDirectory>installer/i18_linux</outputDirectory>
+            <filtered>true</filtered>
         </fileSet>
     </fileSets>
     <files>
         <file>
-            <source>src/main/resources/scripts/easyconduite.bat</source>
-            <destName>easyconduite-${project.version}.bat</destName>
-            <outputDirectory>bin</outputDirectory>
-            <filtered>true</filtered>
-        </file>
-        <file>
             <source>src/main/resources/scripts/easyconduite.sh</source>
             <destName>easyconduite-${project.version}.sh</destName>
-            <outputDirectory>bin</outputDirectory>
+            <outputDirectory>./</outputDirectory>
             <filtered>true</filtered>
         </file>        
     </files>
