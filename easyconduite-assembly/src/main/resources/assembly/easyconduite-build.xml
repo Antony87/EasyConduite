@@ -43,13 +43,13 @@ and open the template in the editor.
             <filtered>true</filtered>
             <outputDirectory>installer_src</outputDirectory>
         </fileSet>
-                <fileSet>
-            <directory>src/main/resources/script/i18_linux</directory>
+        <fileSet>
+            <directory>src/main/resources/scripts</directory>
             <includes>
                 <include>*.*</include>
             </includes>
             <filtered>true</filtered>
-            <outputDirectory>bin/i18_linux</outputDirectory>
+            <outputDirectory>installer_src</outputDirectory>
         </fileSet>
     </fileSets>
     <files>

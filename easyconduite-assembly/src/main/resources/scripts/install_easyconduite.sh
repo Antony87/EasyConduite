@@ -81,6 +81,6 @@ then
 	messageJava
 fi
 
-cp ./easyconduite.bat $HOME
+cp ./easyconduite.bat $HOME/Easyconduite/bin
 #java -Xms512M -Xmx512M -jar $appliDir/bin/easyconduite-${project.version}.jar &
 exit 0

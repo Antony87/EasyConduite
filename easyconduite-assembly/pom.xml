@@ -15,8 +15,7 @@
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-    
+    </properties>  
     <build>
         <plugins>
             <plugin>
@@ -41,6 +40,37 @@
         </plugins>       
     </build>
     <profiles>
+        <profile>
+            <id>sh</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.6.0</version>
+                        <executions>
+                            <execution>
+                                <id>create_sh</id>                      
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>${basedir}/src/main/resources/scripts/makeself-2.3.1/makeself.sh</executable>
+                                    <arguments>
+                                        <argument>${basedir}/target/easyconduite-${project.version}</argument>
+                                        <argument>Easyconduite_setup.sh</argument>
+                                        <argument>"A super simple sampler"</argument>
+                                        <argument>./install_easyconduite.sh</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>  
+                    </plugin>
+                    
+                </plugins>               
+            </build>        
+        </profile>   
         <profile>
             <id>exe</id>
             <build>
