@@ -22,6 +22,12 @@ UsePreviousGroup=False
 DisableProgramGroupPage=yes
 DisableReadyPage=True
 DisableStartupPrompt=False
+AppCopyright=Antony Fons 2017
+AppId={{16B41AC9-DFA0-4810-A0F7-38542D9F940C}
+AppContact=antony.fons@antonyweb.net
+VersionInfoCopyright=Antony Fons 2017
+VersionInfoProductName=EasyConduite
+VersionInfoProductVersion=1.2.1
 
 [Tasks]
 Name: desktopicon; Description: "{cm:CreateDesktopIcon}"
