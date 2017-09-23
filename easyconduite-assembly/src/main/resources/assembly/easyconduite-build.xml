@@ -38,6 +38,14 @@ and open the template in the editor.
             <outputDirectory>installer</outputDirectory>
         </fileSet>
         <fileSet>
+            <directory>src/main/resources/launch4j</directory>
+            <includes>
+                <include>*.xml</include>
+            </includes>
+            <filtered>true</filtered>
+            <outputDirectory>installer</outputDirectory>
+        </fileSet>
+        <fileSet>
             <directory>src/main/resources/scripts</directory>
             <includes>
                 <include>*.*</include>
@@ -58,7 +66,7 @@ and open the template in the editor.
     <files>
         <file>
             <source>src/main/resources/scripts/easyconduite.sh</source>
-            <destName>easyconduite-${project.version}.sh</destName>
+            <destName>easyconduite.sh</destName>
             <outputDirectory>./</outputDirectory>
             <filtered>true</filtered>
         </file>        

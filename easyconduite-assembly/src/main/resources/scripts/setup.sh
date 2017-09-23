@@ -1,15 +1,14 @@
 #!/bin/bash
 #########################################################
-# This script executes Easyconduite-${project.version}
-# 
-# 
-#
+# This script install Easyconduite on HOME/USER/ Directory
 # Antony Fons 2017
 # antony.fons@antonyweb.net
 #########################################################
 
 # get system language
 langue=$LANGUAGE
+
+easyconduiteDir="$HOME/easyconduite"
 
 # get home's owner
 homeOwner=$(find $HOME -maxdepth 0 -printf '%u')
@@ -18,9 +17,21 @@ source ./installer/i18_linux/bundle_$langue.conf
 
 # Functions
 installer () {
-# TODO
-echo -e "\nAppel installer"
+
+# check $HOME/Easyconduite not exist, and if create
+if [ ! -e $easyconduiteDir ] || [ ! -d $easyconduiteDir ]
+then
+# create Easyconduite directory
+mkdir $easyconduiteDir "$easyconduiteDir/docs" "$easyconduiteDir/images" "$easyconduiteDir/lib"
+fi
+cp ./images/*.* $easyconduiteDir/images/
+cp ./docs/*.pdf $easyconduiteDir/docs/
+cp ./docs/*.txt $easyconduiteDir/docs/
+cp ./lib/*.jar $easyconduiteDir/lib/
+cp ./*.sh $easyconduiteDir
+
 }
+
 messageJava(){
 echo -e '\033[1;33;40m'"$alertJava"'\033[0m'
 read -p "$confirm" -n 1 r
@@ -43,20 +54,6 @@ echo $bar
 echo -e '\033[0m'
 echo "$informInstall ($HOME)"
 
-
-#resize window terminal to 40 lines, 100 car.
-#printf '\033[8;40;100t'
-
-#dilaog library ckeching
-#command -v dialog 2>&1 >/dev/null
-#if [ $? = "1" ]
-#then
-#		echo -e '\033[1;33;40m' $dialogrequired '\033[0m'
-#		read -p "désirez-vous continuer (dialog sera installée) y/n ?" -n 1 r
-#		echo -e '\n'$r
-#fi
-
-destDir=$HOME
 # installation confirmation
 read -p "$confirm" -n 1 r
 if [ $r = "y" ] || [ $r = "Y" ]
@@ -82,6 +79,4 @@ then
 	messageJava
 fi
 
-cp ./easyconduite.bat $HOME/Easyconduite/bin
-#java -Xms512M -Xmx512M -jar $appliDir/bin/easyconduite-${project.version}.jar &
 exit 0

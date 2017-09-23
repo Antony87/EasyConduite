@@ -8,5 +8,5 @@
 # antony.fons@antonyweb.net
 #########################################################
 
-java -Xms512M -Xmx512M -jar ./bin/easyconduite-${project.version}.jar 2>&1 >/dev/null
+java -Xms512M -Xmx512M -jar ./lib/easyconduite-1.2.jar 2>&1 >/dev/null
 exit 0

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch4jConfig>
+  <dontWrapJar>true</dontWrapJar>
+  <headerType>gui</headerType>
+  <jar>lib\easyconduite-1.2.jar</jar>
+  <outfile>C:\Users\antony\Documents\NetBeansProjects\EasyConduite\easyconduite-assembly\target\easyconduite\easyconduite.exe</outfile>
+  <errTitle>Easyconduite v ${project.version}</errTitle>
+  <cmdLine></cmdLine>
+  <chdir>.</chdir>
+  <priority>normal</priority>
+  <downloadUrl>http://java.com/download</downloadUrl>
+  <supportUrl></supportUrl>
+  <stayAlive>false</stayAlive>
+  <restartOnCrash>false</restartOnCrash>
+  <manifest></manifest>
+  <icon>C:\Users\antony\Documents\NetBeansProjects\EasyConduite\easyconduite-assembly\target\easyconduite\images\easyconduite32.ico</icon>
+  <singleInstance>
+    <mutexName>ecpmutex</mutexName>
+    <windowTitle>Easyconduite est déjà en cours d&apos;exécution.</windowTitle>
+  </singleInstance>
+  <jre>
+    <path></path>
+    <bundledJre64Bit>false</bundledJre64Bit>
+    <bundledJreAsFallback>false</bundledJreAsFallback>
+    <minVersion>1.8.0</minVersion>
+    <maxVersion></maxVersion>
+    <jdkPreference>preferJre</jdkPreference>
+    <runtimeBits>64/32</runtimeBits>
+  </jre>
+  <versionInfo>
+    <fileVersion>1.2.1.0</fileVersion>
+    <txtFileVersion>1.2.1</txtFileVersion>
+    <fileDescription>Executable pour plateformes Windows de l&apos;application java easyconduite</fileDescription>
+    <copyright>2017 A. Fons GNU GPL v3</copyright>
+    <productVersion>1.2.1.0</productVersion>
+    <txtProductVersion>1.2.1</txtProductVersion>
+    <productName>Easyconduite</productName>
+    <companyName></companyName>
+    <internalName>easyconduite-1.2</internalName>
+    <originalFilename>easyconduite.exe</originalFilename>
+    <trademarks></trademarks>
+    <language>FRENCH</language>
+  </versionInfo>
+</launch4jConfig>

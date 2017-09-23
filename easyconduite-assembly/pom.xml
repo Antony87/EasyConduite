@@ -3,8 +3,19 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.antonyweb</groupId>
     <artifactId>easyconduite-assembly</artifactId>
-    <version>1.2</version>
+    <version>1.2.1</version>
     <packaging>pom</packaging>
+    <licenses>
+        <license>
+            <name>GNU GPL V3</name>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Antony Fons</name>
+            <email>antony.fons@antonyweb.net</email>
+        </developer>
+    </developers>
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -15,6 +26,7 @@
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <resourcesDir>${basedir}/src/main/resources</resourcesDir>
     </properties>  
     <build>
         <plugins>
@@ -23,12 +35,12 @@
                 <version>3.1.0</version>
                 <executions>
                     <execution>
-                        <phase>package</phase>                            
+                        <phase>prepare-package</phase>                            
                         <configuration>
-                            <finalName>easyconduite-${project.version}</finalName>
+                            <finalName>easyconduite</finalName>
                             <appendAssemblyId>false</appendAssemblyId>        
                             <descriptors>
-                                <descriptor>src/main/resources/assembly/easyconduite-build.xml</descriptor>
+                                <descriptor>${resourcesDir}/assembly/easyconduite-build.xml</descriptor>
                             </descriptors>
                         </configuration>
                         <goals>
@@ -56,9 +68,9 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>${basedir}/src/main/resources/scripts/makeself-2.3.1/makeself.sh</executable>
+                                    <executable>${resourcesDir}/scripts/makeself-2.3.1/makeself.sh</executable>
                                     <arguments>
-                                        <argument>${basedir}/target/easyconduite-${project.version}</argument>
+                                        <argument>${project.build.directory}/easyconduite</argument>
                                         <argument>easyconduite_setup.sh</argument>
                                         <argument>"A super simple sampler"</argument>
                                         <argument>./installer/setup.sh</argument>
@@ -81,6 +93,19 @@
                         <executions>
                             <execution>
                                 <id>create_exe</id>                      
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>C:/Users/antony/Documents/launch4j-3.11-win32/launch4j/launch4j.exe</executable>
+                                    <arguments>
+                                        <argument>${resourcesDir}/launch4j/launch-easyconduite.xml</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>create_installer</id>                      
                                 <phase>install</phase>
                                 <goals>
                                     <goal>exec</goal>
@@ -88,13 +113,13 @@
                                 <configuration>
                                     <executable>"C:/Program Files (x86)/Inno Setup 5/ISCC.exe"</executable>
                                     <arguments>
-                                        <argument>${basedir}/target/easyconduite-${project.version}/installer/install_easyconduite.iss</argument>
+                                        <argument>${project.build.directory}/easyconduite/installer/install_easyconduite.iss</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
                         </executions>  
                     </plugin>
-                    <plugin>
+                    <!--                    <plugin>
                         <artifactId>maven-antrun-plugin</artifactId>
                         <executions>
                             <execution>
@@ -124,7 +149,7 @@
                                 <version>1.10.1</version>
                             </dependency>
                         </dependencies>
-                    </plugin>
+                    </plugin>-->
                 </plugins>               
             </build>        
         </profile>        
