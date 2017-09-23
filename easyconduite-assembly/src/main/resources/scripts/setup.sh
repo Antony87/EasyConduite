@@ -24,11 +24,11 @@ then
 # create Easyconduite directory
 mkdir $easyconduiteDir "$easyconduiteDir/docs" "$easyconduiteDir/images" "$easyconduiteDir/lib"
 fi
-cp ./images/*.* $easyconduiteDir/images/
-cp ./docs/*.pdf $easyconduiteDir/docs/
-cp ./docs/*.txt $easyconduiteDir/docs/
-cp ./lib/*.jar $easyconduiteDir/lib/
-cp ./*.sh $easyconduiteDir
+cp -u ./images/*.* $easyconduiteDir/images/
+cp -u ./docs/*.pdf $easyconduiteDir/docs/
+cp -u ./docs/*.txt $easyconduiteDir/docs/
+cp -u ./lib/*.jar $easyconduiteDir/lib/
+cp -u ./*.sh $easyconduiteDir
 
 }
 
