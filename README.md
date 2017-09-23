@@ -18,7 +18,7 @@ https://www.java.com/fr/download/manual.jsp
 ## Download ##
 [Windows installer install_Easyconduite.exe](http://site.antonyweb.net/data/medias/easyconduite/install_Easyconduite.exe)
 
-Linux DEB package : **Soon !**
+[Linux script installer easyconduite_setup.sh](http://site.antonyweb.net/data/medias/easyconduite/easyconduite_setup.sh)
 
 ### TODO v 2 ###
  * Manage audio tracks on the timeline of the performance.
