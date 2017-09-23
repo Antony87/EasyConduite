@@ -3,7 +3,7 @@
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
   <jar>lib\easyconduite-1.2.jar</jar>
-  <outfile>C:\Users\antony\Documents\NetBeansProjects\EasyConduite\easyconduite-assembly\target\easyconduite-1.2\easyconduite.exe</outfile>
+  <outfile>C:\Users\antony\Documents\NetBeansProjects\EasyConduite\easyconduite-assembly\target\easyconduite\easyconduite.exe</outfile>
   <errTitle>Easyconduite v ${project.version}</errTitle>
   <cmdLine></cmdLine>
   <chdir>.</chdir>
@@ -13,7 +13,7 @@
   <stayAlive>false</stayAlive>
   <restartOnCrash>false</restartOnCrash>
   <manifest></manifest>
-  <icon>C:\Users\antony\Documents\NetBeansProjects\EasyConduite\easyconduite-assembly\target\easyconduite-1.2\images\easyconduite32.ico</icon>
+  <icon>C:\Users\antony\Documents\NetBeansProjects\EasyConduite\easyconduite-assembly\target\easyconduite\images\easyconduite32.ico</icon>
   <singleInstance>
     <mutexName>ecpmutex</mutexName>
     <windowTitle>Easyconduite est déjà en cours d&apos;exécution.</windowTitle>
@@ -37,7 +37,7 @@
     <productName>Easyconduite</productName>
     <companyName></companyName>
     <internalName>easyconduite-1.2</internalName>
-    <originalFilename>easyconduite-1.2.exe</originalFilename>
+    <originalFilename>easyconduite.exe</originalFilename>
     <trademarks></trademarks>
     <language>FRENCH</language>
   </versionInfo>
