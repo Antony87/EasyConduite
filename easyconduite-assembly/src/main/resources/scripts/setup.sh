@@ -16,27 +16,42 @@ homeOwner=$(find $HOME -maxdepth 0 -printf '%u')
 source ./installer/i18_linux/bundle_$langue.conf
 
 # Functions
+checkErrorRollBack() {
+if [ $1 != "0" ]; then
+	echo -e '\033[1;33;40m'"$errorRollBack"
+	echo $cancelInstall
+	echo -e '\033[0m'
+	if [ -e $easyconduiteDir ] && [ -d $easyconduiteDir ]; then
+		rm -r $easyconduiteDir
+	fi
+fi
+
+}
+
 installer () {
 
 # check $HOME/Easyconduite not exist, and if create
-if [ ! -e $easyconduiteDir ] || [ ! -d $easyconduiteDir ]
-then
-# create Easyconduite directory
-mkdir $easyconduiteDir "$easyconduiteDir/docs" "$easyconduiteDir/images" "$easyconduiteDir/lib"
+if [ ! -e $easyconduiteDir ] || [ ! -d $easyconduiteDir ]; then
+	# create Easyconduite directory
+	mkdir $easyconduiteDir "$easyconduiteDir/docs" "$easyconduiteDir/images" "$easyconduiteDir/lib"
+	checkErrorRollBack $?
 fi
 cp -u ./images/*.* $easyconduiteDir/images/
+checkErrorRollBack $?
 cp -u ./docs/*.pdf $easyconduiteDir/docs/
 cp -u ./docs/*.txt $easyconduiteDir/docs/
 cp -u ./lib/*.jar $easyconduiteDir/lib/
+checkErrorRollBack $?
 cp -u ./*.sh $easyconduiteDir
+checkErrorRollBack $?
+cp -u ./installer/*.desktop $easyconduiteDir
 
 }
 
 messageJava(){
 echo -e '\033[1;33;40m'"$alertJava"'\033[0m'
 read -p "$confirm" -n 1 r
-if [ $r != "y" ] && [ $r != "Y" ]
-then
+if [ $r != "y" ] && [ $r != "Y" ]; then
 	echo -e "\n$cancelInstall"
 	exit 0
 fi
@@ -56,8 +71,7 @@ echo "$informInstall ($HOME)"
 
 # installation confirmation
 read -p "$confirm" -n 1 r
-if [ $r = "y" ] || [ $r = "Y" ]
-then
+if [ $r = "y" ] || [ $r = "Y" ]; then
 	installer
 else
 	echo -e "\n$cancelInstall"
@@ -66,8 +80,7 @@ fi
 
 #check for java
 command -v java 2>&1 >/dev/null
-if [ $? = "1" ]
-then
+if [ $? = "1" ]; then
 	messageJava
 else
 	java -version

@@ -18,16 +18,19 @@ and open the template in the editor.
             <includes>
                 <include>com.antonyweb:easyconduite:jar</include>
             </includes>
+            <fileMode>755</fileMode>
         </dependencySet>
     </dependencySets>
     <fileSets>
         <fileSet>
             <directory>src/main/resources/images</directory>
             <outputDirectory>images</outputDirectory>
+            <fileMode>775</fileMode>
         </fileSet>
         <fileSet>
             <directory>src/main/resources/docs</directory>
             <outputDirectory>docs</outputDirectory>
+            <fileMode>775</fileMode>
         </fileSet>
         <fileSet>
             <directory>src/main/resources/innosetup</directory>
@@ -52,15 +55,18 @@ and open the template in the editor.
             </includes>
             <filtered>true</filtered>
             <outputDirectory>installer</outputDirectory>
+            <fileMode>775</fileMode>
         </fileSet>
         <fileSet>
             <directory>src/main/resources/scripts/makeself-2.3.1/</directory>
             <outputDirectory>installer/makeself-2.3.1</outputDirectory>
+            <fileMode>775</fileMode>
         </fileSet>
         <fileSet>
             <directory>src/main/resources/scripts/i18_linux/</directory>
             <outputDirectory>installer/i18_linux</outputDirectory>
             <filtered>true</filtered>
+            <fileMode>755</fileMode>
         </fileSet>
     </fileSets>
     <files>
@@ -69,6 +75,7 @@ and open the template in the editor.
             <destName>easyconduite.sh</destName>
             <outputDirectory>./</outputDirectory>
             <filtered>true</filtered>
+            <fileMode>775</fileMode>
         </file>        
     </files>
 </assembly>
