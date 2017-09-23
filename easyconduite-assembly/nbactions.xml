@@ -5,7 +5,36 @@
             <displayName>Clean Assembly</displayName>
             <goals>
                 <goal>clean</goal>
-                <goal>assembly:single</goal>
+                <goal>install</goal>
             </goals>
         </action>
+        <action>
+            <actionName>CUSTOM-Clean Assembly exe</actionName>
+            <displayName>Clean Assembly exe</displayName>
+            <goals>
+                <goal>clean</goal>
+                <goal>install</goal>
+            </goals>
+            <properties>
+                <username></username>
+                <password></password>
+                <host>192.168.1.100</host>
+                <todir>/var/www/data/medias/easyconduite</todir>
+            </properties>
+            <activatedProfiles>
+                <activatedProfile>exe</activatedProfile>
+            </activatedProfiles>
+        </action>
+        <action>
+            <actionName>CUSTOM-clean Assembly sh</actionName>
+            <displayName>clean Assembly sh</displayName>
+            <goals>
+                <goal>clean</goal>
+                <goal>install</goal>
+            </goals>
+            <activatedProfiles>
+                <activatedProfile>sh</activatedProfile>
+            </activatedProfiles>
+        </action>
+        
     </actions>
