@@ -24,6 +24,7 @@ if [ $1 != "0" ]; then
 	if [ -e $easyconduiteDir ] && [ -d $easyconduiteDir ]; then
 		rm -r $easyconduiteDir
 	fi
+	exit 1
 fi
 
 }
@@ -45,6 +46,8 @@ checkErrorRollBack $?
 cp -u ./*.sh $easyconduiteDir
 checkErrorRollBack $?
 cp -u ./installer/*.desktop $easyconduiteDir
+checkErrorRollBack $?
+echo -e "\n$installationFinished"'\033[1;32;40m'"[OK]"'\033[0m'"\n"
 
 }
 
@@ -81,9 +84,8 @@ fi
 #check for java
 command -v java 2>&1 >/dev/null
 if [ $? = "1" ]; then
+	echo -e "\n"
 	messageJava
-else
-	java -version
 fi
 
 if ! java -version 2>&1 >/dev/null | grep -q "1.8" ; 
