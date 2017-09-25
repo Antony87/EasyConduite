@@ -86,6 +86,8 @@ public class EasyconduiteController extends StackPane implements Initializable, 
 
     //private final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
     private ResourceBundle bundle;
+    
+    private final EasyconduiteProperty userdatas;
 
     private final List<AudioMediaUI> audioMediaUIs;
 
@@ -97,6 +99,7 @@ public class EasyconduiteController extends StackPane implements Initializable, 
     public EasyconduiteController() {
         audioTable = new AudioTable();
         audioMediaUIs = new ArrayList<>();
+        userdatas = EasyConduitePropertiesHandler.getInstance().getProperties();
     }
 
     @FXML
@@ -124,13 +127,15 @@ public class EasyconduiteController extends StackPane implements Initializable, 
                 return;
             }
         }
+        
         final FileChooser fileChooser = new EasyFileChooser.FileChooserBuilder().asType(EasyFileChooser.Type.OPEN_PROJECT).build();
+        fileChooser.setInitialDirectory(userdatas.getLastProjectDir());
         final File file = fileChooser.showOpenDialog(getMyScene().getWindow());
 
         if (file != null) {
             // clear audiotable and childs (ui, player, etc)
             handleCloseTab(event);
-
+            userdatas.setLastProjectDir(PersistenceUtil.getDirectory(file.getParentFile()));
             try {
                 audioTable = (AudioTable) PersistenceUtil.readFromFile(file, AudioTable.class, PersistenceUtil.FILE_TYPE.XML);
                 updateStageTitle(audioTable);
@@ -141,7 +146,6 @@ public class EasyconduiteController extends StackPane implements Initializable, 
                     });
                     timeLineLabel.setText("");
                 });
-
             } catch (PersistenceException ex) {
                 LOG.error("Error occured during opening project file[{}]", file, ex);
                 ActionDialog.showWarning(bundle.getString("dialog.error.header"), bundle.getString("easyconduitecontroler.open.error"));
@@ -171,6 +175,7 @@ public class EasyconduiteController extends StackPane implements Initializable, 
         LOG.debug("Save as.. called");
 
         FileChooser fileChooser = new EasyFileChooser.FileChooserBuilder().asType(EasyFileChooser.Type.SAVE_AS).build();
+        fileChooser.setInitialDirectory(userdatas.getLastProjectDir());
         final File file = fileChooser.showSaveDialog(getMyScene().getWindow());
         if (file != null) {
             try {
@@ -179,6 +184,8 @@ public class EasyconduiteController extends StackPane implements Initializable, 
                 audioTable.setName(checkedFile.getName());
                 audioTable.setTablePathFile(checkedFile.getAbsolutePath());
                 PersistenceUtil.writeToFile(checkedFile, audioTable, PersistenceUtil.FILE_TYPE.XML);
+                
+                userdatas.setLastProjectDir(PersistenceUtil.getDirectory(file.getParentFile()));
                 updateStageTitle(audioTable);
             } catch (PersistenceException ex) {
                 ActionDialog.showWarning(bundle.getString("dialog.error.header"), bundle.getString("easyconduitecontroler.save.error"));
@@ -218,12 +225,14 @@ public class EasyconduiteController extends StackPane implements Initializable, 
     private void handleImportAudio(ActionEvent event) {
 
         FileChooser fileChooser = new EasyFileChooser.FileChooserBuilder().asType(EasyFileChooser.Type.OPEN_AUDIO).build();
+        fileChooser.setInitialDirectory(userdatas.getLastImportDir());
         File file = fileChooser.showOpenDialog(getMyScene().getWindow());
 
         if (file != null) {
             AudioMedia audioMedia = new AudioMedia(file);
             audioTable.getAudioMediaList().add(audioMedia);
             addAudioMediaUI(audioMedia);
+            userdatas.setLastImportDir(PersistenceUtil.getDirectory(file.getParentFile()));
         }
     }
 
@@ -243,7 +252,6 @@ public class EasyconduiteController extends StackPane implements Initializable, 
     @FXML
     public void handleQuit(ActionEvent event) {
 
-        final EasyconduiteProperty userdatas = EasyConduitePropertiesHandler.getInstance().getProperties();
         userdatas.setWindowHeight((int) getMyScene().windowProperty().getValue().getHeight());
         userdatas.setWindowWith((int) getMyScene().windowProperty().getValue().getWidth());
 

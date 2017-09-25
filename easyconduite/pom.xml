@@ -1,19 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>com.antonyweb</groupId>
     <artifactId>easyconduite</artifactId>
     <version>1.2</version>
     <packaging>jar</packaging>
-
     <name>easyconduite</name>
-
+    <licenses>
+        <license>
+            <name>GNU GPL V3</name>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Antony Fons</name>
+            <email>antony.fons@antonyweb.net</email>
+        </developer>
+    </developers>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mainClass>easyconduite.Easyconduite</mainClass>
     </properties>
-
     <organization>
         <name>Antony Fons</name>
     </organization>
@@ -62,8 +69,7 @@
                 <version>1.6.0</version>
                 <executions>
                     <execution>
-                        <id>unpack-dependencies</id>
-                        
+                        <id>unpack-dependencies</id>                       
                         <phase>package</phase>
                         <goals>
                             <goal>exec</goal>

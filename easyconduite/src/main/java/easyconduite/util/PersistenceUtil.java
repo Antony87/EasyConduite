@@ -42,9 +42,9 @@ import org.apache.logging.log4j.util.Strings;
 public class PersistenceUtil {
 
     static final Logger LOG = LogManager.getLogger(PersistenceUtil.class);
-    
+
     /**
-     *Suffixe for Easyconduite project file.
+     * Suffixe for Easyconduite project file.
      */
     public static final String ECP_SUFFIXE = ".ecp";
 
@@ -176,11 +176,28 @@ public class PersistenceUtil {
         } else {
             final String path = file.getAbsolutePath();
             final String name = file.getName();
-            if(path.endsWith(ECP_SUFFIXE)&& name.endsWith(ECP_SUFFIXE)){
+            if (path.endsWith(ECP_SUFFIXE) && name.endsWith(ECP_SUFFIXE)) {
                 return file;
             }
-            checkedFile = new File(path+ECP_SUFFIXE);
+            checkedFile = new File(path + ECP_SUFFIXE);
         }
         return checkedFile;
+    }
+
+    /**
+     * Return a directory from File, or NULL.
+     *
+     * @param lastDirectory
+     * @return
+     */
+    public static File getDirectory(File lastDirectory) {
+        if (lastDirectory == null) {
+            return null;
+        }
+
+        if (lastDirectory.isDirectory()) {
+            return lastDirectory;
+        }
+        return null;
     }
 }

@@ -36,29 +36,32 @@ public class EasyFileChooser {
         private String title;
         private String text;
         private String extension[];
-        
+
         private final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
 
         public FileChooserBuilder asType(Type type) {
+
+            final String fileString = bundle.getString("easyfilechoose.file");
+
             switch (type) {
                 case OPEN_AUDIO:
                     title = bundle.getString("easyfilechoose.title.import");
-                    text = "Fichier audio";                
+                    text = fileString + " audio";
                     extension = new String[]{"*.mp3", "*.wav"};
                     break;
                 case OPEN_PROJECT:
                     title = bundle.getString("easyfilechoose.title.open");
-                    text = "Fichier *.ecp";
+                    text = fileString + " *.ecp";
                     extension = new String[]{"*.ecp"};
                     break;
                 case SAVE:
                     title = bundle.getString("easyfilechoose.title.save");
-                    text = "Fichier *.ecp";
+                    text = fileString + " *.ecp";
                     extension = new String[]{"*.ecp"};
                     break;
                 case SAVE_AS:
                     title = bundle.getString("easyfilechoose.title.saveas");
-                    text = "Fichier *.ecp";
+                    text = fileString + " *.ecp";
                     extension = new String[]{"*.ecp"};
                     break;
             }

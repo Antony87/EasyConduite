@@ -16,6 +16,7 @@
  */
 package easyconduite.objects;
 
+import java.io.File;
 import java.io.Serializable;
 import java.nio.file.Path;
 import java.util.Locale;
@@ -40,6 +41,10 @@ public class EasyconduiteProperty implements Serializable {
     private Queue<Path> recentsPaths;
 
     private Level logLevel;
+    
+    private File lastProjectDir;
+    
+    private File lastImportDir;
 
     /**
      * Constructor with parameters.
@@ -92,9 +97,25 @@ public class EasyconduiteProperty implements Serializable {
         this.logLevel = logLevel;
     }
 
-    @Override
-    public String toString() {
-        return "UserData{" + "locale=" + locale + ", WindowWith=" + WindowWith + ", windowHeight=" + windowHeight + ", recentsPaths=" + recentsPaths + ", logLevel=" + logLevel + '}';
+    public File getLastProjectDir() {
+        return lastProjectDir;
     }
 
+    public void setLastProjectDir(File lastProjectDir) {
+        this.lastProjectDir = lastProjectDir;
+    }
+
+    public File getLastImportDir() {
+        return lastImportDir;
+    }
+
+    public void setLastImportDir(File lastImportDir) {
+        this.lastImportDir = lastImportDir;
+    }
+
+    @Override
+    public String toString() {
+        return "EasyconduiteProperty{" + "locale=" + locale + ", WindowWith=" + WindowWith + ", windowHeight=" + windowHeight + ", logLevel=" + logLevel + ", lastProjectDir=" + lastProjectDir + ", lastImportDir=" + lastImportDir + '}';
+    }
+    
 }
