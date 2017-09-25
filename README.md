@@ -16,7 +16,7 @@ Java SE 8_0_x must be installed.
 https://www.java.com/fr/download/manual.jsp
 
 ## Download ##
-Windows (Vista and +) [Windows installer install_Easyconduite.exe](http://site.antonyweb.net/data/medias/easyconduite/install_Easyconduite.exe)
+Windows (Vista and +) [Windows installer install_Easyconduite.exe](http://site.antonyweb.net/data/medias/easyconduite/Easyconduite_Setup.exe)
 
 Linux (Tested on Ubuntu 16.04) [Linux script installer easyconduite_setup.sh](http://site.antonyweb.net/data/medias/easyconduite/easyconduite_setup.sh)
 
