@@ -181,6 +181,9 @@ public class AudioTable {
         @Override
         public void onChanged(Change<? extends AudioMedia> c) {
             while (c.next()) {
+                if(c.wasRemoved()){
+                   setUpdated(true); 
+                }
                 if (c.wasUpdated()) {
                     LOG.trace("AudioTable updated...");
                     setUpdated(true);

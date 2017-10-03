@@ -231,6 +231,7 @@ public class EasyconduiteController extends StackPane implements Initializable, 
         if (file != null) {
             AudioMedia audioMedia = new AudioMedia(file);
             audioTable.getAudioMediaList().add(audioMedia);
+            audioTable.setUpdated(true);
             addAudioMediaUI(audioMedia);
             userdatas.setLastImportDir(PersistenceUtil.getDirectory(file.getParentFile()));
         }
