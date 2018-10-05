@@ -1,0 +1,49 @@
+/*
+Copyright (C) 2018 Antony Fons
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/* 
+    Created on : 30 sept. 2018, 20:32:26
+    Author     : antony
+*/
+
+#trackstable{
+    -fx-background-color: #232323;
+    -fx-pref-width: 1024;
+    -fx-pref-height : 700;
+}
+
+#tableLayout{
+    -fx-hgap: 5;
+    -fx-vgap: 5;
+    -fx-padding: 5 5 5 5;
+}
+
+#infoBaseLine{
+       -fx-pref-height : 30; 
+       -fx-background-color :#373737;
+       -fx-border-style:solid;
+       -fx-border-width: 1px ;
+       -fx-border-color: #828282 #373737 #000000 #373737 ;
+       -fx-start-margin: 2;
+}
+
+#menuTimer{
+    -fx-alignment: CENTER_RIGHT;
+}
+
+#timer{
+    -fx-background-color :#2D2D2D;
+}

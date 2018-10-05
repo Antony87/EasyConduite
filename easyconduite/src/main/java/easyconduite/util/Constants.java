@@ -28,6 +28,7 @@ import javafx.scene.effect.Bloom;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
+import javafx.scene.input.DataFormat;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -103,5 +104,7 @@ public class Constants {
     public static String getFormatedDuration(Duration duration, SimpleDateFormat formater) {
         return formater.format(new Date((long) duration.toMillis()));
     }
+    
+    public final static DataFormat DATA_FORMAT_INTEGER = new DataFormat("java.lang.Integer");
 
 }

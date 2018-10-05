@@ -75,6 +75,14 @@ public class EasyconduiteController extends StackPane implements Initializable, 
     @FXML
     private FlowPane tableLayout;
 
+    public FlowPane getTableLayout() {
+        return tableLayout;
+    }
+
+    public void setTableLayout(FlowPane tableLayout) {
+        this.tableLayout = tableLayout;
+    }
+
     @FXML
     private Label timeLineLabel;
 

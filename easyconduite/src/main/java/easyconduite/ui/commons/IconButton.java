@@ -40,7 +40,7 @@ public class IconButton extends ImageView {
      */
     public IconButton(String pathNameOfIcon) {
         super();
-        this.icon = new Image(getClass().getResourceAsStream(pathNameOfIcon), 30, 30, true, false);
+        this.icon = new Image(getClass().getResourceAsStream(pathNameOfIcon));
         this.setImage(getIcon());
         this.getStyleClass().add(CSS_STYLE);
     }
@@ -79,7 +79,7 @@ public class IconButton extends ImageView {
      */
     public void setPathNameOfIcon(String nameOfIcon) {
         this.pathNameOfIcon = nameOfIcon;
-        setIcon(new Image(getClass().getResourceAsStream(nameOfIcon), 30, 30, true, false));
+        setIcon(new Image(getClass().getResourceAsStream(nameOfIcon)));
         this.setImage(getIcon());
     }
 

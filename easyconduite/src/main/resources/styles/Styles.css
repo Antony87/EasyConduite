@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     Author     : antony fons
 */
 
+
 .track-vbox {
     -fx-padding: 5 0 5 0;
     -fx-spacing: 5;
@@ -28,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     -fx-pref-height : 380;
     -fx-max-height : 380;
     -fx-min-height : 380;
-    -fx-background-color: #535965; 
+    -fx-background-color: #2D2D2D; 
 }
 .track-inner-hbox{
     -fx-spacing: 15;
@@ -49,7 +50,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     -fx-alignment :CENTER;
     -fx-font-size: 12;
     -fx-pref-width: 85;
-    -fx-text-fill: whitesmoke;
+    -fx-text-fill: #5973A8;
     -fx-text-alignment: center;
     -fx-focus-traversable: false;  
 }
@@ -58,9 +59,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     -fx-alignment :CENTER;
     -fx-font-size: 12;
     -fx-pref-width: 80;
-    -fx-text-fill:#00d936;
+    -fx-text-fill:#FFFFFF;
     -fx-border-color: #a8b0bb;
-    -fx-background-color: #203029;
+    -fx-background-color: #848484;
     -fx-text-alignment: center;
     -fx-focus-traversable: false;  
 }
@@ -69,7 +70,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     -fx-alignment :CENTER;
     -fx-font:'sans-serif';
     -fx-font-size: 28;
-    -fx-text-fill:#00d936;
+    -fx-text-fill:#599CA8;
     -fx-focus-traversable:false;  
 }
 

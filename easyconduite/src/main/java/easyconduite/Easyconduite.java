@@ -21,7 +21,6 @@ import easyconduite.objects.EasyconduiteProperty;
 import easyconduite.util.Constants;
 import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.LoggingUtil;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.application.Application;
@@ -31,6 +30,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -61,7 +61,7 @@ public class Easyconduite extends Application {
         }else{
             LoggingUtil.setLog4jLevel(userdatas.getLogLevel());
         }
-        
+        stage.initStyle(StageStyle.DECORATED);
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/easyconduite32.png")));
         
         final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/easyconduite.fxml"), localeBundle);
@@ -77,11 +77,13 @@ public class Easyconduite extends Application {
         });
         
         scene.getStylesheets().add("/styles/Styles.css");
+        scene.getStylesheets().add("/styles/audiomediaui.css");
         stage.setTitle("EasyConduite" + localeBundle.getString("easyconduite.version"));
         stage.setScene(scene);
         
         stage.setWidth(userdatas.getWindowWith());
         stage.setHeight(userdatas.getWindowHeight());
+        
         
         stage.show();
     }
