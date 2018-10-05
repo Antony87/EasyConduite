@@ -35,7 +35,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
@@ -225,11 +224,9 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
         });
 
         MenuItem hideItem = new MenuItem(bundle.getString("dialog.button.cancel"));
-        hideItem.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent e) {
-                contextMenu.hide();
-                e.consume();
-            }
+        hideItem.setOnAction((ActionEvent e) -> {
+            contextMenu.hide();
+            e.consume();
         });
         contextMenu.getItems().addAll(propertiesItem, deleteItem, hideItem);
 
