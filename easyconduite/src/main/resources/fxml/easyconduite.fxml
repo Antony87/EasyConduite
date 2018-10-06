@@ -51,9 +51,22 @@
               </Menu>
                   <Menu mnemonicParsing="false" text="%menu.track.title">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#handleImportAudio" text="%menu.track.import" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleImportAudio" text="%menu.track.import">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="I" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                           </accelerator></MenuItem>
                         <MenuItem mnemonicParsing="false" onAction="#handlePauseAll" text="%menu.track.pause" />
                         <MenuItem mnemonicParsing="false" onAction="#handleStopAll" text="%menu.track.stop" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuTrackEdit" text="%track.context.properties">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="E" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#menuTrackDelete" text="%track.context.delete">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="D" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
                     </items>
                   </Menu>
               <Menu mnemonicParsing="false" text="%menu.cue.title">

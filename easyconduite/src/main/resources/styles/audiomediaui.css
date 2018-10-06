@@ -33,8 +33,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 }
 
+.audioMediaUi:focused{
+    -fx-border-color:  #FFFFFF; 
+}
+
 .audioMediaUi .menu-item{
-    -fx-font-size: 12;
+    -fx-font-size: 10;
 }
 .playing{
     -fx-background-color: #848484; 
@@ -50,7 +54,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-min-width: 96;
     -fx-max-width: 96;
     -fx-background-color:  #2D2D2D;
-    -fx-font-size: 10;
+    -fx-font-size: 12;
     -fx-text-fill: #FFFFFF;
     -fx-alignment:CENTER;
 }
@@ -73,6 +77,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-min-height: 40;
     -fx-max-height: 40;
 }
+
+.baseHbox > .label{
+    -fx-min-width: 96;
+    -fx-max-width: 96;
+    -fx-font-size: 18;
+    -fx-font-weight: bold;
+    -fx-text-fill: #599CA8;
+    -fx-alignment:CENTER;
+}
+
 .commandHbox > * {
     -fx-min-width: 40;
     -fx-max-width: 40;

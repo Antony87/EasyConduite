@@ -45,11 +45,13 @@ public class Easyconduite extends Application {
     //private ResourceBundle localeBundle;
     static final Logger LOG = LogManager.getLogger(Easyconduite.class);
     
+    private ResourceBundle localeBundle;
+    
     @Override
     public void start(Stage stage) throws Exception {
         
         final EasyconduiteProperty userdatas = EasyConduitePropertiesHandler.getInstance().getProperties();
-        final ResourceBundle localeBundle = ResourceBundle.getBundle(Constants.RESOURCE_BASENAME, userdatas.getLocale());
+        localeBundle = ResourceBundle.getBundle(Constants.RESOURCE_BASENAME, userdatas.getLocale());
 
         // Pass args to describe using logging context :
         // --context=user
@@ -83,11 +85,10 @@ public class Easyconduite extends Application {
         
         stage.setWidth(userdatas.getWindowWith());
         stage.setHeight(userdatas.getWindowHeight());
-        
-        
+            
         stage.show();
     }
-
+    
     /**
      * @param args the command line arguments
      */
