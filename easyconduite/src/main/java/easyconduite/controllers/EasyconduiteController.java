@@ -38,6 +38,7 @@ import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -47,11 +48,17 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
@@ -75,9 +82,16 @@ public class EasyconduiteController extends StackPane implements Initializable, 
 
     @FXML
     private FlowPane tableLayout;
-    
+
     public FlowPane getTableLayout() {
         return tableLayout;
+    }
+
+    @FXML
+    Pane calquePane;
+
+    public Pane getCalquePane() {
+        return calquePane;
     }
 
 //    public void setTableLayout(FlowPane tableLayout) {
@@ -148,7 +162,7 @@ public class EasyconduiteController extends StackPane implements Initializable, 
                 audioTable = (AudioTable) PersistenceUtil.readFromFile(file, AudioTable.class, PersistenceUtil.FILE_TYPE.XML);
                 EasyconduiteUITools.updateWindowsTitle(EasyconduiteUITools.getScene(mainPane), "EasyConduite " + bundle.getString("easyconduite.version") + " : " + audioTable.getName());
                 timeLineLabel.setText(bundle.getString("easyconduitecontroler.open.loading"));
-                
+
                 Platform.runLater(() -> {
                     audioTable.getAudioMediaList().forEach((audioMedia) -> {
                         addAudioMediaUI(audioMedia);
@@ -351,6 +365,57 @@ public class EasyconduiteController extends StackPane implements Initializable, 
         LOG.debug("Controler initialisation");
         chrono = new Chrono(timer);
         bundle = rb;
+        calquePane.setMouseTransparent(true);
+
+        tableLayout.setOnDragDetected((MouseEvent mouseEvent) -> {
+            if (mouseEvent.getTarget() instanceof AudioMediaUI) {
+                final Dragboard dragBroard = tableLayout.startDragAndDrop(TransferMode.COPY);
+                // Remlissage du contenu.
+                ClipboardContent content = new ClipboardContent();
+                // recup de l'index children
+                final Integer index = tableLayout.getChildren().indexOf(mouseEvent.getTarget());
+                content.put(Constants.DATA_FORMAT_INTEGER, index);
+                dragBroard.setContent(content);
+                LOG.trace("Drag detected on AUdioMediaUI index {}", index);
+                mouseEvent.consume();
+            }
+        });
+
+        tableLayout.setOnDragOver((DragEvent dragEvent) -> {
+            final Dragboard dragBroard = dragEvent.getDragboard();
+            if (dragEvent.getTarget() instanceof AudioMediaUI && dragBroard.hasContent(Constants.DATA_FORMAT_INTEGER)) {        
+                final Integer indexSource = (Integer) dragBroard.getContent(Constants.DATA_FORMAT_INTEGER);
+                final Integer index = tableLayout.getChildren().indexOf(dragEvent.getTarget());
+                LOG.trace("Target DRAG_OVER {}", index);
+                if (!Objects.equals(index, indexSource)) {
+                    dragEvent.acceptTransferModes(TransferMode.COPY);
+                }
+            }
+            dragEvent.consume();
+        });
+
+        tableLayout.setOnDragDropped((DragEvent dragEvent) -> {
+
+            if (dragEvent.getTarget() instanceof AudioMediaUI) {
+                final Dragboard dragBroard = dragEvent.getDragboard();
+                final Integer idSource = (Integer) dragBroard.getContent(Constants.DATA_FORMAT_INTEGER);
+                final AudioMediaUI sourceUi = (AudioMediaUI) tableLayout.getChildren().get(idSource);
+                tableLayout.getChildren().set(idSource, new VBox());
+                tableLayout.getChildren().set(tableLayout.getChildren().indexOf(dragEvent.getTarget()), sourceUi);
+                tableLayout.getChildren().set(idSource, (AudioMediaUI) dragEvent.getTarget());
+                dragEvent.setDropCompleted(true);
+                dragEvent.consume();
+            }
+
+        });
+
+        tableLayout.setOnDragDone(dragEvent -> {
+            if (dragEvent.getTransferMode() == TransferMode.COPY) {
+                dragEvent.getDragboard().clear();
+            }
+            dragEvent.consume();
+        });
+
         LOG.trace("Bundle {} loaded", rb.getLocale());
     }
 

@@ -84,8 +84,7 @@ public class Easyconduite extends Application {
         stage.setScene(scene);
         
         stage.setWidth(userdatas.getWindowWith());
-        stage.setHeight(userdatas.getWindowHeight());
-            
+        stage.setHeight(userdatas.getWindowHeight());            
         stage.show();
     }
     

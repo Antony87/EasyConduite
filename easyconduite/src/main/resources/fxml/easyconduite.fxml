@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
@@ -89,9 +90,6 @@
                </effect>
           </MenuBar>
             <BorderPane fx:id="trackstable" stylesheets="@../styles/easyconduite.css" VBox.vgrow="ALWAYS">
-               <center>
-                  <FlowPane fx:id="tableLayout" rowValignment="TOP" stylesheets="@../styles/easyconduite.css" BorderPane.alignment="TOP_LEFT" />
-               </center>
                <top>
                   <HBox fx:id="infoBaseLine" alignment="CENTER_LEFT" spacing="20.0" BorderPane.alignment="CENTER">
                      <children>
@@ -126,6 +124,14 @@
                      </BorderPane.margin>
                   </HBox>
                </top>
+               <center>
+                  <StackPane BorderPane.alignment="CENTER">
+                     <children>
+                        <FlowPane fx:id="tableLayout" rowValignment="TOP" stylesheets="@../styles/easyconduite.css" />
+                        <Pane fx:id="calquePane" mouseTransparent="true" />
+                     </children>
+                  </StackPane>
+               </center>
             </BorderPane>
         </children>
       </VBox>
