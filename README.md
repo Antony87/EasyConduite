@@ -1,3 +1,4 @@
+
 # EasyConduite - a super simple sampler #
 
 EasyConduite helps the stage manager of small theatre companies to play several audio tracks at the right time during the performance.
@@ -27,6 +28,8 @@ Linux (Tested on Ubuntu 16.04) [Linux script installer easyconduite_setup.sh](ht
 
 ## Author's site ##
 
-[blog Antony (in French)](http://site.antonyweb.net/index.php?static1/easyconduite)
+[blog Antony (in French)](http://easyconduite.antonyweb.net/index.php?static1/easyconduite)
+
+[blog Antony (in English](http://easyconduite.antonyweb.net/index.php?static2/easyconduite-en)
 
 ![EasyConduite on stage](http://site.antonyweb.net/data/medias/easyconduite/easyconduiteMac_500.jpg)
