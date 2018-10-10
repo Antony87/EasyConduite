@@ -16,7 +16,7 @@
  */
 package easyconduite;
 
-import easyconduite.controllers.MainController;
+import easyconduite.controllers.EasyconduiteController;
 import easyconduite.objects.EasyconduiteProperty;
 import easyconduite.util.Constants;
 import easyconduite.util.EasyConduitePropertiesHandler;
@@ -71,7 +71,7 @@ public class Easyconduite extends Application {
         Pane root = loader.load();
         Scene scene = new Scene(root);
         
-        MainController controler = loader.getController();
+        EasyconduiteController controler = loader.getController();
         
         stage.setOnCloseRequest((WindowEvent event) -> {
             controler.handleQuit(new ActionEvent());

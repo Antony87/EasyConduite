@@ -19,7 +19,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<StackPane id="mainPane" fx:id="mainPane" stylesheets="@../styles/easyconduite.css" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.MainController">
+<StackPane fx:id="mainPane" stylesheets="@../styles/easyconduite.css" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.EasyconduiteController">
    <children>
       <VBox onKeyPressed="#handleKeyCodePlay">
         <children>
@@ -27,21 +27,21 @@
             <menus>
               <Menu mnemonicParsing="false" text="%menu.file.title">
                 <items>
-                  <MenuItem fx:id="fichierouvrir" mnemonicParsing="false" onAction="#menuOpenFile" text="%menu.file.open">
+                  <MenuItem fx:id="fichierouvrir" mnemonicParsing="false" onAction="#handleOpen" text="%menu.file.open">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
-                  <MenuItem mnemonicParsing="false" onAction="#menuSaveFile" text="%menu.file.save">
+                  <MenuItem mnemonicParsing="false" onAction="#handleSave" text="%menu.file.save">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#menuSaveFileAs" text="%menu.file.saveas" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleSaveAs" text="%menu.file.saveas" />
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#menuCloseProject" text="%menu.file.close" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleCloseTab" text="%menu.file.close" />
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#menuPreferences" text="%menu.file.preferences" />
+                        <MenuItem mnemonicParsing="false" onAction="#handlePreferences" text="%menu.file.preferences" />
                         <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" onAction="#handleQuit" text="%menu.file.quit">
                            <accelerator>

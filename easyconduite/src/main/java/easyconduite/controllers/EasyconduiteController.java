@@ -16,8 +16,6 @@
  */
 package easyconduite.controllers;
 
-import easyconduite.controllers.helpers.ActionsMenuFile;
-import easyconduite.controllers.helpers.MediaUIDragAndDrop;
 import easyconduite.exception.PersistenceException;
 import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
@@ -25,6 +23,7 @@ import easyconduite.objects.AudioTable;
 import easyconduite.objects.EasyconduiteProperty;
 import easyconduite.ui.AboutDialogUI;
 import easyconduite.ui.AudioMediaUI;
+import easyconduite.ui.PreferencesDialogUI;
 import easyconduite.ui.TrackConfigDialogUI;
 import easyconduite.ui.commons.ActionDialog;
 import easyconduite.ui.commons.EasyconduiteUITools;
@@ -36,8 +35,10 @@ import easyconduite.util.PersistenceUtil;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -47,13 +48,19 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -62,12 +69,10 @@ import org.apache.logging.log4j.Logger;
  *
  * @author A Fons
  */
-public class MainController extends StackPane implements Initializable, EasyAudioChain {
-    private static final Logger LOG = LogManager.getLogger(MainController.class);
+public class EasyconduiteController extends StackPane implements Initializable, EasyAudioChain {
 
     @FXML
     StackPane mainPane;
-
 
     @FXML
     private Label timer;
@@ -78,10 +83,16 @@ public class MainController extends StackPane implements Initializable, EasyAudi
     @FXML
     private FlowPane tableLayout;
 
+    public FlowPane getTableLayout() {
+        return tableLayout;
+    }
 
     @FXML
     Pane calquePane;
 
+    public Pane getCalquePane() {
+        return calquePane;
+    }
 
 //    public void setTableLayout(FlowPane tableLayout) {
 //        this.tableLayout = tableLayout;
@@ -95,29 +106,22 @@ public class MainController extends StackPane implements Initializable, EasyAudi
 
     private EasyAudioChain nextChain;
 
+    //private final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
     private ResourceBundle bundle;
 
     private final EasyconduiteProperty userdatas;
 
     private final List<AudioMediaUI> audioMediaUIs;
 
+    private static final Logger LOG = LogManager.getLogger(EasyconduiteController.class);
 
     /**
      * Constructor without arguments, to respect instantiating by FXML.
      */
-    public MainController() {
+    public EasyconduiteController() {
         audioTable = new AudioTable();
         audioMediaUIs = new ArrayList<>();
         userdatas = EasyConduitePropertiesHandler.getInstance().getProperties();
-    }
-    public StackPane getMainPane() {
-        return mainPane;
-    }
-    public FlowPane getTableLayout() {
-        return tableLayout;
-    }
-    public Pane getCalquePane() {
-        return calquePane;
     }
 
     @FXML
@@ -136,97 +140,102 @@ public class MainController extends StackPane implements Initializable, EasyAudi
     }
 
     @FXML
-    private void menuOpenFile(ActionEvent event) {
+    private void handleOpen(ActionEvent event) {
         LOG.debug("handleOpen called");
-        ActionsMenuFile.openFile(audioMediaUIs, this, audioTable);
 
-//        if (audioMediaUIs.size() > 0) {
-//            Optional<ButtonType> result = ActionDialog.showConfirmation(bundle.getString("easyconduitecontroler.open.header"), bundle.getString("easyconduitecontroler.open.content"));
-//            if (!result.isPresent() || result.get() == ButtonType.NO) {
-//                return;
-//            }
-//        }
-//
-//        final FileChooser fileChooser = new EasyFileChooser.FileChooserBuilder().asType(EasyFileChooser.Type.OPEN_PROJECT).build();
-//        fileChooser.setInitialDirectory(userdatas.getLastProjectDir());
-//        final File file = fileChooser.showOpenDialog(EasyconduiteUITools.getWindow(mainPane));
-//
-//        if (file != null) {
-//            // clear audiotable and childs (ui, player, etc)
-//            menuCloseProject(event);
-//            userdatas.setLastProjectDir(PersistenceUtil.getDirectory(file.getParentFile()));
-//            try {
-//                audioTable = (AudioTable) PersistenceUtil.readFromFile(file, AudioTable.class, PersistenceUtil.FILE_TYPE.XML);
-//                EasyconduiteUITools.updateWindowsTitle(EasyconduiteUITools.getScene(mainPane), "EasyConduite " + bundle.getString("easyconduite.version") + " : " + audioTable.getName());
-//                timeLineLabel.setText(bundle.getString("easyconduitecontroler.open.loading"));
-//
-//                Platform.runLater(() -> {
-//                    audioTable.getAudioMediaList().forEach((audioMedia) -> {
-//                        addAudioMediaUI(audioMedia);
-//                    });
-//                    timeLineLabel.setText("");
-//                });
-//            } catch (PersistenceException ex) {
-//                LOG.error("Error occured during opening project file[{}]", file, ex);
-//                ActionDialog.showWarning(bundle.getString("dialog.error.header"), bundle.getString("easyconduitecontroler.open.error"));
-//            }
-//        }
+        if (audioMediaUIs.size() > 0) {
+            Optional<ButtonType> result = ActionDialog.showConfirmation(bundle.getString("easyconduitecontroler.open.header"), bundle.getString("easyconduitecontroler.open.content"));
+            if (!result.isPresent() || result.get() == ButtonType.NO) {
+                return;
+            }
+        }
+
+        final FileChooser fileChooser = new EasyFileChooser.FileChooserBuilder().asType(EasyFileChooser.Type.OPEN_PROJECT).build();
+        fileChooser.setInitialDirectory(userdatas.getLastProjectDir());
+        final File file = fileChooser.showOpenDialog(EasyconduiteUITools.getWindow(mainPane));
+
+        if (file != null) {
+            // clear audiotable and childs (ui, player, etc)
+            handleCloseTab(event);
+            userdatas.setLastProjectDir(PersistenceUtil.getDirectory(file.getParentFile()));
+            try {
+                audioTable = (AudioTable) PersistenceUtil.readFromFile(file, AudioTable.class, PersistenceUtil.FILE_TYPE.XML);
+                EasyconduiteUITools.updateWindowsTitle(EasyconduiteUITools.getScene(mainPane), "EasyConduite " + bundle.getString("easyconduite.version") + " : " + audioTable.getName());
+                timeLineLabel.setText(bundle.getString("easyconduitecontroler.open.loading"));
+
+                Platform.runLater(() -> {
+                    audioTable.getAudioMediaList().forEach((audioMedia) -> {
+                        addAudioMediaUI(audioMedia);
+                    });
+                    timeLineLabel.setText("");
+                });
+            } catch (PersistenceException ex) {
+                LOG.error("Error occured during opening project file[{}]", file, ex);
+                ActionDialog.showWarning(bundle.getString("dialog.error.header"), bundle.getString("easyconduitecontroler.open.error"));
+            }
+        }
     }
 
     @FXML
-    private void menuSaveFile(ActionEvent event) {
-        LOG.debug("menuSaveFile called");
-        ActionsMenuFile.saveFile(audioTable, this);
-//        try {
-//            if (PersistenceUtil.isFileExists(audioTable.getTablePathFile())) {
-//                audioTable.setUpdated(false);
-//                final File fileAudioTable = Paths.get(audioTable.getTablePathFile()).toFile();
-//                PersistenceUtil.writeToFile(fileAudioTable, audioTable, PersistenceUtil.FILE_TYPE.XML);
-//            } else {
-//                menuSaveFileAs(event);
-//            }
-//        } catch (PersistenceException ex) {
-//            ActionDialog.showWarning(bundle.getString("dialog.error.header"), bundle.getString("easyconduitecontroler.save.error"));
-//            LOG.error("An error occured", ex);
-//        }
+    private void handleSave(ActionEvent event) {
+        LOG.debug("handleSave called");
+        try {
+            if (PersistenceUtil.isFileExists(audioTable.getTablePathFile())) {
+                audioTable.setUpdated(false);
+                final File fileAudioTable = Paths.get(audioTable.getTablePathFile()).toFile();
+                PersistenceUtil.writeToFile(fileAudioTable, audioTable, PersistenceUtil.FILE_TYPE.XML);
+            } else {
+                handleSaveAs(event);
+            }
+        } catch (PersistenceException ex) {
+            ActionDialog.showWarning(bundle.getString("dialog.error.header"), bundle.getString("easyconduitecontroler.save.error"));
+            LOG.error("An error occured", ex);
+        }
     }
 
     @FXML
-    private void menuSaveFileAs(ActionEvent event) {
+    private void handleSaveAs(ActionEvent event) {
         LOG.debug("Save as.. called");
-        ActionsMenuFile.saveAsFile(audioTable, this);
 
-//        FileChooser fileChooser = new EasyFileChooser.FileChooserBuilder().asType(EasyFileChooser.Type.SAVE_AS).build();
-//        fileChooser.setInitialDirectory(userdatas.getLastProjectDir());
-//        final File file = fileChooser.showSaveDialog(EasyconduiteUITools.getWindow(mainPane));
-//        if (file != null) {
-//            try {
-//                final File checkedFile = PersistenceUtil.suffixForEcp(file);
-//                audioTable.setUpdated(false);
-//                audioTable.setName(checkedFile.getName());
-//                audioTable.setTablePathFile(checkedFile.getAbsolutePath());
-//                PersistenceUtil.writeToFile(checkedFile, audioTable, PersistenceUtil.FILE_TYPE.XML);
-//
-//                userdatas.setLastProjectDir(PersistenceUtil.getDirectory(file.getParentFile()));
-//                
-//                EasyconduiteUITools.updateWindowsTitle(EasyconduiteUITools.getScene(mainPane), "EasyConduite " + bundle.getString("easyconduite.version") + " : " + audioTable.getName());
-//            } catch (PersistenceException ex) {
-//                ActionDialog.showWarning(bundle.getString("dialog.error.header"), bundle.getString("easyconduitecontroler.save.error"));
-//                LOG.error("An error occured", ex);
-//            }
-//        }
+        FileChooser fileChooser = new EasyFileChooser.FileChooserBuilder().asType(EasyFileChooser.Type.SAVE_AS).build();
+        fileChooser.setInitialDirectory(userdatas.getLastProjectDir());
+        final File file = fileChooser.showSaveDialog(EasyconduiteUITools.getWindow(mainPane));
+        if (file != null) {
+            try {
+                final File checkedFile = PersistenceUtil.suffixForEcp(file);
+                audioTable.setUpdated(false);
+                audioTable.setName(checkedFile.getName());
+                audioTable.setTablePathFile(checkedFile.getAbsolutePath());
+                PersistenceUtil.writeToFile(checkedFile, audioTable, PersistenceUtil.FILE_TYPE.XML);
+
+                userdatas.setLastProjectDir(PersistenceUtil.getDirectory(file.getParentFile()));
+                updateStageTitle(audioTable);
+            } catch (PersistenceException ex) {
+                ActionDialog.showWarning(bundle.getString("dialog.error.header"), bundle.getString("easyconduitecontroler.save.error"));
+                LOG.error("An error occured", ex);
+            }
+        }
     }
 
     @FXML
-    private void menuCloseProject(ActionEvent event) {
+    private void handleCloseTab(ActionEvent event) {
         LOG.debug("handleCloseTab called");
-        ActionsMenuFile.closeProject(audioTable, this);
+        List<AudioMedia> audioMediaList = audioTable.getAudioMediaList();
+        while (audioMediaList.iterator().hasNext()) {
+            AudioMedia audioMedia = audioMediaList.iterator().next();
+            this.removeChilds(audioMedia);
+        }
     }
 
     @FXML
-    private void menuPreferences(ActionEvent event) {
+    private void handlePreferences(ActionEvent event) {
         LOG.debug("handlePreferences called");
-        ActionsMenuFile.openPreferences();
+        try {
+            PreferencesDialogUI prefsUI = new PreferencesDialogUI(bundle);
+            prefsUI.show();
+        } catch (IOException ex) {
+            LOG.debug("Error occurend ", ex);
+        }
     }
 
     /**
@@ -282,8 +291,8 @@ public class MainController extends StackPane implements Initializable, EasyAudi
         }
     }
 
-    public void addAudioMediaUI(AudioMedia audioMedia) {
-        AudioMediaUI audioMediaUI = new AudioMediaUI(audioMedia, MainController.this);
+    private void addAudioMediaUI(AudioMedia audioMedia) {
+        AudioMediaUI audioMediaUI = new AudioMediaUI(audioMedia, EasyconduiteController.this);
         audioMediaUIs.add(audioMediaUI);
         tableLayout.getChildren().add(audioMediaUI);
         LOG.debug("AudioMedia {} added to AudioTable", audioMedia);
@@ -311,7 +320,7 @@ public class MainController extends StackPane implements Initializable, EasyAudi
         } else {
             Optional<ButtonType> response = ActionDialog.showConfirmation(bundle.getString("dialog.warning.save.header"), bundle.getString("dialog.warning.save.content"));
             if (response.isPresent() && response.get().equals(ButtonType.YES)) {
-                menuSaveFile(event);
+                handleSave(event);
                 Platform.exit();
             } else {
                 Platform.exit();
@@ -358,7 +367,54 @@ public class MainController extends StackPane implements Initializable, EasyAudi
         bundle = rb;
         calquePane.setMouseTransparent(true);
 
-        MediaUIDragAndDrop.activateDrangAndDrop(tableLayout);
+        tableLayout.setOnDragDetected((MouseEvent mouseEvent) -> {
+            if (mouseEvent.getTarget() instanceof AudioMediaUI) {
+                final Dragboard dragBroard = tableLayout.startDragAndDrop(TransferMode.COPY);
+                // Remlissage du contenu.
+                ClipboardContent content = new ClipboardContent();
+                // recup de l'index children
+                final Integer index = tableLayout.getChildren().indexOf(mouseEvent.getTarget());
+                content.put(Constants.DATA_FORMAT_INTEGER, index);
+                dragBroard.setContent(content);
+                LOG.trace("Drag detected on AUdioMediaUI index {}", index);
+                mouseEvent.consume();
+            }
+        });
+
+        tableLayout.setOnDragOver((DragEvent dragEvent) -> {
+            final Dragboard dragBroard = dragEvent.getDragboard();
+            if (dragEvent.getTarget() instanceof AudioMediaUI && dragBroard.hasContent(Constants.DATA_FORMAT_INTEGER)) {        
+                final Integer indexSource = (Integer) dragBroard.getContent(Constants.DATA_FORMAT_INTEGER);
+                final Integer index = tableLayout.getChildren().indexOf(dragEvent.getTarget());
+                LOG.trace("Target DRAG_OVER {}", index);
+                if (!Objects.equals(index, indexSource)) {
+                    dragEvent.acceptTransferModes(TransferMode.COPY);
+                }
+            }
+            dragEvent.consume();
+        });
+
+        tableLayout.setOnDragDropped((DragEvent dragEvent) -> {
+
+            if (dragEvent.getTarget() instanceof AudioMediaUI) {
+                final Dragboard dragBroard = dragEvent.getDragboard();
+                final Integer idSource = (Integer) dragBroard.getContent(Constants.DATA_FORMAT_INTEGER);
+                final AudioMediaUI sourceUi = (AudioMediaUI) tableLayout.getChildren().get(idSource);
+                tableLayout.getChildren().set(idSource, new VBox());
+                tableLayout.getChildren().set(tableLayout.getChildren().indexOf(dragEvent.getTarget()), sourceUi);
+                tableLayout.getChildren().set(idSource, (AudioMediaUI) dragEvent.getTarget());
+                dragEvent.setDropCompleted(true);
+                dragEvent.consume();
+            }
+
+        });
+
+        tableLayout.setOnDragDone(dragEvent -> {
+            if (dragEvent.getTransferMode() == TransferMode.COPY) {
+                dragEvent.getDragboard().clear();
+            }
+            dragEvent.consume();
+        });
 
         LOG.trace("Bundle {} loaded", rb.getLocale());
     }
@@ -375,6 +431,11 @@ public class MainController extends StackPane implements Initializable, EasyAudi
 
     private AudioMediaUI findAudioMediaUI(AudioMedia audioMedia) {
         return audioMediaUIs.stream().filter(ui -> ui.getAudioMedia().equals(audioMedia)).findFirst().get();
+    }
+
+    private void updateStageTitle(AudioTable audioTable) {
+        Stage primStage = (Stage) EasyconduiteUITools.getScene(mainPane).getWindow();
+        primStage.setTitle("EasyConduite " + bundle.getString("easyconduite.version") + " : " + audioTable.getName());
     }
 
     @Override

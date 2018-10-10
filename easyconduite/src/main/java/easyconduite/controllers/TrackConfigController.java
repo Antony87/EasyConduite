@@ -48,7 +48,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class TrackConfigController extends DialogAbstractController implements Initializable, EasyAudioChain {
 
-    private MainController mainController;
+    private EasyconduiteController mainController;
 
     private KeyCode newKeyCode;
 
@@ -166,7 +166,7 @@ public class TrackConfigController extends DialogAbstractController implements I
         }
     }
 
-    public void setMainController(MainController mainController) {
+    public void setMainController(EasyconduiteController mainController) {
         this.mainController = mainController;
     }
 
