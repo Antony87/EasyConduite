@@ -40,7 +40,7 @@ public class EasyconduiteUITools {
     public static <T extends Node> Window getWindow(T node) {
         return EasyconduiteUITools.getScene(node).getWindow();
     }
-
+    
     public static String formatTime(Duration duration) {
         if (duration.greaterThan(Duration.ZERO)) {
             final double millis = duration.toMillis();
