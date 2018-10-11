@@ -16,7 +16,7 @@
  */
 package easyconduite.ui;
 
-import easyconduite.controllers.EasyconduiteController;
+import easyconduite.controllers.MainController;
 import easyconduite.controllers.TrackConfigController;
 import easyconduite.objects.AudioMedia;
 import easyconduite.util.EasyConduitePropertiesHandler;
@@ -43,7 +43,7 @@ public class TrackConfigDialogUI extends Stage {
 
     private static final String PATH_FXML = "/fxml/trackDialog.fxml";
 
-    public TrackConfigDialogUI(AudioMedia media, EasyconduiteController mainController) throws IOException {
+    public TrackConfigDialogUI(AudioMedia media, MainController mainController) throws IOException {
         super();
 
         LOG.debug("TrackConfigDialogUI with AudioMedia[{}] and EasyconduiteController[{}]", media.getFilePathName(), mainController);

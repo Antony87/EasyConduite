@@ -16,6 +16,7 @@
  */
 package easyconduite.ui.controls;
 
+import easyconduite.objects.EasyconduiteProperty;
 import easyconduite.util.EasyConduitePropertiesHandler;
 import java.util.ResourceBundle;
 import javafx.stage.FileChooser;
@@ -38,6 +39,8 @@ public class EasyFileChooser {
         private String extension[];
 
         private final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
+        
+        private final EasyconduiteProperty userdatas = EasyConduitePropertiesHandler.getInstance().getProperties();
 
         public FileChooserBuilder asType(Type type) {
 
@@ -69,8 +72,12 @@ public class EasyFileChooser {
         }
 
         public FileChooser build() {
+            
+            
+            
             final FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle(title);
+            fileChooser.setInitialDirectory(userdatas.getLastProjectDir());
             fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter(text, extension));
             return fileChooser;
         }

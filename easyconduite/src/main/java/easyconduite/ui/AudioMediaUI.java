@@ -16,7 +16,7 @@
  */
 package easyconduite.ui;
 
-import easyconduite.controllers.EasyconduiteController;
+import easyconduite.controllers.MainController;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
@@ -87,7 +87,7 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
      * @param media
      * @param controller
      */
-    public AudioMediaUI(AudioMedia media, EasyconduiteController controller) {
+    public AudioMediaUI(AudioMedia media, MainController controller) {
         super();
         LOG.info("Construct an AudioMedia {}", media);
 
