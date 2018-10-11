@@ -148,7 +148,7 @@ public class EasyconduitePlayer implements EasyAudioChain {
     }
     
     @Override
-    public void removeChilds(AudioMedia audioMedia) {
+    public void removeChild(AudioMedia audioMedia) {
         fadeHandler.stop();
         fadeHandler = null;
         player.dispose();

@@ -133,6 +133,7 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
         // All childs are built. Call updateFromAudio to set there.
         MenuItem propertiesItem = new MenuItem(bundle.getString("track.context.properties"));
         propertiesItem.setOnAction((ActionEvent e) -> {
+            player.stop();
             controller.editTrack(this);
             e.consume();
         });
@@ -203,8 +204,8 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
     }
 
     @Override
-    public void removeChilds(AudioMedia audioMedia) {
-        nextChain.removeChilds(audioMedia);
+    public void removeChild(AudioMedia audioMedia) {
+        nextChain.removeChild(audioMedia);
     }
 
     private String formatTime(Duration duration) {
@@ -226,12 +227,15 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
             switch (newValue) {
                 case PAUSED:
                     playPauseHbox.decoratePlaying(false);
+                    decorateAudioPlaying(false);
                     break;
                 case PLAYING:
                     playPauseHbox.decoratePlaying(true);
+                    decorateAudioPlaying(true);
                     break;
                 case STOPPED:
                     playPauseHbox.decoratePlaying(false);
+                    decorateAudioPlaying(false);
                     break;
                 case READY:
                     // if player ready, update AudioMedia duration an UI.
@@ -256,6 +260,17 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
                     player.updateFromAudioMedia(audioMedia);
                 }
             });
+        }
+    }
+
+    private void decorateAudioPlaying(boolean playing) {
+        this.getStyleClass().parallelStream().filter((t) -> {
+            return t.equals("playing");
+        }).forEach((t) -> {
+            this.getStyleClass().remove(t);
+        });
+        if (playing) {
+            this.getStyleClass().add("playing");
         }
     }
 
@@ -288,13 +303,14 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
             PlayPauseHbox.this.getChildren().addAll(stopRegion, playRegion);
         }
 
-        protected void decoratePlaying(boolean decorate) {
+        protected void decoratePlaying(boolean playing) {
             playRegion.getStyleClass().remove(0);
-            if (decorate) {
+            if (playing) {
                 playRegion.getStyleClass().add("pausebutton");
             } else {
                 playRegion.getStyleClass().add("playbutton");
             }
+            LOG.trace("Class CSS PlayRegion {}", playRegion.getStyleClass());
         }
     }
 }

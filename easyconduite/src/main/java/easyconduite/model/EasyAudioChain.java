@@ -45,6 +45,6 @@ public interface EasyAudioChain {
      * responsability.
      * @param audioMedia
      */
-    public void removeChilds(AudioMedia audioMedia);
+    public void removeChild(AudioMedia audioMedia);
 
 }

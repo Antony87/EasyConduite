@@ -112,7 +112,7 @@ public class MainController extends StackPane implements Initializable, EasyAudi
      */
     public MainController() {
         audioTable = new AudioTable();
-        audioMediaUIs = new ArrayList<>();
+        audioMediaUIs = new ArrayList<>(100);
         userdatas = EasyConduitePropertiesHandler.getInstance().getProperties();
         local = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
     }
@@ -212,7 +212,7 @@ public class MainController extends StackPane implements Initializable, EasyAudi
         List<AudioMedia> audioMediaList = audioTable.getAudioMediaList();
         while (audioMediaList.iterator().hasNext()) {
             AudioMedia audioMedia = audioMediaList.iterator().next();
-            this.removeChilds(audioMedia);
+            this.removeChild(audioMedia);
         }
     }
 
@@ -259,6 +259,7 @@ public class MainController extends StackPane implements Initializable, EasyAudi
     public void editTrack(AudioMediaUI audioMediaUi) {
         final TrackConfigDialogUI trackConfigDialog;
         try {
+            audioMediaUi.getEasyPlayer().stop();
             trackConfigDialog = new TrackConfigDialogUI(audioMediaUi.getAudioMedia(), this);
             trackConfigDialog.show();
         } catch (IOException ex) {
@@ -290,7 +291,7 @@ public class MainController extends StackPane implements Initializable, EasyAudi
 
     public void removeAudioMedia(AudioMedia audioMedia) {
         LOG.debug("AudioMedia {} removed from AudioTable", audioMedia);
-        this.removeChilds(audioMedia);
+        this.removeChild(audioMedia);
     }
 
     @FXML
@@ -389,11 +390,11 @@ public class MainController extends StackPane implements Initializable, EasyAudi
     }
 
     @Override
-    public void removeChilds(AudioMedia audioMedia) {
+    public void removeChild(AudioMedia audioMedia) {
         LOG.debug("Remove AudioMedia[{}]", audioMedia);
         final AudioMediaUI ui = findAudioMediaUI(audioMedia);
         setNext(ui);
-        nextChain.removeChilds(audioMedia);
+        nextChain.removeChild(audioMedia);
         tableLayout.getChildren().remove(ui);
         audioMediaUIs.remove(ui);
         audioTable.getAudioMediaList().remove(audioMedia);

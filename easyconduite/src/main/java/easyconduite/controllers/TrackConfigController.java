@@ -196,6 +196,6 @@ public class TrackConfigController extends DialogAbstractController implements I
     }
 
     @Override
-    public void removeChilds(AudioMedia audioMedia) {
+    public void removeChild(AudioMedia audioMedia) {
     }
 }
