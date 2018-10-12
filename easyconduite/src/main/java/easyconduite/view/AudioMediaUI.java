@@ -14,14 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package easyconduite.ui;
+package easyconduite.view;
 
 import easyconduite.controllers.MainController;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
 import easyconduite.ui.commons.ActionDialog;
-import easyconduite.ui.controls.EasyconduitePlayer;
+import easyconduite.controls.EasyconduitePlayer;
 import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.KeyCodeUtil;
 import java.util.ResourceBundle;

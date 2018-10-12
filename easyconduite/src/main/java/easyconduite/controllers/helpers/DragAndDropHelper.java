@@ -16,7 +16,7 @@
  */
 package easyconduite.controllers.helpers;
 
-import easyconduite.ui.AudioMediaUI;
+import easyconduite.view.AudioMediaUI;
 import easyconduite.util.Constants;
 import java.util.Objects;
 import javafx.scene.input.ClipboardContent;
