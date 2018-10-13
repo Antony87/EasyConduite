@@ -15,8 +15,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
 <StackPane fx:id="mainPane" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.MainController">
@@ -72,7 +72,7 @@
                   </Menu>
               <Menu mnemonicParsing="false" text="%menu.cue.title">
                 <items>
-                        <MenuItem mnemonicParsing="false" onAction="#handleRazChrono" text="RAZ Timer">
+                        <MenuItem disable="true" mnemonicParsing="false" text="RAZ Timer">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                            </accelerator>
@@ -91,12 +91,12 @@
           </MenuBar>
             <BorderPane fx:id="trackstable" stylesheets="@../styles/easyconduite.css" VBox.vgrow="ALWAYS">
                <top>
-                  <HBox fx:id="infoBaseLine" alignment="CENTER_LEFT" spacing="20.0" BorderPane.alignment="CENTER">
+                  <HBox alignment="CENTER_LEFT" styleClass="infoBaseLine" BorderPane.alignment="CENTER">
                      <children>
                         <Region prefHeight="200.0" prefWidth="200.0" stylesheets="@../styles/easyconduite.css" />
-                        <StackPane fx:id="timelinepane" alignment="CENTER_LEFT">
+                        <StackPane alignment="CENTER_LEFT">
                            <children>
-                              <Label fx:id="timeLineLabel" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" prefHeight="0.0" prefWidth="495.0" style="-fx-background-color: transparent;" textAlignment="CENTER" textFill="#00d936" />
+                              <Label alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" prefHeight="0.0" prefWidth="495.0" style="-fx-background-color: transparent;" textAlignment="CENTER" textFill="#00d936" />
                            </children>
                            <padding>
                               <Insets right="20.0" />
@@ -105,9 +105,8 @@
                               <Insets right="20.0" />
                            </HBox.margin>
                         </StackPane>
-                        <Rectangle fx:id="timeLineRectangle" arcHeight="5.0" arcWidth="5.0" fill="#203029" stroke="#a8b0bb" strokeType="INSIDE" />
-                        <ToggleButton fx:id="chronobutton" mnemonicParsing="false" onMouseClicked="#handleMouseAction" styleClass="chrono-button" stylesheets="@../../styles/Styles.css" text="ON" textAlignment="CENTER" />
-                        <Label fx:id="timer" alignment="CENTER" contentDisplay="RIGHT" stylesheets="@../styles/easyconduite.css" text="00:00:00" textAlignment="CENTER" textFill="#00d936">
+                        <ToggleButton disable="true" mnemonicParsing="false" text="ON" textAlignment="CENTER" visible="false" />
+                        <Label alignment="CENTER" contentDisplay="RIGHT" disable="true" stylesheets="@../styles/easyconduite.css" text="00:00:00" textAlignment="CENTER" textFill="#00d936" visible="false">
                            <font>
                               <Font size="24.0" />
                            </font>
@@ -120,7 +119,7 @@
                         </Label>
                      </children>
                      <BorderPane.margin>
-                        <Insets top="2.0" />
+                        <Insets />
                      </BorderPane.margin>
                   </HBox>
                </top>
@@ -128,7 +127,7 @@
                   <StackPane BorderPane.alignment="CENTER">
                      <children>
                         <FlowPane fx:id="tableLayout" rowValignment="TOP" stylesheets="@../styles/easyconduite.css" />
-                        <StackPane fx:id="calquePane" prefHeight="150.0" prefWidth="200.0" />
+                        <Pane fx:id="calquePane"/>
                      </children>
                   </StackPane>
                </center>
@@ -139,6 +138,5 @@
    <stylesheets>
       <URL value="@../styles/easyconduite.css" />
       <URL value="@../styles/audiomediaui.css" />
-      <URL value="@../styles/Styles.css" />
    </stylesheets>
 </StackPane>

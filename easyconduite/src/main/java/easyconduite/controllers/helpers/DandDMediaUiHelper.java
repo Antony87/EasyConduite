@@ -27,14 +27,30 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
  * @author antony
  */
-public class DragAndDropHelper {
+public class DandDMediaUiHelper {
 
-    public static void setDragAndDropFeature(FlowPane tableLayout, MainController controler) {
+    private static final Logger LOG = LogManager.getLogger(DandDMediaUiHelper.class);
+
+    private AudioMediaUI sourceUi;
+
+    private Integer sourceIndex;
+
+    private Integer targetIndex;
+
+    private AudioMediaUI targetUi;
+
+    public DandDMediaUiHelper() {
+
+    }
+
+    public void setDragAndDropFeature(FlowPane tableLayout, MainController controler) {
 
         tableLayout.setOnDragDetected((MouseEvent mouseEvent) -> {
             if (mouseEvent.getTarget() instanceof AudioMediaUI) {
@@ -42,19 +58,20 @@ public class DragAndDropHelper {
                 // Remlissage du contenu.
                 ClipboardContent content = new ClipboardContent();
                 // recup de l'index children
-                final Integer index = tableLayout.getChildren().indexOf(mouseEvent.getTarget());
-                content.put(Constants.DATA_FORMAT_INTEGER, index);
+                sourceUi = (AudioMediaUI) mouseEvent.getTarget();
+                sourceIndex = tableLayout.getChildren().indexOf(sourceUi);
+                content.put(Constants.DATA_FORMAT_INTEGER, sourceIndex);
                 dragBroard.setContent(content);
-                mouseEvent.consume();
             }
+            mouseEvent.consume();
         });
 
         tableLayout.setOnDragOver((DragEvent dragEvent) -> {
             final Dragboard dragBroard = dragEvent.getDragboard();
             if (dragEvent.getTarget() instanceof AudioMediaUI && dragBroard.hasContent(Constants.DATA_FORMAT_INTEGER)) {
-                final Integer indexSource = (Integer) dragBroard.getContent(Constants.DATA_FORMAT_INTEGER);
-                final Integer index = tableLayout.getChildren().indexOf(dragEvent.getTarget());
-                if (!Objects.equals(index, indexSource)) {
+                //final Integer indexSource = (Integer) dragBroard.getContent(Constants.DATA_FORMAT_INTEGER);
+                targetIndex = tableLayout.getChildren().indexOf(dragEvent.getTarget());
+                if (!Objects.equals(targetIndex, sourceIndex)) {
                     dragEvent.acceptTransferModes(TransferMode.COPY);
                 }
             }
@@ -66,28 +83,27 @@ public class DragAndDropHelper {
 
             if (dragEvent.getTarget() instanceof AudioMediaUI) {
                 final Dragboard dragBroard = dragEvent.getDragboard();
-                final Integer idSource = (Integer) dragBroard.getContent(Constants.DATA_FORMAT_INTEGER);
-                final AudioMediaUI sourceUi = (AudioMediaUI) tableLayout.getChildren().get(idSource);
-                tableLayout.getChildren().set(idSource, new VBox());
-                tableLayout.getChildren().set(tableLayout.getChildren().indexOf(dragEvent.getTarget()), sourceUi);
-                tableLayout.getChildren().set(idSource, (AudioMediaUI) dragEvent.getTarget());
-                dragEvent.setDropCompleted(true);
-                dragEvent.consume();
-            }
+                //final Integer idSource = (Integer) dragBroard.getContent(Constants.DATA_FORMAT_INTEGER);
+                //final AudioMediaUI sourceUi = (AudioMediaUI) tableLayout.getChildren().get(idSource);
 
+                targetUi = (AudioMediaUI) dragEvent.getTarget();
+                targetIndex = tableLayout.getChildren().indexOf(targetUi);
+
+                tableLayout.getChildren().set(sourceIndex, new VBox());
+                tableLayout.getChildren().set(targetIndex, sourceUi);
+                tableLayout.getChildren().set(sourceIndex, targetUi);
+                dragEvent.setDropCompleted(true);
+            }
+            dragEvent.consume();
         }
         );
 
-        tableLayout.setOnDragDone(dragEvent
-                -> {
+        tableLayout.setOnDragDone(dragEvent -> {
             if (dragEvent.getTransferMode() == TransferMode.COPY) {
                 dragEvent.getDragboard().clear();
             }
             controler.orderAudioTable();
             dragEvent.consume();
-        }
-        );
-
+        });
     }
-
 }

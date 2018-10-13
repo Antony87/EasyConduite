@@ -32,22 +32,23 @@ import org.apache.logging.log4j.Logger;
  *
  * @author antony
  */
-public class PreferencesDialogUI extends Stage {
+public class PreferencesUI extends Stage {
     
-    static final Logger LOG = LogManager.getLogger(PreferencesDialogUI.class);
+    static final Logger LOG = LogManager.getLogger(PreferencesUI.class);
 
-    private final String PATH_FXML = "/fxml/preferencesDialog.fxml";
+    private final String PATH_FXML = "/fxml/preferences.fxml";
 
-    public PreferencesDialogUI(ResourceBundle bundle) throws IOException {
+    public PreferencesUI(ResourceBundle bundle) throws IOException {
         super();
         
         FXMLLoader loader = new FXMLLoader(getClass().getResource(PATH_FXML),bundle);
         BorderPane dialogPane = loader.<BorderPane>load();
+        
         PreferencesController controler = loader.getController();
         
         this.setTitle("Preferences");
         this.initModality(Modality.APPLICATION_MODAL);
-        this.initStyle(StageStyle.UTILITY);
+        this.initStyle(StageStyle.UNIFIED);
         this.setResizable(false);
         this.setScene(new Scene(dialogPane));
         

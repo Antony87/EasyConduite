@@ -16,8 +16,7 @@
  */
 package easyconduite.controllers;
 
-import easyconduite.controllers.helpers.DragAndDropHelper;
-import easyconduite.controls.Chrono;
+import easyconduite.controllers.helpers.DandDMediaUiHelper;
 import easyconduite.controls.EasyFileChooser;
 import easyconduite.exception.PersistenceException;
 import easyconduite.model.EasyAudioChain;
@@ -31,7 +30,7 @@ import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.PersistenceUtil;
 import easyconduite.view.AboutDialogUI;
 import easyconduite.view.AudioMediaUI;
-import easyconduite.view.PreferencesDialogUI;
+import easyconduite.view.PreferencesUI;
 import easyconduite.view.TrackConfigUI;
 import java.io.File;
 import java.io.IOException;
@@ -46,17 +45,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.controlsfx.control.MaskerPane;
 
 /**
  * This class implements a controller for audio table and AudioMediUI behaviors.
@@ -79,21 +75,10 @@ public class MainController extends StackPane implements Initializable, EasyAudi
     StackPane mainPane;
 
     @FXML
-    private Label timer;
-
-    @FXML
-    private ToggleButton chronobutton;
-
-    @FXML
     private FlowPane tableLayout;
 
     @FXML
-    private StackPane calquePane;
-
-    @FXML
-    private Label timeLineLabel;
-
-    private Chrono chrono;
+    private Pane calquePane;
 
     private AudioTable audioTable;
 
@@ -118,21 +103,6 @@ public class MainController extends StackPane implements Initializable, EasyAudi
     }
 
     @FXML
-    private void handleRazChrono(ActionEvent event) {
-        chrono.raz();
-        chronobutton.setSelected(false);
-    }
-
-    @FXML
-    private void handleMouseAction(MouseEvent event) {
-        if (!chronobutton.isSelected()) {
-            chrono.pause();
-        } else {
-            chrono.play();
-        }
-    }
-
-    @FXML
     private void menuFileOpen(ActionEvent event) {
         LOG.debug("menuFileOpen called");
 
@@ -154,15 +124,15 @@ public class MainController extends StackPane implements Initializable, EasyAudi
             try {
                 audioTable = (AudioTable) PersistenceUtil.readFromFile(file, AudioTable.class, PersistenceUtil.FILE_TYPE.XML);
                 UITools.updateWindowsTitle(mainPane, audioTable.getName());
-                MaskerPane masker = new MaskerPane();
-                masker.setText("Chargement ...");
-                calquePane.getChildren().add(masker);
-                masker.setVisible(true);
+//                MaskerPane masker = new MaskerPane();
+//                masker.setText("Chargement ...");
+//                calquePane.getChildren().add(masker);
+//                masker.setVisible(true);
 
                 audioTable.getAudioMediaList().forEach((audioMedia) -> {
                     addAudioMediaUI(audioMedia);
                 });
-                calquePane.getChildren().remove(masker);
+//                calquePane.getChildren().remove(masker);
 
             } catch (PersistenceException ex) {
                 LOG.error("Error occured during opening project file[{}]", file, ex);
@@ -225,7 +195,7 @@ public class MainController extends StackPane implements Initializable, EasyAudi
     private void menuPreferences(ActionEvent event) {
         LOG.debug("menuPreferences called");
         try {
-            PreferencesDialogUI prefsUI = new PreferencesDialogUI(local);
+            PreferencesUI prefsUI = new PreferencesUI(local);
             prefsUI.show();
         } catch (IOException ex) {
             LOG.debug("Error occurend ", ex);
@@ -358,9 +328,9 @@ public class MainController extends StackPane implements Initializable, EasyAudi
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         LOG.debug("Controler initialisation");
-        chrono = new Chrono(timer);
         calquePane.setMouseTransparent(true);
-        DragAndDropHelper.setDragAndDropFeature(tableLayout,this);
+        new DandDMediaUiHelper().setDragAndDropFeature(tableLayout, this);
+        //DragAndDropHelper.setDragAndDropFeature(tableLayout, this);
         LOG.trace("Bundle {} loaded", rb.getLocale());
     }
 
@@ -388,6 +358,10 @@ public class MainController extends StackPane implements Initializable, EasyAudi
             return o1.getIndex() - o2.getIndex();
         });
         audioTable.setUpdated(true);
+    }
+
+    public Pane getCalquePane() {
+        return calquePane;
     }
 
     @Override
