@@ -17,22 +17,22 @@
 package easyconduite.controllers;
 
 import easyconduite.controllers.helpers.DragAndDropHelper;
+import easyconduite.controls.Chrono;
+import easyconduite.controls.EasyFileChooser;
 import easyconduite.exception.PersistenceException;
 import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioTable;
 import easyconduite.objects.EasyconduiteProperty;
-import easyconduite.view.AboutDialogUI;
-import easyconduite.view.AudioMediaUI;
-import easyconduite.view.PreferencesDialogUI;
-import easyconduite.view.TrackConfigDialogUI;
 import easyconduite.ui.commons.ActionDialog;
 import easyconduite.ui.commons.UITools;
-import easyconduite.controls.Chrono;
-import easyconduite.controls.EasyFileChooser;
 import easyconduite.util.Constants;
 import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.PersistenceUtil;
+import easyconduite.view.AboutDialogUI;
+import easyconduite.view.AudioMediaUI;
+import easyconduite.view.PreferencesDialogUI;
+import easyconduite.view.TrackConfigUI;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -52,11 +52,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.controlsfx.control.MaskerPane;
 
 /**
  * This class implements a controller for audio table and AudioMediUI behaviors.
@@ -70,10 +70,10 @@ public class MainController extends StackPane implements Initializable, EasyAudi
     private final static String MSG_DIAG_ERROR = "dialog.error.header";
     private final static String MSG_ERROR_OPEN = "easyconduitecontroler.open.error";
     private final static String MSG_ERROR_SAVE = "easyconduitecontroler.save.error";
-    private final static String MSG_WARNING_SAVE_HEADER="dialog.warning.save.header";
-    private final static String MSG_WARNING_SAVE_CONT="dialog.warning.save.content";
-    private final static String MSG_DELETE_HEADER="audiomediaui.delete.header";
-    private final static String MSG_DELETE_CONT="audiomediaui.delete.content";
+    private final static String MSG_WARNING_SAVE_HEADER = "dialog.warning.save.header";
+    private final static String MSG_WARNING_SAVE_CONT = "dialog.warning.save.content";
+    private final static String MSG_DELETE_HEADER = "audiomediaui.delete.header";
+    private final static String MSG_DELETE_CONT = "audiomediaui.delete.content";
 
     @FXML
     StackPane mainPane;
@@ -88,7 +88,7 @@ public class MainController extends StackPane implements Initializable, EasyAudi
     private FlowPane tableLayout;
 
     @FXML
-    private Pane calquePane;
+    private StackPane calquePane;
 
     @FXML
     private Label timeLineLabel;
@@ -154,10 +154,15 @@ public class MainController extends StackPane implements Initializable, EasyAudi
             try {
                 audioTable = (AudioTable) PersistenceUtil.readFromFile(file, AudioTable.class, PersistenceUtil.FILE_TYPE.XML);
                 UITools.updateWindowsTitle(mainPane, audioTable.getName());
+                MaskerPane masker = new MaskerPane();
+                masker.setText("Chargement ...");
+                calquePane.getChildren().add(masker);
+                masker.setVisible(true);
 
                 audioTable.getAudioMediaList().forEach((audioMedia) -> {
                     addAudioMediaUI(audioMedia);
                 });
+                calquePane.getChildren().remove(masker);
 
             } catch (PersistenceException ex) {
                 LOG.error("Error occured during opening project file[{}]", file, ex);
@@ -257,10 +262,10 @@ public class MainController extends StackPane implements Initializable, EasyAudi
     }
 
     public void editTrack(AudioMediaUI audioMediaUi) {
-        final TrackConfigDialogUI trackConfigDialog;
+        final TrackConfigUI trackConfigDialog;
         try {
             audioMediaUi.getEasyPlayer().stop();
-            trackConfigDialog = new TrackConfigDialogUI(audioMediaUi.getAudioMedia(), this);
+            trackConfigDialog = new TrackConfigUI(audioMediaUi.getAudioMedia(), this);
             trackConfigDialog.show();
         } catch (IOException ex) {
             LOG.error("Error occurend during TrackConfigDialog construction", ex);
@@ -354,8 +359,8 @@ public class MainController extends StackPane implements Initializable, EasyAudi
     public void initialize(URL url, ResourceBundle rb) {
         LOG.debug("Controler initialisation");
         chrono = new Chrono(timer);
-        calquePane.setMouseTransparent(true); 
-        DragAndDropHelper.setDragAndDropFeature(tableLayout);
+        calquePane.setMouseTransparent(true);
+        DragAndDropHelper.setDragAndDropFeature(tableLayout,this);
         LOG.trace("Bundle {} loaded", rb.getLocale());
     }
 
@@ -371,6 +376,18 @@ public class MainController extends StackPane implements Initializable, EasyAudi
 
     private AudioMediaUI findAudioMediaUI(AudioMedia audioMedia) {
         return audioMediaUIs.stream().filter(ui -> ui.getAudioMedia().equals(audioMedia)).findFirst().get();
+    }
+
+    public void orderAudioTable() {
+        tableLayout.getChildren().filtered((t) -> {
+            return t instanceof AudioMediaUI;
+        }).forEach((t) -> {
+            ((AudioMediaUI) t).getAudioMedia().setIndex(tableLayout.getChildren().indexOf(t));
+        });
+        audioTable.getAudioMediaList().sort((o1, o2) -> {
+            return o1.getIndex() - o2.getIndex();
+        });
+        audioTable.setUpdated(true);
     }
 
     @Override

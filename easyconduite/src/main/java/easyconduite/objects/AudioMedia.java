@@ -45,6 +45,8 @@ public class AudioMedia {
 
     private final UUID uniqueId = UUID.randomUUID();
 
+    private int index;
+
     private String filePathName;
 
     private Duration audioDuration = Duration.ONE;
@@ -107,6 +109,14 @@ public class AudioMedia {
      */
     public final void setFilePathName(String filePathName) {
         this.filePathName = filePathName;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     ////////////////////////////////////////////////////////////////////////////

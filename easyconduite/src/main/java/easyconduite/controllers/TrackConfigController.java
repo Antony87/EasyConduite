@@ -21,6 +21,7 @@ import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioMediaConfigurator;
 import easyconduite.ui.commons.ActionDialog;
+import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.KeyCodeUtil;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -48,12 +49,16 @@ import org.apache.logging.log4j.Logger;
  */
 public class TrackConfigController extends DialogAbstractController implements Initializable, EasyAudioChain {
 
+    static final Logger LOG = LogManager.getLogger(TrackConfigController.class);
+    private static final String KEY_ASSIGN_ERROR = "trackconfigcontroller.key.error";
+    private static final String KEY_ASSIGN_OTHER = "trackconfigcontroller.key.other";
+
     private MainController mainController;
 
     private KeyCode newKeyCode;
 
     @FXML
-    private BorderPane configDialogPane;
+    private BorderPane trackConfigPane;
 
     @FXML
     private TextField nametrackfield;
@@ -69,16 +74,12 @@ public class TrackConfigController extends DialogAbstractController implements I
 
     @FXML
     private Spinner fadeOutSpinner;
-    
+
     private EasyAudioChain nextChain;
-    
-    private ResourceBundle bundle;
 
     private final ObjectProperty<AudioMedia> audioMedia = new ReadOnlyObjectWrapper<>();
 
     private final AudioMediaConfigurator mediaConfigurator;
-
-    static final Logger LOG = LogManager.getLogger(TrackConfigController.class);
 
     public TrackConfigController() {
         super();
@@ -96,9 +97,6 @@ public class TrackConfigController extends DialogAbstractController implements I
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         LOG.trace("TrackConfigController initialized");
-        
-        bundle=resources;
-        
         SpinnerValueFactory<Integer> valueFadeInFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
         fadeInSpinner.setValueFactory(valueFadeInFactory);
         SpinnerValueFactory<Integer> valueFadeOutFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
@@ -107,7 +105,6 @@ public class TrackConfigController extends DialogAbstractController implements I
         // listener to detect AudioMedia setting up and forward values to UI controls.
         audioMediaProperty().addListener((ObservableValue<? extends AudioMedia> observable, AudioMedia oldMedia, AudioMedia newMedia) -> {
             if (newMedia != null) {
-                LOG.trace("UI initialized, setting up UI with newMedia values");
                 nametrackfield.setText(newMedia.getName());
                 keytrackfield.setText(KeyCodeUtil.toString(newMedia.getKeycode()));
                 repeattrack.setSelected(newMedia.getRepeatable());
@@ -132,12 +129,12 @@ public class TrackConfigController extends DialogAbstractController implements I
                 .withfadeIn(Duration.seconds(iValueFadeIn))
                 .withfadeOut(Duration.seconds(iValueFadeOut));
         this.updateFromAudioMedia(audioMedia.get());
-        this.close(configDialogPane);
+        this.close(trackConfigPane);
     }
 
     @FXML
     private void handleClickCancel(MouseEvent event) {
-        this.close(configDialogPane);
+        this.close(trackConfigPane);
     }
 
     @FXML
@@ -156,7 +153,8 @@ public class TrackConfigController extends DialogAbstractController implements I
         final KeyCode typedKeycode = event.getCode();
         if (mainController.isKeyCodeExist(typedKeycode)) {
             keytrackfield.clear();
-            ActionDialog.showWarning(String.format(bundle.getString("trackconfigcontroller.key.error"), KeyCodeUtil.toString(typedKeycode)), bundle.getString("trackconfigcontroller.key.other"));
+            final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
+            ActionDialog.showWarning(String.format(bundle.getString(KEY_ASSIGN_ERROR), KeyCodeUtil.toString(typedKeycode)), bundle.getString(KEY_ASSIGN_OTHER));
         } else {
             if (typedKeycode != audioMedia.getValue().getKeycode()) {
                 this.newKeyCode = typedKeycode;
@@ -191,7 +189,6 @@ public class TrackConfigController extends DialogAbstractController implements I
     public void updateFromAudioMedia(AudioMedia media) {
         mediaConfigurator.update(audioMedia.getValue());
         setNext(mainController);
-        LOG.trace("After config, AudioMedia is {}", this.audioMedia);
         nextChain.updateFromAudioMedia(audioMedia.getValue());
     }
 

@@ -16,8 +16,9 @@
  */
 package easyconduite.controllers.helpers;
 
-import easyconduite.view.AudioMediaUI;
+import easyconduite.controllers.MainController;
 import easyconduite.util.Constants;
+import easyconduite.view.AudioMediaUI;
 import java.util.Objects;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
@@ -33,7 +34,7 @@ import javafx.scene.layout.VBox;
  */
 public class DragAndDropHelper {
 
-    public static void setDragAndDropFeature(FlowPane tableLayout) {
+    public static void setDragAndDropFeature(FlowPane tableLayout, MainController controler) {
 
         tableLayout.setOnDragDetected((MouseEvent mouseEvent) -> {
             if (mouseEvent.getTarget() instanceof AudioMediaUI) {
@@ -82,6 +83,7 @@ public class DragAndDropHelper {
             if (dragEvent.getTransferMode() == TransferMode.COPY) {
                 dragEvent.getDragboard().clear();
             }
+            controler.orderAudioTable();
             dragEvent.consume();
         }
         );

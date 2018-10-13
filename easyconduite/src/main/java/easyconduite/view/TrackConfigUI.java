@@ -37,13 +37,13 @@ import org.apache.logging.log4j.Logger;
  *
  * @author antony Fons
  */
-public class TrackConfigDialogUI extends Stage {
+public class TrackConfigUI extends Stage {
 
-    static final Logger LOG = LogManager.getLogger(TrackConfigDialogUI.class);
+    static final Logger LOG = LogManager.getLogger(TrackConfigUI.class);
 
-    private static final String PATH_FXML = "/fxml/trackDialog.fxml";
+    private static final String PATH_FXML = "/fxml/trackConfig.fxml";
 
-    public TrackConfigDialogUI(AudioMedia media, MainController mainController) throws IOException {
+    public TrackConfigUI(AudioMedia media, MainController mainController) throws IOException {
         super();
 
         LOG.debug("TrackConfigDialogUI with AudioMedia[{}] and EasyconduiteController[{}]", media.getFilePathName(), mainController);
@@ -59,7 +59,7 @@ public class TrackConfigDialogUI extends Stage {
 
         this.setTitle("Configuration");
         this.initModality(Modality.APPLICATION_MODAL);
-        this.initStyle(StageStyle.UTILITY);
+        this.initStyle(StageStyle.UNIFIED);
         this.setResizable(false);
         this.setScene(new Scene(dialogPane));
     }

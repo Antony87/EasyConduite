@@ -78,8 +78,6 @@ public class Easyconduite extends Application {
             event.consume();
         });
         
-        scene.getStylesheets().add("/styles/Styles.css");
-        scene.getStylesheets().add("/styles/audiomediaui.css");
         stage.setTitle("EasyConduite" + localeBundle.getString("easyconduite.version"));
         stage.setScene(scene);
         

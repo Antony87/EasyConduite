@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
@@ -12,14 +13,13 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<StackPane fx:id="mainPane" stylesheets="@../styles/easyconduite.css" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.MainController">
+<StackPane fx:id="mainPane" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.MainController">
    <children>
       <VBox onKeyPressed="#handleKeyCodePlay">
         <children>
@@ -128,7 +128,7 @@
                   <StackPane BorderPane.alignment="CENTER">
                      <children>
                         <FlowPane fx:id="tableLayout" rowValignment="TOP" stylesheets="@../styles/easyconduite.css" />
-                        <Pane fx:id="calquePane" mouseTransparent="true" />
+                        <StackPane fx:id="calquePane" prefHeight="150.0" prefWidth="200.0" />
                      </children>
                   </StackPane>
                </center>
@@ -136,4 +136,9 @@
         </children>
       </VBox>
    </children>
+   <stylesheets>
+      <URL value="@../styles/easyconduite.css" />
+      <URL value="@../styles/audiomediaui.css" />
+      <URL value="@../styles/Styles.css" />
+   </stylesheets>
 </StackPane>

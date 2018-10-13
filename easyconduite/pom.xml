@@ -41,6 +41,12 @@
             <artifactId>log4j-core</artifactId>
             <version>2.3</version>
         </dependency>
+        <dependency>
+            <groupId>org.controlsfx</groupId>
+            <artifactId>controlsfx</artifactId>
+            <version>8.40.14</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -78,7 +84,7 @@
                             <executable>${java.home}/../bin/javapackager</executable>
                             <arguments>
                                 <argument>-createjar</argument>
-<!--                                <argument>-nocss2bin</argument>-->
+                                <argument>-nocss2bin</argument>
                                 <argument>-appclass</argument>
                                 <argument>${mainClass}</argument>
                                 <argument>-srcdir</argument>

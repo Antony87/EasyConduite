@@ -6,18 +6,16 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="configDialogPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="336.0" prefWidth="400.0" styleClass="border-pane" stylesheets="@../../styles/trackdialog.css" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.TrackConfigController">
+<BorderPane fx:id="trackConfigPane" minHeight="-Infinity" prefWidth="400.0" stylesheets="@../../styles/trackConfig.css" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.TrackConfigController">
    <center>
-      <GridPane BorderPane.alignment="CENTER_RIGHT">
+      <GridPane alignment="CENTER" styleClass="gridConfig">
         <columnConstraints>
           <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
           <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -35,26 +33,20 @@
                   <Insets left="10.0" right="10.0" />
                </GridPane.margin>
             </TextField>
-            <TextField fx:id="keytrackfield" alignment="CENTER" maxWidth="150.0" onKeyReleased="#handleKeyReleasedTrack" onMouseReleased="#handleClickKeyField" prefHeight="25.0" prefWidth="127.0" promptText="%configuration.associatedkey.text" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <TextField fx:id="keytrackfield" onKeyReleased="#handleKeyReleasedTrack" onMouseReleased="#handleClickKeyField" promptText="%configuration.associatedkey.text" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets left="20.0" right="10.0" />
                </GridPane.margin>
             </TextField>
-            <Label styleClass="Label" text="%configuration.name.label" textAlignment="RIGHT">
+            <Label text="%configuration.name.label">
                <GridPane.margin>
                   <Insets right="20.0" />
                </GridPane.margin>
-               <font>
-                  <Font name="Arial Black" size="12.0" />
-               </font>
             </Label>
-            <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="116.0" styleClass="Label" text="%configuration.associatedkey.label" textAlignment="RIGHT" GridPane.rowIndex="1">
+            <Label text="%configuration.associatedkey.label" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets right="20.0" />
                </GridPane.margin>
-               <font>
-                  <Font name="Arial Black" size="12.0" />
-               </font>
             </Label>
             <CheckBox fx:id="repeattrack" mnemonicParsing="false" onMouseReleased="#handleClickRepeat" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <GridPane.margin>
@@ -65,30 +57,18 @@
                <GridPane.margin>
                   <Insets right="20.0" />
                </GridPane.margin>
-               <font>
-                  <Font name="Arial Black" size="12.0" />
-               </font>
             </Label>
             <Label text="Fade In (s)" GridPane.rowIndex="3">
-               <font>
-                  <Font name="Arial Black" size="12.0" />
-               </font>
                <GridPane.margin>
                   <Insets right="20.0" />
                </GridPane.margin>
             </Label>
             <Spinner fx:id="fadeInSpinner" editable="true" prefHeight="25.0" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
                <GridPane.margin>
                   <Insets left="20.0" />
                </GridPane.margin>
             </Spinner>
             <Label text="Fade Out (s)" GridPane.rowIndex="4">
-               <font>
-                  <Font name="Arial Black" size="12.0" />
-               </font>
                <GridPane.margin>
                   <Insets right="20.0" />
                </GridPane.margin>
@@ -108,35 +88,19 @@
       </GridPane>
    </center>
    <top>
-      <HBox alignment="CENTER" prefHeight="80.0" prefWidth="150.0" spacing="50.0" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" styleClass="configTitle">
          <children>
-            <ImageView id="imagedialog" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-               <HBox.margin>
-                  <Insets />
-               </HBox.margin>
-               <image>
-                  <Image url="@../icons/Get%20Info%20Blue%20Button.png" />
-               </image>
-            </ImageView>
-            <Label contentDisplay="CENTER" styleClass="Label" text="%configuration.title.label" textAlignment="CENTER">
-               <font>
-                  <Font name="Arial Black" size="18.0" />
-               </font>
-               <HBox.margin>
-                  <Insets right="10.0" />
-               </HBox.margin>
-            </Label>
-         </children></HBox>
+            <Region styleClass="iconTitle" />
+            <Label text="%configuration.title.label" />
+         </children>
+      </HBox>
    </top>
    <bottom>
-      <HBox alignment="CENTER" prefHeight="80.0" prefWidth="200.0" spacing="50.0" BorderPane.alignment="CENTER">
+      <HBox styleClass="bottomHbox">
          <children>
-            <Button id="cancelbutton" cancelButton="true" maxWidth="90.0" minWidth="90.0" mnemonicParsing="false" onMouseReleased="#handleClickCancel" styleClass="cancelbutton" text="%dialog.button.cancel" />
-            <Button id="okbutton" defaultButton="true" graphicTextGap="6.0" maxWidth="90.0" minWidth="90.0" mnemonicParsing="false" onMouseReleased="#handleClickOk" prefWidth="0.0" text="%dialog.button.apply" />
+            <Button cancelButton="true" defaultButton="true" mnemonicParsing="false" onMouseReleased="#handleClickCancel" text="%dialog.button.cancel" />
+            <Button mnemonicParsing="false" onMouseReleased="#handleClickOk" text="%dialog.button.apply" />
          </children>
-         <BorderPane.margin>
-            <Insets />
-         </BorderPane.margin>
       </HBox>
    </bottom>
 </BorderPane>
