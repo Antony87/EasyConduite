@@ -17,11 +17,11 @@
 package easyconduite.view;
 
 import easyconduite.controllers.MainController;
+import easyconduite.controls.EasyconduitePlayer;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
 import easyconduite.ui.commons.ActionDialog;
-import easyconduite.controls.EasyconduitePlayer;
 import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.KeyCodeUtil;
 import java.util.ResourceBundle;
@@ -130,7 +130,7 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
         keycodeHbox.getStyleClass().add("baseHbox");
         keycodeHbox.getChildren().add(keycodeLabel);
 
-        // All childs are built. Call updateFromAudio to set there.
+
         MenuItem propertiesItem = new MenuItem(bundle.getString("track.context.properties"));
         propertiesItem.setOnAction((ActionEvent e) -> {
             player.stop();

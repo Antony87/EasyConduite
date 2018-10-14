@@ -20,13 +20,16 @@ import easyconduite.controllers.MainController;
 import easyconduite.util.Constants;
 import easyconduite.view.AudioMediaUI;
 import java.util.Objects;
+import javafx.collections.ObservableList;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,41 +41,61 @@ public class DandDMediaUiHelper {
 
     private static final Logger LOG = LogManager.getLogger(DandDMediaUiHelper.class);
 
-    private AudioMediaUI sourceUi;
+    private Pane calque;
+    private Rectangle rect;
 
-    private Integer sourceIndex;
+    private void moveRectLayer(Pane paneOver, Rectangle rect) {
+        final Double x = paneOver.getLayoutX();
+        final Double y = paneOver.getLayoutY();
+        rect.setLayoutX(x);
+        rect.setLayoutY(y);
+    }
 
-    private Integer targetIndex;
-
-    private AudioMediaUI targetUi;
-
-    public DandDMediaUiHelper() {
-
+    private void resizeRectLayer(Pane paneOver, Rectangle rect) {
+        final Double width = paneOver.getWidth();
+        final Double height = paneOver.getHeight();
+        rect.setWidth(width);
+        rect.setHeight(height);
     }
 
     public void setDragAndDropFeature(FlowPane tableLayout, MainController controler) {
 
+        final ObservableList childs = tableLayout.getChildren();
+
+        calque = controler.getCalquePane();
+
+        rect = new Rectangle();
+        rect.getStyleClass().add("rectDragOver");
+
         tableLayout.setOnDragDetected((MouseEvent mouseEvent) -> {
-            if (mouseEvent.getTarget() instanceof AudioMediaUI) {
+            Object t = mouseEvent.getTarget();
+            if (t instanceof AudioMediaUI) {
                 final Dragboard dragBroard = tableLayout.startDragAndDrop(TransferMode.COPY);
                 // Remlissage du contenu.
                 ClipboardContent content = new ClipboardContent();
                 // recup de l'index children
-                sourceUi = (AudioMediaUI) mouseEvent.getTarget();
-                sourceIndex = tableLayout.getChildren().indexOf(sourceUi);
+                final AudioMediaUI sourceUi = (AudioMediaUI) t;
+                final Integer sourceIndex = childs.indexOf(sourceUi);
                 content.put(Constants.DATA_FORMAT_INTEGER, sourceIndex);
                 dragBroard.setContent(content);
+                if (!calque.getChildren().contains(rect)) {
+                    calque.getChildren().add(rect);
+                }
+                resizeRectLayer(sourceUi, rect);
+                moveRectLayer(sourceUi, rect);
             }
             mouseEvent.consume();
         });
-
+        
         tableLayout.setOnDragOver((DragEvent dragEvent) -> {
             final Dragboard dragBroard = dragEvent.getDragboard();
-            if (dragEvent.getTarget() instanceof AudioMediaUI && dragBroard.hasContent(Constants.DATA_FORMAT_INTEGER)) {
-                //final Integer indexSource = (Integer) dragBroard.getContent(Constants.DATA_FORMAT_INTEGER);
-                targetIndex = tableLayout.getChildren().indexOf(dragEvent.getTarget());
+            Object t = dragEvent.getTarget();
+            if (t instanceof AudioMediaUI && dragBroard.hasContent(Constants.DATA_FORMAT_INTEGER)) {
+                final Integer sourceIndex = (Integer) dragBroard.getContent(Constants.DATA_FORMAT_INTEGER);
+                final Integer targetIndex = childs.indexOf(t);
                 if (!Objects.equals(targetIndex, sourceIndex)) {
                     dragEvent.acceptTransferModes(TransferMode.COPY);
+                    moveRectLayer((AudioMediaUI) t, rect);
                 }
             }
             dragEvent.consume();
@@ -80,23 +103,23 @@ public class DandDMediaUiHelper {
         );
 
         tableLayout.setOnDragDropped((DragEvent dragEvent) -> {
-
-            if (dragEvent.getTarget() instanceof AudioMediaUI) {
+            Object o = dragEvent.getTarget();
+            if (o instanceof AudioMediaUI) {
                 final Dragboard dragBroard = dragEvent.getDragboard();
-                //final Integer idSource = (Integer) dragBroard.getContent(Constants.DATA_FORMAT_INTEGER);
-                //final AudioMediaUI sourceUi = (AudioMediaUI) tableLayout.getChildren().get(idSource);
-
-                targetUi = (AudioMediaUI) dragEvent.getTarget();
-                targetIndex = tableLayout.getChildren().indexOf(targetUi);
-
-                tableLayout.getChildren().set(sourceIndex, new VBox());
-                tableLayout.getChildren().set(targetIndex, sourceUi);
-                tableLayout.getChildren().set(sourceIndex, targetUi);
+                final Integer sourceIndex = (Integer) dragBroard.getContent(Constants.DATA_FORMAT_INTEGER);
+                final AudioMediaUI sourceUi = (AudioMediaUI) childs.get(sourceIndex);
+                final AudioMediaUI targetUi = (AudioMediaUI) o;
+                final Integer targetIndex = childs.indexOf(targetUi);
+                childs.set(sourceIndex, new VBox());
+                childs.set(targetIndex, sourceUi);
+                childs.set(sourceIndex, targetUi);
                 dragEvent.setDropCompleted(true);
             }
+            if (calque.getChildren().contains(rect)) {
+                calque.getChildren().remove(rect);
+            }
             dragEvent.consume();
-        }
-        );
+        });
 
         tableLayout.setOnDragDone(dragEvent -> {
             if (dragEvent.getTransferMode() == TransferMode.COPY) {
