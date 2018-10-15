@@ -20,14 +20,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     Author     : A. Fons
 */
 #trackConfigPane{
-    -fx-background-color: #464646;
-    -fx-pref-width: 400;
+    -fx-background-color: #373737;
+    -fx-pref-width: 450;
 }
 
 .configTitle{
     -fx-pref-height : 50;
     -fx-spacing: 50;
     -fx-alignment: center;
+    -fx-background-color: #464646;
 }
 
 .configTitle > .label{
@@ -60,6 +61,53 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 .gridConfig > .text-field{
     -fx-alignment: CENTER;
-        -fx-font-size: 12;
+    -fx-font-size: 12;
     -fx-text-fill: #000000;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-opacity: 0;
+    -fx-background-color: #373737;
+}
+
+.tab-pane
+{
+    -fx-tab-min-width: 90px;
+}
+
+.tab{
+    -fx-background-insets: 0 1 0 1,0,0;
+
+}
+.tab-pane .tab
+{
+    -fx-background-color: #464646;
+    -fx-border-color:  #828282;
+    -fx-border-style: solid solid none solid ;
+    /*-fx-border-width: 1  1  0  1 ;*/
+
+}
+
+.tab-pane .tab:selected
+{
+    -fx-background-color: #3c3c3c;
+}
+
+.tab .tab-label { 
+    -fx-alignment: CENTER;
+    -fx-text-fill: #828282;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+
+}
+
+.tab:selected .tab-label { 
+    -fx-alignment: CENTER;
+    -fx-text-fill: #599CA8;
+}
+
+.tab-pane:top *.tab-header-area {
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 1 1 0 0; /* overridden as 5 2 0 0 */ 
+
 }
