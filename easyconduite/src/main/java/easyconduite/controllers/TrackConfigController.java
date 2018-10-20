@@ -25,6 +25,7 @@ import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.KeyCodeUtil;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -101,17 +102,21 @@ public class TrackConfigController extends DialogAbstractController implements I
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         LOG.trace("TrackConfigController initialized");
+        
         Service service = new MainCtrlNotNull();
-
         service.setOnSucceeded((event) -> {
             LOG.trace("listView populated called");
 
             nametrackfield.setText(audioMedia.getName());
             keytrackfield.setText(KeyCodeUtil.toString(audioMedia.getKeycode()));
             repeattrack.setSelected(audioMedia.getRepeatable());
-            FadeSpinners.initializeSpinners(fadeInSpinner, fadeOutSpinner, audioMedia);
+            
+            initializeSpinners(fadeInSpinner, fadeOutSpinner, audioMedia);
 
-            avalaibleTracks.setItems(mainController.audioTable.getAudioMediaList());
+            ObservableList<AudioMedia> liste = mainController.audioTable.getAudioMediaList();         
+            avalaibleTracks.setItems(liste.filtered((t) -> {
+                return t!=audioMedia;
+            }));
             avalaibleTracks.setCellFactory(TextFieldListCell.forListView(new MediaConverter()));
             service.cancel();
         });
@@ -120,7 +125,6 @@ public class TrackConfigController extends DialogAbstractController implements I
 
     }
 
-    
     class MediaConverter extends StringConverter<AudioMedia> {
 
         @Override
@@ -203,26 +207,20 @@ public class TrackConfigController extends DialogAbstractController implements I
     public void removeChild(AudioMedia audioMedia) {
     }
 
-    private static class FadeSpinners {
-
-        static void initializeSpinners(Spinner<Integer> fadeIn, Spinner<Integer> fadeOut, AudioMedia audioMedia) {
-            SpinnerValueFactory<Integer> valueFadeInFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
-            fadeIn.setValueFactory(valueFadeInFactory);
-            SpinnerValueFactory<Integer> valueFadeOutFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
-            fadeOut.setValueFactory(valueFadeOutFactory);
-            updateSpinners(fadeIn, fadeOut, audioMedia);
+    private void initializeSpinners(Spinner<Integer> fadeIn, Spinner<Integer> fadeOut, AudioMedia audioMedia) {
+        
+        SpinnerValueFactory<Integer> valueFadeInFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
+        fadeIn.setValueFactory(valueFadeInFactory);
+        SpinnerValueFactory<Integer> valueFadeOutFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
+        fadeOut.setValueFactory(valueFadeOutFactory);
+        if (audioMedia.getFadeInDuration() != null) {
+            fadeIn.getValueFactory().setValue((int) audioMedia.getFadeInDuration().toSeconds());
         }
-
-        static void updateSpinners(Spinner<Integer> fadeIn, Spinner<Integer> fadeOut, AudioMedia audioMedia) {
-            if (audioMedia.getFadeInDuration() != null) {
-                fadeIn.getValueFactory().setValue((int) audioMedia.getFadeInDuration().toSeconds());
-            }
-            if (audioMedia.getFadeOutDuration() != null) {
-                fadeOut.getValueFactory().setValue((int) audioMedia.getFadeOutDuration().toSeconds());
-            }
+        if (audioMedia.getFadeOutDuration() != null) {
+            fadeOut.getValueFactory().setValue((int) audioMedia.getFadeOutDuration().toSeconds());
         }
     }
-    
+
     private class MainCtrlNotNull extends Service {
 
         @Override

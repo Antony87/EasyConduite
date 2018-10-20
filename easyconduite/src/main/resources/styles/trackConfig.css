@@ -21,7 +21,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 #trackConfigPane{
     -fx-background-color: #373737;
-    -fx-pref-width: 450;
+    -fx-pref-width: 500;
+}
+
+.label{
+    -fx-font-size: 12;
+    -fx-text-fill: #FFFFFF;
+    -fx-alignment: CENTER;   
 }
 
 .configTitle{
@@ -53,66 +59,30 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     -fx-max-height: 50;
 }
 
-.gridConfig > .label{
-    -fx-font-size: 12;
-    -fx-text-fill: #FFFFFF;
-    -fx-alignment:CENTER;
+.middleVbox{
+    -fx-spacing: 10;
+    -fx-padding: 10 0 10 0;
+
 }
 
-#gridLinks .label{
-    -fx-font-size: 12;
-    -fx-text-fill: #FFFFFF;
+.middleHbox{
+    -fx-min-height: 30;
+    -fx-max-height: 30;
+    -fx-spacing: 100;
+    -fx-alignment:CENTER;
+    -fx-border-color: #828282;
+    -fx-border-width: 1 0 0 0;
+}
+
+.linksHbox{
+    -fx-spacing: 10;
+    -fx-padding: 0 10 5 10;
+    -fx-border-color: #828282;
+    -fx-border-width: 0 0 1 0;
 }
 
 .gridConfig > .text-field{
     -fx-alignment: CENTER;
     -fx-font-size: 12;
     -fx-text-fill: #000000;
-}
-
-.tab-pane .tab-header-area .tab-header-background {
-    -fx-opacity: 0;
-    -fx-background-color: #373737;
-}
-
-
-.tab-pane
-{
-    -fx-tab-min-width: 90px;
-}
-
-.tab{
-    -fx-background-insets: 0 1 0 1,0,0;
-}
-.tab-pane .tab
-{
-    -fx-background-color: #464646;
-    -fx-border-color:  #828282;
-    -fx-border-style: solid solid none solid ;
-}
-
-.tab-pane .tab:selected
-{
-    -fx-background-color: #3c3c3c;
-}
-
-.tab .tab-label { 
-    -fx-alignment: CENTER;
-    -fx-text-fill: #828282;
-    -fx-font-size: 12px;
-    -fx-font-weight: bold;
-}
-.vboxconfig{
-    -fx-padding: 5 0 5 0;
-}
-
-.tab:selected .tab-label { 
-    -fx-alignment: CENTER;
-    -fx-text-fill: #599CA8;
-}
-
-.tab-pane:top *.tab-header-area {
-    -fx-background-insets: 0, 0 0 1 0;
-    -fx-padding: 1 1 0 0; /* overridden as 5 2 0 0 */ 
-
 }
