@@ -31,7 +31,7 @@ import easyconduite.util.PersistenceUtil;
 import easyconduite.view.AboutDialogUI;
 import easyconduite.view.AudioMediaUI;
 import easyconduite.view.PreferencesUI;
-import easyconduite.view.TrackConfigUI;
+import easyconduite.view.TrackConfig;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -80,7 +80,7 @@ public class MainController extends StackPane implements Initializable, EasyAudi
     @FXML
     private Pane calquePane;
 
-    private AudioTable audioTable;
+    AudioTable audioTable;
 
     private EasyAudioChain nextChain;
 
@@ -232,10 +232,10 @@ public class MainController extends StackPane implements Initializable, EasyAudi
     }
 
     public void editTrack(AudioMediaUI audioMediaUi) {
-        final TrackConfigUI trackConfigDialog;
+        final TrackConfig trackConfigDialog;
         try {
             audioMediaUi.getEasyPlayer().stop();
-            trackConfigDialog = new TrackConfigUI(audioMediaUi.getAudioMedia(), this);
+            trackConfigDialog = new TrackConfig(audioMediaUi.getAudioMedia(), this);
             trackConfigDialog.show();
         } catch (IOException ex) {
             LOG.error("Error occurend during TrackConfigDialog construction", ex);

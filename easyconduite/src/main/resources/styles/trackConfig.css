@@ -49,14 +49,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     -fx-spacing: 20;
     -fx-padding: 20;
     -fx-alignment: CENTER_RIGHT;
-    -fx-min-height: 60;
-    -fx-max-height: 60;
+    -fx-min-height: 50;
+    -fx-max-height: 50;
 }
 
 .gridConfig > .label{
     -fx-font-size: 12;
     -fx-text-fill: #FFFFFF;
     -fx-alignment:CENTER;
+}
+
+#gridLinks .label{
+    -fx-font-size: 12;
+    -fx-text-fill: #FFFFFF;
 }
 
 .gridConfig > .text-field{
@@ -70,6 +75,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     -fx-background-color: #373737;
 }
 
+
 .tab-pane
 {
     -fx-tab-min-width: 90px;
@@ -77,15 +83,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 .tab{
     -fx-background-insets: 0 1 0 1,0,0;
-
 }
 .tab-pane .tab
 {
     -fx-background-color: #464646;
     -fx-border-color:  #828282;
     -fx-border-style: solid solid none solid ;
-    /*-fx-border-width: 1  1  0  1 ;*/
-
 }
 
 .tab-pane .tab:selected
@@ -98,7 +101,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     -fx-text-fill: #828282;
     -fx-font-size: 12px;
     -fx-font-weight: bold;
-
+}
+.vboxconfig{
+    -fx-padding: 5 0 5 0;
 }
 
 .tab:selected .tab-label { 

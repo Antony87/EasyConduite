@@ -25,20 +25,22 @@ import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.KeyCodeUtil;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ListView;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Duration;
+import javafx.util.StringConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -56,6 +58,9 @@ public class TrackConfigController extends DialogAbstractController implements I
     private MainController mainController;
 
     private KeyCode newKeyCode;
+
+    @FXML
+    ListView<AudioMedia> avalaibleTracks;
 
     @FXML
     private BorderPane trackConfigPane;
@@ -77,7 +82,7 @@ public class TrackConfigController extends DialogAbstractController implements I
 
     private EasyAudioChain nextChain;
 
-    private final ObjectProperty<AudioMedia> audioMedia = new ReadOnlyObjectWrapper<>();
+    private AudioMedia audioMedia;
 
     private final AudioMediaConfigurator mediaConfigurator;
 
@@ -93,30 +98,40 @@ public class TrackConfigController extends DialogAbstractController implements I
      * @param location
      * @param resources
      */
-    @FXML
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         LOG.trace("TrackConfigController initialized");
-        SpinnerValueFactory<Integer> valueFadeInFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
-        fadeInSpinner.setValueFactory(valueFadeInFactory);
-        SpinnerValueFactory<Integer> valueFadeOutFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
-        fadeOutSpinner.setValueFactory(valueFadeOutFactory);
+        Service service = new MainCtrlNotNull();
 
-        // listener to detect AudioMedia setting up and forward values to UI controls.
-        audioMediaProperty().addListener((ObservableValue<? extends AudioMedia> observable, AudioMedia oldMedia, AudioMedia newMedia) -> {
-            if (newMedia != null) {
-                nametrackfield.setText(newMedia.getName());
-                keytrackfield.setText(KeyCodeUtil.toString(newMedia.getKeycode()));
-                repeattrack.setSelected(newMedia.getRepeatable());
-                if (newMedia.getFadeInDuration() != null) {
-                    fadeInSpinner.getValueFactory().setValue((int) newMedia.getFadeInDuration().toSeconds());
-                }
-                if (newMedia.getFadeOutDuration() != null) {
-                    fadeOutSpinner.getValueFactory().setValue((int) newMedia.getFadeOutDuration().toSeconds());
-                }
-            }
+        service.setOnSucceeded((event) -> {
+            LOG.trace("listView populated called");
+
+            nametrackfield.setText(audioMedia.getName());
+            keytrackfield.setText(KeyCodeUtil.toString(audioMedia.getKeycode()));
+            repeattrack.setSelected(audioMedia.getRepeatable());
+            FadeSpinners.initializeSpinners(fadeInSpinner, fadeOutSpinner, audioMedia);
+
+            avalaibleTracks.setItems(mainController.audioTable.getAudioMediaList());
+            avalaibleTracks.setCellFactory(TextFieldListCell.forListView(new MediaConverter()));
+            service.cancel();
         });
 
+        service.start();
+
+    }
+
+    
+    class MediaConverter extends StringConverter<AudioMedia> {
+
+        @Override
+        public String toString(AudioMedia object) {
+            return object.getName();
+        }
+
+        @Override
+        public AudioMedia fromString(String string) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
     }
 
     @FXML
@@ -128,7 +143,7 @@ public class TrackConfigController extends DialogAbstractController implements I
                 .withName(nametrackfield.getText())
                 .withfadeIn(Duration.seconds(iValueFadeIn))
                 .withfadeOut(Duration.seconds(iValueFadeOut));
-        this.updateFromAudioMedia(audioMedia.get());
+        this.updateFromAudioMedia(audioMedia);
         this.close(trackConfigPane);
     }
 
@@ -156,7 +171,7 @@ public class TrackConfigController extends DialogAbstractController implements I
             final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
             ActionDialog.showWarning(String.format(bundle.getString(KEY_ASSIGN_ERROR), KeyCodeUtil.toString(typedKeycode)), bundle.getString(KEY_ASSIGN_OTHER));
         } else {
-            if (typedKeycode != audioMedia.getValue().getKeycode()) {
+            if (typedKeycode != audioMedia.getKeycode()) {
                 this.newKeyCode = typedKeycode;
                 keytrackfield.setText(KeyCodeUtil.toString(typedKeycode));
                 mediaConfigurator.withKeyCodeChanged(newKeyCode);
@@ -168,16 +183,8 @@ public class TrackConfigController extends DialogAbstractController implements I
         this.mainController = mainController;
     }
 
-    public AudioMedia getAudioMediaObs() {
-        return audioMedia.get();
-    }
-
     public void setAudioMedia(AudioMedia audioMedia) {
-        this.audioMedia.setValue(audioMedia);
-    }
-
-    public ObjectProperty<AudioMedia> audioMediaProperty() {
-        return audioMedia;
+        this.audioMedia = audioMedia;
     }
 
     @Override
@@ -187,12 +194,50 @@ public class TrackConfigController extends DialogAbstractController implements I
 
     @Override
     public void updateFromAudioMedia(AudioMedia media) {
-        mediaConfigurator.update(audioMedia.getValue());
+        mediaConfigurator.update(audioMedia);
         setNext(mainController);
-        nextChain.updateFromAudioMedia(audioMedia.getValue());
+        nextChain.updateFromAudioMedia(audioMedia);
     }
 
     @Override
     public void removeChild(AudioMedia audioMedia) {
+    }
+
+    private static class FadeSpinners {
+
+        static void initializeSpinners(Spinner<Integer> fadeIn, Spinner<Integer> fadeOut, AudioMedia audioMedia) {
+            SpinnerValueFactory<Integer> valueFadeInFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
+            fadeIn.setValueFactory(valueFadeInFactory);
+            SpinnerValueFactory<Integer> valueFadeOutFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
+            fadeOut.setValueFactory(valueFadeOutFactory);
+            updateSpinners(fadeIn, fadeOut, audioMedia);
+        }
+
+        static void updateSpinners(Spinner<Integer> fadeIn, Spinner<Integer> fadeOut, AudioMedia audioMedia) {
+            if (audioMedia.getFadeInDuration() != null) {
+                fadeIn.getValueFactory().setValue((int) audioMedia.getFadeInDuration().toSeconds());
+            }
+            if (audioMedia.getFadeOutDuration() != null) {
+                fadeOut.getValueFactory().setValue((int) audioMedia.getFadeOutDuration().toSeconds());
+            }
+        }
+    }
+    
+    private class MainCtrlNotNull extends Service {
+
+        @Override
+        protected Task<Object> createTask() {
+            return new Task<Object>() {
+                @Override
+                protected Object call() throws Exception {
+                    LOG.trace("Task called");
+                    while (trackConfigPane.getChildren().contains(null) && mainController == null) {
+
+                    }
+                    LOG.trace("object not null");
+                    return mainController;
+                }
+            };
+        }
     }
 }

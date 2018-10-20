@@ -37,30 +37,34 @@ import org.apache.logging.log4j.Logger;
  *
  * @author antony Fons
  */
-public class TrackConfigUI extends Stage {
+public class TrackConfig extends Stage {
 
-    static final Logger LOG = LogManager.getLogger(TrackConfigUI.class);
+    static final Logger LOG = LogManager.getLogger(TrackConfig.class);
 
     private static final String PATH_FXML = "/fxml/trackConfig.fxml";
 
-    public TrackConfigUI(AudioMedia media, MainController mainController) throws IOException {
+    public TrackConfig(AudioMedia media, MainController mainController) throws IOException {
         super();
 
         LOG.debug("TrackConfigDialogUI with AudioMedia[{}] and EasyconduiteController[{}]", media.getFilePathName(), mainController);
-        
+
         final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
-        final FXMLLoader loader = new FXMLLoader(getClass().getResource(PATH_FXML),bundle);
+        final FXMLLoader loader = new FXMLLoader(getClass().getResource(PATH_FXML), bundle);
         // Initialize controllers        
         final BorderPane dialogPane = loader.<BorderPane>load();
         final TrackConfigController configController = loader.getController();
-        
-        configController.audioMediaProperty().setValue(media);
+
+        configController.setAudioMedia(media);
         configController.setMainController(mainController);
 
         this.setTitle("Configuration");
         this.initModality(Modality.APPLICATION_MODAL);
         this.initStyle(StageStyle.UNIFIED);
         this.setResizable(false);
-        this.setScene(new Scene(dialogPane));
+
+        Scene sceneConfig = new Scene(dialogPane);
+
+        this.setScene(sceneConfig);
     }
+
 }
