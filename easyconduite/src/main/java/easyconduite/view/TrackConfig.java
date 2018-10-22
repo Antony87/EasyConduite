@@ -59,7 +59,7 @@ public class TrackConfig extends Stage {
 
         this.setTitle("Configuration");
         this.initModality(Modality.APPLICATION_MODAL);
-        this.initStyle(StageStyle.UNIFIED);
+        this.initStyle(StageStyle.UTILITY);
         this.setResizable(false);
 
         Scene sceneConfig = new Scene(dialogPane);
