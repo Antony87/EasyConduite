@@ -48,7 +48,7 @@ public class PreferencesUI extends Stage {
         
         this.setTitle("Preferences");
         this.initModality(Modality.APPLICATION_MODAL);
-        this.initStyle(StageStyle.UNIFIED);
+        this.initStyle(StageStyle.UTILITY);
         this.setResizable(false);
         this.setScene(new Scene(dialogPane));
         
