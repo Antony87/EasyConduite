@@ -17,9 +17,9 @@
 package easyconduite.controllers;
 
 import easyconduite.model.DialogAbstractController;
-import easyconduite.objects.EasyconduiteProperty;
-import easyconduite.util.EasyConduitePropertiesHandler;
-import easyconduite.util.LoggingUtil;
+import easyconduite.objects.ApplicationProperties;
+import easyconduite.tools.ApplicationPropertiesHelper;
+import easyconduite.tools.LoggingUtil;
 import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -59,12 +59,12 @@ public class PreferencesController extends DialogAbstractController implements I
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         
-        EasyconduiteProperty userData = EasyConduitePropertiesHandler.getInstance().getProperties();
+        ApplicationProperties applicationProperties = ApplicationPropertiesHelper.getInstance().getProperties();
         
         ObservableList<Locale> listeLocale = FXCollections.observableArrayList(Locale.FRENCH, Locale.ENGLISH);
         
         prefLang.setItems(listeLocale);
-        prefLang.getSelectionModel().select(listeLocale.stream().filter((Locale t) -> t.getDisplayLanguage().equals(userData.getLocale().getDisplayLanguage())).findFirst().get());
+        prefLang.getSelectionModel().select(listeLocale.stream().filter((Locale t) -> t.getDisplayLanguage().equals(applicationProperties.getLocale().getDisplayLanguage())).findFirst().get());
              
         prefLang.setConverter(new StringConverter<Locale>() {
             @Override
@@ -79,7 +79,7 @@ public class PreferencesController extends DialogAbstractController implements I
         
         ObservableList<Level> listeLevel= FXCollections.observableArrayList(Level.OFF, Level.ERROR, Level.ALL);
         prefLogLevel.setItems(listeLevel);
-        prefLogLevel.getSelectionModel().select(listeLevel.stream().filter((Level t) -> t.equals(userData.getLogLevel())).findFirst().get());
+        prefLogLevel.getSelectionModel().select(listeLevel.stream().filter((Level t) -> t.equals(applicationProperties.getLogLevel())).findFirst().get());
         
     }
     
@@ -87,7 +87,7 @@ public class PreferencesController extends DialogAbstractController implements I
     private void handleClickOk(MouseEvent event) {
         LOG.debug("handleClickOk called");
 
-        EasyconduiteProperty properties = EasyConduitePropertiesHandler.getInstance().getProperties();
+        ApplicationProperties properties = ApplicationPropertiesHelper.getInstance().getProperties();
         properties.setLocale(prefLang.getValue());
         properties.setLogLevel(prefLogLevel.getValue());
         LoggingUtil.setLog4jLevel(prefLogLevel.getValue());

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package easyconduite.util;
+package easyconduite.tools;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;

@@ -16,10 +16,8 @@
  */
 package easyconduite.objects;
 
-import easyconduite.util.PersistenceUtil;
+import easyconduite.tools.PersistenceUtil;
 import javafx.beans.Observable;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -51,9 +49,6 @@ public class AudioTable {
     private ObservableList<AudioMedia> audioMediaList;
 
     @XmlTransient
-    public ListProperty<AudioMedia> listproperty;
-
-    @XmlTransient
     private boolean updated = false;
 
     @XmlTransient
@@ -75,13 +70,8 @@ public class AudioTable {
             a.fadeInDurationProperty()
         };
 
-//        audioMediaList = FXCollections.observableArrayList();
         audioMediaList = FXCollections.observableArrayList(cb);
         audioMediaList.addListener(new AudioMediaChangeListerner());
-        
-        listproperty = new SimpleListProperty<>(audioMediaList);
-
-
     }
 
     /**

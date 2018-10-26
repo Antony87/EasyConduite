@@ -21,12 +21,10 @@ import easyconduite.controls.EasyconduitePlayer;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
+import easyconduite.tools.ApplicationPropertiesHelper;
+import easyconduite.tools.KeyCodeUtil;
 import easyconduite.ui.commons.ActionDialog;
-import easyconduite.util.EasyConduitePropertiesHandler;
-import easyconduite.util.KeyCodeUtil;
 import java.util.ResourceBundle;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -35,7 +33,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.input.ContextMenuEvent;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -57,8 +54,6 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
 
     static final Logger LOG = LogManager.getLogger(AudioMediaUI.class);
 
-    private final ObjectProperty<KeyCode> keycode = new ReadOnlyObjectWrapper<>();
-
     private final Label nameLabel = new Label();
 
     private final Label timeLabel = new Label();
@@ -69,7 +64,7 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
 
     private final ContextMenu contextMenu = new ContextMenu();
 
-    private final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
+    private final ResourceBundle bundle = ApplicationPropertiesHelper.getInstance().getLocalBundle();
 
     private final PlayPauseHbox playPauseHbox;
 
@@ -174,14 +169,6 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
         return player;
     }
 
-    public ObjectProperty<KeyCode> keycodeProperty() {
-        return keycode;
-    }
-
-    public KeyCode getKeycode() {
-        return keycode.get();
-    }
-
     @Override
     public void setNext(EasyAudioChain next) {
         nextChain = next;
@@ -195,7 +182,7 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
             nameLabel.setText(audioMedia.getName());
             timeLabel.setText(formatTime(audioMedia.getAudioDuration()));
             keycodeLabel.setText(KeyCodeUtil.toString(this.audioMedia.getKeycode()));
-            keycode.setValue(this.audioMedia.getKeycode());
+            //keycode.setValue(this.audioMedia.getKeycode());
             // on passe la responsabilité au next (EasyconduitePlayer).
             nextChain.updateFromAudioMedia(this.audioMedia);
         } else {
@@ -310,7 +297,6 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
             } else {
                 playRegion.getStyleClass().add("playbutton");
             }
-            LOG.trace("Class CSS PlayRegion {}", playRegion.getStyleClass());
         }
     }
 }

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package easyconduite.util;
+package easyconduite.tools;
 
 import javafx.util.Duration;
 import javax.xml.bind.annotation.adapters.XmlAdapter;

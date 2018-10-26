@@ -16,9 +16,9 @@
  */
 package easyconduite.ui.commons;
 
-import easyconduite.objects.EasyconduiteProperty;
-import easyconduite.util.Constants;
-import easyconduite.util.EasyConduitePropertiesHandler;
+import easyconduite.objects.ApplicationProperties;
+import easyconduite.tools.ApplicationPropertiesHelper;
+import easyconduite.tools.Constants;
 import java.util.ResourceBundle;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -46,7 +46,7 @@ public class UITools {
     public static void updateWindowsTitle(Node node, String addingText) {
         
         final Stage primStage = (Stage) getScene(node).getWindow();
-        final EasyconduiteProperty userdatas = EasyConduitePropertiesHandler.getInstance().getProperties();
+        final ApplicationProperties userdatas = ApplicationPropertiesHelper.getInstance().getProperties();
         final ResourceBundle local = ResourceBundle.getBundle(Constants.RESOURCE_BASENAME, userdatas.getLocale());
         final String version = local.getString(VERSION);
         String title = "Easyconduite";

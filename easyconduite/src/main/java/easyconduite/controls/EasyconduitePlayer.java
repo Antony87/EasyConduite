@@ -20,7 +20,7 @@ import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
 import easyconduite.ui.commons.ActionDialog;
-import easyconduite.util.PersistenceUtil;
+import easyconduite.tools.PersistenceUtil;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;

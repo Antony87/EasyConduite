@@ -17,10 +17,10 @@
 package easyconduite;
 
 import easyconduite.controllers.MainController;
-import easyconduite.objects.EasyconduiteProperty;
-import easyconduite.util.Constants;
-import easyconduite.util.EasyConduitePropertiesHandler;
-import easyconduite.util.LoggingUtil;
+import easyconduite.objects.ApplicationProperties;
+import easyconduite.tools.ApplicationPropertiesHelper;
+import easyconduite.tools.Constants;
+import easyconduite.tools.LoggingUtil;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.application.Application;
@@ -50,8 +50,8 @@ public class Easyconduite extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         
-        final EasyconduiteProperty userdatas = EasyConduitePropertiesHandler.getInstance().getProperties();
-        localeBundle = ResourceBundle.getBundle(Constants.RESOURCE_BASENAME, userdatas.getLocale());
+        ApplicationProperties applicationProperties = ApplicationPropertiesHelper.getInstance().getProperties();
+        localeBundle = ResourceBundle.getBundle(Constants.RESOURCE_BASENAME, applicationProperties.getLocale());
 
         // Pass args to describe using logging context :
         // --context=user
@@ -61,7 +61,7 @@ public class Easyconduite extends Application {
         if (arguments.containsKey("logctx") && arguments.get("logctx").equals("dev")) {
             LoggingUtil.setLog4jLevel(Level.ALL);
         }else{
-            LoggingUtil.setLog4jLevel(userdatas.getLogLevel());
+            LoggingUtil.setLog4jLevel(applicationProperties.getLogLevel());
         }
         stage.initStyle(StageStyle.DECORATED);
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/easyconduite32.png")));
@@ -77,12 +77,11 @@ public class Easyconduite extends Application {
             controler.menuQuit(new ActionEvent());
             event.consume();
         });
-        
-        stage.setTitle("EasyConduite" + localeBundle.getString("easyconduite.version"));
+                
         stage.setScene(scene);
-        
-        stage.setWidth(userdatas.getWindowWith());
-        stage.setHeight(userdatas.getWindowHeight());            
+
+        ApplicationPropertiesHelper.getInstance().applyProperties(stage);
+
         stage.show();
     }
     

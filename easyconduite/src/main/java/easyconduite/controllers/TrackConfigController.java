@@ -21,8 +21,8 @@ import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioMediaConfigurator;
 import easyconduite.ui.commons.ActionDialog;
-import easyconduite.util.EasyConduitePropertiesHandler;
-import easyconduite.util.KeyCodeUtil;
+import easyconduite.tools.ApplicationPropertiesHelper;
+import easyconduite.tools.KeyCodeUtil;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.collections.ObservableList;
@@ -81,7 +81,7 @@ public class TrackConfigController extends DialogAbstractController implements I
     @FXML
     private Spinner fadeOutSpinner;
 
-    private EasyAudioChain nextChain;
+    private EasyAudioChain nextChainingElement;
 
     private AudioMedia audioMedia;
 
@@ -113,7 +113,7 @@ public class TrackConfigController extends DialogAbstractController implements I
             
             initializeSpinners(fadeInSpinner, fadeOutSpinner, audioMedia);
 
-            ObservableList<AudioMedia> liste = mainController.audioTable.getAudioMediaList();         
+            ObservableList<AudioMedia> liste = mainController.getAudioTable().getAudioMediaList();         
             avalaibleTracks.setItems(liste.filtered((t) -> {
                 return t!=audioMedia;
             }));
@@ -172,7 +172,7 @@ public class TrackConfigController extends DialogAbstractController implements I
         final KeyCode typedKeycode = event.getCode();
         if (mainController.isKeyCodeExist(typedKeycode)) {
             keytrackfield.clear();
-            final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
+            final ResourceBundle bundle = ApplicationPropertiesHelper.getInstance().getLocalBundle();
             ActionDialog.showWarning(String.format(bundle.getString(KEY_ASSIGN_ERROR), KeyCodeUtil.toString(typedKeycode)), bundle.getString(KEY_ASSIGN_OTHER));
         } else {
             if (typedKeycode != audioMedia.getKeycode()) {
@@ -193,14 +193,14 @@ public class TrackConfigController extends DialogAbstractController implements I
 
     @Override
     public void setNext(EasyAudioChain next) {
-        this.nextChain = next;
+        this.nextChainingElement = next;
     }
 
     @Override
     public void updateFromAudioMedia(AudioMedia media) {
         mediaConfigurator.update(audioMedia);
-        setNext(mainController);
-        nextChain.updateFromAudioMedia(audioMedia);
+        this.setNext(mainController);
+        nextChainingElement.updateFromAudioMedia(audioMedia);
     }
 
     @Override

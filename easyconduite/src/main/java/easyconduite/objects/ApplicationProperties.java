@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Level;
  *
  * @author antony
  */
-public class EasyconduiteProperty implements Serializable {
+public class ApplicationProperties implements Serializable {
 
     private static final long serialVersionUID = 42L;
 
@@ -53,7 +53,7 @@ public class EasyconduiteProperty implements Serializable {
      * @param windowHeight
      * @param logLevel
      */
-    public EasyconduiteProperty(int WindowWith, int windowHeight, Level logLevel) {
+    public ApplicationProperties(int WindowWith, int windowHeight, Level logLevel) {
         this.WindowWith = WindowWith;
         this.windowHeight = windowHeight;
         this.logLevel = logLevel;
@@ -62,7 +62,7 @@ public class EasyconduiteProperty implements Serializable {
     /**
      * Default constructor.
      */
-    public EasyconduiteProperty() {
+    public ApplicationProperties() {
     }
 
     public Locale getLocale() {
@@ -115,7 +115,7 @@ public class EasyconduiteProperty implements Serializable {
 
     @Override
     public String toString() {
-        return "EasyconduiteProperty{" + "locale=" + locale + ", WindowWith=" + WindowWith + ", windowHeight=" + windowHeight + ", logLevel=" + logLevel + ", lastProjectDir=" + lastProjectDir + ", lastImportDir=" + lastImportDir + '}';
+        return "ApplicationProperties{" + "locale=" + locale + ", WindowWith=" + WindowWith + ", windowHeight=" + windowHeight + ", recentsPaths=" + recentsPaths + ", logLevel=" + logLevel + ", lastProjectDir=" + lastProjectDir + ", lastImportDir=" + lastImportDir + '}';
     }
     
 }

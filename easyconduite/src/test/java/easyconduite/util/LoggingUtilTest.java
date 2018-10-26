@@ -16,6 +16,7 @@
  */
 package easyconduite.util;
 
+import easyconduite.tools.LoggingUtil;
 import java.util.Collection;
 import java.util.Map;
 import org.apache.logging.log4j.Level;

@@ -329,7 +329,7 @@ public class AudioMedia {
             try {
                 getUuidChildEnd().add(audioMedia.getUniqueId());
             } catch (Exception e) {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException(e);
             }
         }
     }
@@ -347,7 +347,7 @@ public class AudioMedia {
             try {
                 getUuidChildBegin().add(audioMedia.getUniqueId());
             } catch (Exception e) {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException(e);
             }
         }
     }

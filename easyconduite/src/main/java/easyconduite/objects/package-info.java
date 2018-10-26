@@ -17,7 +17,7 @@
 @XmlJavaTypeAdapters({@XmlJavaTypeAdapter(value=DurationXmlAdapter.class,type=javafx.util.Duration.class)})
 package easyconduite.objects;
 
-import easyconduite.util.DurationXmlAdapter;
+import easyconduite.tools.DurationXmlAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
 
