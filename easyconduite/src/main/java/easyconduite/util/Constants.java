@@ -56,6 +56,19 @@ public class Constants {
         return formater.format(new Date((long) duration.toMillis()));
     }
     
+    public static String formatTime(Duration duration) {
+        if (duration.greaterThan(Duration.ZERO)) {
+            final double millis = duration.toMillis();
+            final int dec = (int) ((millis / 100) % 10);
+            final int seconds = (int) ((millis / 1000) % 60);
+            final int minutes = (int) (millis / (1000 * 60));
+            return String.format("%02d:%02d:%02d", minutes, seconds, dec);
+        }
+        return null;
+    }
+    
     public final static DataFormat DATA_FORMAT_INTEGER = new DataFormat("java.lang.Integer");
+    
+    public final static DataFormat DATA_FORMAT_AUDIOMEDIA = new DataFormat("easyconduite.objects.AudioMedia");
 
 }

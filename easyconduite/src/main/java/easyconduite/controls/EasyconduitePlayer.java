@@ -16,9 +16,9 @@
  */
 package easyconduite.controls;
 
+import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
-import easyconduite.exception.EasyconduiteException;
 import easyconduite.ui.commons.ActionDialog;
 import easyconduite.util.PersistenceUtil;
 import javafx.scene.media.Media;

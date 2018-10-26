@@ -17,7 +17,9 @@
 package easyconduite.objects;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -43,13 +45,17 @@ import javax.xml.bind.annotation.XmlAccessorType;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class AudioMedia {
 
-    private final UUID uniqueId = UUID.randomUUID();
+    private UUID uniqueId = UUID.randomUUID();
 
     private int index;
 
     private String filePathName;
 
     private Duration audioDuration = Duration.ONE;
+
+    private Set<UUID> uuidChildEnd = new HashSet<>(100);
+
+    private Set<UUID> uuidChildBegin = new HashSet<>(100);
 
     //private Duration fadeInDuration = Duration.ZERO;
     private final ObjectProperty<Duration> fadeInDuration = new ReadOnlyObjectWrapper<>(Duration.ZERO);
@@ -91,6 +97,10 @@ public class AudioMedia {
      */
     public UUID getUniqueId() {
         return uniqueId;
+    }
+
+    public void setUniqueId(UUID uniqueId) {
+        this.uniqueId = uniqueId;
     }
 
     /**
@@ -298,6 +308,50 @@ public class AudioMedia {
         return keycode;
     }
 
+    public Set<UUID> getUuidChildEnd() {
+        return uuidChildEnd;
+    }
+
+    public void setUuidChildEnd(Set<UUID> uuidChildEnd) {
+        this.uuidChildEnd = uuidChildEnd;
+    }
+
+    public Set<UUID> getUuidChildBegin() {
+        return uuidChildBegin;
+    }
+
+    public void setUuidChildBegin(Set<UUID> uuidChildBegin) {
+        this.uuidChildBegin = uuidChildBegin;
+    }
+
+    public void addToChildEnd(AudioMedia audioMedia) throws IllegalArgumentException {
+        if (!audioMedia.getUniqueId().equals(this.uniqueId)) {
+            try {
+                getUuidChildEnd().add(audioMedia.getUniqueId());
+            } catch (Exception e) {
+                throw new IllegalArgumentException();
+            }
+        }
+    }
+
+    public void clearChildEnd() {
+        getUuidChildEnd().clear();
+    }
+
+    public void clearChildBegin() {
+        getUuidChildBegin().clear();
+    }
+
+    public void addToChildBegin(AudioMedia audioMedia) throws IllegalArgumentException {
+        if (!audioMedia.getUniqueId().equals(this.uniqueId)) {
+            try {
+                getUuidChildBegin().add(audioMedia.getUniqueId());
+            } catch (Exception e) {
+                throw new IllegalArgumentException();
+            }
+        }
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -320,10 +374,7 @@ public class AudioMedia {
             return false;
         }
         final AudioMedia other = (AudioMedia) obj;
-        if (!Objects.equals(this.uniqueId, other.uniqueId)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.uniqueId, other.uniqueId);
     }
 
     @Override

@@ -33,6 +33,7 @@ public interface EasyAudioChain {
      */
     public void setNext(EasyAudioChain next);
 
+
     /**
      * Element's configuration method uses AudioMedia.
      *
