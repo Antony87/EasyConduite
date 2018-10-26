@@ -18,8 +18,8 @@ package easyconduite.objects;
 
 import easyconduite.util.PersistenceUtil;
 import javafx.beans.Observable;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -51,10 +51,25 @@ public class AudioTable {
     private ObservableList<AudioMedia> audioMediaList;
 
     @XmlTransient
-    public ListProperty<AudioMedia> listproperty;
-
-    @XmlTransient
     private boolean updated = false;
+    
+    
+    @XmlTransient
+    private final IntegerProperty audioListSize = new SimpleIntegerProperty();
+
+    public int getAudioListSize() {
+        return audioListSize.get();
+    }
+
+    public void setAudioListSize(int value) {
+        audioListSize.set(value);
+    }
+
+    public IntegerProperty audioListSizeProperty() {
+        return audioListSize;
+    }
+    
+    
 
     @XmlTransient
     static final Logger LOG = LogManager.getLogger(AudioTable.class);
@@ -78,10 +93,6 @@ public class AudioTable {
 //        audioMediaList = FXCollections.observableArrayList();
         audioMediaList = FXCollections.observableArrayList(cb);
         audioMediaList.addListener(new AudioMediaChangeListerner());
-        
-        listproperty = new SimpleListProperty<>(audioMediaList);
-
-
     }
 
     /**
@@ -192,14 +203,16 @@ public class AudioTable {
             while (c.next()) {
                 if (c.wasRemoved()) {
                     setUpdated(true);
-                    LOG.trace("{} was removed from AudioTable",c);
+                    setAudioListSize(audioMediaList.size());
+                    LOG.trace("{} was removed from AudioTableand size {}",c,getAudioListSize());
                 }
                 if (c.wasUpdated()) {
                     LOG.trace("{} was updated from AudioTable",c);
                     setUpdated(true);
                 }
-                if(c.wasAdded()){
-                   LOG.trace("{} was added from AudioTable",c); 
+                if(c.wasAdded()){             
+                   setAudioListSize(audioMediaList.size());
+                   LOG.trace("{} was added from AudioTable and size {}",c,getAudioListSize());
                 }
             }
         }

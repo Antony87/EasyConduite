@@ -41,7 +41,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -93,24 +96,24 @@ public class MainController extends StackPane implements Initializable, EasyAudi
     private final EasyconduiteProperty userdatas;
 
     private final List<AudioMediaUI> audioMediaUIs;
+    
+    private NumberBinding bind;
+
+    private IntegerProperty audioListSize = new ReadOnlyIntegerWrapper();
+
+    public int getAudioListSize() {
+        return audioListSize.get();
+    }
+
+    public void setAudioListSize(int value) {
+        audioListSize.set(value);
+    }
+
+    public IntegerProperty audioListSizeProperty() {
+        return audioListSize;
+    }
 
     private static final Logger LOG = LogManager.getLogger(MainController.class);
-    
-    private final IntegerProperty audioSize = new SimpleIntegerProperty();
-
-    public int getAudioSize() {
-        return audioSize.get();
-    }
-
-    public void setAudioSize(int value) {
-        audioSize.set(value);
-    }
-
-    public IntegerProperty audioSizeProperty() {
-        return audioSize;
-    }
-    
-    
 
     /**
      * Constructor without arguments, to respect instantiating by FXML.
@@ -120,15 +123,18 @@ public class MainController extends StackPane implements Initializable, EasyAudi
         audioMediaUIs = new ArrayList<>(100);
         userdatas = EasyConduitePropertiesHandler.getInstance().getProperties();
         local = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
-        
-        audioSize.bind(audioTable.listproperty.sizeProperty());
-        
-        audioSize.addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                LOG.trace("size change from audiotable");
-            }
-        });
+
+        bind = Bindings.size(audioTable.getAudioMediaList());
+        bind.addListener(new AudioSizeListener());
+
+    }
+
+    private class AudioSizeListener implements ChangeListener<Number> {
+
+        @Override
+        public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+            LOG.trace(" ################### size change from audiotable");
+        }
 
     }
 
