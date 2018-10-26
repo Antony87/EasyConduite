@@ -50,7 +50,7 @@ public class AudioTable {
 
     @XmlTransient
     private boolean updated = false;
-
+    
     @XmlTransient
     static final Logger LOG = LogManager.getLogger(AudioTable.class);
 
@@ -182,14 +182,14 @@ public class AudioTable {
             while (c.next()) {
                 if (c.wasRemoved()) {
                     setUpdated(true);
-                    LOG.trace("{} was removed from AudioTable",c);
+                    LOG.trace("{} was removed from AudioTableand size {}",c);
                 }
                 if (c.wasUpdated()) {
                     LOG.trace("{} was updated from AudioTable",c);
                     setUpdated(true);
                 }
-                if(c.wasAdded()){
-                   LOG.trace("{} was added from AudioTable",c); 
+                if(c.wasAdded()){             
+                   LOG.trace("{} was added from AudioTable and size {}",c);
                 }
             }
         }
