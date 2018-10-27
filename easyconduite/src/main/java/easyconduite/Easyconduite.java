@@ -20,7 +20,7 @@ import easyconduite.controllers.MainController;
 import easyconduite.objects.ApplicationProperties;
 import easyconduite.tools.ApplicationPropertiesHelper;
 import easyconduite.tools.Constants;
-import easyconduite.tools.LoggingUtil;
+import easyconduite.tools.LoggingHelper;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.application.Application;
@@ -59,9 +59,9 @@ public class Easyconduite extends Application {
         final Map<String, String> arguments = this.getParameters().getNamed();
         // if lgctx=dev
         if (arguments.containsKey("logctx") && arguments.get("logctx").equals("dev")) {
-            LoggingUtil.setLog4jLevel(Level.ALL);
+            LoggingHelper.setLog4jLevel(Level.ALL);
         }else{
-            LoggingUtil.setLog4jLevel(applicationProperties.getLogLevel());
+            LoggingHelper.setLog4jLevel(applicationProperties.getLogLevel());
         }
         stage.initStyle(StageStyle.DECORATED);
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/easyconduite32.png")));

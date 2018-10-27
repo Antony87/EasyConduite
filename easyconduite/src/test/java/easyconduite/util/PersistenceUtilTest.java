@@ -17,7 +17,7 @@
  */
 package easyconduite.util;
 
-import easyconduite.tools.PersistenceUtil;
+import easyconduite.tools.PersistenceHelper;
 import easyconduite.exception.PersistenceException;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioTable;
@@ -69,7 +69,7 @@ public class PersistenceUtilTest {
         AudioTable audioTable = new AudioTable();
         audioTable.setName("testEasyConduite");
         //PersistenceUtil.saveAudioTable(tempFile, audioTable);
-        PersistenceUtil.writeToFile(tempFile, audioTable, PersistenceUtil.FILE_TYPE.XML);
+        PersistenceHelper.writeToFile(tempFile, audioTable, PersistenceHelper.FILE_TYPE.XML);
 
         assertTrue(Files.exists(tempFile.toPath()));
         assertTrue(Files.size(tempFile.toPath()) > 5L);
@@ -87,9 +87,9 @@ public class PersistenceUtilTest {
         tableExpected.getAudioMediaList().add(mediaExpected);
         tableExpected.setName("testEasyConduite");
         //PersistenceUtil.saveAudioTable(tempFile, tableExpected);
-        PersistenceUtil.writeToFile(tempFile, tableExpected, PersistenceUtil.FILE_TYPE.XML);
+        PersistenceHelper.writeToFile(tempFile, tableExpected, PersistenceHelper.FILE_TYPE.XML);
 
-        final AudioTable audiotable = PersistenceUtil.readFromFile(tempFile, AudioTable.class, PersistenceUtil.FILE_TYPE.XML);
+        final AudioTable audiotable = PersistenceHelper.readFromFile(tempFile, AudioTable.class, PersistenceHelper.FILE_TYPE.XML);
         assertEquals(tableExpected.getName(), audiotable.getName());
         final AudioMedia media = audiotable.getAudioMediaList().get(0);
         assertNotNull(media);
@@ -102,7 +102,7 @@ public class PersistenceUtilTest {
         userData.setLocale(Locale.FRENCH);
         userData.setWindowWith(300);
         //PersistenceUtil.saveUserData(tempFile, userData);
-        PersistenceUtil.writeToFile(tempFile, userData, PersistenceUtil.FILE_TYPE.BIN);
+        PersistenceHelper.writeToFile(tempFile, userData, PersistenceHelper.FILE_TYPE.BIN);
         assertTrue(Files.exists(tempFile.toPath()));
     }
 
@@ -112,9 +112,9 @@ public class PersistenceUtilTest {
         userData.setLocale(Locale.FRENCH);
         userData.setWindowWith(300);
         //PersistenceUtil.saveUserData(tempFile, userData);
-        PersistenceUtil.writeToFile(tempFile, userData, PersistenceUtil.FILE_TYPE.BIN);
+        PersistenceHelper.writeToFile(tempFile, userData, PersistenceHelper.FILE_TYPE.BIN);
 
-        final ApplicationProperties userDataread = PersistenceUtil.readFromFile(tempFile, ApplicationProperties.class, PersistenceUtil.FILE_TYPE.BIN);
+        final ApplicationProperties userDataread = PersistenceHelper.readFromFile(tempFile, ApplicationProperties.class, PersistenceHelper.FILE_TYPE.BIN);
 
         assertNotNull(userDataread);
         assertEquals(userData.getWindowWith(), userDataread.getWindowWith());
@@ -124,14 +124,14 @@ public class PersistenceUtilTest {
     @Test
     public void testSuffixeECP() throws PersistenceException {
         File file = new File("john");
-        File checkedFile = PersistenceUtil.suffixForEcp(file);
+        File checkedFile = PersistenceHelper.suffixForEcp(file);
         assertEquals("john.ecp", checkedFile.getName());
-        assertTrue(checkedFile.getAbsolutePath().endsWith(PersistenceUtil.ECP_SUFFIXE));
+        assertTrue(checkedFile.getAbsolutePath().endsWith(PersistenceHelper.ECP_SUFFIXE));
 
         File file2 = new File("john.ecp");
-        File checkedFile2 = PersistenceUtil.suffixForEcp(file2);
+        File checkedFile2 = PersistenceHelper.suffixForEcp(file2);
         assertEquals("john.ecp", checkedFile2.getName());
-        assertTrue(checkedFile2.getAbsolutePath().endsWith(PersistenceUtil.ECP_SUFFIXE));
+        assertTrue(checkedFile2.getAbsolutePath().endsWith(PersistenceHelper.ECP_SUFFIXE));
 
     }
 }

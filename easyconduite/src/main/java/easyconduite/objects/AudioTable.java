@@ -16,7 +16,7 @@
  */
 package easyconduite.objects;
 
-import easyconduite.tools.PersistenceUtil;
+import easyconduite.tools.PersistenceHelper;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -168,7 +168,7 @@ public class AudioTable {
             LOG.debug("pathfile vide");
             return false;
         }
-        if (!PersistenceUtil.isFileExists(this.getTablePathFile())) {
+        if (!PersistenceHelper.isFileExists(this.getTablePathFile())) {
             LOG.debug("ifchier inexistant");
             return false;
         }

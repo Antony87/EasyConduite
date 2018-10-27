@@ -29,9 +29,9 @@ import org.apache.logging.log4j.util.Strings;
  *
  * @author antony
  */
-public class LoggingUtil {
+public class LoggingHelper {
 
-    private static final Logger LOG = LogManager.getLogger(LoggingUtil.class);
+    private static final Logger LOG = LogManager.getLogger(LoggingHelper.class);
 
     private static final Logger ROOT = LogManager.getRootLogger();
 

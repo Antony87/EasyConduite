@@ -48,7 +48,7 @@ public class ApplicationPropertiesHelper {
 
         if (Constants.FILE_EASYCONDUITE_PROPS.exists()) {
             try {
-                applicationProperties = PersistenceUtil.readFromFile(Constants.FILE_EASYCONDUITE_PROPS, ApplicationProperties.class, PersistenceUtil.FILE_TYPE.BIN);
+                applicationProperties = PersistenceHelper.readFromFile(Constants.FILE_EASYCONDUITE_PROPS, ApplicationProperties.class, PersistenceHelper.FILE_TYPE.BIN);
                 LOG.trace("easyconduite.dat file found. ApplicationProperties [{}]", applicationProperties);
             } catch (PersistenceException ex) {
                 LOG.error("An error occured during easyconduite.dat loading", ex);

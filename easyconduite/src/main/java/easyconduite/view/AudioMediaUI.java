@@ -17,13 +17,13 @@
 package easyconduite.view;
 
 import easyconduite.controllers.MainController;
-import easyconduite.controls.EasyconduitePlayer;
+import easyconduite.view.controls.EasyconduitePlayer;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
 import easyconduite.tools.ApplicationPropertiesHelper;
-import easyconduite.tools.KeyCodeUtil;
-import easyconduite.ui.commons.ActionDialog;
+import easyconduite.tools.KeyCodeHelper;
+import easyconduite.view.controls.ActionDialog;
 import java.util.ResourceBundle;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -181,7 +181,7 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
             // "chain of responsability" est déclenchée.
             nameLabel.setText(audioMedia.getName());
             timeLabel.setText(formatTime(audioMedia.getAudioDuration()));
-            keycodeLabel.setText(KeyCodeUtil.toString(this.audioMedia.getKeycode()));
+            keycodeLabel.setText(KeyCodeHelper.toString(this.audioMedia.getKeycode()));
             //keycode.setValue(this.audioMedia.getKeycode());
             // on passe la responsabilité au next (EasyconduitePlayer).
             nextChain.updateFromAudioMedia(this.audioMedia);

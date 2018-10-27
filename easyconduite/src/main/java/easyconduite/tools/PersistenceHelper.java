@@ -39,9 +39,9 @@ import org.apache.logging.log4j.util.Strings;
  *
  * @author V902832
  */
-public class PersistenceUtil {
+public class PersistenceHelper {
 
-    static final Logger LOG = LogManager.getLogger(PersistenceUtil.class);
+    static final Logger LOG = LogManager.getLogger(PersistenceHelper.class);
 
     /**
      * Suffixe for Easyconduite project file.

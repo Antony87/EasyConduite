@@ -14,13 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package easyconduite.controls;
+package easyconduite.view.controls;
 
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
-import easyconduite.ui.commons.ActionDialog;
-import easyconduite.tools.PersistenceUtil;
+import easyconduite.view.controls.ActionDialog;
+import easyconduite.tools.PersistenceHelper;
+import easyconduite.view.commons.PlayerVolumeFader;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
@@ -57,7 +58,7 @@ public class EasyconduitePlayer implements EasyAudioChain {
         fadeHandler = new PlayerVolumeFader(EasyconduitePlayer.this, audioMedia);
         
         try {
-            final Media mediaForPlayer = new Media(PersistenceUtil.getPathURIString(audioMedia.getFilePathName()));
+            final Media mediaForPlayer = new Media(PersistenceHelper.getPathURIString(audioMedia.getFilePathName()));
             player = new MediaPlayer(mediaForPlayer);
         } catch (NullPointerException ne) {
             throw new EasyconduiteException("Impossible de trouver le fichier et de constituer le media", ne);

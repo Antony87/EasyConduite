@@ -16,7 +16,7 @@
  */
 package easyconduite.util;
 
-import easyconduite.tools.LoggingUtil;
+import easyconduite.tools.LoggingHelper;
 import java.util.Collection;
 import java.util.Map;
 import org.apache.logging.log4j.Level;
@@ -61,16 +61,16 @@ public class LoggingUtilTest {
 
     @After
     public void tearDown() {
-        LoggingUtil.setLog4jLevel(Level.TRACE);
+        LoggingHelper.setLog4jLevel(Level.TRACE);
     }
 
     /**
-     * Test of setLog4jLevel method, of class LoggingUtil.
+     * Test of setLog4jLevel method, of class LoggingHelper.
      */
     @Test
     public void testSetLog4jLevel() {
         assertEquals(Level.TRACE, LOG.getLevel());
-        LoggingUtil.setLog4jLevel(Level.FATAL);
+        LoggingHelper.setLog4jLevel(Level.FATAL);
         LOG.fatal("LoggingUtil.setLog4jLevel to FATAL");
         assertEquals(Level.FATAL, LOG.getLevel());
     }

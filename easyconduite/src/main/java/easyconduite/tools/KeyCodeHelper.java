@@ -23,7 +23,7 @@ import javafx.scene.input.KeyCode;
  *
  * @author antony
  */
-public class KeyCodeUtil {
+public class KeyCodeHelper {
 
     public static String toString(final KeyCode code) {
         if (isValid(code)) {

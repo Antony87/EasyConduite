@@ -39,9 +39,9 @@ import org.apache.logging.log4j.Logger;
  *
  * @author antony
  */
-public class ListenersHandler {
+public class MainListenersHandler {
 
-    private static final Logger LOG = LogManager.getLogger(ListenersHandler.class);
+    private static final Logger LOG = LogManager.getLogger(MainListenersHandler.class);
 
     private final MainController controler;
 
@@ -49,7 +49,7 @@ public class ListenersHandler {
     
     private Rectangle rect;
 
-    public ListenersHandler(MainController controler) {
+    public MainListenersHandler(MainController controler) {
         this.controler = controler;
     }
 

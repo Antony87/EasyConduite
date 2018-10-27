@@ -20,9 +20,9 @@ import easyconduite.model.DialogAbstractController;
 import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioMediaConfigurator;
-import easyconduite.ui.commons.ActionDialog;
+import easyconduite.view.controls.ActionDialog;
 import easyconduite.tools.ApplicationPropertiesHelper;
-import easyconduite.tools.KeyCodeUtil;
+import easyconduite.tools.KeyCodeHelper;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.collections.ObservableList;
@@ -108,7 +108,7 @@ public class TrackConfigController extends DialogAbstractController implements I
             LOG.trace("listView populated called");
 
             nametrackfield.setText(audioMedia.getName());
-            keytrackfield.setText(KeyCodeUtil.toString(audioMedia.getKeycode()));
+            keytrackfield.setText(KeyCodeHelper.toString(audioMedia.getKeycode()));
             repeattrack.setSelected(audioMedia.getRepeatable());
             
             initializeSpinners(fadeInSpinner, fadeOutSpinner, audioMedia);
@@ -173,11 +173,11 @@ public class TrackConfigController extends DialogAbstractController implements I
         if (mainController.isKeyCodeExist(typedKeycode)) {
             keytrackfield.clear();
             final ResourceBundle bundle = ApplicationPropertiesHelper.getInstance().getLocalBundle();
-            ActionDialog.showWarning(String.format(bundle.getString(KEY_ASSIGN_ERROR), KeyCodeUtil.toString(typedKeycode)), bundle.getString(KEY_ASSIGN_OTHER));
+            ActionDialog.showWarning(String.format(bundle.getString(KEY_ASSIGN_ERROR), KeyCodeHelper.toString(typedKeycode)), bundle.getString(KEY_ASSIGN_OTHER));
         } else {
             if (typedKeycode != audioMedia.getKeycode()) {
                 this.newKeyCode = typedKeycode;
-                keytrackfield.setText(KeyCodeUtil.toString(typedKeycode));
+                keytrackfield.setText(KeyCodeHelper.toString(typedKeycode));
                 mediaConfigurator.withKeyCodeChanged(newKeyCode);
             }
         }
