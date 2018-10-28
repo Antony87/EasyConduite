@@ -69,6 +69,8 @@ public class Constants {
     
     public final static DataFormat DATA_FORMAT_INTEGER = new DataFormat("java.lang.Integer");
     
+    public final static DataFormat DATA_FORMAT_UUID = new DataFormat("java.util.UUID");
+    
     public final static DataFormat DATA_FORMAT_AUDIOMEDIA = new DataFormat("easyconduite.objects.AudioMedia");
 
 }

@@ -139,15 +139,10 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
             e.consume();
         });
 
-        MenuItem hideItem = new MenuItem(bundle.getString("dialog.button.cancel"));
-        hideItem.setOnAction((ActionEvent e) -> {
-            contextMenu.hide();
-            e.consume();
-        });
-
-        contextMenu.getItems().addAll(propertiesItem, deleteItem, hideItem);
+        contextMenu.getItems().addAll(propertiesItem, deleteItem);
 
         this.addEventHandler(ContextMenuEvent.CONTEXT_MENU_REQUESTED, contextMenuEvent -> {
+            contextMenu.setAutoHide(true);
             contextMenu.show(this, contextMenuEvent.getScreenX(), contextMenuEvent.getScreenY());
             contextMenuEvent.consume();
         });

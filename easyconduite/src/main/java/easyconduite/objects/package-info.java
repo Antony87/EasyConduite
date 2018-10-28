@@ -14,8 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+@XmlJavaTypeAdapters({@XmlJavaTypeAdapter(value=DurationXmlAdapter.class,type=javafx.util.Duration.class)})
 package easyconduite.objects;
 
+import easyconduite.objects.DurationXmlAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
 

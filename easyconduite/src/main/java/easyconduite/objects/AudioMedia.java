@@ -17,6 +17,7 @@
 package easyconduite.objects;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -43,8 +44,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
  *
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public class AudioMedia {
-
+public class AudioMedia{
+    
     private UUID uniqueId = UUID.randomUUID();
 
     private int index;

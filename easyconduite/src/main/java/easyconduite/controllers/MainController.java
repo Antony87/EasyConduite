@@ -17,7 +17,6 @@
 package easyconduite.controllers;
 
 import easyconduite.controllers.helpers.MainListenersHandler;
-import easyconduite.view.controls.EasyFileChooser;
 import easyconduite.exception.PersistenceException;
 import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.ApplicationProperties;
@@ -26,12 +25,13 @@ import easyconduite.objects.AudioTable;
 import easyconduite.tools.ApplicationPropertiesHelper;
 import easyconduite.tools.Constants;
 import easyconduite.tools.PersistenceHelper;
-import easyconduite.view.controls.ActionDialog;
-import easyconduite.view.commons.UITools;
 import easyconduite.view.AboutDialogUI;
 import easyconduite.view.AudioMediaUI;
 import easyconduite.view.PreferencesUI;
 import easyconduite.view.TrackConfig;
+import easyconduite.view.commons.UITools;
+import easyconduite.view.controls.ActionDialog;
+import easyconduite.view.controls.EasyFileChooser;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -73,6 +73,7 @@ public class MainController extends StackPane implements Initializable, EasyAudi
     private final static String MSG_WARNING_SAVE_CONT = "dialog.warning.save.content";
     private final static String MSG_DELETE_HEADER = "audiomediaui.delete.header";
     private final static String MSG_DELETE_CONT = "audiomediaui.delete.content";
+    private static final Logger LOG = LogManager.getLogger(MainController.class);
 
     @FXML
     StackPane mainPane;
@@ -87,10 +88,6 @@ public class MainController extends StackPane implements Initializable, EasyAudi
 
     private AudioTable audioTable;
 
-    public AudioTable getAudioTable() {
-        return audioTable;
-    }
-
     private EasyAudioChain nextChainingElement;
 
     private final ResourceBundle local;
@@ -104,8 +101,6 @@ public class MainController extends StackPane implements Initializable, EasyAudi
      * key and an AudioMediaUI.
      */
     private final Map<KeyCode, AudioMediaUI> keyCodesMap;
-
-    private static final Logger LOG = LogManager.getLogger(MainController.class);
 
     /**
      * Constructor without arguments, to respect instantiating by FXML.
@@ -375,6 +370,10 @@ public class MainController extends StackPane implements Initializable, EasyAudi
         return calquePane;
     }
 
+    public AudioTable getAudioTable() {
+        return audioTable;
+    }
+
     @Override
     public void setNext(EasyAudioChain next) {
         nextChainingElement = next;
@@ -385,7 +384,7 @@ public class MainController extends StackPane implements Initializable, EasyAudi
         // trouver le AudioMediaUI associé à l'AudioMedia
         final AudioMediaUI ui = findAudioMediaUI(media);
         updateKeyCodeList();
-        // initialisation de la chaine.
+        // Set up next chaining class to AudioMediaUi.
         this.setNext(ui);
         LOG.trace("After config, AudioMedia is {}", media);
         nextChainingElement.updateFromAudioMedia(media);

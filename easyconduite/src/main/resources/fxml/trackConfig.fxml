@@ -110,11 +110,11 @@
                   <Label text="%configuration.atstop.label" />
                </children>
             </HBox>
-            <HBox styleClass="linksHbox">
+            <HBox fx:id="childsTracksHbox" styleClass="linksHbox">
                <children>
-                  <ListView fx:id="avalaibleTracks" prefHeight="200.0" prefWidth="200.0" />
-                  <ListView prefHeight="200.0" prefWidth="200.0" />
-                  <ListView prefHeight="200.0" prefWidth="200.0" />
+                  <ListView id="avalaibleTracks" fx:id="avalaibleTracks" prefHeight="200.0" prefWidth="200.0" />
+                  <ListView id="beginTracks" fx:id="beginTracks" prefHeight="200.0" prefWidth="200.0" />
+                  <ListView id="endTracks" fx:id="endTracks" prefHeight="200.0" prefWidth="200.0" />
                </children>
             </HBox>
          </children>
