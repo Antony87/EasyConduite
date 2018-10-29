@@ -30,6 +30,9 @@ import javafx.beans.property.ReadOnlyDoubleWrapper;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 import javafx.scene.input.KeyCode;
 import javafx.util.Duration;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -44,8 +47,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
  *
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public class AudioMedia{
-    
+public class AudioMedia {
+
     private UUID uniqueId = UUID.randomUUID();
 
     private int index;
@@ -54,9 +57,9 @@ public class AudioMedia{
 
     private Duration audioDuration = Duration.ONE;
 
-    private Set<UUID> uuidChildEnd = new HashSet<>(100);
+    private ObservableList<UUID> uuidChildEnd = FXCollections.observableArrayList();
 
-    private Set<UUID> uuidChildBegin = new HashSet<>(100);
+    private ObservableList<UUID> uuidChildBegin = FXCollections.observableArrayList();
 
     //private Duration fadeInDuration = Duration.ZERO;
     private final ObjectProperty<Duration> fadeInDuration = new ReadOnlyObjectWrapper<>(Duration.ZERO);
@@ -309,22 +312,24 @@ public class AudioMedia{
         return keycode;
     }
 
-    public Set<UUID> getUuidChildEnd() {
+    public ObservableList<UUID> getUuidChildEnd() {
         return uuidChildEnd;
     }
 
-    public void setUuidChildEnd(Set<UUID> uuidChildEnd) {
+    public void setUuidChildEnd(ObservableList<UUID> uuidChildEnd) {
         this.uuidChildEnd = uuidChildEnd;
     }
 
-    public Set<UUID> getUuidChildBegin() {
+    public ObservableList<UUID> getUuidChildBegin() {
         return uuidChildBegin;
     }
 
-    public void setUuidChildBegin(Set<UUID> uuidChildBegin) {
+    public void setUuidChildBegin(ObservableList<UUID> uuidChildBegin) {
         this.uuidChildBegin = uuidChildBegin;
     }
 
+    
+    
     public void addToChildEnd(AudioMedia audioMedia) throws IllegalArgumentException {
         if (!audioMedia.getUniqueId().equals(this.uniqueId)) {
             try {

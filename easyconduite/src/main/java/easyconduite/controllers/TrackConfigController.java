@@ -26,6 +26,7 @@ import easyconduite.tools.KeyCodeHelper;
 import easyconduite.view.controls.ActionDialog;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.UUID;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -40,7 +41,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -64,13 +64,13 @@ public class TrackConfigController extends DialogAbstractController implements I
     private HBox childsTracksHbox;
     
     @FXML
-    private ListView<AudioMedia> avalaibleTracks;
+    private ListView<UUID> avalaibleTracks;
     
     @FXML
-    private ListView<AudioMedia> endTracks;
+    private ListView<UUID> endTracks;
     
     @FXML
-    private ListView<AudioMedia> beginTracks;
+    private ListView<UUID> beginTracks;
 
     @FXML
     private BorderPane trackConfigPane;
@@ -122,7 +122,7 @@ public class TrackConfigController extends DialogAbstractController implements I
             repeattrack.setSelected(audioMedia.getRepeatable());
             initializeSpinners(fadeInSpinner, fadeOutSpinner, audioMedia);
             configListenerHandler = new TrackConfigHandler(this,mainController);
-            configListenerHandler.buildChildsManagerView(mainController.getAudioTable().getAudioMediaList());
+            configListenerHandler.buildChildsManagerView(audioMedia);
             service.cancel();
         });
         service.start();
@@ -185,7 +185,7 @@ public class TrackConfigController extends DialogAbstractController implements I
         return audioMedia;
     }
     
-    public ListView<AudioMedia> getAvalaibleTracks() {
+    public ListView<UUID> getAvalaibleTracks() {
         return avalaibleTracks;
     }
 

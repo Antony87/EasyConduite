@@ -20,18 +20,16 @@ import easyconduite.controllers.MainController;
 import easyconduite.controllers.TrackConfigController;
 import easyconduite.objects.AudioMedia;
 import easyconduite.tools.Constants;
-import java.util.Set;
 import java.util.UUID;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
-import javafx.scene.layout.HBox;
 import javafx.util.Callback;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,114 +39,144 @@ import org.apache.logging.log4j.Logger;
  * @author antony
  */
 public class TrackConfigHandler {
-    
+
     static final Logger LOG = LogManager.getLogger(TrackConfigHandler.class);
-    
+
     private final TrackConfigController controller;
     private final MainController mainController;
-    private final HBox tracksHbox;
-    
+    private ListView<UUID> dragDetectedSource;
+
     public TrackConfigHandler(TrackConfigController aThis, MainController mainController) {
         this.controller = aThis;
         this.mainController = mainController;
-        this.tracksHbox = controller.getChildsTracksHbox();
     }
-    
-    private ObservableList<AudioMedia> getChilds(Set<UUID> childUUID, ObservableList<AudioMedia> parentsLits) {
-        ObservableList<AudioMedia> childsList = FXCollections.observableArrayList();
-        childsList.addAll(parentsLits.filtered((t) -> {
-            return childUUID.contains(t.getUniqueId());
-        }));
-        return childsList;
+
+    private AudioMedia findByUUID(UUID uuid) {
+        return mainController.getAudioTable().getAudioMediaList().stream().filter((AudioMedia t) -> {
+            return uuid.equals(t.getUniqueId());
+        }).findFirst().get();
     }
-    
-    private class TracksItemCallBack implements Callback<ListView<AudioMedia>, ListCell<AudioMedia>> {
-        
-        @Override
-        public ListCell<AudioMedia> call(ListView<AudioMedia> param) {
-            ListCell<AudioMedia> cell = new ListCell<AudioMedia>() {
-                @Override
-                protected void updateItem(AudioMedia value, boolean empty) {
-                    super.updateItem(value, empty);
-                    final String text = (value == null || empty) ? null : value.getName();
-                    setText(text);
-                    
-                }
-            };
-            param.setOnKeyPressed((event) -> {
-                LOG.trace("Key pressed");
-                if (event.getCode().equals(KeyCode.DELETE)) {
-                    LOG.trace("delete pressed");
-                    AudioMedia media = param.getSelectionModel().getSelectedItem();
-                    boolean remove = param.getItems().remove(media);
-                }
-            });
-            return cell;
-        }
-    }
-    
-    public void buildChildsManagerView(ObservableList<AudioMedia> allMedia) {
-        
-        ListView<AudioMedia> avalaibleTracks = (ListView<AudioMedia>) controller.getChildsTracksHbox().lookup("#avalaibleTracks");
-        
-        ListView<AudioMedia> beginTracks = (ListView<AudioMedia>) controller.getChildsTracksHbox().lookup("#beginTracks");
-        ListView<AudioMedia> endTracks = (ListView<AudioMedia>) controller.getChildsTracksHbox().lookup("#endTracks");
-        
-        avalaibleTracks.setItems(allMedia.filtered((AudioMedia t) -> t != controller.getAudioMedia()));
+
+    public void buildChildsManagerView(AudioMedia media) {
+
+        final UUID uuidMedia = media.getUniqueId();
+
+        ListView<UUID> avalaibleTracks = controller.getAvalaibleTracks();
+        ObservableList<UUID> allUUid = FXCollections.observableArrayList();
+        mainController.getAudioTable().getAudioMediaList().forEach((AudioMedia t) -> {
+            if (t.getUniqueId() != uuidMedia) {
+                allUUid.add(t.getUniqueId());
+            }
+        });
+
+        avalaibleTracks.setItems(allUUid);
         avalaibleTracks.setCellFactory(new TracksItemCallBack());
 
-        // Pour Test
-        controller.getAudioMedia().getUuidChildBegin().add(controller.getAudioMedia().getUniqueId());
-        controller.getAudioMedia().getUuidChildEnd().add(controller.getAudioMedia().getUniqueId());
-        
-        beginTracks.setItems(getChilds(controller.getAudioMedia().getUuidChildBegin(), mainController.getAudioTable().getAudioMediaList()));
+        ListView<UUID> beginTracks = (ListView<UUID>) controller.getChildsTracksHbox().lookup("#beginTracks");
+        beginTracks.setItems(media.getUuidChildBegin());
         beginTracks.setCellFactory(new TracksItemCallBack());
-        endTracks.setItems(getChilds(controller.getAudioMedia().getUuidChildEnd(), mainController.getAudioTable().getAudioMediaList()));
+
+        ListView<UUID> endTracks = (ListView<UUID>) controller.getChildsTracksHbox().lookup("#endTracks");
+        endTracks.setItems(media.getUuidChildEnd());
         endTracks.setCellFactory(new TracksItemCallBack());
-        
-        setDragDetected(avalaibleTracks, new ListView[]{beginTracks, endTracks});
-        setDragDetected(endTracks, new ListView[]{avalaibleTracks});
-        
+
+        ListView[] listViewForDragAndDrop = new ListView[]{avalaibleTracks, beginTracks, endTracks};
+
+        for (ListView listView : listViewForDragAndDrop) {
+            setDragDetected(listView);
+            setDanDdHandler(listView);
+        }
+
     }
-    
-    private void setDragDetected(ListView<AudioMedia> listViewSource, ListView<AudioMedia>[] listViewChilds) {
+
+    private void setDragDetected(ListView<UUID> listViewSource) {
         listViewSource.setOnDragDetected((MouseEvent event) -> {
             Object o = event.getSource();
             if (o instanceof ListView) {
-                AudioMedia media = (AudioMedia) ((ListView) o).getSelectionModel().getSelectedItem();
+                dragDetectedSource = (ListView<UUID>) o;
+                UUID uuid = (UUID) ((ListView) o).getSelectionModel().getSelectedItem();
                 final Dragboard dragBroard = listViewSource.startDragAndDrop(TransferMode.COPY);
                 ClipboardContent content = new ClipboardContent();
-                content.put(Constants.DATA_FORMAT_UUID, media.getUniqueId());
-                LOG.trace("DanddD detected {}", media.getUniqueId());
+                content.put(Constants.DATA_FORMAT_UUID, uuid);
                 dragBroard.setContent(content);
             }
-            
-            for (ListView<AudioMedia> listViewChild : listViewChilds) {
-                setDanDdHandler(listViewChild);
-            }
             event.consume();
         });
-        
     }
-    
-    private void setDanDdHandler(ListView<AudioMedia> listView) {
-        
-        listView.setOnDragOver((event) -> {
-            final Dragboard dragBroard = event.getDragboard();
-            Object b = event.getSource();
-            if (b instanceof ListView && dragBroard.hasContent(Constants.DATA_FORMAT_UUID)) {
-                LOG.trace("ListView {}",((ListView)b).getId());
-                event.acceptTransferModes(TransferMode.COPY);
-                UUID media = (UUID) dragBroard.getContent(Constants.DATA_FORMAT_UUID);
-                LOG.trace("event {}", media.toString());
+
+    private void setDanDdHandler(ListView<UUID> listViewSource) {
+
+        listViewSource.setOnDragOver((DragEvent event) -> {
+            Object o = event.getSource();
+            if (o instanceof ListView) {
+                final Dragboard dragBroard = event.getDragboard();
+                if (isListViewDraggable(listViewSource, event)) {
+                    UUID media = (UUID) dragBroard.getContent(Constants.DATA_FORMAT_UUID);
+                    if (!listViewSource.getItems().contains(media)) {
+                        event.acceptTransferModes(TransferMode.COPY);
+                    }
+                }
             }
             event.consume();
         });
-        
-        listView.setOnDragDropped((event) -> {
-            event.setDropCompleted(true);
+        listViewSource.setOnDragDropped((event) -> {
+            Object o = event.getSource();
+            if (o instanceof ListView) {
+                final Dragboard dragBroard = event.getDragboard();
+                if (isListViewDraggable(listViewSource, event)) {
+                    UUID media = (UUID) dragBroard.getContent(Constants.DATA_FORMAT_UUID);
+                    if (!listViewSource.getItems().contains(media) && !listViewSource.equals(controller.getAvalaibleTracks())) {
+                        listViewSource.getItems().add(media);
+                        event.setDropCompleted(true);
+                        LOG.trace("ChildBegin AudioMedia {} childs {}", controller.getAudioMedia().getName(), controller.getAudioMedia().getUuidChildBegin());
+                    }
+                } else {
+                    event.setDropCompleted(false);
+                }
+            }
             event.consume();
         });
-        
+
+        listViewSource.setOnDragDone((event) -> {
+            Object o = event.getSource();
+            if (o instanceof ListView) {
+                final Dragboard dragBroard = event.getDragboard();
+                UUID media = (UUID) dragBroard.getContent(Constants.DATA_FORMAT_UUID);
+                if (!listViewSource.equals(controller.getAvalaibleTracks())) {
+                    dragDetectedSource.getItems().remove(media);
+                    LOG.trace("ChildBegin AudioMedia {} childs {}", controller.getAudioMedia().getName(), controller.getAudioMedia().getUuidChildBegin());
+                }
+            }
+            event.consume();
+        });
+
+    }
+
+    private boolean isListViewDraggable(ListView<UUID> listView, DragEvent event) {
+        if (listView != dragDetectedSource && event.getDragboard().hasContent(Constants.DATA_FORMAT_UUID)) {
+            return true;
+        }
+        return false;
+    }
+
+    private class TracksItemCallBack implements Callback<ListView<UUID>, ListCell<UUID>> {
+
+        @Override
+        public ListCell<UUID> call(ListView<UUID> param) {
+            ListCell<UUID> cell = new ListCell<UUID>() {
+                @Override
+                protected void updateItem(UUID value, boolean empty) {
+                    super.updateItem(value, empty);
+                    String text;
+                    if (empty || value == null) {
+                        text = null;
+                    } else {
+                        text = findByUUID(value).getName();
+                    }
+                    setText(text);
+                }
+            };
+            return cell;
+        }
     }
 }
