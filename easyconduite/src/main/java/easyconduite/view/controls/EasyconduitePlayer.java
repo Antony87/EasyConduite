@@ -16,12 +16,13 @@
  */
 package easyconduite.view.controls;
 
+import easyconduite.controllers.MainController;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
-import easyconduite.view.controls.ActionDialog;
 import easyconduite.tools.PersistenceHelper;
 import easyconduite.view.commons.PlayerVolumeFader;
+import java.util.UUID;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
@@ -37,26 +38,29 @@ import org.apache.logging.log4j.Logger;
  * @author antony
  */
 public class EasyconduitePlayer implements EasyAudioChain {
-    
+
     static final Logger LOG = LogManager.getLogger(EasyconduitePlayer.class);
-    
+
     private AudioMedia audioMedia;
-    
+
+    private MainController mainController;
+
     private MediaPlayer player;
-    
+
     private PlayerVolumeFader fadeHandler;
-    
-    public static EasyconduitePlayer create(AudioMedia media) throws EasyconduiteException {
-        return new EasyconduitePlayer(media);
+
+    public static EasyconduitePlayer create(AudioMedia media, MainController contoller) throws EasyconduiteException {
+        return new EasyconduitePlayer(media, contoller);
     }
-    
-    private EasyconduitePlayer(AudioMedia media) throws EasyconduiteException {
+
+    private EasyconduitePlayer(AudioMedia media, MainController contoller) throws EasyconduiteException {
         LOG.debug("Construct EasyconduitePlayer with AudioMedia[{}]", media);
-        
+
         audioMedia = media;
-        
+        mainController = contoller;
+
         fadeHandler = new PlayerVolumeFader(EasyconduitePlayer.this, audioMedia);
-        
+
         try {
             final Media mediaForPlayer = new Media(PersistenceHelper.getPathURIString(audioMedia.getFilePathName()));
             player = new MediaPlayer(mediaForPlayer);
@@ -70,22 +74,35 @@ public class EasyconduitePlayer implements EasyAudioChain {
             final String msg = "Impossible de charger le fichier [" + me.getType().toString() + "]";
             throw new EasyconduiteException(msg, me);
         }
-        
+
         player.setOnEndOfMedia(() -> {
             // if repeat is false, force to stop de player.
             if (!audioMedia.getRepeatable()) {
                 this.stop();
                 player.volumeProperty().setValue(audioMedia.getVolume());
+                playChildsEnd();
             }
         });
     }
-    
+
+    private void playChildsEnd() {
+        audioMedia.getUuidChildEnd().forEach((UUID t) -> {
+            mainController.getByUUID(t).playPause();
+        });
+    }
+
+    private void playChildsBegin() {
+        audioMedia.getUuidChildBegin().forEach((UUID t) -> {
+            mainController.getByUUID(t).playPause();
+        });
+    }
+
     public final void stop() {
         fadeHandler.stop();
         player.stop();
         player.volumeProperty().setValue(audioMedia.getVolume());
     }
-    
+
     public final void pause() {
         // si existe une transition fade out
         if (audioMedia.getFadeOutDuration() != Duration.ZERO) {
@@ -94,14 +111,18 @@ public class EasyconduitePlayer implements EasyAudioChain {
             player.pause();
         }
     }
-    
+
     public final void play() {
         if (audioMedia.getFadeInDuration() != Duration.ZERO) {
             fadeHandler.fadeIn(audioMedia.getFadeInDuration());
         }
+        Status status = player.getStatus();
+        if (status.equals(Status.STOPPED) || status.equals(Status.READY)) {
+            playChildsBegin();
+        }
         player.play();
     }
-    
+
     public final void playPause() {
         Status status = player.getStatus();
         switch (status) {
@@ -121,15 +142,19 @@ public class EasyconduitePlayer implements EasyAudioChain {
                 break;
         }
     }
-    
+
     public MediaPlayer getPlayer() {
         return player;
     }
-    
+
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
+
     @Override
     public void setNext(EasyAudioChain next) {
     }
-    
+
     @Override
     public final void updateFromAudioMedia(AudioMedia media) {
         if (audioMedia.equals(media)) {
@@ -140,19 +165,19 @@ public class EasyconduitePlayer implements EasyAudioChain {
             } else {
                 player.setCycleCount(1);
             }
-            
+
             player.setVolume(audioMedia.getVolume());
-            
+
         } else {
             ActionDialog.showWarning("Incohérence des objets", "Les objets AudioMedia ne sont pas egaux");
         }
     }
-    
+
     @Override
     public void removeChild(AudioMedia audioMedia) {
         fadeHandler.stop();
         fadeHandler = null;
         player.dispose();
     }
-    
+
 }

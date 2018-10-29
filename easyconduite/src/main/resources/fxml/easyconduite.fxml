@@ -13,9 +13,9 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -56,8 +56,14 @@
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="I" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                            </accelerator></MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#handlePauseAll" text="%menu.track.pause" />
-                        <MenuItem mnemonicParsing="false" onAction="#handleStopAll" text="%menu.track.stop" />
+                        <MenuItem mnemonicParsing="false" onAction="#handlePauseAll" text="%menu.track.pause">
+                           <accelerator>
+                              <KeyCodeCombination alt="DOWN" code="SPACE" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator></MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#handleStopAll" text="%menu.track.stop">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="SPACE" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator></MenuItem>
                         <MenuItem mnemonicParsing="false" onAction="#menuTrackEdit" text="%track.context.properties">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="E" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
@@ -127,7 +133,7 @@
                   <StackPane BorderPane.alignment="CENTER">
                      <children>
                         <FlowPane fx:id="tableLayout" rowValignment="TOP" stylesheets="@../styles/easyconduite.css" />
-                        <Pane fx:id="calquePane"/>
+                        <Pane fx:id="calquePane" />
                      </children>
                   </StackPane>
                </center>

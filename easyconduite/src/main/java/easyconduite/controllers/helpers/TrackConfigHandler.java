@@ -51,12 +51,6 @@ public class TrackConfigHandler {
         this.mainController = mainController;
     }
 
-    private AudioMedia findByUUID(UUID uuid) {
-        return mainController.getAudioTable().getAudioMediaList().stream().filter((AudioMedia t) -> {
-            return uuid.equals(t.getUniqueId());
-        }).findFirst().get();
-    }
-
     public void buildChildsManagerView(AudioMedia media) {
 
         final UUID uuidMedia = media.getUniqueId();
@@ -168,10 +162,12 @@ public class TrackConfigHandler {
                 protected void updateItem(UUID value, boolean empty) {
                     super.updateItem(value, empty);
                     String text;
-                    if (empty || value == null) {
+                    AudioMedia audioMedia = mainController.findByUUID(value);
+                    LOG.trace("Value dans call {}", value);
+                    if (empty || value == null || audioMedia == null) {
                         text = null;
                     } else {
-                        text = findByUUID(value).getName();
+                        text = audioMedia.getName();
                     }
                     setText(text);
                 }

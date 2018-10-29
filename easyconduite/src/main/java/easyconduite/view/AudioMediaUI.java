@@ -92,7 +92,7 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
         ////////////////////////////////////////////////////////////////////////
         player = null;
         try {
-            player = EasyconduitePlayer.create(media);
+            player = EasyconduitePlayer.create(media,controller);
             // Listenning player Status property
             player.getPlayer().statusProperty().addListener(getPlayerStatusListener());
         } catch (EasyconduiteException ex) {

@@ -17,6 +17,7 @@
 package easyconduite.controllers.helpers;
 
 import easyconduite.controllers.MainController;
+import easyconduite.objects.AudioTable;
 import easyconduite.tools.Constants;
 import easyconduite.view.AudioMediaUI;
 import java.util.Objects;
@@ -46,11 +47,27 @@ public class MainListenersHandler {
     private final MainController controler;
 
     private Pane calque;
-    
+
     private Rectangle rect;
 
     public MainListenersHandler(MainController controler) {
         this.controler = controler;
+    }
+
+    private void orderAudioTable() {
+        
+        Pane tableLayout = controler.getTableLayout();
+        AudioTable audioTable = controler.getAudioTable();
+        
+        tableLayout.getChildren().filtered((t) -> {
+            return t instanceof AudioMediaUI;
+        }).forEach((t) -> {
+            ((AudioMediaUI) t).getAudioMedia().setIndex(tableLayout.getChildren().indexOf(t));
+        });
+        audioTable.getAudioMediaList().sort((o1, o2) -> {
+            return o1.getIndex() - o2.getIndex();
+        });
+        audioTable.setUpdated(true);
     }
 
     private void moveRectLayer(Pane paneOver, Rectangle rect) {
@@ -138,16 +155,6 @@ public class MainListenersHandler {
                     dragEvent.consume();
                 }
         );
-
-//        tableLayout.setOnDragDone(dragEvent
-//                -> {
-//            if (dragEvent.getTransferMode() == TransferMode.COPY) {
-//                dragEvent.getDragboard().clear();
-//            }
-//            controler.orderAudioTable();
-//            dragEvent.consume();
-//        }
-//        );
     }
 
     private class DragDoneHandle implements EventHandler<DragEvent> {
@@ -158,8 +165,8 @@ public class MainListenersHandler {
                 event.getDragboard().clear();
             }
             LOG.trace("Drag done detected");
-            controler.orderAudioTable();
-            event.consume();         
+            orderAudioTable();
+            event.consume();
         }
     }
 }
