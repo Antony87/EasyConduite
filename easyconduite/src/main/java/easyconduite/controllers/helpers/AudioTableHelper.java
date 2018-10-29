@@ -116,15 +116,11 @@ public class AudioTableHelper {
         }
     }
 
-    public static AudioTable getFromFile(AudioTable audioTable, MainController controller) {
-
-        Pane mainPane = controller.getMainPane();
-        final FileChooser fileChooser = new EasyFileChooser.FileChooserBuilder().asType(EasyFileChooser.Type.OPEN_PROJECT).build();
-        final File file = fileChooser.showOpenDialog(UITools.getWindow(mainPane));
-
-        if (file != null) {
+    public static AudioTable getFromFile(AudioTable audioTable, MainController controller, File file) {
+        
+        if(file !=null){
+            Pane mainPane = controller.getMainPane();
             APP_PROPERTIES.setLastProjectDir(PersistenceHelper.getDirectory(file.getParentFile()));
-
             try {
                 audioTable = null;
                 audioTable = (AudioTable) PersistenceHelper.readFromFile(file, AudioTable.class, PersistenceHelper.FILE_TYPE.XML);
@@ -133,11 +129,11 @@ public class AudioTableHelper {
                     AudioMediaUI ui = controller.createAudioMediaView(audioMedia);
                 });
                 AudioTableHelper.cleanChilds(audioTable);
+                APP_PROPERTIES.setLastFileProject(file);
             } catch (PersistenceException ex) {
                 ActionDialog.showWarning(LOCAL.getString(MSG_DIAG_ERROR), LOCAL.getString(MSG_ERROR_OPEN));
             }
         }
         return audioTable;
     }
-
 }

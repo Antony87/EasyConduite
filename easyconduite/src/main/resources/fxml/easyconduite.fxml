@@ -32,6 +32,7 @@
                               <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
+                        <Menu fx:id="openRecent" mnemonicParsing="false" text="Recent..." />
                   <MenuItem mnemonicParsing="false" onAction="#menuFileSave" text="%menu.file.save">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
@@ -58,7 +59,7 @@
                            </accelerator></MenuItem>
                         <MenuItem mnemonicParsing="false" onAction="#handlePauseAll" text="%menu.track.pause">
                            <accelerator>
-                              <KeyCodeCombination alt="DOWN" code="SPACE" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                              <KeyCodeCombination alt="UP" code="SPACE" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
                            </accelerator></MenuItem>
                         <MenuItem mnemonicParsing="false" onAction="#handleStopAll" text="%menu.track.stop">
                            <accelerator>

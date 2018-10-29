@@ -38,7 +38,7 @@ public class ApplicationProperties implements Serializable {
 
     private int windowHeight;
 
-    private Queue<Path> recentsPaths;
+    private File lastFileProject;
 
     private Level logLevel;
     
@@ -113,9 +113,21 @@ public class ApplicationProperties implements Serializable {
         this.lastImportDir = lastImportDir;
     }
 
+    public File getLastFileProject() {
+        return lastFileProject;
+    }
+
+    public void setLastFileProject(File lastFileProject) {
+        this.lastFileProject = lastFileProject;
+    }
+
     @Override
     public String toString() {
-        return "ApplicationProperties{" + "locale=" + locale + ", WindowWith=" + WindowWith + ", windowHeight=" + windowHeight + ", recentsPaths=" + recentsPaths + ", logLevel=" + logLevel + ", lastProjectDir=" + lastProjectDir + ", lastImportDir=" + lastImportDir + '}';
+        return "ApplicationProperties{" + "locale=" + locale + ", WindowWith=" + WindowWith + ", windowHeight=" + windowHeight + ", lastFileProject=" + lastFileProject + ", logLevel=" + logLevel + ", lastProjectDir=" + lastProjectDir + ", lastImportDir=" + lastImportDir + '}';
     }
+
+    
+
+
     
 }

@@ -32,7 +32,9 @@ import easyconduite.view.PreferencesUI;
 import easyconduite.view.TrackConfig;
 import easyconduite.view.commons.UITools;
 import easyconduite.view.controls.ActionDialog;
+import easyconduite.view.controls.EasyFileChooser;
 import easyconduite.view.controls.EasyconduitePlayer;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -48,11 +50,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.FileChooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -88,6 +93,9 @@ public class MainController extends StackPane implements Initializable, EasyAudi
     @FXML
     private Pane calquePane;
 
+    @FXML
+    private Menu openRecent;
+
     private MainListenersHandler listenersHandler;
 
     private AudioTable audioTable;
@@ -122,16 +130,27 @@ public class MainController extends StackPane implements Initializable, EasyAudi
 
     @FXML
     private void menuFileOpen(ActionEvent event) {
+        if (!isOkForDelete()) {
+            return;
+        }
+        final FileChooser fileChooser = new EasyFileChooser.FileChooserBuilder().asType(EasyFileChooser.Type.OPEN_PROJECT).build();
+        final File file = fileChooser.showOpenDialog(UITools.getWindow(mainPane));
+        openFile(file);
+    }
 
+    private boolean isOkForDelete() {
         if (audioMediaViewList.size() > 0) {
             Optional<ButtonType> result = ActionDialog.showConfirmation(local.getString(MSG_OPEN_HEADER), local.getString(MSG_OPEN_CONT));
             if (!result.isPresent() || result.get() == ButtonType.NO) {
-                return;
-            } else if (result.get() == ButtonType.OK || result.get() == ButtonType.YES) {
-                deleteProject();
+                return false;
             }
         }
-        audioTable = AudioTableHelper.getFromFile(audioTable, this);
+        return true;
+    }
+
+    private void openFile(File file) {
+        deleteProject();
+        audioTable = AudioTableHelper.getFromFile(audioTable, this, file);
         this.updateKeyCodeList();
         this.updatePlayersMap();
     }
@@ -307,6 +326,18 @@ public class MainController extends StackPane implements Initializable, EasyAudi
         // initialization listeners
         listenersHandler = new MainListenersHandler(this);
         listenersHandler.setDragAndDropFeature(tableLayout);
+
+        if (applicationProperties.getLastFileProject() != null) {
+            MenuItem recentFileMenuItem = new MenuItem(applicationProperties.getLastFileProject().toString());
+            openRecent.getItems().add(recentFileMenuItem);
+            recentFileMenuItem.setOnAction((event) -> {
+                if (!isOkForDelete()) {
+                    return;
+                }
+                deleteProject();
+                openFile(applicationProperties.getLastFileProject());
+            });
+        }
     }
 
     /**
