@@ -18,9 +18,8 @@ package easyconduite.objects;
 
 import java.io.File;
 import java.io.Serializable;
-import java.nio.file.Path;
 import java.util.Locale;
-import java.util.Queue;
+import javafx.stage.Window;
 import org.apache.logging.log4j.Level;
 
 /**
@@ -45,6 +44,8 @@ public class ApplicationProperties implements Serializable {
     private File lastProjectDir;
     
     private File lastImportDir;
+    
+    private transient Window currentWindow;
 
     /**
      * Constructor with parameters.
@@ -120,6 +121,15 @@ public class ApplicationProperties implements Serializable {
     public void setLastFileProject(File lastFileProject) {
         this.lastFileProject = lastFileProject;
     }
+
+    public Window getCurrentWindow() {
+        return currentWindow;
+    }
+
+    public void setCurrentWindow(Window currentWindow) {
+        this.currentWindow = currentWindow;
+    }
+    
 
     @Override
     public String toString() {

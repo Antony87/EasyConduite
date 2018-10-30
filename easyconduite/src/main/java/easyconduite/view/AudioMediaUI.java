@@ -19,7 +19,6 @@ package easyconduite.view;
 import easyconduite.controllers.MainController;
 import easyconduite.view.controls.EasyconduitePlayer;
 import easyconduite.exception.EasyconduiteException;
-import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
 import easyconduite.tools.ApplicationPropertiesHelper;
 import easyconduite.tools.KeyCodeHelper;
@@ -43,6 +42,7 @@ import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import easyconduite.model.ChainingUpdater;
 
 /**
  * This class encapsulates logics and behaviors about Custom UI Control of an
@@ -50,7 +50,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author A Fons
  */
-public class AudioMediaUI extends VBox implements EasyAudioChain {
+public class AudioMediaUI extends VBox implements ChainingUpdater {
 
     static final Logger LOG = LogManager.getLogger(AudioMediaUI.class);
 
@@ -72,7 +72,7 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
 
     private AudioMedia audioMedia;
 
-    private EasyAudioChain nextChain;
+    private ChainingUpdater nextChain;
 
     /**
      * Constructor du UI custom control for an AudioMedia.<br>
@@ -165,7 +165,7 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
     }
 
     @Override
-    public void setNext(EasyAudioChain next) {
+    public void setNext(ChainingUpdater next) {
         nextChain = next;
     }
 
@@ -186,7 +186,7 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
     }
 
     @Override
-    public void removeChild(AudioMedia audioMedia) {
+    public void removeChild(ChainingUpdater audioMedia) {
         nextChain.removeChild(audioMedia);
     }
 
@@ -226,6 +226,11 @@ public class AudioMediaUI extends VBox implements EasyAudioChain {
                     break;
             }
         };
+    }
+
+    @Override
+    public void execute() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     private class AudioSlider extends Slider {

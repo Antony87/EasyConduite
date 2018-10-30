@@ -24,15 +24,14 @@ import easyconduite.objects.AudioMedia;
  *
  * @author antony
  */
-public interface EasyAudioChain {
+public interface ChainingUpdater {
 
     /**
      * Set next element concerned to AudioMedia.
      *
      * @param next
      */
-    public void setNext(EasyAudioChain next);
-
+    public void setNext(ChainingUpdater next);
 
     /**
      * Element's configuration method uses AudioMedia.
@@ -44,8 +43,14 @@ public interface EasyAudioChain {
     /**
      * Method to remove childs and dependencies along AudioMedia chain of
      * responsability.
+     *
      * @param audioMedia
      */
-    public void removeChild(AudioMedia audioMedia);
+    public void removeChild(ChainingUpdater audioMedia);
+
+    /**
+     * Method wich execute e behavior, anyway.
+     */
+    public void execute();
 
 }

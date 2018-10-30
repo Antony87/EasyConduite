@@ -18,7 +18,6 @@ package easyconduite.view.controls;
 
 import easyconduite.controllers.MainController;
 import easyconduite.exception.EasyconduiteException;
-import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
 import easyconduite.tools.PersistenceHelper;
 import easyconduite.view.commons.PlayerVolumeFader;
@@ -30,6 +29,7 @@ import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import easyconduite.model.ChainingUpdater;
 
 /**
  * Class wraps a JavaFX MediaPlayer.<br>Offers severals features to
@@ -37,7 +37,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author antony
  */
-public class EasyconduitePlayer implements EasyAudioChain {
+public class EasyconduitePlayer implements ChainingUpdater {
 
     static final Logger LOG = LogManager.getLogger(EasyconduitePlayer.class);
 
@@ -152,7 +152,7 @@ public class EasyconduitePlayer implements EasyAudioChain {
     }
 
     @Override
-    public void setNext(EasyAudioChain next) {
+    public void setNext(ChainingUpdater next) {
     }
 
     @Override
@@ -174,10 +174,15 @@ public class EasyconduitePlayer implements EasyAudioChain {
     }
 
     @Override
-    public void removeChild(AudioMedia audioMedia) {
+    public void removeChild(ChainingUpdater audioMedia) {
         fadeHandler.stop();
         fadeHandler = null;
         player.dispose();
+    }
+
+    @Override
+    public void execute() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

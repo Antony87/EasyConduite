@@ -18,7 +18,6 @@ package easyconduite.controllers;
 
 import easyconduite.controllers.helpers.TrackConfigHandler;
 import easyconduite.model.DialogAbstractController;
-import easyconduite.model.EasyAudioChain;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioMediaConfigurator;
 import easyconduite.tools.ApplicationPropertiesHelper;
@@ -44,13 +43,14 @@ import javafx.scene.layout.HBox;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import easyconduite.model.ChainingUpdater;
 
 /**
  * This class is the controller for TrackConfigDialog.
  *
  * @author antony
  */
-public class TrackConfigController extends DialogAbstractController implements Initializable, EasyAudioChain {
+public class TrackConfigController extends DialogAbstractController implements Initializable, ChainingUpdater {
 
     static final Logger LOG = LogManager.getLogger(TrackConfigController.class);
     private static final String KEY_ASSIGN_ERROR = "trackconfigcontroller.key.error";
@@ -90,7 +90,7 @@ public class TrackConfigController extends DialogAbstractController implements I
     @FXML
     private Spinner fadeOutSpinner;
 
-    private EasyAudioChain nextChainingElement;
+    private ChainingUpdater nextChainingElement;
 
     private AudioMedia audioMedia;
 
@@ -121,7 +121,7 @@ public class TrackConfigController extends DialogAbstractController implements I
             keytrackfield.setText(KeyCodeHelper.toString(audioMedia.getKeycode()));
             repeattrack.setSelected(audioMedia.getRepeatable());
             initializeSpinners(fadeInSpinner, fadeOutSpinner, audioMedia);
-            configListenerHandler = new TrackConfigHandler(this,mainController);
+            configListenerHandler = new TrackConfigHandler(this);
             configListenerHandler.buildChildsManagerView(audioMedia);
             service.cancel();
         });
@@ -194,7 +194,7 @@ public class TrackConfigController extends DialogAbstractController implements I
     }
     
     @Override
-    public void setNext(EasyAudioChain next) {
+    public void setNext(ChainingUpdater next) {
         this.nextChainingElement = next;
     }
 
@@ -206,7 +206,7 @@ public class TrackConfigController extends DialogAbstractController implements I
     }
 
     @Override
-    public void removeChild(AudioMedia audioMedia) {
+    public void removeChild(ChainingUpdater audioMedia) {
     }
 
     private void initializeSpinners(Spinner<Integer> fadeIn, Spinner<Integer> fadeOut, AudioMedia audioMedia) {
@@ -221,6 +221,11 @@ public class TrackConfigController extends DialogAbstractController implements I
         if (audioMedia.getFadeOutDuration() != null) {
             fadeOut.getValueFactory().setValue((int) audioMedia.getFadeOutDuration().toSeconds());
         }
+    }
+
+    @Override
+    public void execute() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     private class MainCtrlNotNull extends Service {

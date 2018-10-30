@@ -81,6 +81,7 @@ public class Easyconduite extends Application {
         stage.setScene(scene);
 
         ApplicationPropertiesHelper.getInstance().applyProperties(stage);
+        applicationProperties.setCurrentWindow(stage);
 
         stage.show();
     }

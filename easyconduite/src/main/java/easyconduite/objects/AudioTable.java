@@ -16,8 +16,12 @@
  */
 package easyconduite.objects;
 
+import easyconduite.model.ChainingUpdater;
 import easyconduite.tools.PersistenceHelper;
+import java.util.UUID;
 import javafx.beans.Observable;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -38,7 +42,7 @@ import org.apache.logging.log4j.util.Strings;
  */
 @XmlRootElement(name = "audiotable")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AudioTable {
+public class AudioTable implements ChainingUpdater{
 
     private String name = "";
 
@@ -47,12 +51,15 @@ public class AudioTable {
     private String tablePathFile;
 
     private ObservableList<AudioMedia> audioMediaList;
-
-    @XmlTransient
-    private boolean updated = false;
     
     @XmlTransient
+    private final BooleanProperty updated = new SimpleBooleanProperty(false);
+   
+    @XmlTransient
     static final Logger LOG = LogManager.getLogger(AudioTable.class);
+    
+    @XmlTransient
+    private ChainingUpdater next;
 
     /**
      * Constructor.
@@ -67,7 +74,9 @@ public class AudioTable {
             a.repeatableProperty(),
             a.volumeProperty(),
             a.fadeOutDurationProperty(),
-            a.fadeInDurationProperty()
+            a.fadeInDurationProperty(),
+            a.getUuidChildBegin(),
+            a.getUuidChildEnd()
         };
 
         audioMediaList = FXCollections.observableArrayList(cb);
@@ -142,11 +151,31 @@ public class AudioTable {
     }
 
     public boolean isUpdated() {
-        return updated;
+        return updated.get();
     }
 
-    public void setUpdated(boolean updated) {
-        this.updated = updated;
+    public void setUpdated(boolean value) {
+        updated.set(value);
+    }
+
+    public BooleanProperty updatedProperty() {
+        return updated;
+    }
+    
+        /**
+     *
+     * @param uuid
+     * @return
+     */
+    public AudioMedia findByUUID(UUID uuid) {
+        if (uuid != null) {
+            for (AudioMedia audioMedia : this.getAudioMediaList()) {
+                if (uuid.equals(audioMedia.getUniqueId())) {
+                    return audioMedia;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -174,6 +203,29 @@ public class AudioTable {
         }
         return true;
     }
+    
+    @Override
+    public void setNext(ChainingUpdater next) {
+        this.next=next;
+    }
+
+    @Override
+    public void updateFromAudioMedia(AudioMedia audioMedia) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void removeChild(ChainingUpdater audioMedia) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void execute() {
+        if(next!=null){
+         next.execute();
+        }
+    }
+    
 
     private class AudioMediaChangeListerner implements ListChangeListener<AudioMedia> {
 
@@ -182,14 +234,18 @@ public class AudioTable {
             while (c.next()) {
                 if (c.wasRemoved()) {
                     setUpdated(true);
+                    execute();
                     LOG.trace("{} was removed from AudioTableand size {}",c);
                 }
                 if (c.wasUpdated()) {
                     LOG.trace("{} was updated from AudioTable",c);
                     setUpdated(true);
+                    execute();
                 }
                 if(c.wasAdded()){             
                    LOG.trace("{} was added from AudioTable and size {}",c);
+                    setUpdated(true);
+                    execute();
                 }
             }
         }

@@ -16,9 +16,10 @@
  */
 package easyconduite.controllers.helpers;
 
-import easyconduite.controllers.MainController;
 import easyconduite.controllers.TrackConfigController;
 import easyconduite.objects.AudioMedia;
+import easyconduite.objects.AudioTable;
+import easyconduite.objects.AudioTableWrapper;
 import easyconduite.tools.Constants;
 import java.util.UUID;
 import javafx.collections.FXCollections;
@@ -43,12 +44,12 @@ public class TrackConfigHandler {
     static final Logger LOG = LogManager.getLogger(TrackConfigHandler.class);
 
     private final TrackConfigController controller;
-    private final MainController mainController;
     private ListView<UUID> dragDetectedSource;
+    private final AudioTable audioTable;
 
-    public TrackConfigHandler(TrackConfigController aThis, MainController mainController) {
+    public TrackConfigHandler(TrackConfigController aThis) {
         this.controller = aThis;
-        this.mainController = mainController;
+        audioTable = AudioTableWrapper.getInstance().getAudioTable();
     }
 
     public void buildChildsManagerView(AudioMedia media) {
@@ -57,7 +58,7 @@ public class TrackConfigHandler {
 
         ListView<UUID> avalaibleTracks = controller.getAvalaibleTracks();
         ObservableList<UUID> allUUid = FXCollections.observableArrayList();
-        mainController.getAudioTable().getAudioMediaList().forEach((AudioMedia t) -> {
+        audioTable.getAudioMediaList().forEach((AudioMedia t) -> {
             if (t.getUniqueId() != uuidMedia) {
                 allUUid.add(t.getUniqueId());
             }
@@ -162,7 +163,7 @@ public class TrackConfigHandler {
                 protected void updateItem(UUID value, boolean empty) {
                     super.updateItem(value, empty);
                     String text;
-                    AudioMedia audioMedia = mainController.findByUUID(value);
+                    AudioMedia audioMedia = audioTable.findByUUID(value);
                     LOG.trace("Value dans call {}", value);
                     if (empty || value == null || audioMedia == null) {
                         text = null;

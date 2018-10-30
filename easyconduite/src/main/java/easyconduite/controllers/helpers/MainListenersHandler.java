@@ -18,6 +18,7 @@ package easyconduite.controllers.helpers;
 
 import easyconduite.controllers.MainController;
 import easyconduite.objects.AudioTable;
+import easyconduite.objects.AudioTableWrapper;
 import easyconduite.tools.Constants;
 import easyconduite.view.AudioMediaUI;
 import java.util.Objects;
@@ -55,10 +56,10 @@ public class MainListenersHandler {
     }
 
     private void orderAudioTable() {
-        
+
         Pane tableLayout = controler.getTableLayout();
-        AudioTable audioTable = controler.getAudioTable();
-        
+        AudioTable audioTable = AudioTableWrapper.getInstance().getAudioTable();
+
         tableLayout.getChildren().filtered((t) -> {
             return t instanceof AudioMediaUI;
         }).forEach((t) -> {
