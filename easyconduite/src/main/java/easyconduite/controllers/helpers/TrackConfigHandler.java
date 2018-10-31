@@ -84,13 +84,13 @@ public class TrackConfigHandler {
 
     }
 
-    private void setDragDetected(ListView<UUID> listViewSource) {
-        listViewSource.setOnDragDetected((MouseEvent event) -> {
+    private void setDragDetected(ListView<UUID> listeningListView) {
+        listeningListView.setOnDragDetected((MouseEvent event) -> {
             Object o = event.getSource();
             if (o instanceof ListView) {
                 dragDetectedSource = (ListView<UUID>) o;
                 UUID uuid = (UUID) ((ListView) o).getSelectionModel().getSelectedItem();
-                final Dragboard dragBroard = listViewSource.startDragAndDrop(TransferMode.COPY);
+                final Dragboard dragBroard = listeningListView.startDragAndDrop(TransferMode.COPY);
                 ClipboardContent content = new ClipboardContent();
                 content.put(Constants.DATA_FORMAT_UUID, uuid);
                 dragBroard.setContent(content);
@@ -99,29 +99,29 @@ public class TrackConfigHandler {
         });
     }
 
-    private void setDanDdHandler(ListView<UUID> listViewSource) {
+    private void setDanDdHandler(ListView<UUID> listeningListView) {
 
-        listViewSource.setOnDragOver((DragEvent event) -> {
+        listeningListView.setOnDragOver((DragEvent event) -> {
             Object o = event.getSource();
             if (o instanceof ListView) {
                 final Dragboard dragBroard = event.getDragboard();
-                if (isListViewDraggable(listViewSource, event)) {
+                if (isListViewDraggable(listeningListView, event)) {
                     UUID media = (UUID) dragBroard.getContent(Constants.DATA_FORMAT_UUID);
-                    if (!listViewSource.getItems().contains(media)) {
+                    if (!listeningListView.getItems().contains(media)) {
                         event.acceptTransferModes(TransferMode.COPY);
                     }
                 }
             }
             event.consume();
         });
-        listViewSource.setOnDragDropped((event) -> {
+        listeningListView.setOnDragDropped((event) -> {
             Object o = event.getSource();
             if (o instanceof ListView) {
                 final Dragboard dragBroard = event.getDragboard();
-                if (isListViewDraggable(listViewSource, event)) {
+                if (isListViewDraggable(listeningListView, event)) {
                     UUID media = (UUID) dragBroard.getContent(Constants.DATA_FORMAT_UUID);
-                    if (!listViewSource.getItems().contains(media) && !listViewSource.equals(controller.getAvalaibleTracks())) {
-                        listViewSource.getItems().add(media);
+                    if (!listeningListView.getItems().contains(media) && !listeningListView.equals(controller.getAvalaibleTracks())) {
+                        listeningListView.getItems().add(media);
                         event.setDropCompleted(true);
                         LOG.trace("ChildBegin AudioMedia {} childs {}", controller.getAudioMedia().getName(), controller.getAudioMedia().getUuidChildBegin());
                     }
@@ -132,15 +132,16 @@ public class TrackConfigHandler {
             event.consume();
         });
 
-        listViewSource.setOnDragDone((event) -> {
+        listeningListView.setOnDragDone((event) -> {
             Object o = event.getSource();
             if (o instanceof ListView) {
                 final Dragboard dragBroard = event.getDragboard();
                 UUID media = (UUID) dragBroard.getContent(Constants.DATA_FORMAT_UUID);
-                if (!listViewSource.equals(controller.getAvalaibleTracks())) {
+                if (!listeningListView.equals(controller.getAvalaibleTracks())) {
                     dragDetectedSource.getItems().remove(media);
                     LOG.trace("ChildBegin AudioMedia {} childs {}", controller.getAudioMedia().getName(), controller.getAudioMedia().getUuidChildBegin());
                 }
+                dragBroard.clear();
             }
             event.consume();
         });
@@ -148,10 +149,7 @@ public class TrackConfigHandler {
     }
 
     private boolean isListViewDraggable(ListView<UUID> listView, DragEvent event) {
-        if (listView != dragDetectedSource && event.getDragboard().hasContent(Constants.DATA_FORMAT_UUID)) {
-            return true;
-        }
-        return false;
+        return listView != dragDetectedSource && event.getDragboard().hasContent(Constants.DATA_FORMAT_UUID);
     }
 
     private class TracksItemCallBack implements Callback<ListView<UUID>, ListCell<UUID>> {
