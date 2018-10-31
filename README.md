@@ -1,13 +1,15 @@
 # EasyConduite - a super simple sampler #
 
+# V2.0 (beta) is here !
+
 EasyConduite helps the stage manager of small theatre companies to play several audio tracks at the right time during the performance.
 
-## Features v 1.2 (current) ##
+## Features v 2.0 (beta) ##
 * Loading several audio tracks independently.
 * Play/stop a track from a keyboard key.
 * Adjust volume during playing.
-* Use a chronometer for the performance timing.
 * Manage Fade In/Out
+* Each track may have childs for playing at begin or end.
 
 Cross-platform by using Java 8. JavaFX
 
@@ -15,14 +17,9 @@ Cross-platform by using Java 8. JavaFX
 Java SE 8_0_x must be installed.
 https://www.java.com/fr/download/manual.jsp
 
-## Download ##
-Windows (Vista and +) [Windows installer install_Easyconduite.exe](http://site.antonyweb.net/data/medias/easyconduite/Easyconduite_Setup.exe)
 
-Linux (Tested on Ubuntu 16.04) [Linux script installer easyconduite_setup.sh](http://site.antonyweb.net/data/medias/easyconduite/easyconduite_setup.sh)
-
-### TODO v 2 ###
+### TODO v 2.1 ###
  * Manage audio tracks on the timeline of the performance.
- * Message to show the next track before playing it.
  * Adjustment of volume and balance from a smartphone (websockets HTML5 appli)
 
 ## Author's site ##
