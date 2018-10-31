@@ -48,9 +48,5 @@ public interface ChainingUpdater {
      */
     public void removeChild(ChainingUpdater audioMedia);
 
-    /**
-     * Method wich execute e behavior, anyway.
-     */
-    public void execute();
 
 }

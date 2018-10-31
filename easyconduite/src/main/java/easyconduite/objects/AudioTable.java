@@ -42,7 +42,7 @@ import org.apache.logging.log4j.util.Strings;
  */
 @XmlRootElement(name = "audiotable")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AudioTable implements ChainingUpdater{
+public class AudioTable {
 
     private String name = "";
 
@@ -50,14 +50,14 @@ public class AudioTable implements ChainingUpdater{
 
     private String tablePathFile;
 
-    private ObservableList<AudioMedia> audioMediaList;
-    
+    public ObservableList<AudioMedia> audioMediaList;
+
     @XmlTransient
     private final BooleanProperty updated = new SimpleBooleanProperty(false);
-   
+
     @XmlTransient
     static final Logger LOG = LogManager.getLogger(AudioTable.class);
-    
+
     @XmlTransient
     private ChainingUpdater next;
 
@@ -81,6 +81,7 @@ public class AudioTable implements ChainingUpdater{
 
         audioMediaList = FXCollections.observableArrayList(cb);
         audioMediaList.addListener(new AudioMediaChangeListerner());
+        
     }
 
     /**
@@ -161,8 +162,8 @@ public class AudioTable implements ChainingUpdater{
     public BooleanProperty updatedProperty() {
         return updated;
     }
-    
-        /**
+
+    /**
      *
      * @param uuid
      * @return
@@ -198,55 +199,19 @@ public class AudioTable implements ChainingUpdater{
             return false;
         }
         if (!PersistenceHelper.isFileExists(this.getTablePathFile())) {
-            LOG.debug("ifchier inexistant");
+            LOG.debug("Fichier inexistant");
             return false;
         }
         return true;
     }
-    
-    @Override
-    public void setNext(ChainingUpdater next) {
-        this.next=next;
-    }
-
-    @Override
-    public void updateFromAudioMedia(AudioMedia audioMedia) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void removeChild(ChainingUpdater audioMedia) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void execute() {
-        if(next!=null){
-         next.execute();
-        }
-    }
-    
 
     private class AudioMediaChangeListerner implements ListChangeListener<AudioMedia> {
 
         @Override
         public void onChanged(Change<? extends AudioMedia> c) {
             while (c.next()) {
-                if (c.wasRemoved()) {
-                    setUpdated(true);
-                    execute();
-                    LOG.trace("{} was removed from AudioTableand size {}",c);
-                }
-                if (c.wasUpdated()) {
-                    LOG.trace("{} was updated from AudioTable",c);
-                    setUpdated(true);
-                    execute();
-                }
-                if(c.wasAdded()){             
-                   LOG.trace("{} was added from AudioTable and size {}",c);
-                    setUpdated(true);
-                    execute();
-                }
+                LOG.debug("Change occured on Audiomedialist");
+                setUpdated(true);
             }
         }
     }

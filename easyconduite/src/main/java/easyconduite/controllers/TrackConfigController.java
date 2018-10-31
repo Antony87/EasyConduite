@@ -169,6 +169,7 @@ public class TrackConfigController extends DialogAbstractController implements I
                 this.newKeyCode = typedKeycode;
                 keytrackfield.setText(KeyCodeHelper.toString(typedKeycode));
                 mediaConfigurator.withKeyCodeChanged(newKeyCode);
+                mainController.updateKeyCodeList();
             }
         }
     }
@@ -221,11 +222,6 @@ public class TrackConfigController extends DialogAbstractController implements I
         if (audioMedia.getFadeOutDuration() != null) {
             fadeOut.getValueFactory().setValue((int) audioMedia.getFadeOutDuration().toSeconds());
         }
-    }
-
-    @Override
-    public void execute() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     private class MainCtrlNotNull extends Service {

@@ -83,6 +83,8 @@
                                 <argument>${mainClass}</argument>
                                 <argument>-srcdir</argument>
                                 <argument>${project.build.directory}/classes</argument>
+                                <argument>-preloader</argument>
+                                <argument>easyconduite.EasyconduitePreloader</argument>
                                 <argument>-outdir</argument>
                                 <argument>${project.build.directory}</argument>
                                 <argument>-outfile</argument>

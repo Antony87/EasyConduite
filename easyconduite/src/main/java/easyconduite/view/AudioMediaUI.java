@@ -228,11 +228,6 @@ public class AudioMediaUI extends VBox implements ChainingUpdater {
         };
     }
 
-    @Override
-    public void execute() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     private class AudioSlider extends Slider {
 
         protected AudioSlider() {
