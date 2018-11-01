@@ -56,6 +56,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import easyconduite.model.ChainingUpdater;
 import easyconduite.objects.AudioTableWrapper;
+import java.text.FieldPosition;
+import java.text.Format;
+import java.text.ParsePosition;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import javafx.beans.binding.Binding;
+import javafx.beans.binding.Bindings;
+import javafx.scene.control.Label;
+import javafx.util.StringConverter;
 
 /**
  * This class implements a controller for audio table and AudioMediUI behaviors.
@@ -74,6 +83,19 @@ public class MainController extends StackPane implements Initializable, Chaining
 
     @FXML
     StackPane mainPane;
+    
+    @FXML
+    private Label spectrum;
+
+    public void setSpectrum(Label spectrum) {
+        this.spectrum = spectrum;
+    }
+
+    public Label getSpectrum() {
+        return spectrum;
+    }
+    
+    
 
     @FXML
     private FlowPane tableLayout;
@@ -92,6 +114,10 @@ public class MainController extends StackPane implements Initializable, Chaining
 
     private final List<AudioMediaUI> audioMediaViewList;
 
+    public List<AudioMediaUI> getAudioMediaViewList() {
+        return audioMediaViewList;
+    }
+    
     private final Map<UUID, EasyconduitePlayer> playersMap;
 
     /**
@@ -282,7 +308,7 @@ public class MainController extends StackPane implements Initializable, Chaining
             LOG.error("An error occured", ex);
         }
     }
-
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         LOG.debug("Controler initialisation");
@@ -290,8 +316,9 @@ public class MainController extends StackPane implements Initializable, Chaining
         // initialization listeners
         listenersHandler = new MainListenersHandler(this);
         listenersHandler.setDragAndDropFeature(tableLayout);
+        
         ApplicationProperties appProps = ApplicationPropertiesHelper.getInstance().getProperties();
-
+               
         if (appProps.getLastFileProject() != null) {
             MenuItem recentFileMenuItem = new MenuItem(appProps.getLastFileProject().toString());
             openRecent.getItems().add(recentFileMenuItem);
@@ -301,7 +328,7 @@ public class MainController extends StackPane implements Initializable, Chaining
                 }
                 openFile(appProps.getLastFileProject());
             });
-        }
+        }        
     }
 
     public Pane getCalquePane() {

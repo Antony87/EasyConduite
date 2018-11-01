@@ -61,6 +61,8 @@ public class AudioMediaUI extends VBox implements ChainingUpdater {
     private final Label keycodeLabel = new Label();
 
     private final HBox keycodeHbox = new HBox();
+    
+    private final Region repeatRegion = new Region();
 
     private final ContextMenu contextMenu = new ContextMenu();
 
@@ -123,7 +125,12 @@ public class AudioMediaUI extends VBox implements ChainingUpdater {
         ////////////////////////////////////////////////////////////////////////
         // initialize KeyCodeLabel
         keycodeHbox.getStyleClass().add("baseHbox");
-        keycodeHbox.getChildren().add(keycodeLabel);
+    
+        repeatRegion.setId("repeatRegion");
+        if(audioMedia.getRepeatable()){
+            repeatRegion.getStyleClass().add("repeat");
+        }
+        keycodeHbox.getChildren().addAll(repeatRegion,keycodeLabel);
 
 
         MenuItem propertiesItem = new MenuItem(bundle.getString("track.context.properties"));
@@ -177,7 +184,10 @@ public class AudioMediaUI extends VBox implements ChainingUpdater {
             nameLabel.setText(audioMedia.getName());
             timeLabel.setText(formatTime(audioMedia.getAudioDuration()));
             keycodeLabel.setText(KeyCodeHelper.toString(this.audioMedia.getKeycode()));
-            //keycode.setValue(this.audioMedia.getKeycode());
+            repeatRegion.getStyleClass().remove("repeat");
+            if(audioMedia.getRepeatable()){
+                repeatRegion.getStyleClass().add("repeat");
+            }
             // on passe la responsabilité au next (EasyconduitePlayer).
             nextChain.updateFromAudioMedia(this.audioMedia);
         } else {

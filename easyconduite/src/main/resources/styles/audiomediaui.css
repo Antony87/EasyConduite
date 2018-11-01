@@ -80,12 +80,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 .baseHbox > .label{
-    -fx-min-width: 96;
-    -fx-max-width: 96;
+    -fx-min-width: 65;
+    -fx-max-width: 65;
     -fx-font-size: 18;
     -fx-font-weight: bold;
     -fx-text-fill: #599CA8;
-    -fx-alignment:CENTER;
+    -fx-alignment: CENTER;
+}
+
+#repeatRegion {
+    -fx-min-width: 24;
+    -fx-max-width: 24;
+    -fx-min-height: 24;
+    -fx-max-height: 24;
+    -fx-padding: 0 0 0 5;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center 50%;
+}
+.repeat {
+    -fx-background-image: url('../icons/repeat2.png');
 }
 
 .commandHbox > * {
@@ -105,3 +118,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .stopbutton{
     -fx-background-image: url('../icons/Stop.png');
 }
+

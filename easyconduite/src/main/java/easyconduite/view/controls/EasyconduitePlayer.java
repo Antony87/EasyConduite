@@ -30,6 +30,8 @@ import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import easyconduite.model.ChainingUpdater;
+import easyconduite.objects.AudioTableWrapper;
+import javafx.scene.media.AudioSpectrumListener;
 
 /**
  * Class wraps a JavaFX MediaPlayer.<br>Offers severals features to

@@ -113,7 +113,7 @@
                            </HBox.margin>
                         </StackPane>
                         <ToggleButton disable="true" mnemonicParsing="false" text="ON" textAlignment="CENTER" visible="false" />
-                        <Label alignment="CENTER" contentDisplay="RIGHT" disable="true" stylesheets="@../styles/easyconduite.css" text="00:00:00" textAlignment="CENTER" textFill="#00d936" visible="false">
+                        <Label fx:id="spectrum" alignment="CENTER" contentDisplay="RIGHT" disable="true" prefHeight="35.0" prefWidth="233.0" stylesheets="@../styles/easyconduite.css" textAlignment="CENTER" textFill="#00d936">
                            <font>
                               <Font size="24.0" />
                            </font>

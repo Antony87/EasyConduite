@@ -21,9 +21,19 @@ import easyconduite.objects.AudioTable;
 import easyconduite.objects.AudioTableWrapper;
 import easyconduite.tools.Constants;
 import easyconduite.view.AudioMediaUI;
+import easyconduite.view.controls.EasyconduitePlayer;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.logging.Level;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.event.EventHandler;
+import javafx.scene.control.Label;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -170,4 +180,5 @@ public class MainListenersHandler {
             event.consume();
         }
     }
+
 }
