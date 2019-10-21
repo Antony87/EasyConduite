@@ -83,7 +83,8 @@
                         <option>-Djava.library.path=C:\tmp</option>
                     </options>
                     <mainClass>easyconduite.Easyconduite</mainClass>
-                    <executable>C:/Users/V902832/Documents/OpenJDK11U-jdk_x64_windows_hotspot_11.0.4_11/jdk-11.0.4+11/bin/javaw</executable>
+                    <!--suppress UnresolvedMavenProperty -->
+                    <executable>${env.PATH_TO_EXE_JAVA}/javaw</executable>
                 </configuration>
             </plugin>
         </plugins>

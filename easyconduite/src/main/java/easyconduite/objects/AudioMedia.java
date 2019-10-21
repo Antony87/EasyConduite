@@ -16,27 +16,17 @@
  */
 package easyconduite.objects;
 
-import java.io.File;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyBooleanWrapper;
-import javafx.beans.property.ReadOnlyDoubleWrapper;
-import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableSet;
 import javafx.scene.input.KeyCode;
 import javafx.util.Duration;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import java.io.File;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Class POJO that encapsulate AudioMedia behavior.<br>
@@ -44,7 +34,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
  *
  * @author A.Fons
  * @version 1.2
- *
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class AudioMedia {
@@ -55,19 +44,17 @@ public class AudioMedia {
 
     private String filePathName;
 
-    private Duration audioDuration = Duration.ONE;
+    private Duration duration = Duration.ONE;
 
     private ObservableList<UUID> uuidChildEnd = FXCollections.observableArrayList();
 
     private ObservableList<UUID> uuidChildBegin = FXCollections.observableArrayList();
 
-    //private Duration fadeInDuration = Duration.ZERO;
     private final ObjectProperty<Duration> fadeInDuration = new ReadOnlyObjectWrapper<>(Duration.ZERO);
 
-    //private Duration fadeOutDuration= Duration.ZERO;
     private final ObjectProperty<Duration> fadeOutDuration = new ReadOnlyObjectWrapper<>(Duration.ZERO);
 
-    public final BooleanProperty repeatable = new ReadOnlyBooleanWrapper();
+    private final BooleanProperty repeatable = new ReadOnlyBooleanWrapper();
 
     private final DoubleProperty volume = new ReadOnlyDoubleWrapper();
 
@@ -87,7 +74,7 @@ public class AudioMedia {
      * @param audioFile audio audioFile (*.wav, *.mp3) Depends on platform type.
      */
     public AudioMedia(File audioFile) {
-        // set default values;
+        /* set default values; */
         this.filePathName = audioFile.getAbsolutePath();
         setRepeatable(Boolean.FALSE);
         setVolume(0.5d);
@@ -136,6 +123,7 @@ public class AudioMedia {
     ////////////////////////////////////////////////////////////////////////////
     //                        JavaFX Properties
     ////////////////////////////////////////////////////////////////////////////
+
     /**
      * Return Audio media's repeatability.
      *
@@ -149,9 +137,9 @@ public class AudioMedia {
      * Set Audio media repeatability's.
      *
      * @param repeatability true or false if the audio file must have
-     * repeatability playing.
+     *                      repeatability playing.
      */
-    public final void setRepeatable(Boolean repeatability) {
+    final void setRepeatable(Boolean repeatability) {
         this.repeatable.setValue(repeatability);
     }
 
@@ -199,17 +187,17 @@ public class AudioMedia {
      *
      * @return total duration (Duration ms) of the audio media
      */
-    public Duration getAudioDuration() {
-        return audioDuration;
+    public Duration getDuration() {
+        return duration;
     }
 
     /**
      * Set the total duration of audio media.
      *
-     * @param audioDuration
+     * @param duration
      */
-    public void setAudioDuration(Duration audioDuration) {
-        this.audioDuration = audioDuration;
+    public void setDuration(Duration duration) {
+        this.duration = duration;
     }
 
     /**
@@ -267,6 +255,7 @@ public class AudioMedia {
     }
 
     ////////////////////////////////////////////////////////////////////////////
+
     /**
      * Return the name of Audio Media object.
      *
@@ -328,8 +317,7 @@ public class AudioMedia {
         this.uuidChildBegin = uuidChildBegin;
     }
 
-    
-    
+
     public void addToChildEnd(AudioMedia audioMedia) throws IllegalArgumentException {
         if (!audioMedia.getUniqueId().equals(this.uniqueId)) {
             try {
@@ -385,6 +373,6 @@ public class AudioMedia {
 
     @Override
     public String toString() {
-        return "AudioMedia{" + "uniqueId=" + uniqueId + ", filePathName=" + filePathName + ", audioDuration=" + audioDuration + ", fadeInDuration=" + fadeInDuration + ", fadeOutDuration=" + fadeOutDuration + ", repeatable=" + repeatable + ", volume=" + volume + ", name=" + name + ", keycode=" + keycode + '}';
+        return "AudioMedia{" + "uniqueId=" + uniqueId + ", filePathName=" + filePathName + ", audioDuration=" + duration + ", fadeInDuration=" + fadeInDuration + ", fadeOutDuration=" + fadeOutDuration + ", repeatable=" + repeatable + ", volume=" + volume + ", name=" + name + ", keycode=" + keycode + '}';
     }
 }

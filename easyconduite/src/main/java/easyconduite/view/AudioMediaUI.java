@@ -119,7 +119,7 @@ public class AudioMediaUI extends VBox implements ChainingUpdater {
         ////////////////////////////////////////////////////////////////////////
         ///////////// current Time label               
         player.getPlayer().currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> {
-            timeLabel.setText(formatTime(audioMedia.getAudioDuration().subtract(newValue)));
+            timeLabel.setText(formatTime(audioMedia.getDuration().subtract(newValue)));
         });
 
         ////////////////////////////////////////////////////////////////////////
@@ -182,7 +182,7 @@ public class AudioMediaUI extends VBox implements ChainingUpdater {
             // positionne tous les champs quand audioMedia a changé et que la 
             // "chain of responsability" est déclenchée.
             nameLabel.setText(audioMedia.getName());
-            timeLabel.setText(formatTime(audioMedia.getAudioDuration()));
+            timeLabel.setText(formatTime(audioMedia.getDuration()));
             keycodeLabel.setText(KeyCodeHelper.toString(this.audioMedia.getKeycode()));
             repeatRegion.getStyleClass().remove("repeat");
             if(audioMedia.getRepeatable()){
@@ -231,7 +231,7 @@ public class AudioMediaUI extends VBox implements ChainingUpdater {
                     break;
                 case READY:
                     // if player ready, update AudioMedia duration an UI.
-                    audioMedia.setAudioDuration(player.getPlayer().getStopTime());
+                    audioMedia.setDuration(player.getPlayer().getStopTime());
                     updateFromAudioMedia(AudioMediaUI.this.audioMedia);
                     break;
             }

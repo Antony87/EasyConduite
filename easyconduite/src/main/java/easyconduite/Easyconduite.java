@@ -42,16 +42,13 @@ import org.apache.logging.log4j.Logger;
  */
 public class Easyconduite extends Application {
 
-    //private ResourceBundle localeBundle;
     static final Logger LOG = LogManager.getLogger(Easyconduite.class);
-    
-    private ResourceBundle localeBundle;
-    
+
     @Override
     public void start(Stage stage) throws Exception {
         
         ApplicationProperties applicationProperties = ApplicationPropertiesHelper.getInstance().getProperties();
-        localeBundle = ResourceBundle.getBundle(Constants.RESOURCE_BASENAME, applicationProperties.getLocale());
+        ResourceBundle localeBundle = ResourceBundle.getBundle(Constants.RESOURCE_BASENAME, applicationProperties.getLocale());
 
         // Pass args to describe using logging context :
         // --context=user

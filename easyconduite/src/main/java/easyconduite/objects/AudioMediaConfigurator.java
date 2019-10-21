@@ -119,7 +119,7 @@ public class AudioMediaConfigurator {
      */
     public void update(AudioMedia media) {
         if (this.audioDuration != null) {
-            media.setAudioDuration(this.audioDuration);
+            media.setDuration(this.audioDuration);
         }
         if (this.fadeInDuration != null) {
             media.setFadeInDuration(this.fadeInDuration);
