@@ -18,7 +18,7 @@ package easyconduite.controllers.helpers;
 
 import easyconduite.controllers.TrackConfigController;
 import easyconduite.objects.AudioMedia;
-import easyconduite.objects.AudioTable;
+import easyconduite.objects.EasyTable;
 import easyconduite.objects.AudioTableWrapper;
 import easyconduite.tools.Constants;
 import java.util.UUID;
@@ -45,11 +45,11 @@ public class TrackConfigHandler {
 
     private final TrackConfigController controller;
     private ListView<UUID> dragDetectedSource;
-    private final AudioTable audioTable;
+    private final EasyTable easyTable;
 
     public TrackConfigHandler(TrackConfigController aThis) {
         this.controller = aThis;
-        audioTable = AudioTableWrapper.getInstance().getAudioTable();
+        easyTable = AudioTableWrapper.getInstance().getEasyTable();
     }
 
     public void buildChildsManagerView(AudioMedia media) {
@@ -58,7 +58,7 @@ public class TrackConfigHandler {
 
         ListView<UUID> avalaibleTracks = controller.getAvalaibleTracks();
         ObservableList<UUID> allUUid = FXCollections.observableArrayList();
-        audioTable.getAudioMediaList().forEach((AudioMedia t) -> {
+        easyTable.getAudioMediaList().forEach((AudioMedia t) -> {
             if (t.getUniqueId() != uuidMedia) {
                 allUUid.add(t.getUniqueId());
             }
@@ -161,7 +161,7 @@ public class TrackConfigHandler {
                 protected void updateItem(UUID value, boolean empty) {
                     super.updateItem(value, empty);
                     String text;
-                    AudioMedia audioMedia = audioTable.findByUUID(value);
+                    AudioMedia audioMedia = easyTable.findByUUID(value);
                     LOG.trace("Value dans call {}", value);
                     if (empty || value == null || audioMedia == null) {
                         text = null;

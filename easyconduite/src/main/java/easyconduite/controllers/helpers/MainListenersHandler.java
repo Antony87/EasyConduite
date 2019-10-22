@@ -17,23 +17,15 @@
 package easyconduite.controllers.helpers;
 
 import easyconduite.controllers.MainController;
-import easyconduite.objects.AudioTable;
+import easyconduite.objects.EasyTable;
 import easyconduite.objects.AudioTableWrapper;
 import easyconduite.tools.Constants;
 import easyconduite.view.AudioMediaUI;
-import easyconduite.view.controls.EasyconduitePlayer;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+
 import java.util.Objects;
-import java.util.Set;
-import java.util.logging.Level;
-import javafx.collections.FXCollections;
+
 import javafx.collections.ObservableList;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
 import javafx.event.EventHandler;
-import javafx.scene.control.Label;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -68,17 +60,17 @@ public class MainListenersHandler {
     private void orderAudioTable() {
 
         Pane tableLayout = controler.getTableLayout();
-        AudioTable audioTable = AudioTableWrapper.getInstance().getAudioTable();
+        EasyTable easyTable = AudioTableWrapper.getInstance().getEasyTable();
 
         tableLayout.getChildren().filtered((t) -> {
             return t instanceof AudioMediaUI;
         }).forEach((t) -> {
             ((AudioMediaUI) t).getAudioMedia().setIndex(tableLayout.getChildren().indexOf(t));
         });
-        audioTable.getAudioMediaList().sort((o1, o2) -> {
+        easyTable.getAudioMediaList().sort((o1, o2) -> {
             return o1.getIndex() - o2.getIndex();
         });
-        audioTable.setUpdated(true);
+        easyTable.setUpdated(true);
     }
 
     private void moveRectLayer(Pane paneOver, Rectangle rect) {

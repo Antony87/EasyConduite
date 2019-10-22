@@ -24,10 +24,7 @@ import easyconduite.view.controls.EasyFileChooser;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ResourceBundle;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+
 import javafx.stage.FileChooser;
 
 /**
@@ -38,10 +35,10 @@ public class AudioTableWrapper {
 
     private static final ApplicationProperties APP_PROPERTIES = ApplicationPropertiesHelper.getInstance().getProperties();
 
-    private AudioTable audioTable;
+    private EasyTable easyTable;
 
     private AudioTableWrapper() {
-        audioTable = new AudioTable();
+        easyTable = new EasyTable();
     }
 
     public static AudioTableWrapper getInstance() {
@@ -53,21 +50,21 @@ public class AudioTableWrapper {
         private static final AudioTableWrapper INSTANCE = new AudioTableWrapper();
     }
 
-    public AudioTable getAudioTable() {
-        return audioTable;
+    public EasyTable getEasyTable() {
+        return easyTable;
     }
 
-    public void setAudioTable(AudioTable audioTable) {
-        this.audioTable = audioTable;
+    public void setEasyTable(EasyTable easyTable) {
+        this.easyTable = easyTable;
     }
 
     public void clearAudioTable() {
-        audioTable = new AudioTable();
+        easyTable = new EasyTable();
     }
     
     public void removeAudioMedia(AudioMedia audioMedia){
         synchronized (audioMedia){
-            audioTable.getAudioMediaList().remove(audioMedia);
+            easyTable.getAudioMediaList().remove(audioMedia);
         }
     }
 
@@ -78,7 +75,7 @@ public class AudioTableWrapper {
         AudioMedia audioMedia = null;
         if (file != null) {
             audioMedia = new AudioMedia(file);
-            audioTable.getAudioMediaList().add(audioMedia);
+            easyTable.getAudioMediaList().add(audioMedia);
             APP_PROPERTIES.setLastImportDir(PersistenceHelper.getDirectory(file.getParentFile()));
         }
         return audioMedia;
@@ -86,10 +83,10 @@ public class AudioTableWrapper {
 
     public void saveToFile() {
         try {
-            if (PersistenceHelper.isFileExists(audioTable.getTablePathFile())) {
-                audioTable.setUpdated(false);
-                final File fileAudioTable = Paths.get(audioTable.getTablePathFile()).toFile();
-                PersistenceHelper.writeToFile(fileAudioTable, audioTable, PersistenceHelper.FILE_TYPE.XML);
+            if (PersistenceHelper.isFileExists(easyTable.getTablePathFile())) {
+                easyTable.setUpdated(false);
+                final File fileAudioTable = Paths.get(easyTable.getTablePathFile()).toFile();
+                PersistenceHelper.writeToFile(fileAudioTable, easyTable, PersistenceHelper.FILE_TYPE.XML);
             } else {
                 saveAsToFile();
             }
@@ -105,14 +102,14 @@ public class AudioTableWrapper {
         final File file = fileChooser.showSaveDialog(APP_PROPERTIES.getCurrentWindow());
         if (file != null) {
             try {
-                //AudioTable audioTable = AudioTableWrapper.getInstance().getAudioTable();
+                //EasyTable easyTable = AudioTableWrapper.getInstance().getEasyTable();
                 final File checkedFile = PersistenceHelper.suffixForEcp(file);
-                audioTable.setUpdated(false);
-                audioTable.setName(checkedFile.getName());
-                audioTable.setTablePathFile(checkedFile.getAbsolutePath());
-                PersistenceHelper.writeToFile(checkedFile, audioTable, PersistenceHelper.FILE_TYPE.XML);
+                easyTable.setUpdated(false);
+                easyTable.setName(checkedFile.getName());
+                easyTable.setTablePathFile(checkedFile.getAbsolutePath());
+                PersistenceHelper.writeToFile(checkedFile, easyTable, PersistenceHelper.FILE_TYPE.XML);
                 APP_PROPERTIES.setLastProjectDir(PersistenceHelper.getDirectory(file.getParentFile()));
-                //UITools.updateWindowsTitle(controller.getMainPane(), audioTable.getName());
+                //UITools.updateWindowsTitle(controller.getMainPane(), easyTable.getName());
             } catch (PersistenceException e) {
                 final ResourceBundle locale = ApplicationPropertiesHelper.getInstance().getLocalBundle();
                 ActionDialog.showWarning(locale.getString("dialog.error.header"), locale.getString("easyconduitecontroler.save.error"));
@@ -120,7 +117,7 @@ public class AudioTableWrapper {
         }
     }
 
-    public AudioTable getFromFile(File file) {
+    public EasyTable getFromFile(File file) {
         if (file == null) {
             final FileChooser fileChooser = new EasyFileChooser.FileChooserBuilder().asType(EasyFileChooser.Type.OPEN_PROJECT).build();
             file = fileChooser.showOpenDialog(APP_PROPERTIES.getCurrentWindow());
@@ -128,18 +125,18 @@ public class AudioTableWrapper {
         if (file != null) {
             APP_PROPERTIES.setLastProjectDir(PersistenceHelper.getDirectory(file.getParentFile()));
             try {
-                AudioTableWrapper.getInstance().setAudioTable((AudioTable) PersistenceHelper.readFromFile(file, AudioTable.class, PersistenceHelper.FILE_TYPE.XML));
-                //audioTable.setNext(controller);
+                AudioTableWrapper.getInstance().setEasyTable((EasyTable) PersistenceHelper.readFromFile(file, EasyTable.class, PersistenceHelper.FILE_TYPE.XML));
+                //easyTable.setNext(controller);
 
-                //UITools.updateWindowsTitle(mainPane, audioTable.getName());
-                //AudioTableHelper.cleanChilds(audioTable);
+                //UITools.updateWindowsTitle(mainPane, easyTable.getName());
+                //AudioTableHelper.cleanChilds(easyTable);
                 APP_PROPERTIES.setLastFileProject(file);
             } catch (PersistenceException ex) {
                 final ResourceBundle locale = ApplicationPropertiesHelper.getInstance().getLocalBundle();
                 ActionDialog.showWarning(locale.getString("dialog.error.header"), locale.getString("easyconduitecontroler.open.error"));
             }
         }
-        return getAudioTable();
+        return getEasyTable();
     }
 
 }

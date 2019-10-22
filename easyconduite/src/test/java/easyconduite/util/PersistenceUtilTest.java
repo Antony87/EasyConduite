@@ -17,10 +17,10 @@
  */
 package easyconduite.util;
 
+import easyconduite.objects.EasyTable;
 import easyconduite.tools.PersistenceHelper;
 import easyconduite.exception.PersistenceException;
 import easyconduite.objects.AudioMedia;
-import easyconduite.objects.AudioTable;
 import easyconduite.objects.ApplicationProperties;
 import java.io.File;
 import java.io.IOException;
@@ -66,10 +66,10 @@ public class PersistenceUtilTest {
 
     @Test
     public void testSaveAudioTable() throws Exception {
-        AudioTable audioTable = new AudioTable();
-        audioTable.setName("testEasyConduite");
-        //PersistenceUtil.saveAudioTable(tempFile, audioTable);
-        PersistenceHelper.writeToFile(tempFile, audioTable, PersistenceHelper.FILE_TYPE.XML);
+        EasyTable easyTable = new EasyTable();
+        easyTable.setName("testEasyConduite");
+        //PersistenceUtil.saveAudioTable(tempFile, easyTable);
+        PersistenceHelper.writeToFile(tempFile, easyTable, PersistenceHelper.FILE_TYPE.XML);
 
         assertTrue(Files.exists(tempFile.toPath()));
         assertTrue(Files.size(tempFile.toPath()) > 5L);
@@ -83,13 +83,13 @@ public class PersistenceUtilTest {
         mediaExpected.repeatableProperty().setValue(Boolean.TRUE);
         mediaExpected.nameProperty().setValue("mediatest");
 
-        final AudioTable tableExpected = new AudioTable();
+        final EasyTable tableExpected = new EasyTable();
         tableExpected.getAudioMediaList().add(mediaExpected);
         tableExpected.setName("testEasyConduite");
         //PersistenceUtil.saveAudioTable(tempFile, tableExpected);
         PersistenceHelper.writeToFile(tempFile, tableExpected, PersistenceHelper.FILE_TYPE.XML);
 
-        final AudioTable audiotable = PersistenceHelper.readFromFile(tempFile, AudioTable.class, PersistenceHelper.FILE_TYPE.XML);
+        final EasyTable audiotable = PersistenceHelper.readFromFile(tempFile, EasyTable.class, PersistenceHelper.FILE_TYPE.XML);
         assertEquals(tableExpected.getName(), audiotable.getName());
         final AudioMedia media = audiotable.getAudioMediaList().get(0);
         assertNotNull(media);
