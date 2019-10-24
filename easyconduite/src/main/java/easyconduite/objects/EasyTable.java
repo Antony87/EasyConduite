@@ -18,6 +18,7 @@ package easyconduite.objects;
 
 import easyconduite.model.ChainingUpdater;
 import easyconduite.model.IeasyMedia;
+import easyconduite.objects.media.MediaFactory;
 import easyconduite.objects.media.SoundMedia;
 import easyconduite.tools.PersistenceHelper;
 import javafx.beans.Observable;
@@ -73,23 +74,23 @@ public class EasyTable {
     public EasyTable() {
 
         Callback<AudioMedia, Observable[]> cb = (AudioMedia a) -> new Observable[]{
-            a.keycodeProperty(),
-            a.nameProperty(),
-            a.repeatableProperty(),
-            a.volumeProperty(),
-            a.fadeOutDurationProperty(),
-            a.fadeInDurationProperty(),
-            a.getUuidChildBegin(),
-            a.getUuidChildEnd()
+                a.keycodeProperty(),
+                a.nameProperty(),
+                a.repeatableProperty(),
+                a.volumeProperty(),
+                a.fadeOutDurationProperty(),
+                a.fadeInDurationProperty(),
+                a.getUuidChildBegin(),
+                a.getUuidChildEnd()
 
         };
 
-        IeasyMedia media = new SoundMedia(new File(""));
-        ((SoundMedia) media).setFadeInDuration(new Duration(10));
+        IeasyMedia soundMedia = MediaFactory.getEasyMedia();
+
 
         audioMediaList = FXCollections.observableArrayList(cb);
         audioMediaList.addListener(new AudioMediaChangeListerner());
-        
+
     }
 
     /**
@@ -172,7 +173,6 @@ public class EasyTable {
     }
 
     /**
-     *
      * @param uuid
      * @return
      */

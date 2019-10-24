@@ -1,7 +1,7 @@
 
 package easyconduite.objects;
 
-import easyconduite.model.EasyMediaClass;
+import easyconduite.model.EasyMedia;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public class EasyProjet {
     private String name;
     private EasyTable table;
     private Conduite conduite;
-    private List<EasyMediaClass> medias;
+    private List<EasyMedia> medias;
 
     public String getName() {
         return name;

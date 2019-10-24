@@ -9,7 +9,7 @@ import java.util.UUID;
 /**
  * Classe abstraite offrant les caractéristiques communes d'un média.
  */
-public abstract class EasyMediaClass implements IeasyMedia {
+public abstract class EasyMedia implements IeasyMedia {
 
     private String name;
 
@@ -17,7 +17,7 @@ public abstract class EasyMediaClass implements IeasyMedia {
 
     private UUID uniqueId = UUID.randomUUID();
 
-    private int index;
+    private int indexInTable;
 
     private String filePathName;
 
@@ -65,16 +65,16 @@ public abstract class EasyMediaClass implements IeasyMedia {
     /**
      * @return l'index du media dans dans la table.
      */
-    public int getIndex() {
-        return index;
+    public int getIndexInTable() {
+        return indexInTable;
     }
 
     /**
      * Positionne l'index du média dans la table de l'interface graphique.
-     * @param index index du média
+     * @param indexInTable index du média
      */
-    public void setIndex(int index) {
-        this.index = index;
+    public void setIndexInTable(int indexInTable) {
+        this.indexInTable = indexInTable;
     }
 
     public String getFilePathName() {
