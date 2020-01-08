@@ -7,9 +7,9 @@ import java.util.UUID;
 
 
 /**
- * Classe abstraite offrant les caractéristiques communes d'un média.
+ * Classe abstraite offrant les caractéristiques communes d'un Easymédia jouable par EasyConduite.
  */
-public abstract class EasyMedia implements IeasyMedia {
+public abstract class EasyMedia {
 
     private String name;
 
@@ -19,72 +19,50 @@ public abstract class EasyMedia implements IeasyMedia {
 
     private int indexInTable;
 
-    private String filePathName;
-
     private KeyCode keycode;
 
-    private Boolean repetable;
+    private Boolean loppable;
 
     /**
-     * @return le nom du média
+     * @return Nom du EasyMédia.
      */
     public String getName() {
         return name;
     }
 
-    /**
-     * Positionne le nom du média.
-     * @param name le nom du média
-     */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * @return la durée du média
+     * @return la durée {@link Duration} de lecture du EasyMédia
      */
     public Duration getDuration() {
         return duration;
     }
 
-    /**
-     * Positionne la durée du média
-     * @param duration durée du média
-     */
     public void setDuration(Duration duration) {
         this.duration = duration;
     }
 
-    /**
-     * @return l'uudi unique du media
-     */
     public UUID getUniqueId() {
         return uniqueId;
     }
 
     /**
-     * @return l'index du media dans dans la table.
+     * @return index de postionnement dans la table sur l'UI.
      */
     public int getIndexInTable() {
         return indexInTable;
     }
 
-    /**
-     * Positionne l'index du média dans la table de l'interface graphique.
-     * @param indexInTable index du média
-     */
     public void setIndexInTable(int indexInTable) {
         this.indexInTable = indexInTable;
     }
 
-    public String getFilePathName() {
-        return filePathName;
-    }
-
-    public void setFilePathName(String filePathName) {
-        this.filePathName = filePathName;
-    }
-
+    /**
+     * @return le code {@link KeyCode} associé au EasyMédia pour pause,play,stop.
+     */
     public KeyCode getKeycode() {
         return keycode;
     }
@@ -93,11 +71,14 @@ public abstract class EasyMedia implements IeasyMedia {
         this.keycode = keycode;
     }
 
-    public Boolean getRepetable() {
-        return repetable;
+    /**
+     * @return Boolean si le EasyMédia est jouable en boucle.
+     */
+    public Boolean getLoppable() {
+        return loppable;
     }
 
-    public void setRepetable(Boolean repetable) {
-        this.repetable = repetable;
+    public void setLoppable(Boolean loppable) {
+        this.loppable = loppable;
     }
 }
