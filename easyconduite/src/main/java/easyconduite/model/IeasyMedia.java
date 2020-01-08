@@ -2,11 +2,18 @@ package easyconduite.model;
 
 public interface IeasyMedia {
 
-    public void play();
+    /**
+     * Méthode jouant un EasyMédia.
+     */
+    void play();
 
+    /**
+     * Méthode mettant en pause un EasyMédia
+     */
+    void pause();
 
-    public void pause();
-
-
-    public void stop();
+    /**
+     * Méthode stoppant un EasyMédia
+     */
+    void stop();
 }
