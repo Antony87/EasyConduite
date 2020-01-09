@@ -20,7 +20,7 @@ import easyconduite.controllers.helpers.MainListenersHandler;
 import easyconduite.exception.PersistenceException;
 import easyconduite.objects.ApplicationProperties;
 import easyconduite.objects.AudioMedia;
-import easyconduite.objects.EasyTable;
+import easyconduite.objects.project.EasyTable;
 import easyconduite.tools.ApplicationPropertiesHelper;
 import easyconduite.tools.Constants;
 import easyconduite.tools.PersistenceHelper;

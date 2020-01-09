@@ -1,19 +1,24 @@
 
-package easyconduite.objects;
+package easyconduite.objects.project;
 
-import easyconduite.model.EasyMedia;
+import easyconduite.objects.conduite.Conduite;
 
-import java.util.List;
+import java.io.File;
 
 /**
  * Cette Classe comporte les attributs d'un projet EasyConduite.
  */
-public class EasyProjet {
+public class MediaProject {
 
     private String name;
     private EasyTable table;
     private Conduite conduite;
-    private List<EasyMedia> medias;
+    private File projectFile;
+
+    public MediaProject() {
+        this.table=new EasyTable();
+        this.conduite=new Conduite();
+    }
 
     public String getName() {
         return name;
@@ -37,5 +42,13 @@ public class EasyProjet {
 
     public void setConduite(Conduite conduite) {
         this.conduite = conduite;
+    }
+
+    public File getProjectFile() {
+        return projectFile;
+    }
+
+    public void setProjectFile(File projectFile) {
+        this.projectFile = projectFile;
     }
 }

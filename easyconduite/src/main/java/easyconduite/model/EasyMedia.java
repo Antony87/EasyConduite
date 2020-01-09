@@ -9,19 +9,19 @@ import java.util.UUID;
 /**
  * Classe abstraite offrant les caractéristiques communes d'un Easymédia jouable par EasyConduite.
  */
-public abstract class EasyMedia {
+public class EasyMedia {
 
     private String name;
 
     private Duration duration;
 
-    private UUID uniqueId = UUID.randomUUID();
+    private Long uniqueId = UUID.randomUUID().getMostSignificantBits();
 
     private int indexInTable;
 
     private KeyCode keycode;
 
-    private Boolean loppable;
+    private Boolean loppable = false;
 
     /**
      * @return Nom du EasyMédia.
@@ -45,7 +45,7 @@ public abstract class EasyMedia {
         this.duration = duration;
     }
 
-    public UUID getUniqueId() {
+    public Long getUniqueId() {
         return uniqueId;
     }
 

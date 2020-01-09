@@ -33,7 +33,7 @@ public class ApplicationProperties implements Serializable {
 
     private Locale locale;
 
-    private int WindowWith;
+    private int windowWith;
 
     private int windowHeight;
 
@@ -50,12 +50,12 @@ public class ApplicationProperties implements Serializable {
     /**
      * Constructor with parameters.
      *
-     * @param WindowWith
+     * @param windowWith
      * @param windowHeight
      * @param logLevel
      */
-    public ApplicationProperties(int WindowWith, int windowHeight, Level logLevel) {
-        this.WindowWith = WindowWith;
+    public ApplicationProperties(int windowWith, int windowHeight, Level logLevel) {
+        this.windowWith = windowWith;
         this.windowHeight = windowHeight;
         this.logLevel = logLevel;
     }
@@ -75,11 +75,11 @@ public class ApplicationProperties implements Serializable {
     }
 
     public int getWindowWith() {
-        return WindowWith;
+        return windowWith;
     }
 
     public void setWindowWith(int WindowWith) {
-        this.WindowWith = WindowWith;
+        this.windowWith = WindowWith;
     }
 
     public int getWindowHeight() {
@@ -133,7 +133,7 @@ public class ApplicationProperties implements Serializable {
 
     @Override
     public String toString() {
-        return "ApplicationProperties{" + "locale=" + locale + ", WindowWith=" + WindowWith + ", windowHeight=" + windowHeight + ", lastFileProject=" + lastFileProject + ", logLevel=" + logLevel + ", lastProjectDir=" + lastProjectDir + ", lastImportDir=" + lastImportDir + '}';
+        return "ApplicationProperties{" + "locale=" + locale + ", WindowWith=" + windowWith + ", windowHeight=" + windowHeight + ", lastFileProject=" + lastFileProject + ", logLevel=" + logLevel + ", lastProjectDir=" + lastProjectDir + ", lastImportDir=" + lastImportDir + '}';
     }
 
     

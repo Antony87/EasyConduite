@@ -17,7 +17,7 @@
 package easyconduite.controllers.helpers;
 
 import easyconduite.controllers.MainController;
-import easyconduite.objects.EasyTable;
+import easyconduite.objects.project.EasyTable;
 import easyconduite.objects.AudioTableWrapper;
 import easyconduite.tools.Constants;
 import easyconduite.view.AudioMediaUI;

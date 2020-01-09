@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package easyconduite.objects;
+package easyconduite.objects.project;
 
 import easyconduite.model.ChainingUpdater;
 import easyconduite.model.IeasyMedia;
+import easyconduite.objects.AudioMedia;
 import easyconduite.objects.media.MediaFactory;
-import easyconduite.objects.media.SoundMedia;
 import easyconduite.tools.PersistenceHelper;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
@@ -37,7 +37,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import java.io.File;
 import java.util.UUID;
 
 /**
@@ -84,9 +83,6 @@ public class EasyTable {
                 a.getUuidChildEnd()
 
         };
-
-        IeasyMedia soundMedia = MediaFactory.getEasyMedia();
-
 
         audioMediaList = FXCollections.observableArrayList(cb);
         audioMediaList.addListener(new AudioMediaChangeListerner());

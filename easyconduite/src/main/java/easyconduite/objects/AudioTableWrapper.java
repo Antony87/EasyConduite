@@ -17,6 +17,7 @@
 package easyconduite.objects;
 
 import easyconduite.exception.PersistenceException;
+import easyconduite.objects.project.EasyTable;
 import easyconduite.tools.ApplicationPropertiesHelper;
 import easyconduite.tools.PersistenceHelper;
 import easyconduite.view.controls.ActionDialog;

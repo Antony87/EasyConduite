@@ -1,27 +1,25 @@
 package easyconduite.objects.media;
 
-import easyconduite.model.EasyMedia;
+import easyconduite.model.AudioVisualMedia;
 import easyconduite.view.commons.PlayerVolumeFader;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ReadOnlyDoubleWrapper;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
 import java.io.File;
 
-public class SoundMedia extends EasyMedia {
 
-    private Duration fadeInDuration = Duration.ZERO;
+public class AudioVideoMedia extends AudioVisualMedia {
 
-    private Duration fadeOutDuration = Duration.ZERO;
+    private Duration fadeInDuration = Duration.UNKNOWN;
 
-    private transient MediaPlayer player;
+    private Duration fadeOutDuration = Duration.UNKNOWN;
+
+    private MediaPlayer player;
 
     private PlayerVolumeFader fadeHandler;
 
-    private final DoubleProperty volume = new ReadOnlyDoubleWrapper();
-
-    public SoundMedia(File fichierAudio) {
+    public AudioVideoMedia(File file) {
+        super(file);
     }
 
     @Override
