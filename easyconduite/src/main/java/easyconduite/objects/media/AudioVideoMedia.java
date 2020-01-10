@@ -1,5 +1,6 @@
 package easyconduite.objects.media;
 
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import easyconduite.model.AudioVisualMedia;
 import easyconduite.view.commons.PlayerVolumeFader;
 import javafx.scene.media.MediaPlayer;
@@ -14,8 +15,10 @@ public class AudioVideoMedia extends AudioVisualMedia {
 
     private Duration fadeOutDuration = Duration.UNKNOWN;
 
+    @XStreamOmitField
     private MediaPlayer player;
 
+    @XStreamOmitField
     private PlayerVolumeFader fadeHandler;
 
     public AudioVideoMedia(File file) {

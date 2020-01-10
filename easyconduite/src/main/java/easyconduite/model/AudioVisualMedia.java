@@ -10,6 +10,7 @@ public abstract class AudioVisualMedia extends EasyMedia implements IeasyMedia {
 
     public AudioVisualMedia(File file) {
         this.mediaFile = file;
+        this.setName(file.getName());
     }
 
     public File getMediaFile() {

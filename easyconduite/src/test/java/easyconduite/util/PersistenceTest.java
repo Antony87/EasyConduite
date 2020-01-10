@@ -1,68 +1,54 @@
 package easyconduite.util;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.security.NoTypePermission;
-import com.thoughtworks.xstream.security.NullPermission;
-import com.thoughtworks.xstream.security.PrimitiveTypePermission;
-import easyconduite.Easyconduite;
 import easyconduite.model.EasyMedia;
 import easyconduite.objects.media.AudioVideoMedia;
-import easyconduite.objects.project.MediaTable;
+import easyconduite.objects.media.MediaFactory;
+import easyconduite.objects.project.MediaProject;
+import javafx.scene.input.KeyCode;
 import javafx.util.Duration;
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.util.Collection;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class PersistenceTest {
 
-    MediaTable table;
+    MediaProject projet;
 
     @BeforeEach
     public void setUp() throws Exception {
-
-        table = new MediaTable();
-
-        EasyMedia media=new AudioVideoMedia(new File("src/test/resources/Alarme.wav"));
-        ((AudioVideoMedia)media).setDuration(new Duration(2000));
-        ((AudioVideoMedia)media).setVolume(20L);
-        ((AudioVideoMedia)media).setFadeInDuration(new Duration(1200));
-        ((AudioVideoMedia)media).setFadeOutDuration(Duration.UNKNOWN);
-        table.getEasyMediaList().add(media);
-
+        projet=new MediaProject();
+        projet.setName("test");
     }
 
     @Test
     public void testSerialization()  {
 
-        EasyMedia media=new AudioVideoMedia(new File("src/test/resources/Alarme.wav"));
+//        EasyMedia media=new AudioVideoMedia(new File("src/test/resources/Alarme.wav"));
+        EasyMedia media= MediaFactory.getAudioVisualMedia(new File("src/test/resources/Alarme.wav"));
         ((AudioVideoMedia)media).setDuration(new Duration(2000));
         ((AudioVideoMedia)media).setVolume(20L);
+        ((AudioVideoMedia)media).setKeycode(KeyCode.E);
         ((AudioVideoMedia)media).setFadeInDuration(new Duration(1200));
         ((AudioVideoMedia)media).setFadeOutDuration(Duration.INDEFINITE);
 
+        projet.getEasyMediaList().add(media);
 
         XStream xstream = new XStream();
 
-// allow some basics
-        xstream.addPermission(NullPermission.NULL);
-        xstream.addPermission(PrimitiveTypePermission.PRIMITIVES);
-        xstream.allowTypeHierarchy(Collection.class);
-// allow any type from the same package
-        xstream.allowTypesByWildcard(new String[] {
-                Easyconduite.class.getPackage().getName()+".*",AudioVideoMedia.class.getPackage().getName()+".*"
-        });
+        String toto =xstream.toXML(projet);
+        System.out.println(toto);
+        MediaProject deserializeProect = (MediaProject)xstream.fromXML(toto);
+        EasyMedia media2 = deserializeProect.getEasyMediaList().get(0);
 
-
-        String toto =xstream.toXML(media);
-
-        EasyMedia media2 = (EasyMedia) xstream.fromXML(toto);
+        assertEquals("test",deserializeProect.getName());
         assertEquals(Duration.INDEFINITE,((AudioVideoMedia)media2).getFadeOutDuration());
-        System.out.println(media.getUniqueId());
-        System.out.println(media2.getUniqueId());
+        assertEquals(KeyCode.E,((AudioVideoMedia)media2).getKeycode());
+
 
     }
 }
