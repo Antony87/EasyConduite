@@ -96,8 +96,6 @@ public class MainListenersHandler {
 
         final ObservableList childs = tableLayout.getChildren();
 
-        calque = controler.getCalquePane();
-
         rect = new Rectangle();
         rect.getStyleClass().add("rectDragOver");
 

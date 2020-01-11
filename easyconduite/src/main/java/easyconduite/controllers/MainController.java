@@ -75,25 +75,9 @@ public class MainController extends StackPane implements Initializable, Chaining
 
     @FXML
     StackPane mainPane;
-    
-    @FXML
-    private Label spectrum;
-
-    public void setSpectrum(Label spectrum) {
-        this.spectrum = spectrum;
-    }
-
-    public Label getSpectrum() {
-        return spectrum;
-    }
-    
-    
 
     @FXML
     private FlowPane tableLayout;
-
-    @FXML
-    private Pane calquePane;
 
     @FXML
     private Menu openRecent;
@@ -304,7 +288,6 @@ public class MainController extends StackPane implements Initializable, Chaining
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         LOG.debug("Controler initialisation");
-        calquePane.setMouseTransparent(true);
         // initialization listeners
         listenersHandler = new MainListenersHandler(this);
         listenersHandler.setDragAndDropFeature(tableLayout);
@@ -321,10 +304,6 @@ public class MainController extends StackPane implements Initializable, Chaining
                 openFile(appProps.getLastFileProject());
             });
         }        
-    }
-
-    public Pane getCalquePane() {
-        return calquePane;
     }
 
     public FlowPane getTableLayout() {
