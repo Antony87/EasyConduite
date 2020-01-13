@@ -21,12 +21,11 @@ import easyconduite.objects.ApplicationProperties;
 import easyconduite.tools.ApplicationPropertiesHelper;
 import easyconduite.tools.Constants;
 import easyconduite.tools.LoggingHelper;
-import java.util.Map;
-import java.util.ResourceBundle;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -36,13 +35,16 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Map;
+import java.util.ResourceBundle;
+
 /**
  *
  * @author A. Fons
  */
 public class Easyconduite extends Application {
 
-    static final Logger LOG = LogManager.getLogger(Easyconduite.class);
+    static final Logger LOG = LogManager.getLogger();
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -62,8 +64,10 @@ public class Easyconduite extends Application {
         }
         stage.initStyle(StageStyle.DECORATED);
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/easyconduite32.png")));
+
+        Button but = new Button();
         
-        final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/easyconduite.fxml"), localeBundle);
+        final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/easyconduite_v3.fxml"), localeBundle);
         
         Pane root = loader.load();
         Scene scene = new Scene(root);
