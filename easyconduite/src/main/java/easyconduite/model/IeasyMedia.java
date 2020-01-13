@@ -1,5 +1,7 @@
 package easyconduite.model;
 
+import easyconduite.exception.EasyconduiteException;
+
 public interface IeasyMedia {
 
     /**
@@ -16,4 +18,9 @@ public interface IeasyMedia {
      * Méthode stoppant un EasyMédia
      */
     void stop();
+
+    /**
+     * Méthode initialisant le player avant utilisation dans l'application.
+     */
+    void initPlayer() throws EasyconduiteException;
 }

@@ -1,5 +1,6 @@
 package easyconduite.objects.media;
 
+import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.EasyMedia;
 import easyconduite.model.IeasyMedia;
 
