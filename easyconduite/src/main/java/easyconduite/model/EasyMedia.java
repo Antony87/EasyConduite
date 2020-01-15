@@ -3,6 +3,7 @@ package easyconduite.model;
 import javafx.scene.input.KeyCode;
 import javafx.util.Duration;
 
+import java.util.Objects;
 import java.util.UUID;
 
 
@@ -80,5 +81,23 @@ public class EasyMedia {
 
     public void setLoppable(Boolean loppable) {
         this.loppable = loppable;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EasyMedia easyMedia = (EasyMedia) o;
+        return indexInTable == easyMedia.indexInTable &&
+                Objects.equals(name, easyMedia.name) &&
+                Objects.equals(duration, easyMedia.duration) &&
+                uniqueId.equals(easyMedia.uniqueId) &&
+                keycode == easyMedia.keycode &&
+                Objects.equals(loppable, easyMedia.loppable);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, duration, uniqueId, indexInTable, keycode, loppable);
     }
 }

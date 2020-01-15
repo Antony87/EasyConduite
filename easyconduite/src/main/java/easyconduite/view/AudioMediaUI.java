@@ -66,8 +66,6 @@ public class AudioMediaUI extends VBox implements ChainingUpdater {
 
     private final ContextMenu contextMenu = new ContextMenu();
 
-    private final ResourceBundle bundle = ApplicationPropertiesHelper.getInstance().getLocalBundle();
-
     private final PlayPauseHbox playPauseHbox;
 
     private EasyconduitePlayer player;
@@ -133,6 +131,7 @@ public class AudioMediaUI extends VBox implements ChainingUpdater {
         keycodeHbox.getChildren().addAll(repeatRegion,keycodeLabel);
 
 
+        ResourceBundle bundle = ApplicationPropertiesHelper.getInstance().getLocalBundle();
         MenuItem propertiesItem = new MenuItem(bundle.getString("track.context.properties"));
         propertiesItem.setOnAction((ActionEvent e) -> {
             player.stop();

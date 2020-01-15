@@ -10,6 +10,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.util.Objects;
 
 
 public class AudioVideoMedia extends AudioVisualMedia {
@@ -99,5 +100,20 @@ public class AudioVideoMedia extends AudioVisualMedia {
 
     public MediaPlayer getPlayer() {
         return player;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AudioVideoMedia)) return false;
+        if (!super.equals(o)) return false;
+        AudioVideoMedia that = (AudioVideoMedia) o;
+        return Objects.equals(fadeInDuration, that.fadeInDuration) &&
+                Objects.equals(fadeOutDuration, that.fadeOutDuration);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), fadeInDuration, fadeOutDuration);
     }
 }

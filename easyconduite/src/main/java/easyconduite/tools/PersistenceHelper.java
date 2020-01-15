@@ -16,6 +16,8 @@
  */
 package easyconduite.tools;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.WriterWrapper;
 import easyconduite.exception.PersistenceException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,6 +52,23 @@ public class PersistenceHelper {
 
     public enum FILE_TYPE {
         BIN, XML
+    }
+
+    public static <T> void saveXml(T o, File file) throws IOException {
+        final XStream xstream = new XStream();
+        xstream.autodetectAnnotations(true);
+        ObjectOutputStream objectOutputStream = xstream.createObjectOutputStream(new FileOutputStream(file));
+        objectOutputStream.writeObject(o);
+        objectOutputStream.close();
+    }
+
+    public static <T> T openXml(File file) throws IOException, ClassNotFoundException {
+        final XStream xstream = new XStream();
+        xstream.autodetectAnnotations(true);
+        ObjectInputStream objectInputStream = xstream.createObjectInputStream(new FileInputStream(file));
+        T t = (T) objectInputStream.readObject();
+        objectInputStream.close();
+        return t;
     }
 
     /**
