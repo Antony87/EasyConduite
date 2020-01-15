@@ -16,11 +16,14 @@
  */
 package easyconduite.view.commons;
 
+import easyconduite.model.AudioVisualMedia;
 import easyconduite.objects.AudioMedia;
+import easyconduite.objects.media.AudioVideoMedia;
 import easyconduite.view.controls.EasyconduitePlayer;
 import javafx.animation.Transition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
 /**
@@ -29,14 +32,19 @@ import javafx.util.Duration;
  */
 public class PlayerVolumeFader extends Transition {
 
-    private final EasyconduitePlayer easyPlayer;
+//    private final EasyconduitePlayer easyPlayer;
 
-    private final AudioMedia audioMedia;
+    private final MediaPlayer player;
+    private final AudioVisualMedia audioVisualMedia;
+//
+//    private final AudioMedia audioMedia;
 
-    public PlayerVolumeFader(EasyconduitePlayer player, AudioMedia media) {
+    public PlayerVolumeFader(AudioVideoMedia media) {
         super();
-        easyPlayer = player;
-        audioMedia = media;
+        this.player=media.getPlayer();
+        this.audioVisualMedia=media;
+//        easyPlayer = player;
+//        audioMedia = media;
     }
 
     public void fadeOut(Duration fadeDuration) {
@@ -48,7 +56,7 @@ public class PlayerVolumeFader extends Transition {
     }
 
     public void fadeIn(Duration fadeDuration) {
-        easyPlayer.getPlayer().setVolume(0d);
+        player.setVolume(0d);
         this.setRate(1d);
         this.setCycleDuration(fadeDuration);
         this.setOnFinished(getFadeInHandler());
@@ -57,21 +65,21 @@ public class PlayerVolumeFader extends Transition {
 
     private EventHandler<ActionEvent> getFadeOutHandler() {
         return (ActionEvent event) -> {
-            easyPlayer.getPlayer().pause();
+            player.pause();
             setOnFinished(null);
         };
     }
 
     private EventHandler<ActionEvent> getFadeInHandler() {
         return (ActionEvent event) -> {
-            easyPlayer.getPlayer().setVolume(audioMedia.getVolume());
+            player.setVolume(audioVisualMedia.getVolume());
             setOnFinished(null);
         };
     }
 
     @Override
     protected void interpolate(double frac) {
-        easyPlayer.getPlayer().setVolume(frac * audioMedia.getVolume());
+        player.setVolume(frac * audioVisualMedia.getVolume());
     }
 
 }

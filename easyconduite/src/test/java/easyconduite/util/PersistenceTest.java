@@ -1,54 +1,46 @@
 package easyconduite.util;
 
-import com.thoughtworks.xstream.XStream;
-import easyconduite.model.EasyMedia;
-import easyconduite.objects.media.AudioVideoMedia;
-import easyconduite.objects.media.MediaFactory;
+import easyconduite.exception.PersistenceException;
+import easyconduite.fixture.EasyProjectFixture;
 import easyconduite.objects.project.MediaProject;
-import javafx.scene.input.KeyCode;
-import javafx.util.Duration;
-import org.junit.jupiter.api.BeforeEach;
+import easyconduite.tools.PersistenceHelper;
+import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.testfx.framework.junit5.ApplicationExtension;
+import org.testfx.framework.junit5.Start;
 
 import java.io.File;
+import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-
+@ExtendWith(ApplicationExtension.class)
 public class PersistenceTest {
 
     MediaProject projet;
+    Scene scene;
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        projet=new MediaProject();
+    @Start
+    private void start(Stage stage) {
+        projet = new MediaProject();
         projet.setName("test");
+        scene = new Scene(new StackPane(), 100, 100);
+        stage.setScene(scene);
+        stage.show();
     }
 
     @Test
-    public void testSerialization()  {
+    public void testSerialization() throws PersistenceException {
+        MediaProject project = EasyProjectFixture.getValidProject();
+        PersistenceHelper.saveToXml(project, new File("src/test/resources/test.xml"));
 
-//        EasyMedia media=new AudioVideoMedia(new File("src/test/resources/Alarme.wav"));
-        EasyMedia media= MediaFactory.getAudioVisualMedia(new File("src/test/resources/Alarme.wav"));
-        ((AudioVideoMedia)media).setDuration(new Duration(2000));
-        ((AudioVideoMedia)media).setVolume(20L);
-        ((AudioVideoMedia)media).setKeycode(KeyCode.E);
-        ((AudioVideoMedia)media).setFadeInDuration(new Duration(1200));
-        ((AudioVideoMedia)media).setFadeOutDuration(Duration.INDEFINITE);
+        MediaProject project2 = PersistenceHelper.openFromXml(new File("src/test/resources/test.xml"));
 
-        projet.getEasyMediaList().add(media);
-
-        XStream xstream = new XStream();
-
-        String toto =xstream.toXML(projet);
-        System.out.println(toto);
-        MediaProject deserializeProect = (MediaProject)xstream.fromXML(toto);
-        EasyMedia media2 = deserializeProect.getEasyMediaList().get(0);
-
-        assertEquals("test",deserializeProect.getName());
-        assertEquals(Duration.INDEFINITE,((AudioVideoMedia)media2).getFadeOutDuration());
-        assertEquals(KeyCode.E,((AudioVideoMedia)media2).getKeycode());
-
+        assertEquals(project.getName(),project2.getName());
+        assertEquals(project.getEasyMediaList().get(0),project2.getEasyMediaList().get(0));
 
     }
 }

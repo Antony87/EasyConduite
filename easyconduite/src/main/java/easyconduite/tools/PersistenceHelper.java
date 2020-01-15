@@ -16,6 +16,8 @@
  */
 package easyconduite.tools;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.WriterWrapper;
 import easyconduite.exception.PersistenceException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,6 +52,37 @@ public class PersistenceHelper {
 
     public enum FILE_TYPE {
         BIN, XML
+    }
+
+    public static <T> void saveToXml(T o, File file) throws PersistenceException {
+        final XStream xstream = new XStream();
+        xstream.autodetectAnnotations(true);
+        try {
+            ObjectOutputStream objectOutputStream = xstream.createObjectOutputStream(new FileOutputStream(file));
+            objectOutputStream.writeObject(o);
+            objectOutputStream.close();
+        } catch (IOException e) {
+            LOG.error("An error occured", e);
+            throw new PersistenceException(e);
+        }
+    }
+
+    public static <T> T openFromXml(File file) throws PersistenceException {
+        final XStream xstream = new XStream();
+        xstream.autodetectAnnotations(true);
+        T deserialized = null;
+        try {
+            ObjectInputStream objectInputStream = xstream.createObjectInputStream(new FileInputStream(file));
+            deserialized = (T) objectInputStream.readObject();
+            objectInputStream.close();
+            if(deserialized==null){
+                throw new PersistenceException("deserialized object is null");
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            LOG.error("An error occured", e);
+            throw new PersistenceException(e);
+        }
+        return deserialized;
     }
 
     /**

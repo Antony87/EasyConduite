@@ -59,7 +59,7 @@ public class EasyconduitePlayer implements ChainingUpdater {
         audioMedia = media;
         mainController = contoller;
 
-        fadeHandler = new PlayerVolumeFader(EasyconduitePlayer.this, audioMedia);
+        //fadeHandler = new PlayerVolumeFader(EasyconduitePlayer.this, audioMedia);
 
         try {
             final Media mediaForPlayer = new Media(PersistenceHelper.getPathURIString(audioMedia.getFilePathName()));
@@ -86,15 +86,11 @@ public class EasyconduitePlayer implements ChainingUpdater {
     }
 
     private void playChildsEnd() {
-        audioMedia.getUuidChildEnd().forEach((UUID t) -> {
-            mainController.getByUUID(t).playPause();
-        });
+        audioMedia.getUuidChildEnd().forEach((UUID t) -> mainController.getByUUID(t).playPause());
     }
 
     private void playChildsBegin() {
-        audioMedia.getUuidChildBegin().forEach((UUID t) -> {
-            mainController.getByUUID(t).playPause();
-        });
+        audioMedia.getUuidChildBegin().forEach((UUID t) -> mainController.getByUUID(t).playPause());
     }
 
     public final void stop() {

@@ -16,16 +16,18 @@
  */
 package easyconduite.objects;
 
+import javafx.stage.Window;
+import org.apache.logging.log4j.Level;
+
 import java.io.File;
 import java.io.Serializable;
 import java.util.Locale;
-import javafx.stage.Window;
-import org.apache.logging.log4j.Level;
 
 /**
  * This class implements properties for user datas.
  *
  * @author antony
+ * @deprecated
  */
 public class ApplicationProperties implements Serializable {
 
@@ -58,12 +60,14 @@ public class ApplicationProperties implements Serializable {
         this.windowWith = windowWith;
         this.windowHeight = windowHeight;
         this.logLevel = logLevel;
+
     }
 
     /**
      * Default constructor.
      */
     public ApplicationProperties() {
+
     }
 
     public Locale getLocale() {
@@ -129,15 +133,12 @@ public class ApplicationProperties implements Serializable {
     public void setCurrentWindow(Window currentWindow) {
         this.currentWindow = currentWindow;
     }
-    
+
 
     @Override
     public String toString() {
         return "ApplicationProperties{" + "locale=" + locale + ", WindowWith=" + windowWith + ", windowHeight=" + windowHeight + ", lastFileProject=" + lastFileProject + ", logLevel=" + logLevel + ", lastProjectDir=" + lastProjectDir + ", lastImportDir=" + lastImportDir + '}';
     }
 
-    
 
-
-    
 }

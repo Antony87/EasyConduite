@@ -32,6 +32,7 @@ import org.apache.logging.log4j.Logger;
  * values.
  *
  * @author antony
+ * @deprecated
  */
 public class ApplicationPropertiesHelper {
 
