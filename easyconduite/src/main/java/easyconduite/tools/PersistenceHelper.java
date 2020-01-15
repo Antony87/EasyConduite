@@ -54,21 +54,35 @@ public class PersistenceHelper {
         BIN, XML
     }
 
-    public static <T> void saveXml(T o, File file) throws IOException {
+    public static <T> void saveToXml(T o, File file) throws PersistenceException {
         final XStream xstream = new XStream();
         xstream.autodetectAnnotations(true);
-        ObjectOutputStream objectOutputStream = xstream.createObjectOutputStream(new FileOutputStream(file));
-        objectOutputStream.writeObject(o);
-        objectOutputStream.close();
+        try {
+            ObjectOutputStream objectOutputStream = xstream.createObjectOutputStream(new FileOutputStream(file));
+            objectOutputStream.writeObject(o);
+            objectOutputStream.close();
+        } catch (IOException e) {
+            LOG.error("An error occured", e);
+            throw new PersistenceException(e);
+        }
     }
 
-    public static <T> T openXml(File file) throws IOException, ClassNotFoundException {
+    public static <T> T openFromXml(File file) throws PersistenceException {
         final XStream xstream = new XStream();
         xstream.autodetectAnnotations(true);
-        ObjectInputStream objectInputStream = xstream.createObjectInputStream(new FileInputStream(file));
-        T t = (T) objectInputStream.readObject();
-        objectInputStream.close();
-        return t;
+        T deserialized = null;
+        try {
+            ObjectInputStream objectInputStream = xstream.createObjectInputStream(new FileInputStream(file));
+            deserialized = (T) objectInputStream.readObject();
+            objectInputStream.close();
+            if(deserialized==null){
+                throw new PersistenceException("deserialized object is null");
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            LOG.error("An error occured", e);
+            throw new PersistenceException(e);
+        }
+        return deserialized;
     }
 
     /**

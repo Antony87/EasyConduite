@@ -17,15 +17,13 @@
 package easyconduite;
 
 import easyconduite.controllers.MainController;
-import easyconduite.objects.ApplicationProperties;
-import easyconduite.tools.ApplicationPropertiesHelper;
-import easyconduite.tools.Constants;
+import easyconduite.objects.EasyConduiteProperties;
+import easyconduite.tools.EasyConduitePropertiesHandler;
 import easyconduite.tools.LoggingHelper;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -48,9 +46,8 @@ public class Easyconduite extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        
-        ApplicationProperties applicationProperties = ApplicationPropertiesHelper.getInstance().getProperties();
-        ResourceBundle localeBundle = ResourceBundle.getBundle(Constants.RESOURCE_BASENAME, applicationProperties.getLocale());
+
+        final EasyConduiteProperties properties = EasyConduitePropertiesHandler.getInstance().getProperties();
 
         // Pass args to describe using logging context :
         // --context=user
@@ -60,13 +57,12 @@ public class Easyconduite extends Application {
         if (arguments.containsKey("logctx") && arguments.get("logctx").equals("dev")) {
             LoggingHelper.setLog4jLevel(Level.ALL);
         }else{
-            LoggingHelper.setLog4jLevel(applicationProperties.getLogLevel());
+            LoggingHelper.setLog4jLevel(properties.getLogLevel());
         }
         stage.initStyle(StageStyle.DECORATED);
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/easyconduite32.png")));
 
-        Button but = new Button();
-        
+        final ResourceBundle localeBundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
         final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/easyconduite_v3.fxml"), localeBundle);
         
         Pane root = loader.load();
@@ -75,15 +71,15 @@ public class Easyconduite extends Application {
         MainController controler = loader.getController();
         
         stage.setOnCloseRequest((WindowEvent event) -> {
+            properties.setWindowHeight((int) stage.getScene().getWindow().getHeight());
+            properties.setWindowWith((int) stage.getScene().getWindow().getWidth());
             controler.menuQuit(new ActionEvent());
             event.consume();
         });
                 
         stage.setScene(scene);
-
-        ApplicationPropertiesHelper.getInstance().applyProperties(stage);
-        applicationProperties.setCurrentWindow(stage);
-
+        stage.getScene().getWindow().setHeight(properties.getWindowHeight());
+        stage.getScene().getWindow().setWidth(properties.getWindowWith());
         stage.show();
     }
     
@@ -93,4 +89,5 @@ public class Easyconduite extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
 }

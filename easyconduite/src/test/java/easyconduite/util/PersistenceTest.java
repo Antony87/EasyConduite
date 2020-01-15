@@ -1,19 +1,12 @@
 package easyconduite.util;
 
-import com.thoughtworks.xstream.XStream;
-import easyconduite.exception.EasyconduiteException;
+import easyconduite.exception.PersistenceException;
 import easyconduite.fixture.EasyProjectFixture;
-import easyconduite.model.EasyMedia;
-import easyconduite.objects.media.AudioVideoMedia;
-import easyconduite.objects.media.MediaFactory;
 import easyconduite.objects.project.MediaProject;
-import easyconduite.tools.Constants;
 import easyconduite.tools.PersistenceHelper;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.testfx.framework.junit5.ApplicationExtension;
@@ -40,11 +33,11 @@ public class PersistenceTest {
     }
 
     @Test
-    public void testSerialization() throws IOException, ClassNotFoundException {
+    public void testSerialization() throws PersistenceException {
         MediaProject project = EasyProjectFixture.getValidProject();
-        PersistenceHelper.saveXml(project, new File("src/test/resources/test.xml"));
+        PersistenceHelper.saveToXml(project, new File("src/test/resources/test.xml"));
 
-        MediaProject project2 = PersistenceHelper.openXml(new File("src/test/resources/test.xml"));
+        MediaProject project2 = PersistenceHelper.openFromXml(new File("src/test/resources/test.xml"));
 
         assertEquals(project.getName(),project2.getName());
         assertEquals(project.getEasyMediaList().get(0),project2.getEasyMediaList().get(0));

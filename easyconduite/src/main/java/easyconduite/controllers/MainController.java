@@ -18,28 +18,19 @@ package easyconduite.controllers;
 
 import easyconduite.controllers.helpers.MainListenersHandler;
 import easyconduite.exception.PersistenceException;
+import easyconduite.model.ChainingUpdater;
 import easyconduite.objects.ApplicationProperties;
 import easyconduite.objects.AudioMedia;
+import easyconduite.objects.AudioTableWrapper;
 import easyconduite.objects.project.EasyTable;
 import easyconduite.tools.ApplicationPropertiesHelper;
-import easyconduite.tools.Constants;
-import easyconduite.tools.PersistenceHelper;
+import easyconduite.tools.EasyConduitePropertiesHandler;
 import easyconduite.view.AboutDialogUI;
 import easyconduite.view.AudioMediaUI;
 import easyconduite.view.PreferencesUI;
 import easyconduite.view.TrackConfig;
 import easyconduite.view.controls.ActionDialog;
 import easyconduite.view.controls.EasyconduitePlayer;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -50,13 +41,16 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import easyconduite.model.ChainingUpdater;
-import easyconduite.objects.AudioTableWrapper;
-import javafx.scene.control.Label;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * This class implements a controller for audio table and AudioMediUI behaviors.
@@ -93,7 +87,7 @@ public class MainController extends StackPane implements Initializable, Chaining
     public List<AudioMediaUI> getAudioMediaViewList() {
         return audioMediaViewList;
     }
-    
+
     private final Map<UUID, EasyconduitePlayer> playersMap;
 
     /**
@@ -105,11 +99,12 @@ public class MainController extends StackPane implements Initializable, Chaining
     /**
      * Constructor without arguments, to respect instantiating by FXML.
      */
-    public MainController() {
+    public MainController() throws PersistenceException {
+
         audioMediaViewList = new CopyOnWriteArrayList<>();
         keyCodesMap = new ConcurrentHashMap<>(100);
         playersMap = new ConcurrentHashMap<>(100);
-        local = ApplicationPropertiesHelper.getInstance().getLocalBundle();
+        local = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
     }
 
     @FXML
@@ -234,17 +229,6 @@ public class MainController extends StackPane implements Initializable, Chaining
     @FXML
     public void menuQuit(ActionEvent event) {
 
-        ApplicationProperties appProps = ApplicationPropertiesHelper.getInstance().getProperties();
-        // get window sizes
-        int width = (int) appProps.getCurrentWindow().getWidth();
-        int height = (int) appProps.getCurrentWindow().getHeight();
-        appProps.setWindowHeight(height);
-        appProps.setWindowWith(width);
-        try {
-            PersistenceHelper.writeToFile(Constants.FILE_EASYCONDUITE_PROPS, appProps, PersistenceHelper.FILE_TYPE.BIN);
-        } catch (PersistenceException e) {
-            LOG.error("Error occurend during writing ApplicationProperties", e);
-        }
         EasyTable easyTable = AudioTableWrapper.getInstance().getEasyTable();
         if (!easyTable.isClosable()) {
             Optional<ButtonType> response = ActionDialog.showConfirmation(local.getString(MSG_WARNING_SAVE_HEADER), local.getString(MSG_WARNING_SAVE_CONT));
@@ -284,16 +268,16 @@ public class MainController extends StackPane implements Initializable, Chaining
             LOG.error("An error occured", ex);
         }
     }
-    
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         LOG.debug("Controler initialisation");
         // initialization listeners
         listenersHandler = new MainListenersHandler(this);
         listenersHandler.setDragAndDropFeature(tableLayout);
-        
+
         ApplicationProperties appProps = ApplicationPropertiesHelper.getInstance().getProperties();
-               
+
         if (appProps.getLastFileProject() != null) {
             MenuItem recentFileMenuItem = new MenuItem(appProps.getLastFileProject().toString());
             openRecent.getItems().add(recentFileMenuItem);
@@ -303,7 +287,7 @@ public class MainController extends StackPane implements Initializable, Chaining
                 }
                 openFile(appProps.getLastFileProject());
             });
-        }        
+        }
     }
 
     public FlowPane getTableLayout() {

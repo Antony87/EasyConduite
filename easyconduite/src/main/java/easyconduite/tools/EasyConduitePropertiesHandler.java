@@ -16,13 +16,14 @@
  */
 package easyconduite.tools;
 
+import easyconduite.exception.PersistenceException;
 import easyconduite.objects.EasyConduiteProperties;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * This class implements singleton design pattern and offers methods to manage
@@ -38,13 +39,15 @@ public class EasyConduitePropertiesHandler {
 
     private EasyConduiteProperties applicationProperties;
 
+    private final ResourceBundle localBundle;
+
     private static final Logger LOG = LogManager.getLogger(EasyConduitePropertiesHandler.class);
 
-    private EasyConduitePropertiesHandler() throws IOException, ClassNotFoundException {
+    private EasyConduitePropertiesHandler() throws PersistenceException {
         LOG.debug("ApplicationProperties singleton construct");
 
         if (Constants.FILE_EASYCONDUITE_PROPS.exists()) {
-            applicationProperties = PersistenceHelper.openXml(Constants.FILE_EASYCONDUITE_PROPS);
+            applicationProperties = PersistenceHelper.openFromXml(Constants.FILE_EASYCONDUITE_PROPS);
             LOG.trace("easyconduite.dat file found. [{}]", applicationProperties);
         } else {
             LOG.trace("easyconduite.dat file not found, create default EasyConduiteProperties");
@@ -53,14 +56,16 @@ public class EasyConduitePropertiesHandler {
             applicationProperties.setWindowHeight(600);
             applicationProperties.setLogLevel(Level.OFF);
             applicationProperties.setLocale(new Locale(System.getProperty("user.language"), System.getProperty("user.country")));
-            PersistenceHelper.saveXml(applicationProperties,Constants.FILE_EASYCONDUITE_PROPS);
+            PersistenceHelper.saveToXml(applicationProperties,Constants.FILE_EASYCONDUITE_PROPS);
         }
+
+        localBundle = ResourceBundle.getBundle(Constants.RESOURCE_BASENAME, applicationProperties.getLocale());
 
         applicationProperties.changeCompteurProperty().addListener((observableValue, number, t1) -> {
                     LOG.trace("ApplicationProperties [{}] changes", applicationProperties);
                     try {
-                        PersistenceHelper.saveXml(applicationProperties,Constants.FILE_EASYCONDUITE_PROPS);
-                    } catch (IOException e) {
+                        PersistenceHelper.saveToXml(applicationProperties,Constants.FILE_EASYCONDUITE_PROPS);
+                    } catch (PersistenceException e) {
                         LOG.error("une erreur est survenue lors de la sauvegarde de EasyConduiteProperties",e);
                     }
                 }
@@ -76,12 +81,16 @@ public class EasyConduitePropertiesHandler {
         return applicationProperties;
     }
 
+    public ResourceBundle getLocalBundle() {
+        return localBundle;
+    }
+
     /**
      * This method returns an INSTANCE of ApplicationPropertiesHelper.
      *
-     * @return fourni une instance unique 
+     * @return fourni une instance unique
      */
-    public static EasyConduitePropertiesHandler getInstance() throws IOException, ClassNotFoundException {
+    public static EasyConduitePropertiesHandler getInstance() throws PersistenceException {
         if (INSTANCE == null) {
             synchronized (EasyConduitePropertiesHandler.class) {
                 INSTANCE = new EasyConduitePropertiesHandler();
