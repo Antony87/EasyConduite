@@ -23,7 +23,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 /**
  * This class implements singleton design pattern and offers methods to manage
@@ -39,15 +38,13 @@ public class EasyConduitePropertiesHandler {
 
     private EasyConduiteProperties applicationProperties;
 
-    private final ResourceBundle localBundle;
-
     private static final Logger LOG = LogManager.getLogger(EasyConduitePropertiesHandler.class);
 
     private EasyConduitePropertiesHandler() throws IOException, ClassNotFoundException {
         LOG.debug("ApplicationProperties singleton construct");
 
         if (Constants.FILE_EASYCONDUITE_PROPS.exists()) {
-            applicationProperties = (EasyConduiteProperties) PersistenceHelper.openXml(Constants.FILE_EASYCONDUITE_PROPS);
+            applicationProperties = PersistenceHelper.openXml(Constants.FILE_EASYCONDUITE_PROPS);
             LOG.trace("easyconduite.dat file found. [{}]", applicationProperties);
         } else {
             LOG.trace("easyconduite.dat file not found, create default EasyConduiteProperties");
@@ -58,14 +55,13 @@ public class EasyConduitePropertiesHandler {
             applicationProperties.setLocale(new Locale(System.getProperty("user.language"), System.getProperty("user.country")));
             PersistenceHelper.saveXml(applicationProperties,Constants.FILE_EASYCONDUITE_PROPS);
         }
-        localBundle = ResourceBundle.getBundle(Constants.RESOURCE_BASENAME, applicationProperties.getLocale());
 
         applicationProperties.changeCompteurProperty().addListener((observableValue, number, t1) -> {
                     LOG.trace("ApplicationProperties [{}] changes", applicationProperties);
                     try {
                         PersistenceHelper.saveXml(applicationProperties,Constants.FILE_EASYCONDUITE_PROPS);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        LOG.error("une erreur est survenue lors de la sauvegarde de EasyConduiteProperties",e);
                     }
                 }
         );
@@ -74,20 +70,16 @@ public class EasyConduitePropertiesHandler {
     /**
      * This method return ApplicationPropertiesHelper.
      *
-     * @return
+     * @return les propriétés du projet EasyConduite
      */
     public EasyConduiteProperties getProperties() {
         return applicationProperties;
     }
 
-    public ResourceBundle getLocalBundle() {
-        return localBundle;
-    }
-
     /**
      * This method returns an INSTANCE of ApplicationPropertiesHelper.
      *
-     * @return
+     * @return fourni une instance unique 
      */
     public static EasyConduitePropertiesHandler getInstance() throws IOException, ClassNotFoundException {
         if (INSTANCE == null) {
