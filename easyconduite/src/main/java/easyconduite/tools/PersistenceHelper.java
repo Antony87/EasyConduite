@@ -18,6 +18,8 @@ package easyconduite.tools;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.WriterWrapper;
+import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.io.xml.StaxDriver;
 import easyconduite.exception.PersistenceException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -55,7 +57,7 @@ public class PersistenceHelper {
     }
 
     public static <T> void saveToXml(T o, File file) throws PersistenceException {
-        final XStream xstream = new XStream();
+        final XStream xstream = new XStream(new DomDriver("UTF-8"));
         xstream.autodetectAnnotations(true);
         try {
             ObjectOutputStream objectOutputStream = xstream.createObjectOutputStream(new FileOutputStream(file));
@@ -68,10 +70,11 @@ public class PersistenceHelper {
     }
 
     public static <T> T openFromXml(File file) throws PersistenceException {
-        final XStream xstream = new XStream();
+        final XStream xstream = new XStream(new DomDriver("UTF-8"));
         xstream.autodetectAnnotations(true);
         T deserialized = null;
         try {
+            LOG.trace("Ouverture fichier [{}]",file);
             ObjectInputStream objectInputStream = xstream.createObjectInputStream(new FileInputStream(file));
             deserialized = (T) objectInputStream.readObject();
             objectInputStream.close();

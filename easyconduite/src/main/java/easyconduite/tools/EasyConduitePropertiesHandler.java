@@ -16,6 +16,7 @@
  */
 package easyconduite.tools;
 
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import easyconduite.exception.PersistenceException;
 import easyconduite.objects.EasyConduiteProperties;
 import org.apache.logging.log4j.Level;
@@ -39,6 +40,7 @@ public class EasyConduitePropertiesHandler {
 
     private EasyConduiteProperties applicationProperties;
 
+    @XStreamOmitField
     private final ResourceBundle localBundle;
 
     private static final Logger LOG = LogManager.getLogger(EasyConduitePropertiesHandler.class);
@@ -72,12 +74,7 @@ public class EasyConduitePropertiesHandler {
         );
     }
 
-    /**
-     * This method return ApplicationPropertiesHelper.
-     *
-     * @return les propriétés du projet EasyConduite
-     */
-    public EasyConduiteProperties getProperties() {
+    public EasyConduiteProperties getApplicationProperties() {
         return applicationProperties;
     }
 

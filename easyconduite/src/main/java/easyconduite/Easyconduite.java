@@ -47,7 +47,7 @@ public class Easyconduite extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        final EasyConduiteProperties properties = EasyConduitePropertiesHandler.getInstance().getProperties();
+        final EasyConduiteProperties properties = EasyConduitePropertiesHandler.getInstance().getApplicationProperties();
 
         // Pass args to describe using logging context :
         // --context=user

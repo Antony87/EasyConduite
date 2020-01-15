@@ -2,6 +2,9 @@ package easyconduite.objects;
 
 import com.thoughtworks.xstream.XStream;
 import static org.junit.jupiter.api.Assertions.*;
+
+import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.io.xml.StaxDriver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +25,7 @@ class EasyConduitePropertiesTest {
 
     @Test
     public void testSerialize(){
-        XStream xstream = new XStream();
+        XStream xstream = new XStream(new DomDriver());
         props.setWindowWith(200);
         props.setWindowHeight(300);
         final String xmlProps = xstream.toXML(props);

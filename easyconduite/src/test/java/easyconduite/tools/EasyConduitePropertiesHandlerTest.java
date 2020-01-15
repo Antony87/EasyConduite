@@ -25,6 +25,6 @@ class EasyConduitePropertiesHandlerTest {
     void getInstanceTest() throws PersistenceException {
         handler = EasyConduitePropertiesHandler.getInstance();
         assertNotNull(handler);
-        handler.getProperties().setWindowWith(200);
+        handler.getApplicationProperties().setWindowWith(200);
     }
 }
