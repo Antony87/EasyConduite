@@ -1,5 +1,12 @@
 package easyconduite.model;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import easyconduite.objects.media.AudioVideoMedia;
+import easyconduite.tools.jackson.DurationDeserializer;
+import easyconduite.tools.jackson.DurationSerializer;
 import javafx.scene.input.KeyCode;
 import javafx.util.Duration;
 
@@ -10,10 +17,19 @@ import java.util.UUID;
 /**
  * Classe abstraite offrant les caractéristiques communes d'un Easymédia jouable par EasyConduite.
  */
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = AudioVideoMedia.class, name = "audiovideomedia"),
+})
 public class EasyMedia {
 
     private String name;
 
+    @JsonSerialize(using = DurationSerializer.class)
+    @JsonDeserialize(using = DurationDeserializer.class)
     private Duration duration;
 
     private Long uniqueId = UUID.randomUUID().getMostSignificantBits();
@@ -22,7 +38,7 @@ public class EasyMedia {
 
     private KeyCode keycode;
 
-    private Boolean loppable = false;
+    private boolean loppable = false;
 
     /**
      * @return Nom du EasyMédia.
@@ -75,11 +91,11 @@ public class EasyMedia {
     /**
      * @return Boolean si le EasyMédia est jouable en boucle.
      */
-    public Boolean getLoppable() {
+    public boolean getLoppable() {
         return loppable;
     }
 
-    public void setLoppable(Boolean loppable) {
+    public void setLoppable(boolean loppable) {
         this.loppable = loppable;
     }
 

@@ -1,8 +1,13 @@
 package easyconduite.objects.media;
 
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import easyconduite.exception.EasyconduiteException;
-import easyconduite.model.AudioVisualMedia;
+import easyconduite.model.EasyMedia;
+import easyconduite.model.IeasyMedia;
+import easyconduite.tools.jackson.DurationDeserializer;
+import easyconduite.tools.jackson.DurationSerializer;
 import easyconduite.view.commons.PlayerVolumeFader;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaException;
@@ -13,20 +18,32 @@ import java.io.File;
 import java.util.Objects;
 
 
-public class AudioVideoMedia extends AudioVisualMedia {
+public class AudioVideoMedia extends EasyMedia implements IeasyMedia {
 
+    @JsonSerialize(using = DurationSerializer.class)
+    @JsonDeserialize(using = DurationDeserializer.class)
     private Duration fadeInDuration = Duration.ZERO;
 
+    @JsonSerialize(using = DurationSerializer.class)
+    @JsonDeserialize(using = DurationDeserializer.class)
     private Duration fadeOutDuration = Duration.ZERO;
 
-    @XStreamOmitField
+    private File mediaFile;
+
+    private double volume = 0.5;
+
+    @JsonIgnore
     private MediaPlayer player;
 
-    @XStreamOmitField
+    @JsonIgnore
     private PlayerVolumeFader fadeHandler;
 
+    public AudioVideoMedia() {
+    }
+
     public AudioVideoMedia(File file) {
-        super(file);
+        super();
+        this.mediaFile = file;
     }
 
     public void initPlayer() throws EasyconduiteException {
@@ -102,18 +119,36 @@ public class AudioVideoMedia extends AudioVisualMedia {
         return player;
     }
 
+    public File getMediaFile() {
+        return mediaFile;
+    }
+
+    public void setMediaFile(File mediaFile) {
+        this.mediaFile = mediaFile;
+    }
+
+    public double getVolume() {
+        return volume;
+    }
+
+    public void setVolume(double volume) {
+        this.volume = volume;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof AudioVideoMedia)) return false;
         if (!super.equals(o)) return false;
         AudioVideoMedia that = (AudioVideoMedia) o;
-        return Objects.equals(fadeInDuration, that.fadeInDuration) &&
-                Objects.equals(fadeOutDuration, that.fadeOutDuration);
+        return Double.compare(that.volume, volume) == 0 &&
+                Objects.equals(fadeInDuration, that.fadeInDuration) &&
+                Objects.equals(fadeOutDuration, that.fadeOutDuration) &&
+                mediaFile.equals(that.mediaFile);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), fadeInDuration, fadeOutDuration);
+        return Objects.hash(super.hashCode(), fadeInDuration, fadeOutDuration, mediaFile, volume);
     }
 }

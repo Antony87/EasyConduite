@@ -1,5 +1,6 @@
 package easyconduite.tools;
 
+import easyconduite.exception.EasyconduiteException;
 import easyconduite.exception.PersistenceException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,9 +23,10 @@ class EasyConduitePropertiesHandlerTest {
     }
 
     @Test
-    void getInstanceTest() throws PersistenceException {
+    void getInstanceTest() throws EasyconduiteException {
         handler = EasyConduitePropertiesHandler.getInstance();
         assertNotNull(handler);
         handler.getApplicationProperties().setWindowWith(200);
+        System.out.println(handler.getApplicationProperties().getWindowWith());
     }
 }

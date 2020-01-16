@@ -1,6 +1,8 @@
 
 package easyconduite.objects.project;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import easyconduite.model.EasyMedia;
 import easyconduite.objects.conduite.Conduite;
 
@@ -11,6 +13,8 @@ import java.util.List;
 /**
  * Cette Classe comporte les attributs d'un projet EasyConduite.
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.WRAPPER_OBJECT)
+@JsonTypeName("MediaProject")
 public class MediaProject {
 
     private String name;

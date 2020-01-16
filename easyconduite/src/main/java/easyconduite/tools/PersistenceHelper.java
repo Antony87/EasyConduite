@@ -16,28 +16,22 @@
  */
 package easyconduite.tools;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.WriterWrapper;
-import com.thoughtworks.xstream.io.xml.DomDriver;
-import com.thoughtworks.xstream.io.xml.StaxDriver;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import easyconduite.exception.PersistenceException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.util.Strings;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.util.Strings;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  *
@@ -56,35 +50,19 @@ public class PersistenceHelper {
         BIN, XML
     }
 
-    public static <T> void saveToXml(T o, File file) throws PersistenceException {
-        final XStream xstream = new XStream(new DomDriver("UTF-8"));
-        xstream.autodetectAnnotations(true);
-        try {
-            ObjectOutputStream objectOutputStream = xstream.createObjectOutputStream(new FileOutputStream(file));
-            objectOutputStream.writeObject(o);
-            objectOutputStream.close();
-        } catch (IOException e) {
-            LOG.error("An error occured", e);
-            throw new PersistenceException(e);
-        }
+    public static <T> void saveToJson(T o, File file) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS,false);
+        mapper.enableDefaultTyping(ObjectMapper.DefaultTyping.OBJECT_AND_NON_CONCRETE, JsonTypeInfo.As.WRAPPER_ARRAY);
+        mapper.writeValue(file,o);
     }
 
-    public static <T> T openFromXml(File file) throws PersistenceException {
-        final XStream xstream = new XStream(new DomDriver("UTF-8"));
-        xstream.autodetectAnnotations(true);
-        T deserialized = null;
-        try {
-            LOG.trace("Ouverture fichier [{}]",file);
-            ObjectInputStream objectInputStream = xstream.createObjectInputStream(new FileInputStream(file));
-            deserialized = (T) objectInputStream.readObject();
-            objectInputStream.close();
-            if(deserialized==null){
-                throw new PersistenceException("deserialized object is null");
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            LOG.error("An error occured", e);
-            throw new PersistenceException(e);
-        }
+    //TODO javadoc
+    public static <T> T openFromJson(File file, Class<T> o) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS,false);
+        mapper.enableDefaultTyping(ObjectMapper.DefaultTyping.OBJECT_AND_NON_CONCRETE, JsonTypeInfo.As.WRAPPER_ARRAY);
+        T deserialized = (T) mapper.readValue(file, o);;
         return deserialized;
     }
 

@@ -16,14 +16,12 @@
  */
 package easyconduite.tools;
 
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import easyconduite.exception.PersistenceException;
+import easyconduite.exception.EasyconduiteException;
 import easyconduite.objects.EasyConduiteProperties;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Locale;
+import java.io.IOException;
 import java.util.ResourceBundle;
 
 /**
@@ -40,38 +38,41 @@ public class EasyConduitePropertiesHandler {
 
     private EasyConduiteProperties applicationProperties;
 
-    @XStreamOmitField
     private final ResourceBundle localBundle;
 
     private static final Logger LOG = LogManager.getLogger(EasyConduitePropertiesHandler.class);
 
-    private EasyConduitePropertiesHandler() throws PersistenceException {
-        LOG.debug("ApplicationProperties singleton construct");
+    private EasyConduitePropertiesHandler() throws EasyconduiteException {
+        LOG.debug("EasyConduiteProperties singleton construct");
+        try {
+            if (Constants.FILE_EASYCONDUITE_PROPS.exists()) {
+                applicationProperties = PersistenceHelper.openFromJson(Constants.FILE_EASYCONDUITE_PROPS,EasyConduiteProperties.class);
+                LOG.trace("easyconduite.dat file found. [{}]", applicationProperties);
+            } else {
+                LOG.trace("easyconduite.dat file not found, create default EasyConduiteProperties");
+                applicationProperties = new EasyConduiteProperties();
+                PersistenceHelper.saveToJson(applicationProperties,Constants.FILE_EASYCONDUITE_PROPS);
+            }
 
-        if (Constants.FILE_EASYCONDUITE_PROPS.exists()) {
-            applicationProperties = PersistenceHelper.openFromXml(Constants.FILE_EASYCONDUITE_PROPS);
-            LOG.trace("easyconduite.dat file found. [{}]", applicationProperties);
-        } else {
-            LOG.trace("easyconduite.dat file not found, create default EasyConduiteProperties");
-            applicationProperties = new EasyConduiteProperties();
-            applicationProperties.setWindowWith(800);
-            applicationProperties.setWindowHeight(600);
-            applicationProperties.setLogLevel(Level.OFF);
-            applicationProperties.setLocale(new Locale(System.getProperty("user.language"), System.getProperty("user.country")));
-            PersistenceHelper.saveToXml(applicationProperties,Constants.FILE_EASYCONDUITE_PROPS);
+            applicationProperties.changeCompteurProperty().addListener((observableValue, number, t1) -> {
+                        LOG.trace("ApplicationProperties [{}] changes", applicationProperties);
+                        try {
+                            PersistenceHelper.saveToJson(applicationProperties,Constants.FILE_EASYCONDUITE_PROPS);
+                        } catch (IOException e) {
+                            throw new RuntimeException();
+                        }
+                    }
+            );
+
+        } catch (IOException e) {
+            LOG.error("Erreur lecture/ecriture json",e);
+            throw new EasyconduiteException();
         }
+
 
         localBundle = ResourceBundle.getBundle(Constants.RESOURCE_BASENAME, applicationProperties.getLocale());
 
-        applicationProperties.changeCompteurProperty().addListener((observableValue, number, t1) -> {
-                    LOG.trace("ApplicationProperties [{}] changes", applicationProperties);
-                    try {
-                        PersistenceHelper.saveToXml(applicationProperties,Constants.FILE_EASYCONDUITE_PROPS);
-                    } catch (PersistenceException e) {
-                        LOG.error("une erreur est survenue lors de la sauvegarde de EasyConduiteProperties",e);
-                    }
-                }
-        );
+
     }
 
     public EasyConduiteProperties getApplicationProperties() {
@@ -87,7 +88,7 @@ public class EasyConduitePropertiesHandler {
      *
      * @return fourni une instance unique
      */
-    public static EasyConduitePropertiesHandler getInstance() throws PersistenceException {
+    public static EasyConduitePropertiesHandler getInstance() throws EasyconduiteException {
         if (INSTANCE == null) {
             synchronized (EasyConduitePropertiesHandler.class) {
                 INSTANCE = new EasyConduitePropertiesHandler();

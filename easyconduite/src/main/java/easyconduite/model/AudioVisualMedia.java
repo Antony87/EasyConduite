@@ -3,6 +3,7 @@ package easyconduite.model;
 import java.io.File;
 import java.util.Objects;
 
+@Deprecated
 public abstract class AudioVisualMedia extends EasyMedia implements IeasyMedia {
 
     private Double volume;

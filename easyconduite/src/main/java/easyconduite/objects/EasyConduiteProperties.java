@@ -16,8 +16,11 @@
  */
 package easyconduite.objects;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import easyconduite.tools.jackson.ApacheLogDeserializer;
+import easyconduite.tools.jackson.ApacheLogSerializer;
 import javafx.beans.property.SimpleLongProperty;
 import org.apache.logging.log4j.Level;
 
@@ -31,25 +34,29 @@ import java.util.Objects;
  *
  * @author antony
  */
-@XStreamAlias("properties")
-public class EasyConduiteProperties  {
+public class EasyConduiteProperties {
 
-    private Locale locale;
+    private Locale locale = new Locale(System.getProperty("user.language"), System.getProperty("user.country"));
 
-    private int windowWith;
+    private int windowWith = 800;
 
-    private int windowHeight;
+    private int windowHeight = 600;
 
     private File lastFileProject;
 
-    private Level logLevel;
+    @JsonSerialize(using = ApacheLogSerializer.class)
+    @JsonDeserialize(using = ApacheLogDeserializer.class)
+    private Level logLevel = Level.OFF;
 
     private Path lastProjectDir;
 
     private Path lastImportDir;
 
-    @XStreamOmitField
+    @JsonIgnore
     private final SimpleLongProperty changeCompteur = new SimpleLongProperty();
+
+    public EasyConduiteProperties() {
+    }
 
     public Locale getLocale() {
         return locale;
@@ -126,8 +133,8 @@ public class EasyConduiteProperties  {
         this.changeCompteur.set(changeCompteur);
     }
 
-    private void updateChangeCount(){
-        changeCompteur.setValue(changeCompteur.get()+1);
+    private void updateChangeCount() {
+        changeCompteur.setValue(changeCompteur.get() + 1);
     }
 
     @Override

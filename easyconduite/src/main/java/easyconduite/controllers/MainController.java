@@ -17,7 +17,7 @@
 package easyconduite.controllers;
 
 import easyconduite.controllers.helpers.MainListenersHandler;
-import easyconduite.exception.PersistenceException;
+import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.ChainingUpdater;
 import easyconduite.objects.ApplicationProperties;
 import easyconduite.objects.AudioMedia;
@@ -99,7 +99,7 @@ public class MainController extends StackPane implements Initializable, Chaining
     /**
      * Constructor without arguments, to respect instantiating by FXML.
      */
-    public MainController() throws PersistenceException {
+    public MainController() throws EasyconduiteException {
 
         audioMediaViewList = new CopyOnWriteArrayList<>();
         keyCodesMap = new ConcurrentHashMap<>(100);

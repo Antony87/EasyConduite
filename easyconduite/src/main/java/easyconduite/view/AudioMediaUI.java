@@ -24,6 +24,9 @@ import easyconduite.tools.ApplicationPropertiesHelper;
 import easyconduite.tools.KeyCodeHelper;
 import easyconduite.view.controls.ActionDialog;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -200,6 +203,7 @@ public class AudioMediaUI extends VBox implements ChainingUpdater {
     }
 
     private String formatTime(Duration duration) {
+
         if (duration.greaterThan(Duration.ZERO)) {
             final double millis = duration.toMillis();
             final int dec = (int) ((millis / 100) % 10);
