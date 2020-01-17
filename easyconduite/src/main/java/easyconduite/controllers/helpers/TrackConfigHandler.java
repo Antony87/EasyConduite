@@ -20,7 +20,7 @@ import easyconduite.controllers.TrackConfigController;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.project.EasyTable;
 import easyconduite.objects.AudioTableWrapper;
-import easyconduite.tools.Constants;
+import easyconduite.util.Constants;
 import java.util.UUID;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

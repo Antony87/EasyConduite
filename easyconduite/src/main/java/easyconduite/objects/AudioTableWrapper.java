@@ -19,7 +19,7 @@ package easyconduite.objects;
 import easyconduite.exception.PersistenceException;
 import easyconduite.objects.project.EasyTable;
 import easyconduite.tools.ApplicationPropertiesHelper;
-import easyconduite.tools.PersistenceHelper;
+import easyconduite.util.PersistenceHelper;
 import easyconduite.view.controls.ActionDialog;
 import easyconduite.view.controls.EasyFileChooser;
 import java.io.File;
@@ -34,6 +34,7 @@ import javafx.stage.FileChooser;
  */
 public class AudioTableWrapper {
 
+    @Deprecated
     private static final ApplicationProperties APP_PROPERTIES = ApplicationPropertiesHelper.getInstance().getProperties();
 
     private EasyTable easyTable;
@@ -73,6 +74,7 @@ public class AudioTableWrapper {
 
         FileChooser fileChooser = new EasyFileChooser.FileChooserBuilder().asType(EasyFileChooser.Type.OPEN_AUDIO).build();
         File file = fileChooser.showOpenDialog(APP_PROPERTIES.getCurrentWindow());
+
         AudioMedia audioMedia = null;
         if (file != null) {
             audioMedia = new AudioMedia(file);

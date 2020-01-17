@@ -17,10 +17,8 @@
 package easyconduite.objects.project;
 
 import easyconduite.model.ChainingUpdater;
-import easyconduite.model.IeasyMedia;
 import easyconduite.objects.AudioMedia;
-import easyconduite.objects.media.MediaFactory;
-import easyconduite.tools.PersistenceHelper;
+import easyconduite.util.PersistenceHelper;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;

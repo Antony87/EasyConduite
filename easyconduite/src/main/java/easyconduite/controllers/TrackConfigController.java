@@ -21,7 +21,7 @@ import easyconduite.model.DialogAbstractController;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioMediaConfigurator;
 import easyconduite.tools.ApplicationPropertiesHelper;
-import easyconduite.tools.KeyCodeHelper;
+import easyconduite.util.KeyCodeHelper;
 import easyconduite.view.controls.ActionDialog;
 import java.net.URL;
 import java.util.ResourceBundle;

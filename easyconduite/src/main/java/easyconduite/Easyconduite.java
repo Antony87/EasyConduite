@@ -18,8 +18,8 @@ package easyconduite;
 
 import easyconduite.controllers.MainController;
 import easyconduite.objects.EasyConduiteProperties;
-import easyconduite.tools.EasyConduitePropertiesHandler;
-import easyconduite.tools.LoggingHelper;
+import easyconduite.util.EasyConduitePropertiesHandler;
+import easyconduite.util.LoggingHelper;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -81,6 +81,7 @@ public class Easyconduite extends Application {
         stage.getScene().getWindow().setHeight(properties.getWindowHeight());
         stage.getScene().getWindow().setWidth(properties.getWindowWith());
         stage.show();
+
     }
     
     /**

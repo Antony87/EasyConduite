@@ -18,7 +18,7 @@ package easyconduite.view.commons;
 
 import easyconduite.objects.ApplicationProperties;
 import easyconduite.tools.ApplicationPropertiesHelper;
-import easyconduite.tools.Constants;
+import easyconduite.util.Constants;
 import java.util.ResourceBundle;
 import javafx.scene.Node;
 import javafx.scene.Scene;

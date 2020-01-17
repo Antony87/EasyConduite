@@ -19,7 +19,7 @@ package easyconduite.controllers;
 import easyconduite.model.DialogAbstractController;
 import easyconduite.objects.ApplicationProperties;
 import easyconduite.tools.ApplicationPropertiesHelper;
-import easyconduite.tools.LoggingHelper;
+import easyconduite.util.LoggingHelper;
 import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;

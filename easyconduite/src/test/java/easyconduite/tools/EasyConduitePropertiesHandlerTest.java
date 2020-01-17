@@ -1,12 +1,10 @@
 package easyconduite.tools;
 
 import easyconduite.exception.EasyconduiteException;
-import easyconduite.exception.PersistenceException;
+import easyconduite.util.EasyConduitePropertiesHandler;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 

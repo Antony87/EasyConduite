@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package easyconduite.tools;
+package easyconduite.util;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,6 +46,7 @@ public class PersistenceHelper {
      */
     public static final String ECP_SUFFIXE = ".ecp";
 
+    @Deprecated
     public enum FILE_TYPE {
         BIN, XML
     }
@@ -94,6 +95,7 @@ public class PersistenceHelper {
      * @param type
      * @throws PersistenceException
      */
+    @Deprecated
     public static <T> void writeToFile(File file, T t, FILE_TYPE type) throws PersistenceException {
         Class c = t.getClass();
         if (type.equals(FILE_TYPE.XML)) {
@@ -141,6 +143,7 @@ public class PersistenceHelper {
      * @return
      * @throws PersistenceException
      */
+    @Deprecated
     public static <T> T readFromFile(File file, Class<T> t, FILE_TYPE type) throws PersistenceException {
         T objet = null;
         if (type.equals(FILE_TYPE.XML)) {

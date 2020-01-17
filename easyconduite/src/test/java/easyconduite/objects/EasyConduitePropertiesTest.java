@@ -24,10 +24,11 @@ class EasyConduitePropertiesTest {
     }
 
     @Test
-    public void testChangeListener(){
+    public void testChangePropertiesListener(){
+        long initialCompteur = props.getChangeCompteur();
         props.setWindowWith(200);
         props.setWindowHeight(300);
-
+        assertEquals(initialCompteur+2,props.getChangeCompteur());
     }
 
     @Test

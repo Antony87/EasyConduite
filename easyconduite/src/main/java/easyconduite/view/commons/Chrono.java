@@ -16,7 +16,7 @@
  */
 package easyconduite.view.commons;
 
-import easyconduite.tools.Constants;
+import easyconduite.util.Constants;
 import java.text.SimpleDateFormat;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;

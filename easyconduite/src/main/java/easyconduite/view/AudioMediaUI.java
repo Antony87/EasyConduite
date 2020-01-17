@@ -21,11 +21,9 @@ import easyconduite.view.controls.EasyconduitePlayer;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.objects.AudioMedia;
 import easyconduite.tools.ApplicationPropertiesHelper;
-import easyconduite.tools.KeyCodeHelper;
+import easyconduite.util.KeyCodeHelper;
 import easyconduite.view.controls.ActionDialog;
 import java.util.ResourceBundle;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;

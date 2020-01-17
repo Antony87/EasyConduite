@@ -19,7 +19,7 @@ package easyconduite.view.controls;
 import easyconduite.controllers.MainController;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.objects.AudioMedia;
-import easyconduite.tools.PersistenceHelper;
+import easyconduite.util.PersistenceHelper;
 import easyconduite.view.commons.PlayerVolumeFader;
 import java.util.UUID;
 import javafx.scene.media.Media;

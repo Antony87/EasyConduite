@@ -16,6 +16,7 @@
  */
 package easyconduite.controllers;
 
+import easyconduite.controllers.helpers.FileHelper;
 import easyconduite.controllers.helpers.MainListenersHandler;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.ChainingUpdater;
@@ -23,8 +24,9 @@ import easyconduite.objects.ApplicationProperties;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioTableWrapper;
 import easyconduite.objects.project.EasyTable;
+import easyconduite.objects.project.MediaProject;
 import easyconduite.tools.ApplicationPropertiesHelper;
-import easyconduite.tools.EasyConduitePropertiesHandler;
+import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.view.AboutDialogUI;
 import easyconduite.view.AudioMediaUI;
 import easyconduite.view.PreferencesUI;
@@ -66,45 +68,39 @@ public class MainController extends StackPane implements Initializable, Chaining
     private final static String MSG_DELETE_HEADER = "audiomediaui.delete.header";
     private final static String MSG_DELETE_CONT = "audiomediaui.delete.content";
     private static final Logger LOG = LogManager.getLogger(MainController.class);
-
-    @FXML
-    StackPane mainPane;
-
-    @FXML
-    private FlowPane tableLayout;
-
-    @FXML
-    private Menu openRecent;
-
-    private MainListenersHandler listenersHandler;
-
-    private ChainingUpdater nextUpdater;
-
     private final ResourceBundle local;
-
     private final List<AudioMediaUI> audioMediaViewList;
-
-    public List<AudioMediaUI> getAudioMediaViewList() {
-        return audioMediaViewList;
-    }
-
     private final Map<UUID, EasyconduitePlayer> playersMap;
-
+    private MediaProject project;
     /**
      * Map (ConcurrentHashMap) which amintains relationship between a Keybord
      * key and an AudioMediaUI.
      */
     private final Map<KeyCode, AudioMediaUI> keyCodesMap;
+    @FXML
+    StackPane mainPane;
+    @FXML
+    private FlowPane tableLayout;
+    @FXML
+    private Menu openRecent;
+    private MainListenersHandler listenersHandler;
+    private ChainingUpdater nextUpdater;
 
     /**
      * Constructor without arguments, to respect instantiating by FXML.
      */
     public MainController() throws EasyconduiteException {
 
+        project = new MediaProject();
         audioMediaViewList = new CopyOnWriteArrayList<>();
         keyCodesMap = new ConcurrentHashMap<>(100);
         playersMap = new ConcurrentHashMap<>(100);
         local = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
+
+    }
+
+    public List<AudioMediaUI> getAudioMediaViewList() {
+        return audioMediaViewList;
     }
 
     @FXML
@@ -112,10 +108,13 @@ public class MainController extends StackPane implements Initializable, Chaining
         if (!isOkForDelete()) {
             return;
         }
-        openFile(null);
+        FileHelper openHelper = new FileHelper(this);
+        project = openHelper.getProject();
+
+        openProject(null);
     }
 
-    private void openFile(File file) {
+    private void openProject(File file) {
         deleteProject();
         EasyTable easyTable = AudioTableWrapper.getInstance().getFromFile(file);
         easyTable.getAudioMediaList().forEach((audioMedia) -> {
@@ -285,7 +284,7 @@ public class MainController extends StackPane implements Initializable, Chaining
                 if (!isOkForDelete()) {
                     return;
                 }
-                openFile(appProps.getLastFileProject());
+                openProject(appProps.getLastFileProject());
             });
         }
     }
