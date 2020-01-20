@@ -17,6 +17,8 @@
 package easyconduite.view;
 
 import easyconduite.controllers.MainController;
+import easyconduite.objects.media.AudioVideoMedia;
+import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.view.controls.EasyconduitePlayer;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.objects.AudioMedia;
@@ -51,7 +53,7 @@ import easyconduite.model.ChainingUpdater;
  *
  * @author A Fons
  */
-public class AudioMediaUI extends VBox implements ChainingUpdater {
+public class AudioMediaUI extends VBox {
 
     static final Logger LOG = LogManager.getLogger(AudioMediaUI.class);
 
@@ -69,11 +71,9 @@ public class AudioMediaUI extends VBox implements ChainingUpdater {
 
     private final PlayPauseHbox playPauseHbox;
 
-    private EasyconduitePlayer player;
+    private AudioVideoMedia audioMedia;
 
-    private AudioMedia audioMedia;
-
-    private ChainingUpdater nextChain;
+    //private ChainingUpdater nextChain;
 
     /**
      * Constructor du UI custom control for an AudioMedia.<br>
@@ -81,9 +81,8 @@ public class AudioMediaUI extends VBox implements ChainingUpdater {
      * {@link MediaPlayer}.<br>
      *
      * @param media
-     * @param controller
      */
-    public AudioMediaUI(AudioMedia media, MainController controller) {
+    public AudioMediaUI(AudioVideoMedia media) {
         super();
         LOG.info("Construct an AudioMedia {}", media);
 
@@ -91,16 +90,18 @@ public class AudioMediaUI extends VBox implements ChainingUpdater {
         ////////////////////////////////////////////////////////////////////////
         //               Initialize MediaPlayer
         ////////////////////////////////////////////////////////////////////////
-        player = null;
+
+        //player = null;
         try {
-            player = EasyconduitePlayer.create(media,controller);
+            audioMedia.initPlayer();
+            //player = EasyconduitePlayer.create(media,controller);
             // Listenning player Status property
-            player.getPlayer().statusProperty().addListener(getPlayerStatusListener());
+            audioMedia.getPlayer().statusProperty().addListener(getPlayerStatusListener());
         } catch (EasyconduiteException ex) {
             LOG.error("Error occurend during EasyPlayer construction", ex);
         }
         // Positionne la chaine de responsabilité
-        this.nextChain = player;
+        //this.nextChain = player;
 
         ////////////////////////////////////////////////////////////////////////
         //                 Construction de l'UI
@@ -113,11 +114,11 @@ public class AudioMediaUI extends VBox implements ChainingUpdater {
                 this.requestFocus();
             }
         });
-        this.updateFromAudioMedia(audioMedia);
+        //this.updateFromAudioMedia(audioMedia);
 
         ////////////////////////////////////////////////////////////////////////
         ///////////// current Time label               
-        player.getPlayer().currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> {
+        audioMedia.getPlayer().currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> {
             timeLabel.setText(formatTime(audioMedia.getDuration().subtract(newValue)));
         });
 
@@ -126,34 +127,40 @@ public class AudioMediaUI extends VBox implements ChainingUpdater {
         keycodeHbox.getStyleClass().add("baseHbox");
     
         repeatRegion.setId("repeatRegion");
-        if(audioMedia.getRepeatable()){
+        if(audioMedia.getLoppable()){
             repeatRegion.getStyleClass().add("repeat");
         }
         keycodeHbox.getChildren().addAll(repeatRegion,keycodeLabel);
 
 
-        ResourceBundle bundle = ApplicationPropertiesHelper.getInstance().getLocalBundle();
-        MenuItem propertiesItem = new MenuItem(bundle.getString("track.context.properties"));
-        propertiesItem.setOnAction((ActionEvent e) -> {
-            player.stop();
-            controller.editTrack(this);
-            e.consume();
-        });
+        ResourceBundle bundle = null;
+        try {
+            bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
+        } catch (EasyconduiteException e) {
+            e.printStackTrace();
+        }
 
-        MenuItem deleteItem = new MenuItem(bundle.getString("track.context.delete"));
-        deleteItem.setOnAction((ActionEvent e) -> {
-            controller.deleteTrack(this);
-            e.consume();
-        });
-
-        contextMenu.getItems().addAll(propertiesItem, deleteItem);
-
-        this.addEventHandler(ContextMenuEvent.CONTEXT_MENU_REQUESTED, contextMenuEvent -> {
-            contextMenu.setAutoHide(true);
-            contextMenu.show(this, contextMenuEvent.getScreenX(), contextMenuEvent.getScreenY());
-            contextMenuEvent.consume();
-        });
-        playPauseHbox = new PlayPauseHbox(player);
+//        MenuItem propertiesItem = new MenuItem(bundle.getString("track.context.properties"));
+//        propertiesItem.setOnAction((ActionEvent e) -> {
+//            player.stop();
+//            controller.editTrack(this);
+//            e.consume();
+//        });
+//
+//        MenuItem deleteItem = new MenuItem(bundle.getString("track.context.delete"));
+//        deleteItem.setOnAction((ActionEvent e) -> {
+//            controller.deleteTrack(this);
+//            e.consume();
+//        });
+//
+//        contextMenu.getItems().addAll(propertiesItem, deleteItem);
+//
+//        this.addEventHandler(ContextMenuEvent.CONTEXT_MENU_REQUESTED, contextMenuEvent -> {
+//            contextMenu.setAutoHide(true);
+//            contextMenu.show(this, contextMenuEvent.getScreenX(), contextMenuEvent.getScreenY());
+//            contextMenuEvent.consume();
+//        });
+        playPauseHbox = new PlayPauseHbox(media.getPlayer());
 
         timeLabel.setMouseTransparent(true);
         keycodeLabel.setMouseTransparent(true);
@@ -163,42 +170,44 @@ public class AudioMediaUI extends VBox implements ChainingUpdater {
         this.getChildren().addAll(nameLabel, new AudioSlider(), timeLabel, keycodeHbox, playPauseHbox);
     }
 
+    //FIXME
+    @Deprecated
     public final AudioMedia getAudioMedia() {
-        return audioMedia;
+        return new AudioMedia(null);
     }
 
-    public final EasyconduitePlayer getEasyPlayer() {
-        return player;
-    }
+//    public final EasyconduitePlayer getEasyPlayer() {
+//        return player;
+//    }
 
-    @Override
-    public void setNext(ChainingUpdater next) {
-        nextChain = next;
-    }
-
-    @Override
-    public void updateFromAudioMedia(AudioMedia media) {
-        if (audioMedia.equals(media)) {
-            // positionne tous les champs quand audioMedia a changé et que la 
-            // "chain of responsability" est déclenchée.
-            nameLabel.setText(audioMedia.getName());
-            timeLabel.setText(formatTime(audioMedia.getDuration()));
-            keycodeLabel.setText(KeyCodeHelper.toString(this.audioMedia.getKeycode()));
-            repeatRegion.getStyleClass().remove("repeat");
-            if(audioMedia.getRepeatable()){
-                repeatRegion.getStyleClass().add("repeat");
-            }
-            // on passe la responsabilité au next (EasyconduitePlayer).
-            nextChain.updateFromAudioMedia(this.audioMedia);
-        } else {
-            ActionDialog.showWarning("Incohérence des objets", "Les objets AudioMedia ne sont pas egaux");
-        }
-    }
-
-    @Override
-    public void removeChild(ChainingUpdater audioMedia) {
-        nextChain.removeChild(audioMedia);
-    }
+//    @Override
+//    public void setNext(ChainingUpdater next) {
+//        nextChain = next;
+//    }
+//
+//    @Override
+//    public void updateFromAudioMedia(AudioMedia media) {
+//        if (audioMedia.equals(media)) {
+//            // positionne tous les champs quand audioMedia a changé et que la
+//            // "chain of responsability" est déclenchée.
+//            nameLabel.setText(audioMedia.getName());
+//            timeLabel.setText(formatTime(audioMedia.getDuration()));
+//            keycodeLabel.setText(KeyCodeHelper.toString(this.audioMedia.getKeycode()));
+//            repeatRegion.getStyleClass().remove("repeat");
+//            if(audioMedia.getRepeatable()){
+//                repeatRegion.getStyleClass().add("repeat");
+//            }
+//            // on passe la responsabilité au next (EasyconduitePlayer).
+//            nextChain.updateFromAudioMedia(this.audioMedia);
+//        } else {
+//            ActionDialog.showWarning("Incohérence des objets", "Les objets AudioMedia ne sont pas egaux");
+//        }
+//    }
+//
+//    @Override
+//    public void removeChild(ChainingUpdater audioMedia) {
+//        nextChain.removeChild(audioMedia);
+//    }
 
     private String formatTime(Duration duration) {
 
@@ -232,8 +241,8 @@ public class AudioMediaUI extends VBox implements ChainingUpdater {
                     break;
                 case READY:
                     // if player ready, update AudioMedia duration an UI.
-                    audioMedia.setDuration(player.getPlayer().getStopTime());
-                    updateFromAudioMedia(AudioMediaUI.this.audioMedia);
+                    audioMedia.setDuration(audioMedia.getPlayer().getStopTime());
+                    //updateFromAudioMedia(AudioMediaUI.this.audioMedia);
                     break;
             }
         };
@@ -245,12 +254,13 @@ public class AudioMediaUI extends VBox implements ChainingUpdater {
             super(0, 1, 0.5d);
             AudioSlider.this.setValue(audioMedia.getVolume());
             //sliderVolume.getStyleClass().add("slider-volume-track");
-            AudioSlider.this.valueProperty().bindBidirectional(player.getPlayer().volumeProperty());
+            AudioSlider.this.valueProperty().bindBidirectional(audioMedia.getPlayer().volumeProperty());
             AudioSlider.this.setOnMouseReleased((MouseEvent event) -> {
                 if (event.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
                     audioMedia.setVolume(AudioSlider.this.getValue());
+                    audioMedia.getPlayer().setVolume(AudioSlider.this.getValue());
                     // propagation au EasyconduitePlayer.
-                    player.updateFromAudioMedia(audioMedia);
+                    //player.updateFromAudioMedia(audioMedia);
                 }
             });
         }
@@ -267,12 +277,32 @@ public class AudioMediaUI extends VBox implements ChainingUpdater {
         }
     }
 
+    private final void playPause() {
+        Status status = audioMedia.getPlayer().getStatus();
+        switch (status) {
+            case PAUSED:
+                audioMedia.play();
+                break;
+            case PLAYING:
+                audioMedia.pause();
+                break;
+            case READY:
+                audioMedia.play();
+                break;
+            case STOPPED:
+                audioMedia.play();
+                break;
+            default:
+                break;
+        }
+    }
+
     private class PlayPauseHbox extends HBox {
 
         final Region stopRegion;
         final Region playRegion;
 
-        protected PlayPauseHbox(EasyconduitePlayer player) {
+        protected PlayPauseHbox(MediaPlayer player) {
             super();
             PlayPauseHbox.this.getStyleClass().add("commandHbox");
             stopRegion = new Region();
@@ -288,7 +318,7 @@ public class AudioMediaUI extends VBox implements ChainingUpdater {
             playRegion.getStyleClass().add("playbutton");
             playRegion.setOnMouseClicked((MouseEvent event) -> {
                 if (event.getButton().equals(MouseButton.PRIMARY)) {
-                    player.playPause();
+                    AudioMediaUI.this.playPause();
                     event.consume();
                 }
             });

@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<StackPane fx:id="mainPane" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.MainController">
+<StackPane fx:id="mainPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.MainController">
    <children>
       <VBox maxHeight="1.7976931348623157E308" onKeyPressed="#handleKeyCodePlay">
         <children>
@@ -50,7 +50,7 @@
               </Menu>
                   <Menu mnemonicParsing="false" text="%menu.track.title">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#handleImportAudio" text="%menu.track.import">
+                        <MenuItem mnemonicParsing="false" onAction="#menuImportAudio" text="%menu.track.import">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="I" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                            </accelerator></MenuItem>

@@ -25,6 +25,7 @@ import javafx.stage.FileChooser;
  *
  * @author antony
  */
+@Deprecated
 public class EasyFileChooser {
 
     public enum Type {

@@ -32,7 +32,6 @@ import java.util.ResourceBundle;
 public class FileChooserControl {
 
     public enum Action {
-
         SAVE, SAVE_AS, OPEN_AUDIO, OPEN_PROJECT
     }
 

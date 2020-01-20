@@ -45,7 +45,7 @@ public class FileChooserControlTest extends ApplicationTest {
         stage.setScene(scene);
         stage.show();
         fileChooser = new FileChooserControl.FileChooserBuilder().asType(FileChooserControl.Action.OPEN_AUDIO).build();
-        fileChooser.showOpenDialog(scene.getWindow());
+        fileChooser.showOpenDialog(null);
     }
 
     @Test

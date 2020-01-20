@@ -57,14 +57,14 @@ public class Easyconduite extends Application {
         if (arguments.containsKey("logctx") && arguments.get("logctx").equals("dev")) {
             LoggingHelper.setLog4jLevel(Level.ALL);
         }else{
-            LoggingHelper.setLog4jLevel(properties.getLogLevel());
+            LoggingHelper.setLog4jLevel(Level.TRACE);
         }
         stage.initStyle(StageStyle.DECORATED);
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/easyconduite32.png")));
 
         final ResourceBundle localeBundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
         final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/easyconduite_v3.fxml"), localeBundle);
-        
+
         Pane root = loader.load();
         Scene scene = new Scene(root);
         
