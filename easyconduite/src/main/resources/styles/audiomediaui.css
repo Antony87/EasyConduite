@@ -34,8 +34,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 .audioMediaUi:focused{
-    -fx-border-color:  #FFFFFF; 
-}
+     -fx-border-color:  #FFFFFF;
+ }
+
+ .audioMediaUi:playing{
+     -fx-background-color :  #464646;
+ }
 
 
 .audioMediaUi .menu-item{
@@ -111,11 +115,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 .playbutton{
     -fx-background-image: url('../icons/Play.png');
+    -fx-background-color: #2D2D2D;
 }
 .pausebutton{
     -fx-background-image: url('../icons/Pause.png');
+    -fx-background-color: #2D2D2D;
 }
 .stopbutton{
     -fx-background-image: url('../icons/Stop.png');
+    -fx-background-color: #2D2D2D;
 }
 

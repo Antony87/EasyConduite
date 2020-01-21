@@ -49,13 +49,16 @@ public class AudioVideoMedia extends EasyMedia implements IeasyMedia {
     public void initPlayer() throws EasyconduiteException {
 
         try {
-
             final Media mediaForPlayer = new Media(this.getMediaFile().toURI().toString());
             player = new MediaPlayer(mediaForPlayer);
             player.setVolume(this.getVolume());
             fadeHandler = new PlayerVolumeFader(this);
-
             boolean loppable = getLoppable();
+
+            if(getName()==null){
+                setName(getMediaFile().getName());
+            }
+
             player.setOnEndOfMedia(() -> {
                 if (!loppable) {
                     this.stop();
