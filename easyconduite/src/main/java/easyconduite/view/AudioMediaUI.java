@@ -22,6 +22,7 @@ import easyconduite.objects.media.AudioVideoMedia;
 import easyconduite.util.KeyCodeHelper;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.BooleanPropertyBase;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -68,6 +69,7 @@ public class AudioMediaUI extends VBox {
 
     private final BooleanProperty playingClass = new BooleanPropertyBase() {
 
+        @Override
         public void invalidated() {
             pseudoClassStateChanged(PLAYING_PSEUDO_CLASS, get());
         }
@@ -103,7 +105,7 @@ public class AudioMediaUI extends VBox {
         try {
             audioMedia.initPlayer();
             // Listenner sur la fin de l'initialisation du player.
-            audioMedia.getPlayer().statusProperty().addListener(new ChangeListener<Status>() {
+            audioMedia.getPlayer().statusProperty().addListener(new ChangeListener<>() {
                 @Override
                 public void changed(ObservableValue<? extends Status> observableValue, Status oldValue, Status newValue) {
                     switch (newValue) {
@@ -132,7 +134,7 @@ public class AudioMediaUI extends VBox {
                 }
             });
         } catch (EasyconduiteException ex) {
-            LOG.error("Error occurend during EasyPlayer construction", ex);
+            LOG.error("Error occurend during AudioVideo player construction", ex);
         }
 
         ////////////////////////////////////////////////////////////////////////
@@ -141,7 +143,7 @@ public class AudioMediaUI extends VBox {
         // attribution css for Track VBOX
         this.getStyleClass().add("audioMediaUi");
 
-        this.setOnMouseClicked((event) -> {
+        this.setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
                 this.requestFocus();
             }
@@ -150,9 +152,7 @@ public class AudioMediaUI extends VBox {
 
         ////////////////////////////////////////////////////////////////////////
         ///////////// current Time label               
-        audioMedia.getPlayer().currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> {
-            timeLabel.setText(formatTime(audioMedia.getDuration().subtract(newValue)));
-        });
+        audioMedia.getPlayer().currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> timeLabel.setText(formatTime(audioMedia.getDuration().subtract(newValue))));
 
         ////////////////////////////////////////////////////////////////////////
         // initialize KeyCodeLabel
@@ -173,7 +173,7 @@ public class AudioMediaUI extends VBox {
         nameLabel.setMouseTransparent(true);
 
 
-        this.getChildren().addAll(nameLabel, new AudioSlider(), timeLabel, keycodeHbox, playPauseHbox);
+        this.getChildren().addAll(nameLabel, new VolumeSlider(), timeLabel, keycodeHbox, playPauseHbox);
     }
 
     //FIXME
@@ -208,17 +208,16 @@ public class AudioMediaUI extends VBox {
     }
 
 
-    private class AudioSlider extends Slider {
+    private class VolumeSlider extends Slider {
 
-        protected AudioSlider() {
-            super(0, 1, 0.5d);
-            AudioSlider.this.setValue(audioMedia.getVolume());
-            //sliderVolume.getStyleClass().add("slider-volume-track");
-            AudioSlider.this.valueProperty().bindBidirectional(audioMedia.getPlayer().volumeProperty());
-            AudioSlider.this.setOnMouseReleased((MouseEvent event) -> {
+        protected VolumeSlider() {
+            super(0, 1, audioMedia.getVolume());
+            final DoubleProperty volumeProperty = VolumeSlider.this.valueProperty();
+            volumeProperty.bindBidirectional(audioMedia.getPlayer().volumeProperty());
+            VolumeSlider.this.setOnMouseReleased((MouseEvent event) -> {
                 if (event.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
-                    audioMedia.setVolume(AudioSlider.this.getValue());
-                    audioMedia.getPlayer().setVolume(AudioSlider.this.getValue());
+                    audioMedia.setVolume(volumeProperty.getValue());
+                    audioMedia.getPlayer().setVolume(volumeProperty.getValue());
                 }
             });
         }
