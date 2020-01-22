@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import java.net.URL?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -101,9 +100,7 @@
                           <items>
                               <FlowPane fx:id="tableLayout" maxHeight="1.7976931348623157E308" rowValignment="TOP" stylesheets="@../styles/easyconduite.css" />
                             <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="100.0" minWidth="20.0" prefWidth="20.0">
-                                 <children>
-                                    <FontAwesomeIconView fill="#791616" glyphName="GEARS" layoutX="44.0" layoutY="38.0" size="32" />
-                                 </children>
+
                               </AnchorPane>
                           </items>
                         </SplitPane>
