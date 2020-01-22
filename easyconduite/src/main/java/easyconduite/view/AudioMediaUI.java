@@ -27,7 +27,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.css.PseudoClass;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -143,11 +142,6 @@ public class AudioMediaUI extends VBox {
         // attribution css for Track VBOX
         this.getStyleClass().add("audioMediaUi");
 
-        this.setOnMouseClicked(event -> {
-            if (event.getButton().equals(MouseButton.PRIMARY)) {
-                this.requestFocus();
-            }
-        });
         //this.updateFromAudioMedia(audioMedia);
 
         ////////////////////////////////////////////////////////////////////////
@@ -272,7 +266,6 @@ public class AudioMediaUI extends VBox {
             super();
             PlayPauseHbox.this.getStyleClass().add("commandHbox");
             StackPane playPausePane = new StackPane();
-            playPausePane.setAlignment(Pos.CENTER);
 
             playPausePane.getChildren().addAll(pauseRegion, playRegion);
             PlayPauseHbox.this.getChildren().addAll(stopRegion, playPausePane);

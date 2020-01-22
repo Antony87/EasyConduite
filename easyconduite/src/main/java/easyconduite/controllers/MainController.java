@@ -200,6 +200,14 @@ public class MainController extends StackPane implements Initializable, Chaining
             tableLayout.getChildren().add(audioMediaUI);
             int indexView = tableLayout.getChildren().indexOf(audioMediaUI);
             audioVideoMedia.setIndexInTable(indexView);
+
+            // Event sur clic dans l'AudioMediUI pour récupérer le focus.
+            audioMediaUI.setOnMouseClicked(eventFocus -> {
+                if (eventFocus.getButton().equals(MouseButton.PRIMARY)) {
+                    audioMediaUI.requestFocus();
+                }
+            });
+
             // ajout dans la liste du projet
             project.getEasyMediaList().add(audioVideoMedia);
             LOG.debug("AudioVideoMedia {} added. List size :{}", audioVideoMedia, project.getEasyMediaList().size());

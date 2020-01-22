@@ -113,6 +113,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-background-position: center 50%;
     -fx-cursor: hand;
 }
+
 .playbutton{
     -fx-background-image: url('../icons/Play.png');
     -fx-background-color: #2D2D2D;
