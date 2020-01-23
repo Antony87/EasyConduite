@@ -19,16 +19,57 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     Author     : antony
 */
 
+/*
+.dark-primary-color    #455A64;
+.default-primary-color #607D8B;
+.light-primary-color   #CFD8DC;
+.text-primary-color    #FFFFFF;
+.accent-color          #9E9E9E;
+.primary-text-color    #212121;
+.secondary-text-color  #757575;
+.divider-color         #BDBDBD;
+*/
+
+
 #trackstable{
-    -fx-background-color: #232323;
+    -fx-background-color: #212121;
     -fx-pref-width: 1024;
     -fx-pref-height : 700;
 }
+
+#trackDetail{
+    -fx-min-width: 20;
+    -fx-max-width: 150;
+}
+
+#tracksBase{
+    -fx-pref-height : 30;
+    -fx-hgap: 5;
+    -fx-vgap: 5;
+    -fx-padding: 5 6 6 5;
+}
+
+#tracksBase > .button{
+    -fx-font-size: 14;
+    -fx-background-color: #9E9E9E;
+    -fx-background-position : center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-image: url('../icons/add.png');
+}
+#tracksBase > .button:hover{
+    -fx-background-color : #CFD8DC;
+}
+
 
 #tableLayout{
     -fx-hgap: 5;
     -fx-vgap: 5;
     -fx-padding: 5 5 5 5;
+}
+
+.tab-pane {
+  -fx-tab-min-width:80px;
+  -fx-tab-max-width:80px;
 }
 
 .infoBaseLine{

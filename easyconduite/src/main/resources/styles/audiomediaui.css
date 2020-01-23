@@ -30,7 +30,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-min-width: 100;
     -fx-max-width: 100;
     -fx-spacing: 2;
-
+    /* definition couleurs
+    .dark-primary-color    #455A64;
+    .default-primary-color #607D8B;
+    .light-primary-color   #CFD8DC;
+    .text-primary-color    #FFFFFF;
+    .accent-color          #9E9E9E;
+    .primary-text-color    #212121;
+    .secondary-text-color  #757575;
+    .divider-color         #BDBDBD;*/
+    backgroundColor : #464646;
+    backgroundPlayingColor : #455A64;
+    -fx-background-color : backgroundColor;
 }
 
 .audioMediaUi:focused{
@@ -38,19 +49,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  }
 
  .audioMediaUi:playing{
-     -fx-background-color :  #464646;
+     -fx-background-color :  backgroundPlayingColor;
  }
-
 
 .audioMediaUi .menu-item{
     -fx-font-size: 10;
 }
-.playing{ 
-    -fx-background-color :  #464646;
-}
-/*.waiting{
-    -fx-background-color: #373737; 
-}*/
 
 /*Css class for audio name label within AudioMediaUI Vbox.*/
 .audioMediaUi > .label{
@@ -58,7 +62,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-max-height: 25;
     -fx-min-width: 96;
     -fx-max-width: 96;
-    -fx-background-color:  #2D2D2D;
     -fx-font-size: 12;
     -fx-text-fill: #FFFFFF;
     -fx-alignment:CENTER;
@@ -73,7 +76,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 .audioMediaUi > .commandHbox{
     -fx-alignment:CENTER;
-    -fx-spacing: 6;
+    -fx-spacing: 10;
     -fx-min-height: 32;
     -fx-max-height: 32;
 }
@@ -106,24 +109,30 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 .commandHbox > * {
-    -fx-min-width: 40;
-    -fx-max-width: 40;
-    -fx-background-color: #2D2D2D;
+    -fx-min-width: 30;
+    -fx-max-width: 30;
     -fx-background-repeat: no-repeat;
     -fx-background-position: center 50%;
-    -fx-cursor: hand;
 }
 
 .playbutton{
-    -fx-background-image: url('../icons/Play.png');
-    -fx-background-color: #2D2D2D;
+    -fx-background-image: url('../icons/002-play.png');
+    -fx-background-position : center;
+    -fx-background-repeat: no-repeat;
 }
 .pausebutton{
-    -fx-background-image: url('../icons/Pause.png');
-    -fx-background-color: #2D2D2D;
+    -fx-background-image: url('../icons/003-pause.png');
+    -fx-background-position : center;
+    -fx-background-repeat: no-repeat;
 }
 .stopbutton{
-    -fx-background-image: url('../icons/Stop.png');
-    -fx-background-color: #2D2D2D;
+    -fx-background-image: url('../icons/001-stop.png');
+    -fx-background-repeat: no-repeat;
 }
+
+.pausebutton:hover,.playbutton:hover,.stopbutton:hover{
+    -fx-background-color : #CFD8DC;
+}
+
+
 

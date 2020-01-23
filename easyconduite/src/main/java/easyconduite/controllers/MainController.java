@@ -23,6 +23,7 @@ import easyconduite.model.ChainingUpdater;
 import easyconduite.objects.ApplicationProperties;
 import easyconduite.objects.AudioMedia;
 import easyconduite.objects.AudioTableWrapper;
+import easyconduite.objects.EasyConduiteProperties;
 import easyconduite.objects.media.AudioVideoMedia;
 import easyconduite.objects.media.MediaFactory;
 import easyconduite.objects.project.EasyTable;
@@ -72,6 +73,7 @@ public class MainController extends StackPane implements Initializable, Chaining
     private final ResourceBundle local;
     private final List<AudioMediaUI> audioMediaViewList;
     private final Map<UUID, EasyconduitePlayer> playersMap;
+    private final EasyConduiteProperties appProperties;
     private MediaProject project;
     /**
      * Map (ConcurrentHashMap) which amintains relationship between a Keybord
@@ -82,7 +84,7 @@ public class MainController extends StackPane implements Initializable, Chaining
     StackPane mainPane;
     @FXML
     private FlowPane tableLayout;
-    @FXML
+
     private Menu openRecent;
     private MainListenersHandler listenersHandler;
     private ChainingUpdater nextUpdater;
@@ -96,6 +98,7 @@ public class MainController extends StackPane implements Initializable, Chaining
         audioMediaViewList = new CopyOnWriteArrayList<>();
         keyCodesMap = new ConcurrentHashMap<>(100);
         playersMap = new ConcurrentHashMap<>(100);
+        appProperties=EasyConduitePropertiesHandler.getInstance().getApplicationProperties();
         local = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
 
     }
@@ -158,6 +161,15 @@ public class MainController extends StackPane implements Initializable, Chaining
         deleteProject();
     }
 
+    @FXML
+    private void importButton(ActionEvent event){
+        try {
+            menuImportAudio(event);
+        } catch (EasyconduiteException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void deleteProject() {
         LOG.debug("deleteProject called");
         audioMediaViewList.forEach((AudioMediaUI t) -> {
@@ -194,6 +206,7 @@ public class MainController extends StackPane implements Initializable, Chaining
         final FileChooser fileChooser = new FileChooserControl.FileChooserBuilder().asType(FileChooserControl.Action.OPEN_AUDIO).build();
         final File file = fileChooser.showOpenDialog(null);
         if (file != null) {
+            appProperties.setLastImportDir(file.getParentFile().toPath());
             final AudioVideoMedia audioVideoMedia = (AudioVideoMedia) MediaFactory.getAudioVisualMedia(file);
             AudioMediaUI audioMediaUI = new AudioMediaUI(audioVideoMedia);
             // recuperation index de la view sur le layout
