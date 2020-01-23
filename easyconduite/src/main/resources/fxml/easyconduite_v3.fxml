@@ -10,12 +10,14 @@
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <StackPane fx:id="mainPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.MainController">
    <children>
@@ -98,7 +100,7 @@
               <tabs>
                 <Tab text="%tab.tracktable.name">
                      <content>
-                        <SplitPane fx:id="trackstable" dividerPositions="0.29797979797979796" maxHeight="1.7976931348623157E308" prefHeight="160.0" prefWidth="200.0" stylesheets="@../styles/easyconduite.css">
+                        <SplitPane fx:id="trackstable" dividerPositions="0.5" maxHeight="1.7976931348623157E308" stylesheets="@../styles/easyconduite.css">
                           <items>
                               <VBox alignment="BOTTOM_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
                                  <children>
@@ -108,7 +110,14 @@
                                           <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#importButton" text="-">
                                              <HBox.margin>
                                                 <Insets />
-                                             </HBox.margin></Button>
+                                             </HBox.margin>
+                                             <tooltip>
+                                                <Tooltip text="%menu.track.import">
+                                                   <font>
+                                                      <Font size="10.0" />
+                                                   </font>
+                                                </Tooltip>
+                                             </tooltip></Button>
                                        </children>
                                     </HBox>
                                  </children>
