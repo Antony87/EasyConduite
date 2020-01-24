@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane fx:id="mainPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.MainController">
+<fx:root fx:id="mainPane" type="StackPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.MainController">
    <children>
       <VBox maxHeight="1.7976931348623157E308" onKeyPressed="#handleKeyCodePlay">
         <children>
@@ -124,6 +124,7 @@
                               </VBox>
                               <VBox fx:id="trackDetail">
                                  <children>
+                                    <fx:include fx:id="trackProperties" source="trackProperties.fxml" />
                                     <HBox prefHeight="30.0" />
                                  </children>
                               </VBox>
@@ -142,4 +143,4 @@
       <URL value="@../styles/easyconduite.css" />
       <URL value="@../styles/audiomediaui.css" />
    </stylesheets>
-</StackPane>
+</fx:root>

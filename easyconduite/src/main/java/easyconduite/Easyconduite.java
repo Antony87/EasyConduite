@@ -26,6 +26,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
@@ -62,10 +63,12 @@ public class Easyconduite extends Application {
         stage.initStyle(StageStyle.DECORATED);
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/easyconduite32.png")));
 
+        StackPane root = new StackPane();
+
         final ResourceBundle localeBundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
         final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/easyconduite_v3.fxml"), localeBundle);
-
-        Pane root = loader.load();
+        loader.setRoot(root);
+        loader.load();
         Scene scene = new Scene(root);
         
         MainController controler = loader.getController();

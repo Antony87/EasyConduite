@@ -85,6 +85,9 @@ public class MainController extends StackPane implements Initializable, Chaining
     @FXML
     private FlowPane tableLayout;
 
+    @FXML
+    private TrackPropertiesController trackPropertiesController;
+
     private Menu openRecent;
     private MainListenersHandler listenersHandler;
     private ChainingUpdater nextUpdater;
@@ -218,6 +221,10 @@ public class MainController extends StackPane implements Initializable, Chaining
             audioMediaUI.setOnMouseClicked(eventFocus -> {
                 if (eventFocus.getButton().equals(MouseButton.PRIMARY)) {
                     audioMediaUI.requestFocus();
+                    if(trackPropertiesController != null){
+                        trackPropertiesController.setMedia(audioVideoMedia);
+                    }
+
                 }
             });
 
