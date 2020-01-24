@@ -30,6 +30,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     -fx-alignment: CENTER;   
 }
 
+.text-field {
+-fx-background-color: #455A64;
+-fx-text-fill: #FFFFFF;
+-fx-border-color : #FFFFFF;
+-fx-pref-width: 80;
+-fx-max-width:100;
+}
+
+.spinner .text-field {
+-fx-background-color: #455A64;
+-fx-text-fill: #FFFFFF;
+-fx-border-color : #FFFFFF;
+}
+
 .configTitle{
     -fx-pref-height : 50;
     -fx-spacing: 50;

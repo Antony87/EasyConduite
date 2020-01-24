@@ -21,7 +21,7 @@
             <HBox>
                <children>
                   <Label text="Loop" />
-                  <CheckBox mnemonicParsing="false" text="CheckBox" />
+                  <CheckBox mnemonicParsing="false" />
                </children>
             </HBox>
             <Label text="Fade in " />
