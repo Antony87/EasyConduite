@@ -17,7 +17,8 @@
 package easyconduite.view;
 
 import easyconduite.exception.EasyconduiteException;
-import easyconduite.objects.AudioMedia;
+import easyconduite.model.EasyMedia;
+import easyconduite.model.IEasyMediaUI;
 import easyconduite.objects.media.AudioVideoMedia;
 import easyconduite.util.KeyCodeHelper;
 import javafx.beans.property.BooleanProperty;
@@ -48,24 +49,16 @@ import org.apache.logging.log4j.Logger;
  *
  * @author A Fons
  */
-public class AudioMediaUI extends VBox {
+public class AudioMediaUI extends VBox implements IEasyMediaUI {
 
     static final Logger LOG = LogManager.getLogger(AudioMediaUI.class);
-
-    private final Label nameLabel = new Label();
-
-    private final Label timeLabel = new Label();
-
-    private final Label keycodeLabel = new Label();
-
-    private final Region repeatRegion = new Region();
-
-    private final PlayPauseHbox playPauseHbox;
-
-    private final AudioVideoMedia audioMedia;
-
     private static final PseudoClass PLAYING_PSEUDO_CLASS = PseudoClass.getPseudoClass("playing");
-
+    private final Label nameLabel = new Label();
+    private final Label timeLabel = new Label();
+    private final Label keycodeLabel = new Label();
+    private final Region repeatRegion = new Region();
+    private final PlayPauseHbox playPauseHbox;
+    private final AudioVideoMedia audioMedia;
     private final BooleanProperty playingClass = new BooleanPropertyBase() {
 
         @Override
@@ -118,7 +111,7 @@ public class AudioMediaUI extends VBox {
                             break;
                         case READY:
                             audioMedia.setDuration(audioMedia.getPlayer().getStopTime());
-                            updateAudioMedia();
+                            updateUI();
                             playPauseHbox.toFront(playPauseHbox.playRegion);
                             setPlayingClass(false);
                             break;
@@ -142,9 +135,6 @@ public class AudioMediaUI extends VBox {
         // attribution css for Track VBOX
         this.getStyleClass().add("audioMediaUi");
 
-        //this.updateFromAudioMedia(audioMedia);
-
-        ////////////////////////////////////////////////////////////////////////
         ///////////// current Time label               
         audioMedia.getPlayer().currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> timeLabel.setText(formatTime(audioMedia.getDuration().subtract(newValue))));
 
@@ -170,25 +160,6 @@ public class AudioMediaUI extends VBox {
         this.getChildren().addAll(nameLabel, new VolumeSlider(), timeLabel, keycodeHbox, playPauseHbox);
     }
 
-    //FIXME
-    @Deprecated
-    public final AudioMedia getAudioMedia() {
-        return new AudioMedia(null);
-    }
-
-
-    public void updateAudioMedia() {
-
-        nameLabel.setText(audioMedia.getName());
-        timeLabel.setText(formatTime(audioMedia.getDuration()));
-        keycodeLabel.setText(KeyCodeHelper.toString(this.audioMedia.getKeycode()));
-        repeatRegion.getStyleClass().remove("repeat");
-        if (audioMedia.getLoppable()) {
-            repeatRegion.getStyleClass().add("repeat");
-        }
-
-    }
-
     private String formatTime(Duration duration) {
 
         if (duration.greaterThan(Duration.ZERO)) {
@@ -199,22 +170,6 @@ public class AudioMediaUI extends VBox {
             return String.format("%02d:%02d:%02d", minutes, seconds, dec);
         }
         return null;
-    }
-
-
-    private class VolumeSlider extends Slider {
-
-        protected VolumeSlider() {
-            super(0, 1, audioMedia.getVolume());
-            final DoubleProperty volumeProperty = VolumeSlider.this.valueProperty();
-            volumeProperty.bindBidirectional(audioMedia.getPlayer().volumeProperty());
-            VolumeSlider.this.setOnMouseReleased((MouseEvent event) -> {
-                if (event.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
-                    audioMedia.setVolume(volumeProperty.getValue());
-                    audioMedia.getPlayer().setVolume(volumeProperty.getValue());
-                }
-            });
-        }
     }
 
     private void setPlayingClass(boolean playing) {
@@ -237,6 +192,23 @@ public class AudioMediaUI extends VBox {
         }
     }
 
+    @Override
+    public void updateUI() {
+        nameLabel.setText(audioMedia.getName());
+        timeLabel.setText(formatTime(audioMedia.getDuration()));
+        keycodeLabel.setText(KeyCodeHelper.toString(this.audioMedia.getKeycode()));
+        repeatRegion.getStyleClass().remove("repeat");
+        if (audioMedia.getLoppable()) {
+            repeatRegion.getStyleClass().add("repeat");
+        }
+    }
+
+    @Override
+    public EasyMedia getEasyMedia() {
+        return this.audioMedia;
+    }
+
+
     private static class PlayRegion extends Region {
         protected PlayRegion() {
             PlayRegion.this.getStyleClass().add("playbutton");
@@ -252,6 +224,21 @@ public class AudioMediaUI extends VBox {
     private static class StopRegion extends Region {
         protected StopRegion() {
             StopRegion.this.getStyleClass().add("stopbutton");
+        }
+    }
+
+    private class VolumeSlider extends Slider {
+
+        protected VolumeSlider() {
+            super(0, 1, audioMedia.getVolume());
+            final DoubleProperty volumeProperty = VolumeSlider.this.valueProperty();
+            volumeProperty.bindBidirectional(audioMedia.getPlayer().volumeProperty());
+            VolumeSlider.this.setOnMouseReleased((MouseEvent event) -> {
+                if (event.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
+                    audioMedia.setVolume(volumeProperty.getValue());
+                    audioMedia.getPlayer().setVolume(volumeProperty.getValue());
+                }
+            });
         }
     }
 

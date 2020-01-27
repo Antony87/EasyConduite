@@ -23,4 +23,5 @@ public interface IeasyMedia {
      * Méthode initialisant le player avant utilisation dans l'application.
      */
     void initPlayer() throws EasyconduiteException;
+
 }

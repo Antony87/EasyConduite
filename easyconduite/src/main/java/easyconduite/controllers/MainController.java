@@ -222,9 +222,8 @@ public class MainController extends StackPane implements Initializable, Chaining
                 if (eventFocus.getButton().equals(MouseButton.PRIMARY)) {
                     audioMediaUI.requestFocus();
                     if(trackPropertiesController != null){
-                        trackPropertiesController.setMedia(audioVideoMedia);
+                        trackPropertiesController.setMediaUI(audioMediaUI);
                     }
-
                 }
             });
 
@@ -241,16 +240,13 @@ public class MainController extends StackPane implements Initializable, Chaining
         });
     }
 
+    @Deprecated
     public void editTrack(AudioMediaUI audioMediaUi) {
         final TrackConfig trackConfigDialog;
-        try {
-            //FIXME
-            //audioMediaUi.getEasyPlayer().stop();
-            trackConfigDialog = new TrackConfig(audioMediaUi.getAudioMedia(), this);
-            trackConfigDialog.show();
-        } catch (IOException ex) {
-            LOG.error("Error occurend during TrackConfigDialog construction", ex);
-        }
+        //FIXME
+        //audioMediaUi.getEasyPlayer().stop();
+        //trackConfigDialog = new TrackConfig(audioMediaUi.getAudioMedia(), this);
+        //trackConfigDialog.show();
     }
 
     @FXML
@@ -320,6 +316,9 @@ public class MainController extends StackPane implements Initializable, Chaining
     public void initialize(URL url, ResourceBundle rb) {
         LOG.debug("Controler initialisation");
 
+        //initialization nested controller
+        trackPropertiesController.setMainController(this);
+
         // initialization listeners
         listenersHandler = new MainListenersHandler(this);
         listenersHandler.setDragAndDropFeature(tableLayout);
@@ -361,7 +360,7 @@ public class MainController extends StackPane implements Initializable, Chaining
     }
 
     private AudioMediaUI findAudioMediaUI(AudioMedia audioMedia) {
-        return audioMediaViewList.stream().filter(ui -> ui.getAudioMedia().equals(audioMedia)).findFirst().get();
+        return null;//audioMediaViewList.stream().filter(ui -> ui.getAudioMedia().equals(audioMedia)).findFirst().get();
     }
 
     public void updateKeyCodeList() {
@@ -402,7 +401,7 @@ public class MainController extends StackPane implements Initializable, Chaining
     public void removeChild(ChainingUpdater audioMediaView) {
         LOG.debug("Remove AudioMediaUI[{}]", audioMediaView);
         AudioMediaUI audioUI = (AudioMediaUI) audioMediaView;
-        AudioMedia audioMedia = audioUI.getAudioMedia();
+        //AudioMedia audioMedia = audioUI.getAudioMedia();
 
         // remove whithin childs within the chain
         //this.setNext(audioUI);
@@ -412,7 +411,7 @@ public class MainController extends StackPane implements Initializable, Chaining
         tableLayout.getChildren().remove((AudioMediaUI) audioMediaView);
         audioMediaViewList.remove((AudioMediaUI) audioMediaView);
         // remove within EasyTable
-        AudioTableWrapper.getInstance().removeAudioMedia(audioMedia);
+        //AudioTableWrapper.getInstance().removeAudioMedia(audioMedia);
         //AudioTableHelper.cleanChilds(audioTable);
         LOG.trace("New audioMediaUI list size is {} and AudioMediaList size is {}", audioMediaViewList.size(), AudioTableWrapper.getInstance().getEasyTable().getAudioMediaList().size());
     }

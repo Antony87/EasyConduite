@@ -21,37 +21,93 @@
 package easyconduite.controllers;
 
 import easyconduite.model.EasyMedia;
+import easyconduite.model.IEasyMediaUI;
+import easyconduite.objects.media.AudioVideoMedia;
+import easyconduite.view.AudioMediaUI;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class TrackPropertiesController  extends StackPane implements Initializable {
-
-    private EasyMedia media;
+public class TrackPropertiesController extends StackPane implements Initializable {
 
     @FXML
-    private TextField trackName;
+    private TextField nametrackfield;
 
     @FXML
-    private void clickedButton(ActionEvent event){
+    private CheckBox repeattrack;
 
-    }
+    @FXML
+    private Spinner fadeInSpinner;
+
+    @FXML
+    private Spinner fadeOutSpinner;
+
+    private MainController mainController;
+
+    private IEasyMediaUI mediaUI;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        System.out.println("track controller initialized");
-
+        initializeSpinners(fadeInSpinner, fadeOutSpinner);
     }
 
-    public void setMedia(EasyMedia media) {
-        System.out.println("set media");
-        this.media = media;
-        trackName.setText(this.media.getName());
+    @FXML
+    private void propertiesCancelButton(ActionEvent event){
+        updateTrackProperties(this.mediaUI.getEasyMedia());
     }
+
+    @FXML
+    private void propertiesApplyButton(ActionEvent event){
+        EasyMedia media = this.mediaUI.getEasyMedia();
+        media.setName(nametrackfield.getText());
+        media.setLoppable(repeattrack.isSelected());
+        if(media instanceof AudioVideoMedia){
+            Integer iValueFadeIn = (Integer) fadeInSpinner.getValue();
+            ((AudioVideoMedia)media).setFadeInDuration(Duration.seconds(iValueFadeIn));
+            Integer iValueFadeOut = (Integer) fadeOutSpinner.getValue();
+            ((AudioVideoMedia)media).setFadeOutDuration(Duration.seconds(iValueFadeOut));
+        }
+        this.mediaUI.updateUI();
+    }
+
+    private void updateTrackProperties(EasyMedia media){
+        nametrackfield.setText(media.getName());
+        repeattrack.setSelected(media.getLoppable());
+        if (media instanceof AudioVideoMedia) {
+            final AudioVideoMedia audioVideoMedia = (AudioVideoMedia) media;
+            if (audioVideoMedia.getFadeInDuration() != null) {
+                fadeInSpinner.getValueFactory().setValue((int) audioVideoMedia.getFadeInDuration().toSeconds());
+            }
+            if (audioVideoMedia.getFadeOutDuration() != null) {
+                fadeOutSpinner.getValueFactory().setValue((int) audioVideoMedia.getFadeOutDuration().toSeconds());
+            }
+        }
+    }
+
+    public void setMediaUI(AudioMediaUI mediaUI) {
+        this.mediaUI = mediaUI;
+        updateTrackProperties((EasyMedia) this.mediaUI.getEasyMedia());
+    }
+
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
+
+    private void initializeSpinners(Spinner<Integer> fadeIn, Spinner<Integer> fadeOut) {
+        SpinnerValueFactory<Integer> valueFadeInFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
+        fadeIn.setValueFactory(valueFadeInFactory);
+        SpinnerValueFactory<Integer> valueFadeOutFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
+        fadeOut.setValueFactory(valueFadeOutFactory);
+    }
+
+
 }

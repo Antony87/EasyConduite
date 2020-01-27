@@ -62,14 +62,14 @@ public class MainListenersHandler {
         Pane tableLayout = controler.getTableLayout();
         EasyTable easyTable = AudioTableWrapper.getInstance().getEasyTable();
 
-        tableLayout.getChildren().filtered((t) -> {
-            return t instanceof AudioMediaUI;
-        }).forEach((t) -> {
-            ((AudioMediaUI) t).getAudioMedia().setIndex(tableLayout.getChildren().indexOf(t));
-        });
-        easyTable.getAudioMediaList().sort((o1, o2) -> {
-            return o1.getIndex() - o2.getIndex();
-        });
+//        tableLayout.getChildren().filtered((t) -> {
+//            return t instanceof AudioMediaUI;
+//        }).forEach((t) -> {
+//            ((AudioMediaUI) t).getAudioMedia().setIndex(tableLayout.getChildren().indexOf(t));
+//        });
+//        easyTable.getAudioMediaList().sort((o1, o2) -> {
+//            return o1.getIndex() - o2.getIndex();
+//        });
         easyTable.setUpdated(true);
     }
 
