@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<fx:root fx:id="mainPane" type="StackPane" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.MainController">
+<fx:root fx:id="mainPane" type="StackPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.MainController">
    <children>
       <VBox maxHeight="1.7976931348623157E308" onKeyPressed="#handleKeyCodePlay">
         <children>

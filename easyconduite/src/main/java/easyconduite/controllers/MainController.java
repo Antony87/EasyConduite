@@ -19,14 +19,12 @@ package easyconduite.controllers;
 import easyconduite.controllers.helpers.MainListenersHandler;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.EasyMedia;
-import easyconduite.objects.ApplicationProperties;
 import easyconduite.objects.AudioTableWrapper;
 import easyconduite.objects.EasyConduiteProperties;
 import easyconduite.objects.media.AudioVideoMedia;
 import easyconduite.objects.media.MediaFactory;
 import easyconduite.objects.project.EasyTable;
 import easyconduite.objects.project.MediaProject;
-import easyconduite.tools.ApplicationPropertiesHelper;
 import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.Labels;
 import easyconduite.util.PersistenceHelper;
@@ -84,7 +82,9 @@ public class MainController extends StackPane implements Initializable {
     @FXML
     private TrackPropertiesController trackPropertiesController;
 
+    @FXML
     private Menu openRecent;
+
     private MainListenersHandler listenersHandler;
 
     /**
@@ -293,43 +293,38 @@ public class MainController extends StackPane implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         LOG.debug("Controler initialisation");
-
         //initialization nested controller
         trackPropertiesController.setMainController(this);
-
         // initialization listeners
 //        listenersHandler = new MainListenersHandler(this);
 //        listenersHandler.setDragAndDropFeature(tableLayout);
 
-        final ContextMenu cmTableLayout = new ContextMenu();
+        final ContextMenu tableContextMenu = new ContextMenu();
         final MenuItem cmTitle = new MenuItem(locale.getString("menu.track.title"));
         cmTitle.setDisable(true);
         final SeparatorMenuItem cmSeparator = new SeparatorMenuItem();
         final MenuItem cmImportTrack = new MenuItem(locale.getString("menu.track.import"));
         cmImportTrack.setOnAction(e -> menuImportAudio(e));
-        cmTableLayout.getItems().addAll(cmTitle, cmSeparator, cmImportTrack);
+        final MenuItem cmCloseProject = new MenuItem(locale.getString("menu.file.close"));
+        cmCloseProject.setOnAction(e-> {
+            if(isOkForDelete()) deleteProject();
+        });
+        tableContextMenu.getItems().addAll(cmTitle, cmSeparator, cmImportTrack,cmCloseProject);
 
 
-        tableLayout.setOnContextMenuRequested(contextMenuEvent -> cmTableLayout.show(tableLayout, contextMenuEvent.getScreenX(), contextMenuEvent.getScreenY()));
+        tableLayout.setOnContextMenuRequested(contextMenuEvent -> tableContextMenu.show(tableLayout, contextMenuEvent.getScreenX(), contextMenuEvent.getScreenY()));
         tableLayout.setOnMouseClicked(mouseEvent -> {
-            if (cmTableLayout.isShowing()) {
-                cmTableLayout.hide();
+            if (tableContextMenu.isShowing()) {
+                tableContextMenu.hide();
             }
         });
-
-
-
-        appProperties.changeCompteurProperty().addListener((observable, oldValue, newValue) -> {
-
-        });
-
 
         if (appProperties.getLastFileProject() != null) {
             MenuItem recentFileMenuItem = new MenuItem(appProperties.getLastFileProject().toString());
             openRecent.getItems().add(recentFileMenuItem);
             recentFileMenuItem.setOnAction((event) -> {
                 if (isOkForDelete()) {
-                    openProject(appProperties.getLastFileProject());
+                    openProject(new File(appProperties.getLastFileProject().toString()));
                 }
             });
         }

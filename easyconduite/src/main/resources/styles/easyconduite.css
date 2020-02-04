@@ -60,6 +60,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-padding: 5 5 5 5;
 }
 
+#tableLayout .menu-item{
+    -fx-font-size: 10;
+}
+
 .tab-pane {
   -fx-tab-min-width:80px;
   -fx-tab-max-width:80px;
