@@ -60,6 +60,7 @@ public class AudioTableWrapper {
         this.easyTable = easyTable;
     }
 
+    @Deprecated
     public void clearAudioTable() {
         easyTable = new EasyTable();
     }

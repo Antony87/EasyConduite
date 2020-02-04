@@ -44,6 +44,7 @@ import java.util.UUID;
  */
 @XmlRootElement(name = "audiotable")
 @XmlAccessorType(XmlAccessType.FIELD)
+@Deprecated
 public class EasyTable {
 
     private String name = "";

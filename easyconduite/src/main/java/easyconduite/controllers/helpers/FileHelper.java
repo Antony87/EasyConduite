@@ -23,7 +23,9 @@ package easyconduite.controllers.helpers;
 import easyconduite.controllers.MainController;
 import easyconduite.objects.project.MediaProject;
 
+@Deprecated
 public class FileHelper {
+    //FIXME supprimer
 
     private final MainController controller;
 
