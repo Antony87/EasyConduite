@@ -81,6 +81,17 @@ public class PersistenceHelper {
         return Files.exists(filePath);
     }
 
+    /**
+     * This method return TRUE if file describe by getTablePathFile EXISTS.
+     *
+     * @param path
+     * @return
+     */
+    public static boolean isFileExists(Path path) {
+        if(path==null) return false;
+        return Files.exists(path);
+    }
+
 
     public static String getPathURIString(String path) {
         final Path realPath = Paths.get(path);

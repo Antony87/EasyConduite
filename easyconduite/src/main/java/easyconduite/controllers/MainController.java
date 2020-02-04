@@ -139,12 +139,14 @@ public class MainController extends StackPane implements Initializable, Chaining
     @FXML
     private void menuFileSaveProject(ActionEvent event) {
         try {
-            if (Files.exists(project.getProjectPath())) {
+            if (PersistenceHelper.isFileExists(project.getProjectPath())) {
                 final File projectFile = project.getProjectPath().toFile();
-                PersistenceHelper.saveToJson(project,null);
+                PersistenceHelper.saveToJson(project,projectFile);
             } else {
                 FileChooser fileChooser = new FileChooserControl.FileChooserBuilder().asType(FileChooserControl.Action.SAVE).build();
-                final File file = fileChooser.showSaveDialog(null);
+                final File projectFile = fileChooser.showSaveDialog(null);
+                project.setProjectPath(projectFile.toPath());
+                PersistenceHelper.saveToJson(project,projectFile);
             }
         } catch (EasyconduiteException | IOException e) {
             ActionDialog.showWarning(local.getString("dialog.error.header"), local.getString("easyconduitecontroler.save.error"));
