@@ -202,7 +202,7 @@ public class TrackConfigController extends DialogAbstractController implements I
     @Override
     public void updateFromAudioMedia(AudioMedia media) {
         mediaConfigurator.update(audioMedia);
-        this.setNext(mainController);
+        //this.setNext(mainController);
         nextChainingElement.updateFromAudioMedia(audioMedia);
     }
 

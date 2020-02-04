@@ -18,7 +18,7 @@ import java.io.File;
 import java.util.Objects;
 
 
-public class AudioVideoMedia extends EasyMedia implements IeasyMedia {
+public class AudioVideoMedia extends EasyMedia {
 
     @JsonSerialize(using = DurationSerializer.class)
     @JsonDeserialize(using = DurationDeserializer.class)
