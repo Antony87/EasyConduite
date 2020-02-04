@@ -86,11 +86,11 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
      *
      * @param media
      */
-    public AudioMediaUI(AudioVideoMedia media) {
+    public AudioMediaUI(EasyMedia media) {
         super();
         LOG.info("Construct an AudioMedia {}", media);
 
-        this.audioMedia = media;
+        this.audioMedia = (AudioVideoMedia) media;
         ////////////////////////////////////////////////////////////////////////
         //               Initialize MediaPlayer
         ////////////////////////////////////////////////////////////////////////
@@ -190,6 +190,10 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
             default:
                 break;
         }
+    }
+
+    public final void stop(){
+        audioMedia.getPlayer().stop();
     }
 
     @Override

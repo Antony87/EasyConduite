@@ -33,12 +33,12 @@
                            </accelerator>
                         </MenuItem>
                         <Menu fx:id="openRecent" mnemonicParsing="false" text="Recent..." />
-                  <MenuItem mnemonicParsing="false" onAction="#menuFileSave" text="%menu.file.save">
+                  <MenuItem mnemonicParsing="false" onAction="#menuFileSaveProject" text="%menu.file.save">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#menuFileSaveAs" text="%menu.file.saveas" />
+                        <MenuItem mnemonicParsing="false" onAction="#menuFileSaveProjectAs" text="%menu.file.saveas" />
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#menuCloseProject" text="%menu.file.close" />
                         <SeparatorMenuItem mnemonicParsing="false" />
@@ -65,11 +65,6 @@
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="SPACE" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator></MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#menuTrackEdit" text="%track.context.properties">
-                           <accelerator>
-                              <KeyCodeCombination alt="UP" code="E" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
-                           </accelerator>
-                        </MenuItem>
                         <MenuItem mnemonicParsing="false" onAction="#menuTrackDelete" text="%track.context.delete">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="D" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />

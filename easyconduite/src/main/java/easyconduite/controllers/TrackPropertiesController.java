@@ -55,6 +55,8 @@ public class TrackPropertiesController extends StackPane implements Initializabl
 
     private IEasyMediaUI mediaUI;
 
+    private EasyMedia media;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initializeSpinners(fadeInSpinner, fadeOutSpinner);
@@ -100,6 +102,10 @@ public class TrackPropertiesController extends StackPane implements Initializabl
 
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
+    }
+
+    public void setMedia(EasyMedia media) {
+        this.media = media;
     }
 
     private void initializeSpinners(Spinner<Integer> fadeIn, Spinner<Integer> fadeOut) {

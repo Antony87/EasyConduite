@@ -10,7 +10,7 @@ import java.io.File;
  */
 public class MediaFactory {
 
-    public static <T> EasyMedia getAudioVisualMedia(T param) {
+    public static <T> EasyMedia getAudioVideoMedia(T param) {
         EasyMedia media=null;
         if(param instanceof File){
             File mediaFile = (File)param;

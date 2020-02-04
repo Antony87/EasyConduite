@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import easyconduite.model.EasyMedia;
 import easyconduite.objects.conduite.Conduite;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,10 +19,11 @@ public class MediaProject {
 
     private String name;
     private Conduite conduite;
+    private Path projectPath;
     List<EasyMedia> easyMediaList;
 
     public MediaProject() {
-        this.conduite=new Conduite();
+        this.conduite = new Conduite();
         this.easyMediaList = new ArrayList<EasyMedia>();
     }
 
@@ -40,6 +41,14 @@ public class MediaProject {
 
     public void setConduite(Conduite conduite) {
         this.conduite = conduite;
+    }
+
+    public Path getProjectPath() {
+        return projectPath;
+    }
+
+    public void setProjectPath(Path projectPath) {
+        this.projectPath = projectPath;
     }
 
     public List<EasyMedia> getEasyMediaList() {
