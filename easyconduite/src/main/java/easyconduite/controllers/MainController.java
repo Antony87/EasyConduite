@@ -42,14 +42,12 @@ import easyconduite.view.controls.EasyconduitePlayer;
 import easyconduite.view.controls.FileChooserControl;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
+import javafx.scene.control.*;
+import javafx.scene.input.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
@@ -163,14 +161,6 @@ public class MainController extends StackPane implements Initializable, Chaining
         deleteProject();
     }
 
-    @FXML
-    private void importButton(ActionEvent event){
-        try {
-            menuImportAudio(event);
-        } catch (EasyconduiteException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void deleteProject() {
         LOG.debug("deleteProject called");
@@ -307,6 +297,30 @@ public class MainController extends StackPane implements Initializable, Chaining
 
         ApplicationProperties appProps = ApplicationPropertiesHelper.getInstance().getProperties();
 
+        final ContextMenu cmTableLayout = new ContextMenu();
+        final MenuItem cmTitle = new MenuItem(local.getString("menu.track.title"));
+        cmTitle.setDisable(true);
+        final SeparatorMenuItem cmSeparator = new SeparatorMenuItem();
+        final MenuItem cmImportTrack = new MenuItem(local.getString("menu.track.import"));
+        cmImportTrack.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e) {
+                try {
+                    menuImportAudio(e);
+                } catch (EasyconduiteException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        cmTableLayout.getItems().addAll(cmTitle,cmSeparator,cmImportTrack);
+
+
+        tableLayout.setOnContextMenuRequested(contextMenuEvent -> cmTableLayout.show(tableLayout, contextMenuEvent.getScreenX(), contextMenuEvent.getScreenY()));
+        tableLayout.setOnMouseClicked(mouseEvent -> {
+            if (cmTableLayout.isShowing()) {
+                cmTableLayout.hide();
+            }
+        });
+
         if (appProps.getLastFileProject() != null) {
             MenuItem recentFileMenuItem = new MenuItem(appProps.getLastFileProject().toString());
             openRecent.getItems().add(recentFileMenuItem);
@@ -321,14 +335,6 @@ public class MainController extends StackPane implements Initializable, Chaining
 
     public FlowPane getTableLayout() {
         return tableLayout;
-    }
-
-    private AudioMediaUI createAudioMediaView(AudioVideoMedia audioMedia) {
-        AudioMediaUI audioMediaUI = new AudioMediaUI(audioMedia);
-        audioMediaViewList.add(audioMediaUI);
-        tableLayout.getChildren().add(audioMediaUI);
-        LOG.debug("AudioMedia {} added to EasyTable", audioMedia);
-        return audioMediaUI;
     }
 
     /**
