@@ -42,13 +42,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-max-width: 150;
 }
 
-#tracksBase{
-    -fx-pref-height : 30;
-    -fx-hgap: 5;
-    -fx-vgap: 5;
-    -fx-padding: 5 6 6 5;
-}
-
 #tracksBase > .button{
     -fx-font-size: 14;
     -fx-background-color: #9E9E9E;

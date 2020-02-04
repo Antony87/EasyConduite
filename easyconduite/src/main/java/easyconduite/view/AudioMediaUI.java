@@ -58,7 +58,7 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
     private final Label keycodeLabel = new Label();
     private final Region repeatRegion = new Region();
     private final PlayPauseHbox playPauseHbox;
-    private final AudioVideoMedia audioMedia;
+    private final AudioVideoMedia audioVideoMedia;
     private final BooleanProperty playingClass = new BooleanPropertyBase() {
 
         @Override
@@ -90,14 +90,14 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
         super();
         LOG.info("Construct an AudioMedia {}", media);
 
-        this.audioMedia = media;
+        this.audioVideoMedia = media;
         ////////////////////////////////////////////////////////////////////////
         //               Initialize MediaPlayer
         ////////////////////////////////////////////////////////////////////////
         try {
-            audioMedia.initPlayer();
+            audioVideoMedia.initPlayer();
             // Listenner sur la fin de l'initialisation du player.
-            audioMedia.getPlayer().statusProperty().addListener(new ChangeListener<>() {
+            audioVideoMedia.getPlayer().statusProperty().addListener(new ChangeListener<>() {
                 @Override
                 public void changed(ObservableValue<? extends Status> observableValue, Status oldValue, Status newValue) {
                     switch (newValue) {
@@ -110,7 +110,7 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
                             setPlayingClass(true);
                             break;
                         case READY:
-                            audioMedia.setDuration(audioMedia.getPlayer().getStopTime());
+                            audioVideoMedia.setDuration(audioVideoMedia.getPlayer().getStopTime());
                             updateUI();
                             playPauseHbox.toFront(playPauseHbox.playRegion);
                             setPlayingClass(false);
@@ -118,7 +118,7 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
                         case STOPPED:
                             playPauseHbox.toFront(playPauseHbox.playRegion);
                             setPlayingClass(false);
-                            timeLabel.setText(formatTime(audioMedia.getDuration()));
+                            timeLabel.setText(formatTime(audioVideoMedia.getDuration()));
                             break;
                         default:
                             break;
@@ -136,7 +136,7 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
         this.getStyleClass().add("audioMediaUi");
 
         ///////////// current Time label               
-        audioMedia.getPlayer().currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> timeLabel.setText(formatTime(audioMedia.getDuration().subtract(newValue))));
+        audioVideoMedia.getPlayer().currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> timeLabel.setText(formatTime(audioVideoMedia.getDuration().subtract(newValue))));
 
         ////////////////////////////////////////////////////////////////////////
         // initialize KeyCodeLabel
@@ -144,7 +144,7 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
         keycodeHbox.getStyleClass().add("baseHbox");
 
         repeatRegion.setId("repeatRegion");
-        if (audioMedia.getLoppable()) {
+        if (audioVideoMedia.getLoppable()) {
             repeatRegion.getStyleClass().add("repeat");
         }
         keycodeHbox.getChildren().addAll(repeatRegion, keycodeLabel);
@@ -177,15 +177,15 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
     }
 
     public final void playPause() {
-        final Status status = audioMedia.getPlayer().getStatus();
+        final Status status = audioVideoMedia.getPlayer().getStatus();
         switch (status) {
             case PAUSED:
             case READY:
             case STOPPED:
-                audioMedia.play();
+                audioVideoMedia.play();
                 break;
             case PLAYING:
-                audioMedia.pause();
+                audioVideoMedia.pause();
                 break;
             default:
                 break;
@@ -194,18 +194,18 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
 
     @Override
     public void updateUI() {
-        nameLabel.setText(audioMedia.getName());
-        timeLabel.setText(formatTime(audioMedia.getDuration()));
-        keycodeLabel.setText(KeyCodeHelper.toString(this.audioMedia.getKeycode()));
+        nameLabel.setText(audioVideoMedia.getName());
+        timeLabel.setText(formatTime(audioVideoMedia.getDuration()));
+        keycodeLabel.setText(KeyCodeHelper.toString(this.audioVideoMedia.getKeycode()));
         repeatRegion.getStyleClass().remove("repeat");
-        if (audioMedia.getLoppable()) {
+        if (audioVideoMedia.getLoppable()) {
             repeatRegion.getStyleClass().add("repeat");
         }
     }
 
     @Override
     public EasyMedia getEasyMedia() {
-        return this.audioMedia;
+        return this.audioVideoMedia;
     }
 
 
@@ -230,13 +230,13 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
     private class VolumeSlider extends Slider {
 
         protected VolumeSlider() {
-            super(0, 1, audioMedia.getVolume());
+            super(0, 1, audioVideoMedia.getVolume());
             final DoubleProperty volumeProperty = VolumeSlider.this.valueProperty();
-            volumeProperty.bindBidirectional(audioMedia.getPlayer().volumeProperty());
+            volumeProperty.bindBidirectional(audioVideoMedia.getPlayer().volumeProperty());
             VolumeSlider.this.setOnMouseReleased((MouseEvent event) -> {
                 if (event.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
-                    audioMedia.setVolume(volumeProperty.getValue());
-                    audioMedia.getPlayer().setVolume(volumeProperty.getValue());
+                    audioVideoMedia.setVolume(volumeProperty.getValue());
+                    audioVideoMedia.getPlayer().setVolume(volumeProperty.getValue());
                 }
             });
         }
@@ -263,7 +263,7 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
                 if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
                     Region target = (Region) mouseEvent.getTarget();
                     if (target instanceof StopRegion) {
-                        audioMedia.getPlayer().stop();
+                        audioVideoMedia.getPlayer().stop();
                     } else {
                         playPause();
                     }

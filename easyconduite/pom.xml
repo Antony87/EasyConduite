@@ -131,7 +131,7 @@
                     <includePathExceptionsInClasspath>true</includePathExceptionsInClasspath>
                     <mainClass>easyconduite.Easyconduite</mainClass>
                     <!--suppress UnresolvedMavenProperty -->
-                    <executable>${env.PATH_TO_EXE_JAVA}/javaw</executable>
+                    <executable>${env.PATH_TO_EXE_JAVA}/javaw.exe</executable>
                 </configuration>
             </plugin>
         </plugins>
