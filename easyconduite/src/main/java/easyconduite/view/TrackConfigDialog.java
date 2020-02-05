@@ -18,10 +18,8 @@ package easyconduite.view;
 
 import easyconduite.controllers.MainController;
 import easyconduite.controllers.TrackConfigController;
-import easyconduite.objects.AudioMedia;
-import easyconduite.tools.ApplicationPropertiesHelper;
-import java.io.IOException;
-import java.util.ResourceBundle;
+import easyconduite.exception.EasyconduiteException;
+import easyconduite.util.EasyConduitePropertiesHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -31,40 +29,41 @@ import javafx.stage.StageStyle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+import java.util.ResourceBundle;
+
 /**
  * This class manage a dialog box, wich exposes affected key, name and repeat
  * for an audio track.
  *
  * @author antony Fons
  */
-public class TrackConfig extends Stage {
+public class TrackConfigDialog extends Stage {
 
-    static final Logger LOG = LogManager.getLogger(TrackConfig.class);
+    static final Logger LOG = LogManager.getLogger(TrackConfigDialog.class);
 
     private static final String PATH_FXML = "/fxml/trackConfig.fxml";
 
-    public TrackConfig(AudioMedia media, MainController mainController) throws IOException {
+    public TrackConfigDialog(AudioMediaUI mediaUI, MainController mainController) throws IOException {
         super();
+        try {
+            final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
+            final FXMLLoader loader = new FXMLLoader(getClass().getResource(PATH_FXML), bundle);
+            // Initialize controllers
+            final BorderPane dialogPane = loader.<BorderPane>load();
+            final TrackConfigController configController = loader.getController();
 
-        LOG.debug("TrackConfigDialogUI with AudioMedia[{}] and EasyconduiteController[{}]", media.getFilePathName(), mainController);
-
-        final ResourceBundle bundle = ApplicationPropertiesHelper.getInstance().getLocalBundle();
-        final FXMLLoader loader = new FXMLLoader(getClass().getResource(PATH_FXML), bundle);
-        // Initialize controllers        
-        final BorderPane dialogPane = loader.<BorderPane>load();
-        final TrackConfigController configController = loader.getController();
-
-        configController.setAudioMedia(media);
-        configController.setMainController(mainController);
-
-        this.setTitle("Configuration");
-        this.initModality(Modality.APPLICATION_MODAL);
-        this.initStyle(StageStyle.UTILITY);
-        this.setResizable(false);
-
-        Scene sceneConfig = new Scene(dialogPane);
-
-        this.setScene(sceneConfig);
+            configController.setMediaUI(mediaUI);
+            configController.setMainController(mainController);
+            this.setTitle("Configuration");
+            this.initModality(Modality.APPLICATION_MODAL);
+            this.initStyle(StageStyle.UTILITY);
+            this.setResizable(false);
+            Scene sceneConfig = new Scene(dialogPane);
+            this.setScene(sceneConfig);
+        } catch (EasyconduiteException e) {
+            e.printStackTrace();
+        }
     }
 
 }

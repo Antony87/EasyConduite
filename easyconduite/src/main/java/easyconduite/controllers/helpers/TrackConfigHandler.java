@@ -38,7 +38,9 @@ import org.apache.logging.log4j.Logger;
 /**
  *
  * @author antony
+ * @deprecated
  */
+@Deprecated
 public class TrackConfigHandler {
 
     static final Logger LOG = LogManager.getLogger(TrackConfigHandler.class);
@@ -56,7 +58,7 @@ public class TrackConfigHandler {
 
         final UUID uuidMedia = media.getUniqueId();
 
-        ListView<UUID> avalaibleTracks = controller.getAvalaibleTracks();
+        //ListView<UUID> avalaibleTracks = controller.getAvalaibleTracks();
         ObservableList<UUID> allUUid = FXCollections.observableArrayList();
         easyTable.getAudioMediaList().forEach((AudioMedia t) -> {
             if (t.getUniqueId() != uuidMedia) {
@@ -64,23 +66,23 @@ public class TrackConfigHandler {
             }
         });
 
-        avalaibleTracks.setItems(allUUid);
-        avalaibleTracks.setCellFactory(new TracksItemCallBack());
+//        avalaibleTracks.setItems(allUUid);
+//        avalaibleTracks.setCellFactory(new TracksItemCallBack());
 
-        ListView<UUID> beginTracks = (ListView<UUID>) controller.getChildsTracksHbox().lookup("#beginTracks");
-        beginTracks.setItems(media.getUuidChildBegin());
-        beginTracks.setCellFactory(new TracksItemCallBack());
-
-        ListView<UUID> endTracks = (ListView<UUID>) controller.getChildsTracksHbox().lookup("#endTracks");
-        endTracks.setItems(media.getUuidChildEnd());
-        endTracks.setCellFactory(new TracksItemCallBack());
-
-        ListView[] listViewForDragAndDrop = new ListView[]{avalaibleTracks, beginTracks, endTracks};
-
-        for (ListView listView : listViewForDragAndDrop) {
-            setDragDetected(listView);
-            setDanDdHandler(listView);
-        }
+        //ListView<UUID> beginTracks = (ListView<UUID>) controller.getChildsTracksHbox().lookup("#beginTracks");
+//        beginTracks.setItems(media.getUuidChildBegin());
+//        beginTracks.setCellFactory(new TracksItemCallBack());
+//
+//        ListView<UUID> endTracks = (ListView<UUID>) controller.getChildsTracksHbox().lookup("#endTracks");
+//        endTracks.setItems(media.getUuidChildEnd());
+//        endTracks.setCellFactory(new TracksItemCallBack());
+//
+//        ListView[] listViewForDragAndDrop = new ListView[]{avalaibleTracks, beginTracks, endTracks};
+//
+//        for (ListView listView : listViewForDragAndDrop) {
+//            setDragDetected(listView);
+//            setDanDdHandler(listView);
+//        }
 
     }
 
@@ -114,37 +116,37 @@ public class TrackConfigHandler {
             }
             event.consume();
         });
-        listeningListView.setOnDragDropped((event) -> {
-            Object o = event.getSource();
-            if (o instanceof ListView) {
-                final Dragboard dragBroard = event.getDragboard();
-                if (isListViewDraggable(listeningListView, event)) {
-                    UUID media = (UUID) dragBroard.getContent(Constants.DATA_FORMAT_UUID);
-                    if (!listeningListView.getItems().contains(media) && !listeningListView.equals(controller.getAvalaibleTracks())) {
-                        listeningListView.getItems().add(media);
-                        event.setDropCompleted(true);
-                        LOG.trace("ChildBegin AudioMedia {} childs {}", controller.getAudioMedia().getName(), controller.getAudioMedia().getUuidChildBegin());
-                    }
-                } else {
-                    event.setDropCompleted(false);
-                }
-            }
-            event.consume();
-        });
-
-        listeningListView.setOnDragDone((event) -> {
-            Object o = event.getSource();
-            if (o instanceof ListView) {
-                final Dragboard dragBroard = event.getDragboard();
-                UUID media = (UUID) dragBroard.getContent(Constants.DATA_FORMAT_UUID);
-                if (!listeningListView.equals(controller.getAvalaibleTracks())) {
-                    dragDetectedSource.getItems().remove(media);
-                    LOG.trace("ChildBegin AudioMedia {} childs {}", controller.getAudioMedia().getName(), controller.getAudioMedia().getUuidChildBegin());
-                }
-                dragBroard.clear();
-            }
-            event.consume();
-        });
+//        listeningListView.setOnDragDropped((event) -> {
+//            Object o = event.getSource();
+//            if (o instanceof ListView) {
+//                final Dragboard dragBroard = event.getDragboard();
+//                if (isListViewDraggable(listeningListView, event)) {
+//                    UUID media = (UUID) dragBroard.getContent(Constants.DATA_FORMAT_UUID);
+//                    if (!listeningListView.getItems().contains(media) && !listeningListView.equals(controller.getAvalaibleTracks())) {
+//                        listeningListView.getItems().add(media);
+//                        event.setDropCompleted(true);
+//                        LOG.trace("ChildBegin AudioMedia {} childs {}", controller.getAudioMedia().getName(), controller.getAudioMedia().getUuidChildBegin());
+//                    }
+//                } else {
+//                    event.setDropCompleted(false);
+//                }
+//            }
+//            event.consume();
+//        });
+//
+//        listeningListView.setOnDragDone((event) -> {
+//            Object o = event.getSource();
+//            if (o instanceof ListView) {
+//                final Dragboard dragBroard = event.getDragboard();
+//                UUID media = (UUID) dragBroard.getContent(Constants.DATA_FORMAT_UUID);
+//                if (!listeningListView.equals(controller.getAvalaibleTracks())) {
+//                    dragDetectedSource.getItems().remove(media);
+//                    LOG.trace("ChildBegin AudioMedia {} childs {}", controller.getAudioMedia().getName(), controller.getAudioMedia().getUuidChildBegin());
+//                }
+//                dragBroard.clear();
+//            }
+//            event.consume();
+//        });
 
     }
 

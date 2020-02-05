@@ -16,22 +16,16 @@
  */
 package easyconduite.controllers;
 
-import easyconduite.controllers.helpers.TrackConfigHandler;
 import easyconduite.model.DialogAbstractController;
-import easyconduite.objects.AudioMedia;
-import easyconduite.objects.AudioMediaConfigurator;
+import easyconduite.model.EasyMedia;
+import easyconduite.objects.media.AudioVideoMedia;
 import easyconduite.tools.ApplicationPropertiesHelper;
 import easyconduite.util.KeyCodeHelper;
+import easyconduite.view.AudioMediaUI;
 import easyconduite.view.controls.ActionDialog;
-import java.net.URL;
-import java.util.ResourceBundle;
-import java.util.UUID;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ListView;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
@@ -39,18 +33,18 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import easyconduite.model.ChainingUpdater;
+
+import java.net.URL;
+import java.util.ResourceBundle;
 
 /**
  * This class is the controller for TrackConfigDialog.
  *
  * @author antony
  */
-public class TrackConfigController extends DialogAbstractController implements Initializable, ChainingUpdater {
+public class TrackConfigController extends DialogAbstractController implements Initializable {
 
     static final Logger LOG = LogManager.getLogger(TrackConfigController.class);
     private static final String KEY_ASSIGN_ERROR = "trackconfigcontroller.key.error";
@@ -59,18 +53,6 @@ public class TrackConfigController extends DialogAbstractController implements I
     private MainController mainController;
 
     private KeyCode newKeyCode;
-    
-    @FXML
-    private HBox childsTracksHbox;
-    
-    @FXML
-    private ListView<UUID> avalaibleTracks;
-    
-    @FXML
-    private ListView<UUID> endTracks;
-    
-    @FXML
-    private ListView<UUID> beginTracks;
 
     @FXML
     private BorderPane trackConfigPane;
@@ -82,7 +64,7 @@ public class TrackConfigController extends DialogAbstractController implements I
     private TextField keytrackfield;
 
     @FXML
-    private CheckBox repeattrack;
+    private CheckBox loopTrack;
 
     @FXML
     private Spinner fadeInSpinner;
@@ -90,17 +72,10 @@ public class TrackConfigController extends DialogAbstractController implements I
     @FXML
     private Spinner fadeOutSpinner;
 
-    private ChainingUpdater nextChainingElement;
-
-    private AudioMedia audioMedia;
-
-    private final AudioMediaConfigurator mediaConfigurator;
-
-    private TrackConfigHandler configListenerHandler;
+    private AudioMediaUI mediaUI;
 
     public TrackConfigController() {
         super();
-        mediaConfigurator = new AudioMediaConfigurator();
     }
 
     /**
@@ -113,19 +88,12 @@ public class TrackConfigController extends DialogAbstractController implements I
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         LOG.trace("TrackConfigController initialized");
+        final EasyMedia media = this.mediaUI.getEasyMedia();
+        nametrackfield.setText(media.getName());
+        keytrackfield.setText(KeyCodeHelper.toString(media.getKeycode()));
+        loopTrack.setSelected(media.getLoppable());
+        initializeSpinners(fadeInSpinner, fadeOutSpinner, (AudioVideoMedia) media);
 
-        Service service = new MainCtrlNotNull();
-        service.setOnSucceeded((event) -> {
-            LOG.trace("listView populated called");
-            nametrackfield.setText(audioMedia.getName());
-            keytrackfield.setText(KeyCodeHelper.toString(audioMedia.getKeycode()));
-            repeattrack.setSelected(audioMedia.getRepeatable());
-            initializeSpinners(fadeInSpinner, fadeOutSpinner, audioMedia);
-            configListenerHandler = new TrackConfigHandler(this);
-            configListenerHandler.buildChildsManagerView(audioMedia);
-            service.cancel();
-        });
-        service.start();
     }
 
     @FXML
@@ -133,11 +101,7 @@ public class TrackConfigController extends DialogAbstractController implements I
 
         Integer iValueFadeOut = (Integer) fadeOutSpinner.getValue();
         Integer iValueFadeIn = (Integer) fadeInSpinner.getValue();
-        mediaConfigurator
-                .withName(nametrackfield.getText())
-                .withfadeIn(Duration.seconds(iValueFadeIn))
-                .withfadeOut(Duration.seconds(iValueFadeOut));
-        this.updateFromAudioMedia(audioMedia);
+
         this.close(trackConfigPane);
     }
 
@@ -148,12 +112,12 @@ public class TrackConfigController extends DialogAbstractController implements I
 
     @FXML
     private void handleClickRepeat(MouseEvent event) {
-        mediaConfigurator.withRepeat(repeattrack.selectedProperty().getValue());
+
     }
 
     @FXML
     private void handleClickKeyField(MouseEvent event) {
-        mediaConfigurator.withKeyCodeChanged(null);
+
         keytrackfield.clear();
     }
 
@@ -165,10 +129,10 @@ public class TrackConfigController extends DialogAbstractController implements I
             final ResourceBundle bundle = ApplicationPropertiesHelper.getInstance().getLocalBundle();
             ActionDialog.showWarning(String.format(bundle.getString(KEY_ASSIGN_ERROR), KeyCodeHelper.toString(typedKeycode)), bundle.getString(KEY_ASSIGN_OTHER));
         } else {
+            final AudioVideoMedia audioMedia = (AudioVideoMedia) this.mediaUI.getEasyMedia();
             if (typedKeycode != audioMedia.getKeycode()) {
                 this.newKeyCode = typedKeycode;
                 keytrackfield.setText(KeyCodeHelper.toString(typedKeycode));
-                mediaConfigurator.withKeyCodeChanged(newKeyCode);
                 mainController.updateKeyCodeList();
             }
         }
@@ -178,39 +142,11 @@ public class TrackConfigController extends DialogAbstractController implements I
         this.mainController = mainController;
     }
 
-    public void setAudioMedia(AudioMedia audioMedia) {
-        this.audioMedia = audioMedia;
+    public void setMediaUI(AudioMediaUI mediaUI) {
+        this.mediaUI = mediaUI;
     }
 
-    public AudioMedia getAudioMedia() {
-        return audioMedia;
-    }
-    
-    public ListView<UUID> getAvalaibleTracks() {
-        return avalaibleTracks;
-    }
-
-    public HBox getChildsTracksHbox() {
-        return childsTracksHbox;
-    }
-    
-    @Override
-    public void setNext(ChainingUpdater next) {
-        this.nextChainingElement = next;
-    }
-
-    @Override
-    public void updateFromAudioMedia(AudioMedia media) {
-        mediaConfigurator.update(audioMedia);
-        //this.setNext(mainController);
-        nextChainingElement.updateFromAudioMedia(audioMedia);
-    }
-
-    @Override
-    public void removeChild(ChainingUpdater audioMedia) {
-    }
-
-    private void initializeSpinners(Spinner<Integer> fadeIn, Spinner<Integer> fadeOut, AudioMedia audioMedia) {
+    private void initializeSpinners(Spinner<Integer> fadeIn, Spinner<Integer> fadeOut, AudioVideoMedia audioMedia) {
 
         SpinnerValueFactory<Integer> valueFadeInFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
         fadeIn.setValueFactory(valueFadeInFactory);
@@ -224,19 +160,4 @@ public class TrackConfigController extends DialogAbstractController implements I
         }
     }
 
-    private class MainCtrlNotNull extends Service {
-        @Override
-        protected Task<Object> createTask() {
-            return new Task<Object>() {
-                @Override
-                protected Object call() throws Exception {
-                    LOG.trace("Task called");
-                    while (trackConfigPane.getChildren().contains(null) && mainController == null) {
-                    }
-                    LOG.trace("object not null");
-                    return mainController;
-                }
-            };
-        }
-    }
 }

@@ -40,7 +40,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     .secondary-text-color  #757575;
     .divider-color         #BDBDBD;*/
     backgroundColor : #464646;
-    backgroundPlayingColor : #455A64;
+    /*backgroundPlayingColor : #455A64;*/
+    backgroundPlayingColor : #165AAC;
     -fx-background-color : backgroundColor;
 }
 

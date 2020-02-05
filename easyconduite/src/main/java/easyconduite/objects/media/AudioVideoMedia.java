@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.EasyMedia;
-import easyconduite.model.IeasyMedia;
 import easyconduite.tools.jackson.DurationDeserializer;
 import easyconduite.tools.jackson.DurationSerializer;
 import easyconduite.view.commons.PlayerVolumeFader;

@@ -56,6 +56,9 @@ public class EasyConduiteProperties {
     private Path lastImportDir;
 
     @JsonIgnore
+    private boolean isSavingNeeded = false;
+
+    @JsonIgnore
     private final SimpleLongProperty changeCompteur = new SimpleLongProperty();
 
     public EasyConduiteProperties() {
@@ -113,6 +116,14 @@ public class EasyConduiteProperties {
     public void setLastImportDir(Path lastImportDir) {
         this.lastImportDir = lastImportDir;
         updateChangeCount();
+    }
+
+    public boolean isSavingNeeded() {
+        return isSavingNeeded;
+    }
+
+    public void setSavingNeeded(boolean savingNeeded) {
+        isSavingNeeded = savingNeeded;
     }
 
     public File getLastFileProject() {
