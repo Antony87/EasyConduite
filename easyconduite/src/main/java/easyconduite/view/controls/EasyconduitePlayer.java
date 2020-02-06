@@ -18,10 +18,10 @@ package easyconduite.view.controls;
 
 import easyconduite.controllers.MainController;
 import easyconduite.exception.EasyconduiteException;
+import easyconduite.model.ChainingUpdater;
 import easyconduite.objects.AudioMedia;
 import easyconduite.util.PersistenceHelper;
 import easyconduite.view.commons.PlayerVolumeFader;
-import java.util.UUID;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
@@ -29,14 +29,14 @@ import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import easyconduite.model.ChainingUpdater;
 
 /**
  * Class wraps a JavaFX MediaPlayer.<br>Offers severals features to
  * EasyConduite.
- *
+ * @deprecated
  * @author antony
  */
+@Deprecated
 public class EasyconduitePlayer implements ChainingUpdater {
 
     static final Logger LOG = LogManager.getLogger(EasyconduitePlayer.class);
@@ -80,18 +80,10 @@ public class EasyconduitePlayer implements ChainingUpdater {
             if (!audioMedia.getRepeatable()) {
                 this.stop();
                 player.volumeProperty().setValue(audioMedia.getVolume());
-                playChildsEnd();
             }
         });
     }
 
-    private void playChildsEnd() {
-        audioMedia.getUuidChildEnd().forEach((UUID t) -> mainController.getByUUID(t).playPause());
-    }
-
-    private void playChildsBegin() {
-        audioMedia.getUuidChildBegin().forEach((UUID t) -> mainController.getByUUID(t).playPause());
-    }
 
     public final void stop() {
         fadeHandler.stop();
@@ -114,7 +106,6 @@ public class EasyconduitePlayer implements ChainingUpdater {
         }
         Status status = player.getStatus();
         if (status.equals(Status.STOPPED) || status.equals(Status.READY)) {
-            playChildsBegin();
         }
         player.play();
     }

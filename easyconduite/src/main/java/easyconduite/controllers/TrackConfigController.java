@@ -132,7 +132,7 @@ public class TrackConfigController extends DialogAbstractController implements I
             if (typedKeycode != audioMedia.getKeycode()) {
                 this.newKeyCode = typedKeycode;
                 keytrackfield.setText(KeyCodeHelper.toString(typedKeycode));
-                mainController.updateKeyCodeList();
+                //mainController.updateKeyCodeList();
             }
         }
     }
