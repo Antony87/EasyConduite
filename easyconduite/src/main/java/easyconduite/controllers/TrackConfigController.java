@@ -96,17 +96,16 @@ public class TrackConfigController extends DialogAbstractController implements I
 
         Integer iValueFadeOut = (Integer) fadeOutSpinner.getValue();
         Integer iValueFadeIn = (Integer) fadeInSpinner.getValue();
+
+        mediaUI.getEasyMedia().setLoppable(loopTrack.isSelected());
+        mediaUI.updateUI();
+
         this.close(trackConfigPane);
     }
 
     @FXML
     private void handleClickCancel(MouseEvent event) {
         this.close(trackConfigPane);
-    }
-
-    @FXML
-    private void handleClickRepeat(MouseEvent event) {
-
     }
 
     @FXML
@@ -132,7 +131,6 @@ public class TrackConfigController extends DialogAbstractController implements I
             if (typedKeycode != audioMedia.getKeycode()) {
                 this.newKeyCode = typedKeycode;
                 keytrackfield.setText(KeyCodeHelper.toString(typedKeycode));
-                //mainController.updateKeyCodeList();
             }
         }
     }

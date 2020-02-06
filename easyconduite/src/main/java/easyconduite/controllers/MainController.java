@@ -86,7 +86,7 @@ public class MainController extends StackPane implements Initializable {
     private Menu openRecent;
 
     public MainController() throws EasyconduiteException {
-        LOG.debug("MainController instanciated");
+        LOG.debug("EasyConduite MainController is instancied");
         project = new MediaProject();
         mediaUIList = new ArrayList<>();
         appProperties = EasyConduitePropertiesHandler.getInstance().getApplicationProperties();
@@ -285,9 +285,12 @@ public class MainController extends StackPane implements Initializable {
     @FXML
     private void handleKeyCodePlay(KeyEvent event) {
         final List<AudioMediaUI> mediaUIs = this.getMediaUIList();
-        for (AudioMediaUI mediaUI : mediaUIs) {
-            if (mediaUI.getEasyMedia().getKeycode().equals(event.getCode())) {
-                mediaUI.playPause();
+        if (!event.isControlDown() && !event.isAltDown()) {
+            LOG.trace("Key {} pressed ",event.getCode().getName());
+            for (AudioMediaUI mediaUI : mediaUIs) {
+                if (mediaUI.getEasyMedia().getKeycode().equals(event.getCode())) {
+                    mediaUI.playPause();
+                }
             }
         }
         event.consume();
@@ -318,7 +321,7 @@ public class MainController extends StackPane implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        LOG.debug("Controler initialisation");
+        LOG.debug("EasyConduite MainController is initialized");
         //initialization nested controller
         trackPropertiesController.setMainController(this);
 
@@ -343,8 +346,8 @@ public class MainController extends StackPane implements Initializable {
                     if (tableNode instanceof AudioMediaUI) mediaUIList.remove(tableNode);
                 }
             }
-            LOG.debug(" {} MediaUI was added to the mainController MediaUIList size : {}", change.getAddedSize(),mediaUIList.size());
-            LOG.debug(" {} MediaUI was removed to the mainController MediaUIList size : {}", change.getRemovedSize(),mediaUIList.size());
+            LOG.debug(" {} MediaUI was added to the mainController MediaUIList size : {}", change.getAddedSize(), mediaUIList.size());
+            LOG.debug(" {} MediaUI was removed to the mainController MediaUIList size : {}", change.getRemovedSize(), mediaUIList.size());
         });
     }
 

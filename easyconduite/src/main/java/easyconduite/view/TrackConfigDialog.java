@@ -16,7 +16,6 @@
  */
 package easyconduite.view;
 
-import easyconduite.controllers.MainController;
 import easyconduite.controllers.TrackConfigController;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.util.EasyConduitePropertiesHandler;
@@ -52,7 +51,7 @@ public class TrackConfigDialog extends Stage {
             final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
             final FXMLLoader loader = new FXMLLoader(getClass().getResource(PATH_FXML), bundle);
             // Initialize controllers
-            final BorderPane dialogPane = loader.<BorderPane>load();
+            final BorderPane dialogPane = loader.load();
             configController = loader.getController();
             this.setTitle("Configuration");
             this.initModality(Modality.APPLICATION_MODAL);
@@ -61,7 +60,7 @@ public class TrackConfigDialog extends Stage {
             Scene sceneConfig = new Scene(dialogPane);
             this.setScene(sceneConfig);
         } catch (EasyconduiteException e) {
-            e.printStackTrace();
+            LOG.error("An error occured during ResourceBundle creation",e);
         }
     }
 
