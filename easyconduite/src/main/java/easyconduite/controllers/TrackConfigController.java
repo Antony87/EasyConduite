@@ -16,10 +16,11 @@
  */
 package easyconduite.controllers;
 
+import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.DialogAbstractController;
 import easyconduite.model.EasyMedia;
 import easyconduite.objects.media.AudioVideoMedia;
-import easyconduite.tools.ApplicationPropertiesHelper;
+import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.KeyCodeHelper;
 import easyconduite.view.AudioMediaUI;
 import easyconduite.view.controls.ActionDialog;
@@ -87,12 +88,6 @@ public class TrackConfigController extends DialogAbstractController implements I
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        LOG.trace("TrackConfigController initialized");
-        final EasyMedia media = this.mediaUI.getEasyMedia();
-        nametrackfield.setText(media.getName());
-        keytrackfield.setText(KeyCodeHelper.toString(media.getKeycode()));
-        loopTrack.setSelected(media.getLoppable());
-        initializeSpinners(fadeInSpinner, fadeOutSpinner, (AudioVideoMedia) media);
 
     }
 
@@ -101,7 +96,6 @@ public class TrackConfigController extends DialogAbstractController implements I
 
         Integer iValueFadeOut = (Integer) fadeOutSpinner.getValue();
         Integer iValueFadeIn = (Integer) fadeInSpinner.getValue();
-
         this.close(trackConfigPane);
     }
 
@@ -126,8 +120,13 @@ public class TrackConfigController extends DialogAbstractController implements I
         final KeyCode typedKeycode = event.getCode();
         if (mainController.isKeyCodeExist(typedKeycode)) {
             keytrackfield.clear();
-            final ResourceBundle bundle = ApplicationPropertiesHelper.getInstance().getLocalBundle();
-            ActionDialog.showWarning(String.format(bundle.getString(KEY_ASSIGN_ERROR), KeyCodeHelper.toString(typedKeycode)), bundle.getString(KEY_ASSIGN_OTHER));
+            try {
+                final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
+                ActionDialog.showWarning(String.format(bundle.getString(KEY_ASSIGN_ERROR), KeyCodeHelper.toString(typedKeycode)), bundle.getString(KEY_ASSIGN_OTHER));
+            } catch (EasyconduiteException e) {
+                //FIXME
+                e.printStackTrace();
+            }
         } else {
             final AudioVideoMedia audioMedia = (AudioVideoMedia) this.mediaUI.getEasyMedia();
             if (typedKeycode != audioMedia.getKeycode()) {
@@ -138,12 +137,15 @@ public class TrackConfigController extends DialogAbstractController implements I
         }
     }
 
-    public void setMainController(MainController mainController) {
-        this.mainController = mainController;
-    }
-
     public void setMediaUI(AudioMediaUI mediaUI) {
-        this.mediaUI = mediaUI;
+        if (mediaUI != null) {
+            this.mediaUI = mediaUI;
+            final EasyMedia media = this.mediaUI.getEasyMedia();
+            nametrackfield.setText(media.getName());
+            keytrackfield.setText(KeyCodeHelper.toString(media.getKeycode()));
+            loopTrack.setSelected(media.getLoppable());
+            initializeSpinners(fadeInSpinner, fadeOutSpinner, (AudioVideoMedia) media);
+        }
     }
 
     private void initializeSpinners(Spinner<Integer> fadeIn, Spinner<Integer> fadeOut, AudioVideoMedia audioMedia) {

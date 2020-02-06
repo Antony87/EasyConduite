@@ -53,6 +53,7 @@
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="I" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                            </accelerator></MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#menuEditTrack" text="Edit..." />
                         <MenuItem mnemonicParsing="false" onAction="#handlePauseAll" text="%menu.track.pause">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="SPACE" control="UP" meta="UP" shift="DOWN" shortcut="UP" />

@@ -44,17 +44,16 @@ public class TrackConfigDialog extends Stage {
 
     private static final String PATH_FXML = "/fxml/trackConfig.fxml";
 
-    public TrackConfigDialog(AudioMediaUI mediaUI, MainController mainController) throws IOException {
+    private TrackConfigController configController;
+
+    public TrackConfigDialog() throws IOException {
         super();
         try {
             final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
             final FXMLLoader loader = new FXMLLoader(getClass().getResource(PATH_FXML), bundle);
             // Initialize controllers
             final BorderPane dialogPane = loader.<BorderPane>load();
-            final TrackConfigController configController = loader.getController();
-
-            configController.setMediaUI(mediaUI);
-            configController.setMainController(mainController);
+            configController = loader.getController();
             this.setTitle("Configuration");
             this.initModality(Modality.APPLICATION_MODAL);
             this.initStyle(StageStyle.UTILITY);
@@ -66,4 +65,7 @@ public class TrackConfigDialog extends Stage {
         }
     }
 
+    public TrackConfigController getConfigController() {
+        return configController;
+    }
 }
