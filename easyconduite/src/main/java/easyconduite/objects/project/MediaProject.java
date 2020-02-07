@@ -24,7 +24,7 @@ public class MediaProject {
 
     public MediaProject() {
         this.conduite = new Conduite();
-        this.easyMediaList = new ArrayList<EasyMedia>();
+        this.easyMediaList = new ArrayList<EasyMedia>(1);
     }
 
     public String getName() {

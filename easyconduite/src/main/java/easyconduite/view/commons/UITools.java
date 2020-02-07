@@ -19,12 +19,13 @@ package easyconduite.view.commons;
 import easyconduite.objects.ApplicationProperties;
 import easyconduite.tools.ApplicationPropertiesHelper;
 import easyconduite.util.Constants;
-import java.util.ResourceBundle;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Duration;
+
+import java.util.ResourceBundle;
 
 /**
  *

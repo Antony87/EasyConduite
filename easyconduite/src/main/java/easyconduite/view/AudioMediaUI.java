@@ -22,6 +22,7 @@ import easyconduite.model.EasyMedia;
 import easyconduite.model.IEasyMediaUI;
 import easyconduite.objects.media.AudioVideoMedia;
 import easyconduite.util.KeyCodeHelper;
+import easyconduite.view.commons.MediaSelectedPseudoClass;
 import easyconduite.view.commons.PlayingPseudoClass;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -58,6 +59,7 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
     private final PlayPauseHbox playPauseHbox;
     private final AudioVideoMedia audioMedia;
     private final BooleanProperty playingClass=new PlayingPseudoClass(this);
+    public final BooleanProperty mediaSelectedClass = new MediaSelectedPseudoClass(this);
 
     /**
      * Constructor du UI custom control for an AudioMedia.<br>
@@ -110,13 +112,15 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
         this.setOnMouseClicked(eventFocus -> {
             if (eventFocus.getButton().equals(MouseButton.PRIMARY)) {
                 this.requestFocus();
-                //TODO traiter par une propriété selected. Le controler met toute les UI à unselected et cet UI
-                // se met à selected. Gerer la décoration par une pseudo classe.
-                // même pas la peine de faire un requestFocus.
+                if(this.isFocused()){
+                    controller.getMediaUIList().forEach(mediaUI -> mediaUI.mediaSelectedClass.setValue(false));
+                    mediaSelectedClass.setValue(true);
+                }
             }
             if(eventFocus.getClickCount()==2){
                 controller.editTrack(this);
             }
+            eventFocus.consume();
         });
 
         ////////////////////////////////////////////////////////////////////////

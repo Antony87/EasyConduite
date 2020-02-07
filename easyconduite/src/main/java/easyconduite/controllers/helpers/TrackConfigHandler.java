@@ -18,22 +18,19 @@ package easyconduite.controllers.helpers;
 
 import easyconduite.controllers.TrackConfigController;
 import easyconduite.objects.AudioMedia;
-import easyconduite.objects.project.EasyTable;
 import easyconduite.objects.AudioTableWrapper;
+import easyconduite.objects.project.EasyTable;
 import easyconduite.util.Constants;
-import java.util.UUID;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.TransferMode;
+import javafx.scene.input.*;
 import javafx.util.Callback;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.UUID;
 
 /**
  *

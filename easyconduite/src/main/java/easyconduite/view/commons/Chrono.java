@@ -17,7 +17,6 @@
 package easyconduite.view.commons;
 
 import easyconduite.util.Constants;
-import java.text.SimpleDateFormat;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -25,6 +24,8 @@ import javafx.scene.control.Label;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.text.SimpleDateFormat;
 
 public class Chrono {
 

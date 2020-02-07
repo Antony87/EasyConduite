@@ -22,11 +22,11 @@ import easyconduite.tools.ApplicationPropertiesHelper;
 import easyconduite.util.PersistenceHelper;
 import easyconduite.view.controls.ActionDialog;
 import easyconduite.view.controls.EasyFileChooser;
+import javafx.stage.FileChooser;
+
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ResourceBundle;
-
-import javafx.stage.FileChooser;
 
 /**
  *

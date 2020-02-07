@@ -157,7 +157,7 @@ public class MainController extends StackPane implements Initializable {
 
     @FXML
     public void menuEditTrack(ActionEvent event) {
-        final Optional<AudioMediaUI> optionnal = getMediaUIList().stream().filter(Node::isFocused).findFirst();
+        final Optional<AudioMediaUI> optionnal = getMediaUIList().stream().filter(mediaUI -> mediaUI.mediaSelectedClass.get()==true).findFirst();
         optionnal.ifPresent(this::editTrack);
         event.consume();
     }
@@ -199,7 +199,7 @@ public class MainController extends StackPane implements Initializable {
         return true;
     }
 
-    protected List<AudioMediaUI> getMediaUIList() {
+    public List<AudioMediaUI> getMediaUIList() {
         final List<Node> mediaUIs = tableLayout.getChildren();
         return mediaUIs.parallelStream().filter(node -> node instanceof AudioMediaUI).map(node -> (AudioMediaUI) node).collect(Collectors.toList());
     }
@@ -304,8 +304,6 @@ public class MainController extends StackPane implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         LOG.debug("EasyConduite MainController is initialized");
 
-        new MainControllerContextMenu(this);
-
         if (appProperties.getLastFileProject() != null) {
             MenuItem recentFileMenuItem = new MenuItem(appProperties.getLastFileProject().toString());
             openRecent.getItems().add(recentFileMenuItem);
@@ -315,6 +313,14 @@ public class MainController extends StackPane implements Initializable {
                 }
             });
         }
+
+        MainControllerContextMenu contextMenu = new MainControllerContextMenu(this);
+        tableLayout.setOnMouseClicked(mouseEvent -> {
+            if (contextMenu.isShowing()) {
+                contextMenu.hide();
+            }
+            getMediaUIList().forEach(mediaUI -> mediaUI.mediaSelectedClass.setValue(false));
+        });
 
         tableLayout.getChildren().addListener((ListChangeListener<Node>) change -> {
             while (change.next()) {

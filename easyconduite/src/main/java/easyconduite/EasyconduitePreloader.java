@@ -19,8 +19,6 @@ package easyconduite;
 import easyconduite.objects.ApplicationProperties;
 import easyconduite.tools.ApplicationPropertiesHelper;
 import javafx.application.Preloader;
-import javafx.application.Preloader.ProgressNotification;
-import javafx.application.Preloader.StateChangeNotification;
 import javafx.scene.Scene;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.BorderPane;

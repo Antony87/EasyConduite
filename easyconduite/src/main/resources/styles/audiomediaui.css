@@ -45,7 +45,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-background-color : backgroundColor;
 }
 
-.audioMediaUi:focused{
+.audioMediaUi:mediaselected{
      -fx-border-color:  #FFFFFF;
  }
 

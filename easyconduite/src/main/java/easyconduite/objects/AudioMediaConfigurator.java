@@ -16,11 +16,12 @@
  */
 package easyconduite.objects;
 
-import java.util.Objects;
 import javafx.scene.input.KeyCode;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Objects;
 
 /**
  * Class provides a builder pattern's for update an AudioMedia.

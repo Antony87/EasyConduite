@@ -25,23 +25,16 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.layout.FlowPane;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ResourceBundle;
 
-public class MainControllerContextMenu {
+public class MainControllerContextMenu extends ContextMenu{
 
     private final MainController mainController;
 
     public MainControllerContextMenu(MainController controller) {
         super();
         this.mainController = controller;
-
         final ResourceBundle locale = mainController.getLocale();
-
-        final Map<Class, ContextMenu> contextMenuMap = new HashMap<>();
-
-        final ContextMenu flowCtm = new ContextMenu();
         final MenuItem cmTitle = new MenuItem(locale.getString("menu.table.title"));
         cmTitle.setDisable(true);
         final SeparatorMenuItem cmSeparator = new SeparatorMenuItem();
@@ -54,21 +47,11 @@ public class MainControllerContextMenu {
         });
         final MenuItem cmAddAllToCue = new MenuItem(locale.getString("menu.table.addToCue"));
         cmAddAllToCue.setDisable(true);
-        flowCtm.getItems().addAll(cmTitle, cmSeparator, cmImportTrack, cmCloseProject, cmAddAllToCue);
-
-        contextMenuMap.put(FlowPane.class, flowCtm);
+        this.getItems().addAll(cmTitle, cmSeparator, cmImportTrack, cmCloseProject, cmAddAllToCue);
 
         final FlowPane tableLayout = mainController.getTableLayout();
         tableLayout.setOnContextMenuRequested(contextMenuEvent -> {
-            final Class target = contextMenuEvent.getTarget().getClass();
-            if (contextMenuMap.containsKey(target)) {
-                contextMenuMap.get(target).show(tableLayout, contextMenuEvent.getScreenX(), contextMenuEvent.getScreenY());
-            }
-        });
-        tableLayout.setOnMouseClicked(mouseEvent -> {
-            if (flowCtm.isShowing()) {
-                flowCtm.hide();
-            }
+                this.show(tableLayout, contextMenuEvent.getScreenX(), contextMenuEvent.getScreenY());
         });
     }
 }

@@ -17,8 +17,6 @@
 package easyconduite.view;
 
 import easyconduite.tools.ApplicationPropertiesHelper;
-import java.io.IOException;
-import java.util.ResourceBundle;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -28,6 +26,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+
+import java.io.IOException;
+import java.util.ResourceBundle;
 
 /**
  * This class exposes an About dialog box.

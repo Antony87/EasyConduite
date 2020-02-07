@@ -17,8 +17,6 @@
 package easyconduite.view;
 
 import easyconduite.controllers.PreferencesController;
-import java.io.IOException;
-import java.util.ResourceBundle;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -27,6 +25,9 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
+import java.util.ResourceBundle;
 
 /**
  *

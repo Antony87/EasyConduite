@@ -18,8 +18,9 @@ package easyconduite.view.controls;
 
 import easyconduite.objects.ApplicationProperties;
 import easyconduite.tools.ApplicationPropertiesHelper;
-import java.util.ResourceBundle;
 import javafx.stage.FileChooser;
+
+import java.util.ResourceBundle;
 
 /**
  *

@@ -18,15 +18,15 @@ package easyconduite.tools;
 
 import easyconduite.exception.PersistenceException;
 import easyconduite.objects.ApplicationProperties;
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 import easyconduite.util.Constants;
 import easyconduite.util.PersistenceHelper;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * This class implements singleton design pattern and offers methods to manage

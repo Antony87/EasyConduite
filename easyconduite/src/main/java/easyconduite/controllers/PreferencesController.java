@@ -20,9 +20,6 @@ import easyconduite.model.DialogAbstractController;
 import easyconduite.objects.ApplicationProperties;
 import easyconduite.tools.ApplicationPropertiesHelper;
 import easyconduite.util.LoggingHelper;
-import java.net.URL;
-import java.util.Locale;
-import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -34,6 +31,10 @@ import javafx.util.StringConverter;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.net.URL;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  *

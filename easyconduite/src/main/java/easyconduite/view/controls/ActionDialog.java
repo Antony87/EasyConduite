@@ -17,12 +17,13 @@
 package easyconduite.view.controls;
 
 import easyconduite.tools.ApplicationPropertiesHelper;
-import java.util.Optional;
-import java.util.ResourceBundle;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Modality;
+
+import java.util.Optional;
+import java.util.ResourceBundle;
 
 /**
  *

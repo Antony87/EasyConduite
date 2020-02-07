@@ -17,13 +17,14 @@
  */
 package easyconduite.util;
 
+import javafx.scene.input.DataFormat;
+import javafx.util.Duration;
+
 import java.io.File;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
-import javafx.scene.input.DataFormat;
-import javafx.util.Duration;
 
 /**
  * This class contains severals application's constants
