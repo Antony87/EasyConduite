@@ -18,7 +18,6 @@ package easyconduite.view;
 
 import easyconduite.controllers.TrackConfigController;
 import easyconduite.exception.EasyconduiteException;
-import easyconduite.model.EasyMedia;
 import easyconduite.util.EasyConduitePropertiesHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -58,10 +57,11 @@ public class TrackConfigDialog extends Stage {
             configController.setMediaUIList(mediaUIList);
             this.setTitle("Configuration");
             this.initModality(Modality.APPLICATION_MODAL);
-            this.initStyle(StageStyle.UTILITY);
+            this.initStyle(StageStyle.DECORATED);
             this.setResizable(false);
             Scene sceneConfig = new Scene(dialogPane);
             this.setScene(sceneConfig);
+
         } catch (EasyconduiteException e) {
             LOG.error("An error occured during ResourceBundle creation",e);
         }

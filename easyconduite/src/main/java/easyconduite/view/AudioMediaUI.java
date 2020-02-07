@@ -21,7 +21,6 @@ import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.EasyMedia;
 import easyconduite.model.IEasyMediaUI;
 import easyconduite.objects.media.AudioVideoMedia;
-import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.KeyCodeHelper;
 import easyconduite.view.commons.PlayingPseudoClass;
 import javafx.beans.property.BooleanProperty;
@@ -30,7 +29,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -42,8 +42,6 @@ import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.ResourceBundle;
 
 /**
  * This class encapsulates logics and behaviors about Custom UI Control of an
@@ -112,6 +110,12 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
         this.setOnMouseClicked(eventFocus -> {
             if (eventFocus.getButton().equals(MouseButton.PRIMARY)) {
                 this.requestFocus();
+                //TODO traiter par une propriété selected. Le controler met toute les UI à unselected et cet UI
+                // se met à selected. Gerer la décoration par une pseudo classe.
+                // même pas la peine de faire un requestFocus.
+            }
+            if(eventFocus.getClickCount()==2){
+                controller.editTrack(this);
             }
         });
 

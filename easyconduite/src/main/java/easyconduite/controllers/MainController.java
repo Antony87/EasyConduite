@@ -16,7 +16,6 @@
  */
 package easyconduite.controllers;
 
-import com.sun.javafx.fxml.FXMLLoaderHelper;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.EasyMedia;
 import easyconduite.objects.AudioTableWrapper;
@@ -37,7 +36,6 @@ import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
