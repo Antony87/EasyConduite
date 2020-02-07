@@ -101,7 +101,7 @@ public class TrackConfigController extends DialogAbstractController implements I
             ((AudioVideoMedia) media).setFadeInDuration(new Duration(iValueFadeIn));
             ((AudioVideoMedia) media).setFadeOutDuration(new Duration(iValueFadeOut));
         }
-        mediaUI.updateUI();
+        mediaUI.actualizeUI();
 
         this.close(trackConfigPane);
     }

@@ -83,7 +83,7 @@ public class MainController extends StackPane implements Initializable {
     public MainController() throws EasyconduiteException {
         LOG.debug("EasyConduite MainController is instancied");
         project = new MediaProject();
-        mediaUIList = new ArrayList<>();
+        mediaUIList = new ArrayList<>(0);
         appProperties = EasyConduitePropertiesHandler.getInstance().getApplicationProperties();
         locale = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
     }

@@ -22,7 +22,10 @@ package easyconduite.model;
 
 public interface IEasyMediaUI {
 
-    void updateUI();
+    /**
+     * Triggers the update of the AUdioMediaUI interface.
+     */
+    void actualizeUI();
 
-    public EasyMedia getEasyMedia();
+    EasyMedia getEasyMedia();
 }

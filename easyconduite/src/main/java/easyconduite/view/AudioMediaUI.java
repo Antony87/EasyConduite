@@ -47,6 +47,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * This class encapsulates logics and behaviors about Custom UI Control of an
  * AudioMedia.
+ *
  * @author A Fons
  */
 public class AudioMediaUI extends VBox implements IEasyMediaUI {
@@ -58,16 +59,17 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
     private final Region repeatRegion = new Region();
     private final PlayPauseHbox playPauseHbox;
     private final AudioVideoMedia audioMedia;
-    private final BooleanProperty playingClass=new PlayingPseudoClass(this);
+    private final BooleanProperty playingClass = new PlayingPseudoClass(this);
     public final BooleanProperty mediaSelectedClass = new MediaSelectedPseudoClass(this);
 
     /**
      * Constructor du UI custom control for an AudioMedia.<br>
      * Not draw the control but construct object and assign a
      * {@link MediaPlayer}.<br>
+     *
      * @param media a media wich be play.
      */
-    public AudioMediaUI(EasyMedia media,MainController controller) {
+    public AudioMediaUI(EasyMedia media, MainController controller) {
         super();
         LOG.info("Construct an AudioMedia {}", media);
         this.audioMedia = (AudioVideoMedia) media;
@@ -83,21 +85,21 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
                     switch (newValue) {
                         case PAUSED:
                             playPauseHbox.toFront(playPauseHbox.playRegion);
-                            setPlayingClass(false);
+                            playingClass.setValue(false);
                             break;
                         case PLAYING:
                             playPauseHbox.toFront(playPauseHbox.pauseRegion);
-                            setPlayingClass(true);
+                            playingClass.setValue(true);
                             break;
                         case READY:
                             audioMedia.setDuration(audioMedia.getPlayer().getStopTime());
-                            updateUI();
+                            actualizeUI();
                             playPauseHbox.toFront(playPauseHbox.playRegion);
-                            setPlayingClass(false);
+                            playingClass.setValue(false);
                             break;
                         case STOPPED:
                             playPauseHbox.toFront(playPauseHbox.playRegion);
-                            setPlayingClass(false);
+                            playingClass.setValue(false);
                             timeLabel.setText(formatTime(audioMedia.getDuration()));
                             break;
                         default:
@@ -109,15 +111,16 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
             LOG.error("Error occurend during AudioVideo player construction", ex);
         }
 
+        // Gestion des mouse events pour la sélection d'un UI.
         this.setOnMouseClicked(eventFocus -> {
             if (eventFocus.getButton().equals(MouseButton.PRIMARY)) {
                 this.requestFocus();
-                if(this.isFocused()){
+                if (this.isFocused()) {
                     controller.getMediaUIList().forEach(mediaUI -> mediaUI.mediaSelectedClass.setValue(false));
                     mediaSelectedClass.setValue(true);
                 }
             }
-            if(eventFocus.getClickCount()==2){
+            if (eventFocus.getClickCount() == 2) {
                 controller.editTrack(this);
             }
             eventFocus.consume();
@@ -132,8 +135,6 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
         ///////////// current Time label               
         audioMedia.getPlayer().currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> timeLabel.setText(formatTime(audioMedia.getDuration().subtract(newValue))));
 
-        ////////////////////////////////////////////////////////////////////////
-        // initialize KeyCodeLabel
         HBox keycodeHbox = new HBox();
         keycodeHbox.getStyleClass().add("baseHbox");
 
@@ -165,10 +166,6 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
         return null;
     }
 
-    private void setPlayingClass(boolean playing) {
-        this.playingClass.set(playing);
-    }
-
     public final void playPause() {
         final Status status = audioMedia.getPlayer().getStatus();
         switch (status) {
@@ -185,12 +182,12 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
         }
     }
 
-    public final void stop(){
+    public final void stop() {
         audioMedia.getPlayer().stop();
     }
 
     @Override
-    public void updateUI() {
+    public void actualizeUI() {
         nameLabel.setText(audioMedia.getName());
         timeLabel.setText(formatTime(audioMedia.getDuration()));
         keycodeLabel.setText(KeyCodeHelper.toString(this.audioMedia.getKeycode()));
@@ -205,7 +202,7 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
         return this.audioMedia;
     }
 
-
+    //TODO Gérer cela avec la pseudClass playin du css
     private static class PlayRegion extends Region {
         protected PlayRegion() {
             PlayRegion.this.getStyleClass().add("playbutton");
