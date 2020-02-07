@@ -34,10 +34,12 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -51,9 +53,9 @@ public class TrackConfigController extends DialogAbstractController implements I
     private static final String KEY_ASSIGN_ERROR = "trackconfigcontroller.key.error";
     private static final String KEY_ASSIGN_OTHER = "trackconfigcontroller.key.other";
 
-    private MainController mainController;
-
     private KeyCode newKeyCode;
+
+    private List<AudioMediaUI> mediaUIList;
 
     @FXML
     private BorderPane trackConfigPane;
@@ -68,10 +70,10 @@ public class TrackConfigController extends DialogAbstractController implements I
     private CheckBox loopTrack;
 
     @FXML
-    private Spinner fadeInSpinner;
+    private Spinner<Integer> fadeInSpinner;
 
     @FXML
-    private Spinner fadeOutSpinner;
+    private Spinner<Integer> fadeOutSpinner;
 
     private AudioMediaUI mediaUI;
 
@@ -79,13 +81,6 @@ public class TrackConfigController extends DialogAbstractController implements I
         super();
     }
 
-    /**
-     * Initializes controller after DialogPane loaded.<br>
-     * Juts setting up the spinners.
-     *
-     * @param location
-     * @param resources
-     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -94,10 +89,18 @@ public class TrackConfigController extends DialogAbstractController implements I
     @FXML
     private void handleClickOk(MouseEvent event) {
 
-        Integer iValueFadeOut = (Integer) fadeOutSpinner.getValue();
-        Integer iValueFadeIn = (Integer) fadeInSpinner.getValue();
-
-        mediaUI.getEasyMedia().setLoppable(loopTrack.isSelected());
+        final Integer iValueFadeOut = fadeOutSpinner.getValue();
+        final Integer iValueFadeIn = fadeInSpinner.getValue();
+        final EasyMedia media = mediaUI.getEasyMedia();
+        media.setLoppable(loopTrack.isSelected());
+        media.setName(nametrackfield.getText());
+        if(newKeyCode!=null){
+            media.setKeycode(newKeyCode);
+        }
+        if(media instanceof AudioVideoMedia){
+            ((AudioVideoMedia) media).setFadeInDuration(new Duration(iValueFadeIn));
+            ((AudioVideoMedia) media).setFadeOutDuration(new Duration(iValueFadeOut));
+        }
         mediaUI.updateUI();
 
         this.close(trackConfigPane);
@@ -110,14 +113,13 @@ public class TrackConfigController extends DialogAbstractController implements I
 
     @FXML
     private void handleClickKeyField(MouseEvent event) {
-
         keytrackfield.clear();
     }
 
     @FXML
     private void handleKeyReleasedTrack(KeyEvent event) {
         final KeyCode typedKeycode = event.getCode();
-        if (mainController.isKeyCodeExist(typedKeycode)) {
+        if (isKeyCodeExist(typedKeycode)) {
             keytrackfield.clear();
             try {
                 final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
@@ -135,6 +137,14 @@ public class TrackConfigController extends DialogAbstractController implements I
         }
     }
 
+    private boolean isKeyCodeExist(KeyCode keyCode) {
+        for (AudioMediaUI ui : mediaUIList) {
+            final KeyCode code = ui.getEasyMedia().getKeycode();
+            if (code != null && code.equals(keyCode)) return true;
+        }
+        return false;
+    }
+
     public void setMediaUI(AudioMediaUI mediaUI) {
         if (mediaUI != null) {
             this.mediaUI = mediaUI;
@@ -142,21 +152,25 @@ public class TrackConfigController extends DialogAbstractController implements I
             nametrackfield.setText(media.getName());
             keytrackfield.setText(KeyCodeHelper.toString(media.getKeycode()));
             loopTrack.setSelected(media.getLoppable());
-            initializeSpinners(fadeInSpinner, fadeOutSpinner, (AudioVideoMedia) media);
+            initializeSpinners((AudioVideoMedia) media);
         }
     }
 
-    private void initializeSpinners(Spinner<Integer> fadeIn, Spinner<Integer> fadeOut, AudioVideoMedia audioMedia) {
+    public void setMediaUIList(List<AudioMediaUI> mediaUIList) {
+        this.mediaUIList = mediaUIList;
+    }
 
-        SpinnerValueFactory<Integer> valueFadeInFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
-        fadeIn.setValueFactory(valueFadeInFactory);
-        SpinnerValueFactory<Integer> valueFadeOutFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
-        fadeOut.setValueFactory(valueFadeOutFactory);
+    private void initializeSpinners(AudioVideoMedia audioMedia) {
+
+        final SpinnerValueFactory<Integer> valueFadeInFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
+        fadeInSpinner.setValueFactory(valueFadeInFactory);
+        final SpinnerValueFactory<Integer> valueFadeOutFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
+        fadeOutSpinner.setValueFactory(valueFadeOutFactory);
         if (audioMedia.getFadeInDuration() != null) {
-            fadeIn.getValueFactory().setValue((int) audioMedia.getFadeInDuration().toSeconds());
+            fadeInSpinner.getValueFactory().setValue((int) audioMedia.getFadeInDuration().toSeconds());
         }
         if (audioMedia.getFadeOutDuration() != null) {
-            fadeOut.getValueFactory().setValue((int) audioMedia.getFadeOutDuration().toSeconds());
+            fadeOutSpinner.getValueFactory().setValue((int) audioMedia.getFadeOutDuration().toSeconds());
         }
     }
 

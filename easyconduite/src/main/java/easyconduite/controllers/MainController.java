@@ -16,6 +16,7 @@
  */
 package easyconduite.controllers;
 
+import com.sun.javafx.fxml.FXMLLoaderHelper;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.EasyMedia;
 import easyconduite.objects.AudioTableWrapper;
@@ -36,14 +37,13 @@ import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
@@ -78,9 +78,6 @@ public class MainController extends StackPane implements Initializable {
 
     @FXML
     private FlowPane tableLayout;
-
-    @FXML
-    private TrackPropertiesController trackPropertiesController;
 
     @FXML
     private Menu openRecent;
@@ -172,26 +169,13 @@ public class MainController extends StackPane implements Initializable {
         final TrackConfigDialog trackConfigDialog;
         try {
             audioMediaUi.stop();
-            trackConfigDialog = new TrackConfigDialog();
-            trackConfigDialog.getConfigController().setMediaUI(audioMediaUi);
-            trackConfigDialog.show();
+            trackConfigDialog = new TrackConfigDialog(getMediaUIList());
+            final TrackConfigController configController = trackConfigDialog.getConfigController();
+            configController.setMediaUI(audioMediaUi);
+            trackConfigDialog.showAndWait();
         } catch (IOException ex) {
             LOG.error("Error occurend during TrackConfigDialog construction", ex);
         }
-    }
-
-    private AudioMediaUI createMediaUI(EasyMedia media) {
-        final AudioMediaUI audioMediaUI = new AudioMediaUI(media);
-        // Event sur clic dans l'AudioMediUI pour récupérer le focus.
-        audioMediaUI.setOnMouseClicked(eventFocus -> {
-            if (eventFocus.getButton().equals(MouseButton.PRIMARY)) {
-                audioMediaUI.requestFocus();
-                if (trackPropertiesController != null) {
-                    trackPropertiesController.setMediaUI(audioMediaUI);
-                }
-            }
-        });
-        return audioMediaUI;
     }
 
     private void openProject(File file) {
@@ -203,7 +187,7 @@ public class MainController extends StackPane implements Initializable {
         }
         final List<EasyMedia> mediaList = project.getEasyMediaList();
         for (EasyMedia media : mediaList) {
-            final AudioMediaUI mediaUI = createMediaUI(media);
+            final AudioMediaUI mediaUI = new AudioMediaUI(media,this);
             getTableLayout().getChildren().add(mediaUI);
         }
     }
@@ -245,7 +229,7 @@ public class MainController extends StackPane implements Initializable {
                     // ajout dans la liste du projet
                     project.getEasyMediaList().add(media);
                     // construction de l'UI.
-                    AudioMediaUI mediaUI = this.createMediaUI(media);
+                    AudioMediaUI mediaUI = new AudioMediaUI(media,this);
                     getTableLayout().getChildren().add(mediaUI);
                     appProperties.setSavingNeeded(true);
                 });
@@ -257,7 +241,7 @@ public class MainController extends StackPane implements Initializable {
     }
 
     @FXML
-    private void menuTrackDelete(ActionEvent event) {
+    public void menuTrackDelete(ActionEvent event) {
         final Optional<AudioMediaUI> optionnal = getMediaUIList().stream().filter(Node::isFocused).findFirst();
         if (optionnal.isPresent()) {
             final Optional<ButtonType> result = ActionDialog.showConfirmation(locale.getString(Labels.MSG_DELETE_HEADER), locale.getString(Labels.MSG_DELETE_CONT));
@@ -293,7 +277,6 @@ public class MainController extends StackPane implements Initializable {
                 }
             }
         }
-        event.consume();
     }
 
     @FXML
@@ -322,8 +305,6 @@ public class MainController extends StackPane implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         LOG.debug("EasyConduite MainController is initialized");
-        //initialization nested controller
-        trackPropertiesController.setMainController(this);
 
         new MainControllerContextMenu(this);
 
@@ -349,16 +330,6 @@ public class MainController extends StackPane implements Initializable {
             LOG.debug(" {} MediaUI was added to the mainController MediaUIList size : {}", change.getAddedSize(), mediaUIList.size());
             LOG.debug(" {} MediaUI was removed to the mainController MediaUIList size : {}", change.getRemovedSize(), mediaUIList.size());
         });
-    }
-
-    /**
-     * Return if a keyboard keycode exists within AudioMediaUI List.
-     *
-     * @param keycode le code de la touche
-     * @return Le code exist'il dans la liste
-     */
-    public boolean isKeyCodeExist(KeyCode keycode) {
-        return true;
     }
 
     public MediaProject getProject() {

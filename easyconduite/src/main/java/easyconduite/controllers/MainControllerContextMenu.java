@@ -25,18 +25,23 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.layout.FlowPane;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
-public class MainControllerContextMenu extends ContextMenu {
+public class MainControllerContextMenu {
 
     private final MainController mainController;
 
     public MainControllerContextMenu(MainController controller) {
         super();
-        this.mainController=controller;
+        this.mainController = controller;
 
         final ResourceBundle locale = mainController.getLocale();
 
+        final Map<Class, ContextMenu> contextMenuMap = new HashMap<>();
+
+        final ContextMenu flowCtm = new ContextMenu();
         final MenuItem cmTitle = new MenuItem(locale.getString("menu.table.title"));
         cmTitle.setDisable(true);
         final SeparatorMenuItem cmSeparator = new SeparatorMenuItem();
@@ -44,18 +49,25 @@ public class MainControllerContextMenu extends ContextMenu {
         cmImportTrack.setOnAction(this.mainController::menuImportAudio);
         final MenuItem cmCloseProject = new MenuItem(locale.getString("menu.project.clear"));
         cmCloseProject.setOnAction(e -> {
-            if (this.mainController.isProjectErasable(this.mainController.getMediaUIList())) this.mainController.clearProject();
+            if (this.mainController.isProjectErasable(this.mainController.getMediaUIList()))
+                this.mainController.clearProject();
         });
         final MenuItem cmAddAllToCue = new MenuItem(locale.getString("menu.table.addToCue"));
         cmAddAllToCue.setDisable(true);
-        this.getItems().addAll(cmTitle, cmSeparator, cmImportTrack, cmCloseProject,cmAddAllToCue);
+        flowCtm.getItems().addAll(cmTitle, cmSeparator, cmImportTrack, cmCloseProject, cmAddAllToCue);
 
-        final FlowPane tableLayout=mainController.getTableLayout();
-        tableLayout.setOnContextMenuRequested(contextMenuEvent -> this.show(tableLayout, contextMenuEvent.getScreenX(), contextMenuEvent.getScreenY()));
+        contextMenuMap.put(FlowPane.class, flowCtm);
+
+        final FlowPane tableLayout = mainController.getTableLayout();
+        tableLayout.setOnContextMenuRequested(contextMenuEvent -> {
+            final Class target = contextMenuEvent.getTarget().getClass();
+            if (contextMenuMap.containsKey(target)) {
+                contextMenuMap.get(target).show(tableLayout, contextMenuEvent.getScreenX(), contextMenuEvent.getScreenY());
+            }
+        });
         tableLayout.setOnMouseClicked(mouseEvent -> {
-            // close all showed context menu
-            if (this.isShowing()) {
-                this.hide();
+            if (flowCtm.isShowing()) {
+                flowCtm.hide();
             }
         });
     }

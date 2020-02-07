@@ -8,6 +8,7 @@ import easyconduite.model.EasyMedia;
 import easyconduite.tools.jackson.DurationDeserializer;
 import easyconduite.tools.jackson.DurationSerializer;
 import easyconduite.view.commons.PlayerVolumeFader;
+import javafx.fxml.Initializable;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
@@ -52,16 +53,19 @@ public class AudioVideoMedia extends EasyMedia {
             player = new MediaPlayer(mediaForPlayer);
             player.setVolume(this.getVolume());
             fadeHandler = new PlayerVolumeFader(this);
-            boolean loppable = getLoppable();
+            player.setStartTime(Duration.ZERO);
 
             if(getName()==null){
                 setName(getMediaFile().getName());
             }
 
             player.setOnEndOfMedia(() -> {
-                if (!loppable) {
+                if (!this.getLoppable()) {
                     this.stop();
                     player.volumeProperty().setValue(getVolume());
+                    this.getPlayer().setCycleCount(1);
+                }else{
+                    player.seek(Duration.ZERO);
                 }
             });
 

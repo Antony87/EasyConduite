@@ -16,21 +16,21 @@
  */
 package easyconduite.view;
 
+import easyconduite.controllers.MainController;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.EasyMedia;
 import easyconduite.model.IEasyMediaUI;
 import easyconduite.objects.media.AudioVideoMedia;
+import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.KeyCodeHelper;
+import easyconduite.view.commons.PlayingPseudoClass;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.BooleanPropertyBase;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
-import javafx.css.PseudoClass;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -43,53 +43,33 @@ import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ResourceBundle;
+
 /**
  * This class encapsulates logics and behaviors about Custom UI Control of an
  * AudioMedia.
- *
  * @author A Fons
  */
 public class AudioMediaUI extends VBox implements IEasyMediaUI {
 
     static final Logger LOG = LogManager.getLogger(AudioMediaUI.class);
-    private static final PseudoClass PLAYING_PSEUDO_CLASS = PseudoClass.getPseudoClass("playing");
     private final Label nameLabel = new Label();
     private final Label timeLabel = new Label();
     private final Label keycodeLabel = new Label();
     private final Region repeatRegion = new Region();
     private final PlayPauseHbox playPauseHbox;
     private final AudioVideoMedia audioMedia;
-    private final BooleanProperty playingClass = new BooleanPropertyBase() {
-
-        @Override
-        public void invalidated() {
-            pseudoClassStateChanged(PLAYING_PSEUDO_CLASS, get());
-        }
-
-        @Override
-        public Object getBean() {
-            return AudioMediaUI.this;
-        }
-
-        @Override
-        public String getName() {
-            return "playing";
-        }
-    };
-
-    //private ChainingUpdater nextChain;
+    private final BooleanProperty playingClass=new PlayingPseudoClass(this);
 
     /**
      * Constructor du UI custom control for an AudioMedia.<br>
      * Not draw the control but construct object and assign a
      * {@link MediaPlayer}.<br>
-     *
-     * @param media
+     * @param media a media wich be play.
      */
-    public AudioMediaUI(EasyMedia media) {
+    public AudioMediaUI(EasyMedia media,MainController controller) {
         super();
         LOG.info("Construct an AudioMedia {}", media);
-
         this.audioMedia = (AudioVideoMedia) media;
         ////////////////////////////////////////////////////////////////////////
         //               Initialize MediaPlayer
@@ -129,6 +109,12 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
             LOG.error("Error occurend during AudioVideo player construction", ex);
         }
 
+        this.setOnMouseClicked(eventFocus -> {
+            if (eventFocus.getButton().equals(MouseButton.PRIMARY)) {
+                this.requestFocus();
+            }
+        });
+
         ////////////////////////////////////////////////////////////////////////
         //                 Construction de l'UI
         ////////////////////////////////////////////////////////////////////////
@@ -155,7 +141,6 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
         keycodeLabel.setMouseTransparent(true);
         keycodeHbox.setMouseTransparent(true);
         nameLabel.setMouseTransparent(true);
-
 
         this.getChildren().addAll(nameLabel, new VolumeSlider(), timeLabel, keycodeHbox, playPauseHbox);
     }
@@ -242,6 +227,7 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
                     audioMedia.setVolume(volumeProperty.getValue());
                     audioMedia.getPlayer().setVolume(volumeProperty.getValue());
                 }
+                event.consume();
             });
         }
     }
@@ -273,7 +259,6 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
                     }
                 }
                 mouseEvent.consume();
-
             });
         }
 
