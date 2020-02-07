@@ -26,10 +26,7 @@ import easyconduite.view.commons.MediaSelectedPseudoClass;
 import easyconduite.view.commons.PlayingPseudoClass;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseButton;
@@ -57,7 +54,6 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
     private final Label timeLabel = new Label();
     private final Label keycodeLabel = new Label();
     private final Region repeatRegion = new Region();
-    private final PlayPauseHbox playPauseHbox;
     private final AudioVideoMedia audioMedia;
     private final BooleanProperty playingClass = new PlayingPseudoClass(this);
     public final BooleanProperty mediaSelectedClass = new MediaSelectedPseudoClass(this);
@@ -73,43 +69,49 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
         super();
         LOG.info("Construct an AudioMedia {}", media);
         this.audioMedia = (AudioVideoMedia) media;
+
         ////////////////////////////////////////////////////////////////////////
-        //               Initialize MediaPlayer
+        //                 Construction de l'UI
         ////////////////////////////////////////////////////////////////////////
-        try {
-            audioMedia.initPlayer();
-            // Listenner sur la fin de l'initialisation du player.
-            audioMedia.getPlayer().statusProperty().addListener(new ChangeListener<>() {
-                @Override
-                public void changed(ObservableValue<? extends Status> observableValue, Status oldValue, Status newValue) {
-                    switch (newValue) {
-                        case PAUSED:
-                            playPauseHbox.toFront(playPauseHbox.playRegion);
-                            playingClass.setValue(false);
-                            break;
-                        case PLAYING:
-                            playPauseHbox.toFront(playPauseHbox.pauseRegion);
-                            playingClass.setValue(true);
-                            break;
-                        case READY:
-                            audioMedia.setDuration(audioMedia.getPlayer().getStopTime());
-                            actualizeUI();
-                            playPauseHbox.toFront(playPauseHbox.playRegion);
-                            playingClass.setValue(false);
-                            break;
-                        case STOPPED:
-                            playPauseHbox.toFront(playPauseHbox.playRegion);
-                            playingClass.setValue(false);
-                            timeLabel.setText(formatTime(audioMedia.getDuration()));
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            });
-        } catch (EasyconduiteException ex) {
-            LOG.error("Error occurend during AudioVideo player construction", ex);
+        // attribution css for Track VBOX
+        this.getStyleClass().add("audioMediaUi");
+
+        HBox keycodeHbox = new HBox();
+        keycodeHbox.getStyleClass().add("baseHbox");
+
+        repeatRegion.setId("repeatRegion");
+        if (audioMedia.getLoppable()) {
+            repeatRegion.getStyleClass().add("repeat");
         }
+        keycodeHbox.getChildren().addAll(repeatRegion, keycodeLabel);
+
+        timeLabel.setMouseTransparent(true);
+        keycodeLabel.setMouseTransparent(true);
+        keycodeHbox.setMouseTransparent(true);
+        nameLabel.setMouseTransparent(true);
+
+        final HBox playPauseHbox = new HBox();
+        playPauseHbox.getStyleClass().add("commandHbox");
+        final StackPane playPausePane = new StackPane();
+
+        final Region playRegion = new Region();
+        final Region stopRegion = new Region();
+        stopRegion.getStyleClass().add("stopbutton");
+        playRegion.getStyleClass().add("playbutton");
+        playPausePane.getChildren().addAll(playRegion);
+        playPauseHbox.getChildren().addAll(stopRegion, playPausePane);
+
+        playPauseHbox.setOnMouseClicked(mouseEvent -> {
+            if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
+                Region target = (Region) mouseEvent.getTarget();
+                if (target.getStyleClass().contains("stopbutton")) {
+                    audioMedia.getPlayer().stop();
+                } else {
+                    playPause();
+                }
+            }
+            mouseEvent.consume();
+        });
 
         // Gestion des mouse events pour la sélection d'un UI.
         this.setOnMouseClicked(eventFocus -> {
@@ -127,29 +129,42 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
         });
 
         ////////////////////////////////////////////////////////////////////////
-        //                 Construction de l'UI
+        //               Initialize MediaPlayer
         ////////////////////////////////////////////////////////////////////////
-        // attribution css for Track VBOX
-        this.getStyleClass().add("audioMediaUi");
-
-        ///////////// current Time label               
+        try {
+            audioMedia.initPlayer();
+            // Listenner sur la fin de l'initialisation du player.
+            audioMedia.getPlayer().statusProperty().addListener((observableValue, oldValue, newValue) -> {
+                switch (newValue) {
+                    case PAUSED:
+                        playingClass.setValue(false);
+                        //playingButtonClass.setValue(false);
+                        break;
+                    case PLAYING:
+                        playingClass.setValue(true);
+                        //playingButtonClass.setValue(true);
+                        break;
+                    case READY:
+                        audioMedia.setDuration(audioMedia.getPlayer().getStopTime());
+                        actualizeUI();
+                        playingClass.setValue(false);
+                        //playingButtonClass.setValue(false);
+                        break;
+                    case STOPPED:
+                        playingClass.setValue(false);
+                        //playingButtonClass.setValue(false);
+                        timeLabel.setText(formatTime(audioMedia.getDuration()));
+                        break;
+                    default:
+                        break;
+                }
+            });
+        } catch (EasyconduiteException ex) {
+            LOG.error("Error occurend during AudioVideo player construction", ex);
+        }
+        ///////////// current Time label
         audioMedia.getPlayer().currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> timeLabel.setText(formatTime(audioMedia.getDuration().subtract(newValue))));
 
-        HBox keycodeHbox = new HBox();
-        keycodeHbox.getStyleClass().add("baseHbox");
-
-        repeatRegion.setId("repeatRegion");
-        if (audioMedia.getLoppable()) {
-            repeatRegion.getStyleClass().add("repeat");
-        }
-        keycodeHbox.getChildren().addAll(repeatRegion, keycodeLabel);
-
-        playPauseHbox = new PlayPauseHbox();
-
-        timeLabel.setMouseTransparent(true);
-        keycodeLabel.setMouseTransparent(true);
-        keycodeHbox.setMouseTransparent(true);
-        nameLabel.setMouseTransparent(true);
 
         this.getChildren().addAll(nameLabel, new VolumeSlider(), timeLabel, keycodeHbox, playPauseHbox);
     }
@@ -202,25 +217,6 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
         return this.audioMedia;
     }
 
-    //TODO Gérer cela avec la pseudClass playin du css
-    private static class PlayRegion extends Region {
-        protected PlayRegion() {
-            PlayRegion.this.getStyleClass().add("playbutton");
-        }
-    }
-
-    private static class PauseRegion extends Region {
-        protected PauseRegion() {
-            PauseRegion.this.getStyleClass().add("pausebutton");
-        }
-    }
-
-    private static class StopRegion extends Region {
-        protected StopRegion() {
-            StopRegion.this.getStyleClass().add("stopbutton");
-        }
-    }
-
     private class VolumeSlider extends Slider {
 
         protected VolumeSlider() {
@@ -234,42 +230,6 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
                 }
                 event.consume();
             });
-        }
-    }
-
-    private class PlayPauseHbox extends HBox {
-
-        final ObservableList<Node> childs;
-        final Region playRegion = new PlayRegion();
-        final Region pauseRegion = new PauseRegion();
-        final Region stopRegion = new StopRegion();
-
-        protected PlayPauseHbox() {
-            super();
-            PlayPauseHbox.this.getStyleClass().add("commandHbox");
-            StackPane playPausePane = new StackPane();
-
-            playPausePane.getChildren().addAll(pauseRegion, playRegion);
-            PlayPauseHbox.this.getChildren().addAll(stopRegion, playPausePane);
-
-            childs = playPausePane.getChildren();
-
-            this.setOnMouseClicked(mouseEvent -> {
-                if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
-                    Region target = (Region) mouseEvent.getTarget();
-                    if (target instanceof StopRegion) {
-                        audioMedia.getPlayer().stop();
-                    } else {
-                        playPause();
-                    }
-                }
-                mouseEvent.consume();
-            });
-        }
-
-        protected void toFront(Region region) {
-            int index = childs.indexOf(region);
-            childs.get(index).toFront();
         }
     }
 }

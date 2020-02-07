@@ -121,17 +121,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-background-position : center;
     -fx-background-repeat: no-repeat;
 }
-.pausebutton{
+
+.audioMediaUi:playing .playbutton{
     -fx-background-image: url('../icons/003-pause.png');
-    -fx-background-position : center;
-    -fx-background-repeat: no-repeat;
 }
+
 .stopbutton{
     -fx-background-image: url('../icons/001-stop.png');
     -fx-background-repeat: no-repeat;
 }
 
-.pausebutton:hover,.playbutton:hover,.stopbutton:hover{
+.playbutton:hover,.stopbutton:hover{
     -fx-background-color : #CFD8DC;
 }
 
