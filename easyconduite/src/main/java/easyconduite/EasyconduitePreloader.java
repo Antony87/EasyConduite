@@ -16,8 +16,6 @@
  */
 package easyconduite;
 
-import easyconduite.objects.ApplicationProperties;
-import easyconduite.tools.ApplicationPropertiesHelper;
 import javafx.application.Preloader;
 import javafx.scene.Scene;
 import javafx.scene.control.ProgressBar;
@@ -43,7 +41,6 @@ public class EasyconduitePreloader extends Preloader {
     
     @Override
     public void start(Stage stage) throws Exception {
-        ApplicationProperties applicationProperties = ApplicationPropertiesHelper.getInstance().getProperties();
         this.stage = stage;
         stage.setScene(createPreloaderScene());        
         stage.show();

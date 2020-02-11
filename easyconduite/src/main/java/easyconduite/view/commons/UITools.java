@@ -16,14 +16,13 @@
  */
 package easyconduite.view.commons;
 
-import easyconduite.objects.ApplicationProperties;
-import easyconduite.tools.ApplicationPropertiesHelper;
+import easyconduite.exception.EasyconduiteException;
 import easyconduite.util.Constants;
+import easyconduite.util.EasyConduitePropertiesHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import javafx.util.Duration;
 
 import java.util.ResourceBundle;
 
@@ -47,7 +46,12 @@ public class UITools {
     public static void updateWindowsTitle(Node node, String addingText) {
         
         final Stage primStage = (Stage) getScene(node).getWindow();
-        final ApplicationProperties userdatas = ApplicationPropertiesHelper.getInstance().getProperties();
+        ResourceBundle userdatas = null;
+        try {
+            userdatas = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
+        } catch (EasyconduiteException e) {
+            e.printStackTrace();
+        }
         final ResourceBundle local = ResourceBundle.getBundle(Constants.RESOURCE_BASENAME, userdatas.getLocale());
         final String version = local.getString(VERSION);
         String title = "Easyconduite";
@@ -63,15 +67,4 @@ public class UITools {
         return UITools.getScene(node).getWindow();
     }
 
-    public static String formatTime(Duration duration) {
-        if (duration.greaterThan(Duration.ZERO)) {
-            final double millis = duration.toMillis();
-            final int dec = (int) ((millis / 100) % 10);
-            final int seconds = (int) ((millis / 1000) % 60);
-            final int minutes = (int) (millis / (1000 * 60));
-            return String.format("%02d:%02d:%02d", minutes, seconds, dec);
-        }
-        return null;
-    }
-    
 }

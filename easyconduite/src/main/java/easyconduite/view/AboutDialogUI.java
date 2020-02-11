@@ -16,7 +16,8 @@
  */
 package easyconduite.view;
 
-import easyconduite.tools.ApplicationPropertiesHelper;
+import easyconduite.exception.EasyconduiteException;
+import easyconduite.util.EasyConduitePropertiesHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -41,8 +42,13 @@ public class AboutDialogUI extends Stage {
 
     public AboutDialogUI() throws IOException {
 
-        final ResourceBundle bundle = ApplicationPropertiesHelper.getInstance().getLocalBundle();
-        
+        ResourceBundle bundle = null;
+        try {
+            bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
+        } catch (EasyconduiteException e) {
+            e.printStackTrace();
+        }
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource(PATH_FXML),bundle);
 
         BorderPane dialogPane = (BorderPane) loader.load();

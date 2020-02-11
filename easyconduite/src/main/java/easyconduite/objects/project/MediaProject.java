@@ -1,6 +1,7 @@
 
 package easyconduite.objects.project;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import easyconduite.model.EasyMedia;
@@ -20,7 +21,10 @@ public class MediaProject {
     private String name;
     private Conduite conduite;
     private Path projectPath;
-    List<EasyMedia> easyMediaList;
+    private List<EasyMedia> easyMediaList;
+
+    @JsonIgnore
+    private boolean needToSave =false;
 
     public MediaProject() {
         this.conduite = new Conduite();
@@ -57,5 +61,13 @@ public class MediaProject {
 
     public void setEasyMediaList(List<EasyMedia> easyMediaList) {
         this.easyMediaList = easyMediaList;
+    }
+
+    public boolean isNeedToSave() {
+        return needToSave;
+    }
+
+    public void setNeedToSave(boolean needToSave) {
+        this.needToSave = needToSave;
     }
 }

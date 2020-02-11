@@ -18,6 +18,7 @@ package easyconduite.view;
 
 import easyconduite.controllers.TrackConfigController;
 import easyconduite.exception.EasyconduiteException;
+import easyconduite.model.IEasyMediaUI;
 import easyconduite.util.EasyConduitePropertiesHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -46,7 +47,7 @@ public class TrackConfigDialog extends Stage {
 
     private TrackConfigController configController;
 
-    public TrackConfigDialog(List<AudioMediaUI> mediaUIList) throws IOException {
+    public TrackConfigDialog(List<IEasyMediaUI> mediaUIList) throws IOException {
         super();
         try {
             final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();

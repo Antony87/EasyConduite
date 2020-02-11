@@ -18,7 +18,7 @@ package easyconduite.controllers;
 
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.EasyMedia;
-import easyconduite.objects.AudioTableWrapper;
+import easyconduite.model.IEasyMediaUI;
 import easyconduite.objects.EasyConduiteProperties;
 import easyconduite.objects.media.AudioVideoMedia;
 import easyconduite.objects.media.MediaFactory;
@@ -28,7 +28,6 @@ import easyconduite.util.Labels;
 import easyconduite.util.PersistenceHelper;
 import easyconduite.view.AboutDialogUI;
 import easyconduite.view.AudioMediaUI;
-import easyconduite.view.PreferencesUI;
 import easyconduite.view.TrackConfigDialog;
 import easyconduite.view.controls.ActionDialog;
 import easyconduite.view.controls.FileChooserControl;
@@ -66,7 +65,7 @@ public class MainController extends StackPane implements Initializable {
 
     private static final Logger LOG = LogManager.getLogger(MainController.class);
     private static final String DIALOG_ERROR_HEADER = "dialog.error.header";
-    private final List<AudioMediaUI> mediaUIList;
+    private final List<IEasyMediaUI> mediaUIList;
     private final ResourceBundle locale;
     private final EasyConduiteProperties appProperties;
     private MediaProject project;
@@ -90,7 +89,7 @@ public class MainController extends StackPane implements Initializable {
 
     @FXML
     private void menuFileOpen(ActionEvent event) {
-        if (isProjectErasable(getMediaUIList())) {
+        if (isProjectErasable(this.project)) {
             clearProject();
             try {
                 final FileChooser fileChooser = new FileChooserControl.FileChooserBuilder().asType(FileChooserControl.Action.OPEN_PROJECT).build();
@@ -107,13 +106,12 @@ public class MainController extends StackPane implements Initializable {
 
     @FXML
     private void menuFileSaveProject(ActionEvent event) {
-        final List<AudioMediaUI> uiList = getMediaUIList();
+        final List<IEasyMediaUI> uiList = getMediaUIList();
         if (!uiList.isEmpty()) {
             try {
                 if (PersistenceHelper.isFileExists(project.getProjectPath())) {
                     final File projectFile = project.getProjectPath().toFile();
                     PersistenceHelper.saveToJson(project, projectFile);
-                    appProperties.setSavingNeeded(false);
                 } else {
                     final FileChooser fileChooser = new FileChooserControl.FileChooserBuilder().asType(FileChooserControl.Action.SAVE).build();
                     final File projectFile = fileChooser.showSaveDialog(null);
@@ -122,9 +120,9 @@ public class MainController extends StackPane implements Initializable {
                         PersistenceHelper.saveToJson(project, projectFile);
                         appProperties.setLastFileProject(projectFile);
                         appProperties.setLastProjectDir(projectFile.toPath().getParent());
-                        appProperties.setSavingNeeded(false);
                     }
                 }
+                project.setNeedToSave(false);
             } catch (EasyconduiteException | IOException e) {
                 ActionDialog.showWarning(locale.getString(DIALOG_ERROR_HEADER), locale.getString("easyconduitecontroler.save.error"));
             }
@@ -134,35 +132,32 @@ public class MainController extends StackPane implements Initializable {
 
     @FXML
     private void menuFileSaveProjectAs(ActionEvent event) {
-        AudioTableWrapper.getInstance().saveAsToFile();
+        //AudioTableWrapper.getInstance().saveAsToFile();
         event.consume();
     }
 
     @FXML
     private void menuCloseProject(ActionEvent event) {
-        if (this.isProjectErasable(getMediaUIList())) this.clearProject();
+        if (isProjectErasable(this.project)) this.clearProject();
         event.consume();
     }
 
     @FXML
     public void menuQuit(ActionEvent event) {
-        if (!isProjectErasable(getMediaUIList())) {
-            final Optional<ButtonType> response = ActionDialog.showConfirmation(locale.getString(Labels.MSG_WARNING_SAVE_HEADER), locale.getString(Labels.MSG_WARNING_SAVE_CONT));
-            if (response.isPresent() && response.get().equals(ButtonType.YES)) {
-                this.menuFileSaveProject(event);
-            }
+        if (!isProjectErasable(this.project)) {
+            this.menuFileSaveProject(event);
         }
         Platform.exit();
     }
 
     @FXML
     public void menuEditTrack(ActionEvent event) {
-        final Optional<AudioMediaUI> optionnal = getMediaUIList().stream().filter(mediaUI -> mediaUI.mediaSelectedClass.get()==true).findFirst();
+        final Optional<IEasyMediaUI> optionnal = getMediaUIList().stream().filter(IEasyMediaUI::isSelected).findFirst();
         optionnal.ifPresent(this::editTrack);
         event.consume();
     }
 
-    public void editTrack(AudioMediaUI audioMediaUi) {
+    public void editTrack(IEasyMediaUI audioMediaUi) {
 
         final TrackConfigDialog trackConfigDialog;
         try {
@@ -179,39 +174,34 @@ public class MainController extends StackPane implements Initializable {
     private void openProject(File file) {
         try {
             project = PersistenceHelper.openFromJson(file, MediaProject.class);
+            project.setNeedToSave(false);
         } catch (IOException e) {
             ActionDialog.showWarning(locale.getString(DIALOG_ERROR_HEADER), locale.getString("easyconduitecontroler.open.error"));
             LOG.error("Error occured during Open project ", e);
         }
         final List<EasyMedia> mediaList = project.getEasyMediaList();
         for (EasyMedia media : mediaList) {
-            final AudioMediaUI mediaUI = new AudioMediaUI(media,this);
+            final AudioMediaUI mediaUI = new AudioMediaUI(media, this);
             getTableLayout().getChildren().add(mediaUI);
         }
     }
 
-    protected boolean isProjectErasable(List<AudioMediaUI> mediaUIList) {
-        // Does the table contain Media UI and the project was not saved.
-        if (!mediaUIList.isEmpty() && appProperties.isSavingNeeded()) {
-            Optional<ButtonType> result = ActionDialog.showConfirmation(locale.getString(Labels.MSG_OPEN_HEADER), locale.getString(Labels.MSG_OPEN_CONT));
+    protected boolean isProjectErasable(MediaProject project) {
+        if (project.isNeedToSave()) {
+            Optional<ButtonType> result = ActionDialog.showConfirmation(locale.getString("dialog.warning.save.header"), locale.getString("dialog.warning.save.content"));
             return result.isPresent() && result.get() != ButtonType.NO;
         }
         return true;
     }
 
-    public List<AudioMediaUI> getMediaUIList() {
+    public List<IEasyMediaUI> getMediaUIList() {
         final List<Node> mediaUIs = tableLayout.getChildren();
         return mediaUIs.parallelStream().filter(node -> node instanceof AudioMediaUI).map(node -> (AudioMediaUI) node).collect(Collectors.toList());
     }
 
     @FXML
     private void menuPreferences(ActionEvent event) {
-        try {
-            PreferencesUI prefsUI = new PreferencesUI(locale);
-            prefsUI.show();
-        } catch (IOException ex) {
-            LOG.debug("Error occurend ", ex);
-        }
+        //TODO a refaire
         event.consume();
     }
 
@@ -227,9 +217,9 @@ public class MainController extends StackPane implements Initializable {
                     // ajout dans la liste du projet
                     project.getEasyMediaList().add(media);
                     // construction de l'UI.
-                    AudioMediaUI mediaUI = new AudioMediaUI(media,this);
+                    AudioMediaUI mediaUI = new AudioMediaUI(media, this);
                     getTableLayout().getChildren().add(mediaUI);
-                    appProperties.setSavingNeeded(true);
+                    project.setNeedToSave(true);
                 });
             }
         } catch (EasyconduiteException e) {
@@ -240,7 +230,7 @@ public class MainController extends StackPane implements Initializable {
 
     @FXML
     public void menuTrackDelete(ActionEvent event) {
-        final Optional<AudioMediaUI> optionnal = getMediaUIList().stream().filter(Node::isFocused).findFirst();
+        final Optional<IEasyMediaUI> optionnal = getMediaUIList().stream().filter(IEasyMediaUI::isSelected).findFirst();
         if (optionnal.isPresent()) {
             final Optional<ButtonType> result = ActionDialog.showConfirmation(locale.getString(Labels.MSG_DELETE_HEADER), locale.getString(Labels.MSG_DELETE_CONT));
             if (result.get() == ButtonType.OK || result.get() == ButtonType.YES) {
@@ -250,15 +240,16 @@ public class MainController extends StackPane implements Initializable {
         event.consume();
     }
 
-    private void deleteOneTrack(AudioMediaUI audioMediaUi) {
-        ((AudioVideoMedia) audioMediaUi.getEasyMedia()).getPlayer().dispose();
-        project.getEasyMediaList().remove(audioMediaUi.getEasyMedia());
-        tableLayout.getChildren().remove(audioMediaUi);
+    private void deleteOneTrack(IEasyMediaUI mediaUI) {
+        ((AudioVideoMedia) mediaUI.getEasyMedia()).getPlayer().dispose();
+        project.getEasyMediaList().remove(mediaUI.getEasyMedia());
+        tableLayout.getChildren().remove(mediaUI);
+        project.setNeedToSave(true);
     }
 
     protected void clearProject() {
-        final List<AudioMediaUI> mediaUIs = getMediaUIList();
-        for (AudioMediaUI mediaUI : mediaUIs) {
+        final List<IEasyMediaUI> mediaUIs = getMediaUIList();
+        for (IEasyMediaUI mediaUI : mediaUIs) {
             deleteOneTrack(mediaUI);
         }
         project = null;
@@ -266,10 +257,10 @@ public class MainController extends StackPane implements Initializable {
 
     @FXML
     private void handleKeyCodePlay(KeyEvent event) {
-        final List<AudioMediaUI> mediaUIs = this.getMediaUIList();
+        final List<IEasyMediaUI> mediaUIs = this.getMediaUIList();
         if (!event.isControlDown() && !event.isAltDown()) {
-            LOG.trace("Key {} pressed ",event.getCode().getName());
-            for (AudioMediaUI mediaUI : mediaUIs) {
+            LOG.trace("Key {} pressed ", event.getCode().getName());
+            for (IEasyMediaUI mediaUI : mediaUIs) {
                 if (mediaUI.getEasyMedia().getKeycode().equals(event.getCode())) {
                     mediaUI.playPause();
                 }
@@ -308,7 +299,7 @@ public class MainController extends StackPane implements Initializable {
             MenuItem recentFileMenuItem = new MenuItem(appProperties.getLastFileProject().toString());
             openRecent.getItems().add(recentFileMenuItem);
             recentFileMenuItem.setOnAction(event -> {
-                if (isProjectErasable(getMediaUIList())) {
+                if (isProjectErasable(this.project)) {
                     openProject(new File(appProperties.getLastFileProject().toString()));
                 }
             });
@@ -319,7 +310,7 @@ public class MainController extends StackPane implements Initializable {
             if (contextMenu.isShowing()) {
                 contextMenu.hide();
             }
-            getMediaUIList().forEach(mediaUI -> mediaUI.mediaSelectedClass.setValue(false));
+            getMediaUIList().forEach(mediaUI -> mediaUI.setSelected(false));
         });
 
         tableLayout.getChildren().addListener((ListChangeListener<Node>) change -> {

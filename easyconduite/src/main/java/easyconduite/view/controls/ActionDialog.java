@@ -16,7 +16,8 @@
  */
 package easyconduite.view.controls;
 
-import easyconduite.tools.ApplicationPropertiesHelper;
+import easyconduite.exception.EasyconduiteException;
+import easyconduite.util.EasyConduitePropertiesHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -32,7 +33,11 @@ import java.util.ResourceBundle;
 public class ActionDialog {
             
     public static Optional<ButtonType> showConfirmation(String header, String content) {
-        final ResourceBundle bundle = ApplicationPropertiesHelper.getInstance().getLocalBundle();
+        try {
+            final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
+        } catch (EasyconduiteException e) {
+            e.printStackTrace();
+        }
         final Alert a = getAlert("dialog.confirmation.title", header, content);
         a.getButtonTypes().add(ButtonType.NO);
         a.getButtonTypes().add(ButtonType.YES);
@@ -53,7 +58,12 @@ public class ActionDialog {
     }
     
     private static Alert getAlert(String key_title, String header, String content) {
-        final ResourceBundle bundle = ApplicationPropertiesHelper.getInstance().getLocalBundle();
+        ResourceBundle bundle = null;
+        try {
+            bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
+        } catch (EasyconduiteException e) {
+            e.printStackTrace();
+        }
         final Alert a = new Alert(AlertType.NONE);
         a.initModality(Modality.APPLICATION_MODAL);
         a.setHeaderText(header);

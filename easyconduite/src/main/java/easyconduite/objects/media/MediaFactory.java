@@ -1,12 +1,12 @@
 package easyconduite.objects.media;
 
 import easyconduite.model.EasyMedia;
-import easyconduite.model.IeasyMedia;
+import easyconduite.model.IEasyMedia;
 
 import java.io.File;
 
 /**
- * Cette classe implémente une Factory retournant un {@link IeasyMedia}.
+ * Cette classe implémente une Factory retournant un {@link IEasyMedia}.
  */
 public class MediaFactory {
 

@@ -29,7 +29,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-max-height: 240;
     -fx-min-width: 100;
     -fx-max-width: 100;
-    -fx-spacing: 2;
+    -fx-spacing: 5;
+    -fx-padding: 5 2 5 2;
     /* definition couleurs
     .dark-primary-color    #455A64;
     .default-primary-color #607D8B;
@@ -53,10 +54,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
      -fx-background-color :  backgroundPlayingColor;
  }
 
-.audioMediaUi .menu-item{
-    -fx-font-size: 10;
-}
-
 /*Css class for audio name label within AudioMediaUI Vbox.*/
 .audioMediaUi > .label{
     -fx-min-height: 25;
@@ -68,12 +65,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-alignment:CENTER;
 }
 
-.audioMediaUi > .slider{
+.audioMediaUi .slider{
     -fx-min-height: 100;
-    -fx-max-height: 100;
-    -fx-padding: 5 0 5 0;
+    /*-fx-max-height: 100;*/
+    /*-fx-padding: 0 0 5 0;*/
     -fx-orientation: vertical;
 }
+
+#timeLabel{
+    -fx-text-fill: greenyellow;
+}
+
+#keycodeLabel{
+    -fx-font-size: 20;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+}
+
 
 .audioMediaUi > .commandHbox{
     -fx-alignment:CENTER;
@@ -81,32 +89,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-min-height: 32;
     -fx-max-height: 32;
 }
-.audioMediaUi > .baseHbox{
+
+#contextHbox{
     -fx-alignment:CENTER;
-    -fx-min-height: 40;
-    -fx-max-height: 40;
+    -fx-spacing: 20;
+    /*-fx-margin: 5 0 5 0;*/
 }
 
-.baseHbox > .label{
-    -fx-min-width: 65;
-    -fx-max-width: 65;
-    -fx-font-size: 18;
-    -fx-font-weight: bold;
-    -fx-text-fill: #599CA8;
-    -fx-alignment: CENTER;
+#infoVbox {
+    -fx-padding: 5 0 5 0;
+    -fx-spacing:5;
 }
 
-#repeatRegion {
+#repeatRegion,#typeRegion {
     -fx-min-width: 24;
     -fx-max-width: 24;
     -fx-min-height: 24;
     -fx-max-height: 24;
-    -fx-padding: 0 0 0 5;
+    -fx-padding: 10 0 0 10;
     -fx-background-repeat: no-repeat;
     -fx-background-position: center 50%;
 }
 .repeat {
-    -fx-background-image: url('../icons/repeat2.png');
+    -fx-background-image: url('../icons/repeat.png');
+}
+
+.typeAudio{
+    -fx-background-image: url('../icons/audio-file.png');
 }
 
 .commandHbox > * {

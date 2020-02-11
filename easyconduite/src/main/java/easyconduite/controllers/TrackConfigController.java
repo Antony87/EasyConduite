@@ -19,6 +19,7 @@ package easyconduite.controllers;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.DialogAbstractController;
 import easyconduite.model.EasyMedia;
+import easyconduite.model.IEasyMediaUI;
 import easyconduite.objects.media.AudioVideoMedia;
 import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.KeyCodeHelper;
@@ -55,7 +56,7 @@ public class TrackConfigController extends DialogAbstractController implements I
 
     private KeyCode newKeyCode;
 
-    private List<AudioMediaUI> mediaUIList;
+    private List<IEasyMediaUI> mediaUIList;
 
     @FXML
     private BorderPane trackConfigPane;
@@ -138,16 +139,16 @@ public class TrackConfigController extends DialogAbstractController implements I
     }
 
     private boolean isKeyCodeExist(KeyCode keyCode) {
-        for (AudioMediaUI ui : mediaUIList) {
+        for (IEasyMediaUI ui : mediaUIList) {
             final KeyCode code = ui.getEasyMedia().getKeycode();
             if (code != null && code.equals(keyCode)) return true;
         }
         return false;
     }
 
-    public void setMediaUI(AudioMediaUI mediaUI) {
+    public void setMediaUI(IEasyMediaUI mediaUI) {
         if (mediaUI != null) {
-            this.mediaUI = mediaUI;
+            this.mediaUI = (AudioMediaUI) mediaUI;
             final EasyMedia media = this.mediaUI.getEasyMedia();
             nametrackfield.setText(media.getName());
             keytrackfield.setText(KeyCodeHelper.toString(media.getKeycode()));
@@ -156,7 +157,7 @@ public class TrackConfigController extends DialogAbstractController implements I
         }
     }
 
-    public void setMediaUIList(List<AudioMediaUI> mediaUIList) {
+    public void setMediaUIList(List<IEasyMediaUI> mediaUIList) {
         this.mediaUIList = mediaUIList;
     }
 

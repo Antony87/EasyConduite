@@ -18,7 +18,6 @@ package easyconduite.view.controls;
 
 import easyconduite.controllers.MainController;
 import easyconduite.exception.EasyconduiteException;
-import easyconduite.model.ChainingUpdater;
 import easyconduite.objects.AudioMedia;
 import easyconduite.util.PersistenceHelper;
 import easyconduite.view.commons.PlayerVolumeFader;
@@ -37,7 +36,7 @@ import org.apache.logging.log4j.Logger;
  * @author antony
  */
 @Deprecated
-public class EasyconduitePlayer implements ChainingUpdater {
+public class EasyconduitePlayer {
 
     static final Logger LOG = LogManager.getLogger(EasyconduitePlayer.class);
 
@@ -138,33 +137,5 @@ public class EasyconduitePlayer implements ChainingUpdater {
         this.mainController = mainController;
     }
 
-    @Override
-    public void setNext(ChainingUpdater next) {
-    }
-
-    @Override
-    public final void updateFromAudioMedia(AudioMedia media) {
-        if (audioMedia.equals(media)) {
-            audioMedia = media;
-            // configuration de EasyconduitePlayer en fonction de AudioMedia
-            if (audioMedia.getRepeatable()) {
-                player.setCycleCount(Integer.MAX_VALUE);
-            } else {
-                player.setCycleCount(1);
-            }
-
-            player.setVolume(audioMedia.getVolume());
-
-        } else {
-            ActionDialog.showWarning("Incohérence des objets", "Les objets AudioMedia ne sont pas egaux");
-        }
-    }
-
-    @Override
-    public void removeChild(ChainingUpdater audioMedia) {
-        fadeHandler.stop();
-        fadeHandler = null;
-        player.dispose();
-    }
 
 }

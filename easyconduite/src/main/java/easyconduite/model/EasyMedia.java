@@ -24,7 +24,7 @@ import java.util.UUID;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = AudioVideoMedia.class, name = "audiovideomedia"),
 })
-public abstract class EasyMedia implements IeasyMedia {
+public abstract class EasyMedia implements IEasyMedia {
 
     private String name;
 
