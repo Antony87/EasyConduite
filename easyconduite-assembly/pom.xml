@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.antonyweb</groupId>
     <artifactId>easyconduite-assembly</artifactId>
-    <version>1.2.1</version>
+    <version>3.0.0</version>
     <packaging>pom</packaging>
     <licenses>
         <license>
@@ -20,138 +21,75 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>easyconduite</artifactId>
-            <version>1.2</version>
+            <version>3.0</version>
             <type>jar</type>
         </dependency>
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <resourcesDir>${basedir}/src/main/resources</resourcesDir>
-    </properties>  
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <phase>prepare-package</phase>                            
-                        <configuration>
-                            <finalName>easyconduite</finalName>
-                            <appendAssemblyId>false</appendAssemblyId>        
-                            <descriptors>
-                                <descriptor>${resourcesDir}/assembly/easyconduite-build.xml</descriptor>
-                            </descriptors>
-                        </configuration>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>                        
-                </executions>
-            </plugin>
-        </plugins>       
-    </build>
+    </properties>
     <profiles>
         <profile>
-            <id>sh</id>
+            <id>create-jar</id>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>1.6.0</version>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>3.2.1</version>
                         <executions>
                             <execution>
-                                <id>create_sh</id>                      
-                                <phase>install</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>${resourcesDir}/scripts/makeself-2.3.1/makeself.sh</executable>
-                                    <arguments>
-                                        <argument>${project.build.directory}/easyconduite</argument>
-                                        <argument>easyconduite_setup.sh</argument>
-                                        <argument>"A super simple sampler"</argument>
-                                        <argument>./installer/setup.sh</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                        </executions>  
-                    </plugin>                    
-                </plugins>               
-            </build>        
-        </profile>   
-        <profile>
-            <id>exe</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>1.6.0</version>
-                        <executions>
-                            <execution>
-                                <id>create_exe</id>                      
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>exec</goal>
+                                    <goal>shade</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>C:/Users/antony/Documents/launch4j-3.11-win32/launch4j/launch4j.exe</executable>
-                                    <arguments>
-                                        <argument>${resourcesDir}/launch4j/launch-easyconduite.xml</argument>
-                                    </arguments>
+                                    <outputFile>${project.build.directory}/easyconduite-3.0.0-win.jar</outputFile>
+                                    <artifactSet>
+                                        <excludes>
+                                            <exclude>org.openjfx</exclude>
+                                        </excludes>
+                                    </artifactSet>
+                                    <transformers>
+                                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                            <manifestEntries>
+                                                <Main-Class>easyconduite.Easyconduite</Main-Class>
+                                            </manifestEntries>
+                                        </transformer>
+                                    </transformers>
                                 </configuration>
                             </execution>
-                            <execution>
-                                <id>create_installer</id>                      
-                                <phase>install</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>"C:/Program Files (x86)/Inno Setup 5/ISCC.exe"</executable>
-                                    <arguments>
-                                        <argument>${project.build.directory}/easyconduite/installer/install_easyconduite.iss</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                        </executions>  
+                        </executions>
                     </plugin>
-                    <!--                    <plugin>
-                        <artifactId>maven-antrun-plugin</artifactId>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>create-dir</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <version>3.2.0</version>
+                        <configuration>
+                            <finalName>easyconduite</finalName>
+                            <descriptors>
+                                <descriptor>src\main\resources\assembly\javafx-build.xml</descriptor>
+                            </descriptors>
+                        </configuration>
                         <executions>
                             <execution>
-                                <id>scp</id>
-                                <phase>install</phase>
-                                <configuration>
-                                    <tasks>
-                                        <scp todir="${username}:${password}@${host}:${todir}" trust="true" sftp="true">    
-                                            <fileset dir="${basedir}/target/easyconduite-${project.version}/installer/">
-                                                <include name="**\*.exe"/>
-                                            </fileset>
-                                            <fileset dir="${basedir}/target/easyconduite-${project.version}/docs/">
-                                                <include name="**\*.pdf"/>
-                                            </fileset>                             
-                                        </scp>
-                                    </tasks>
-                                </configuration>
+                                <phase>package</phase>
                                 <goals>
-                                    <goal>run</goal>
+                                    <goal>single</goal>
                                 </goals>
                             </execution>
                         </executions>
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.apache.ant</groupId>
-                                <artifactId>ant-jsch</artifactId>
-                                <version>1.10.1</version>
-                            </dependency>
-                        </dependencies>
-                    </plugin>-->
-                </plugins>               
-            </build>        
-        </profile>        
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>
