@@ -18,6 +18,7 @@
                 <exclude>com.antonyweb</exclude>
                 <exclude>com.fasterxml.jackson.core</exclude>
                 <exclude>org.apache.logging.log4j</exclude>
+                <exclude>org.openjfx:*:*:win</exclude>
             </excludes>
         </dependencySet>
     </dependencySets>
