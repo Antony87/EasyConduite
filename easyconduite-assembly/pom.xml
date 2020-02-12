@@ -40,12 +40,12 @@
                         <version>3.2.1</version>
                         <executions>
                             <execution>
-                                <phase>package</phase>
+                                <phase>prepare-package</phase>
                                 <goals>
                                     <goal>shade</goal>
                                 </goals>
                                 <configuration>
-                                    <outputFile>${project.build.directory}/easyconduite-3.0.0-win.jar</outputFile>
+                                    <outputFile>${project.build.directory}/easyconduite-${project.version}-win.jar</outputFile>
                                     <artifactSet>
                                         <excludes>
                                             <exclude>org.openjfx</exclude>
@@ -74,7 +74,7 @@
                         <artifactId>maven-assembly-plugin</artifactId>
                         <version>3.2.0</version>
                         <configuration>
-                            <finalName>easyconduite</finalName>
+                            <finalName>easyconduite-${project.version}</finalName>
                             <descriptors>
                                 <descriptor>src\main\resources\assembly\javafx-build.xml</descriptor>
                             </descriptors>
