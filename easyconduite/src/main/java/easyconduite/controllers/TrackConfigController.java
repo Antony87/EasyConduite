@@ -20,25 +20,27 @@ import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.DialogAbstractController;
 import easyconduite.model.EasyMedia;
 import easyconduite.model.IEasyMediaUI;
-import easyconduite.objects.media.AudioVideoMedia;
+import easyconduite.model.SpecificConfigurable;
+import easyconduite.objects.media.AudioMedia;
+import easyconduite.objects.media.RemotePlayer;
 import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.KeyCodeHelper;
-import easyconduite.view.AudioMediaUI;
 import easyconduite.view.controls.ActionDialog;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.util.Duration;
+import javafx.scene.layout.Pane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -54,9 +56,13 @@ public class TrackConfigController extends DialogAbstractController implements I
     private static final String KEY_ASSIGN_ERROR = "trackconfigcontroller.key.error";
     private static final String KEY_ASSIGN_OTHER = "trackconfigcontroller.key.other";
 
+    private final ResourceBundle locale;
+
     private KeyCode newKeyCode;
 
     private List<IEasyMediaUI> mediaUIList;
+
+    private SpecificConfigurable secondaryController;
 
     @FXML
     private BorderPane trackConfigPane;
@@ -71,39 +77,31 @@ public class TrackConfigController extends DialogAbstractController implements I
     private CheckBox loopTrack;
 
     @FXML
-    private Spinner<Integer> fadeInSpinner;
+    private Pane specializationArea;
 
-    @FXML
-    private Spinner<Integer> fadeOutSpinner;
+    private IEasyMediaUI mediaUI;
 
-    private AudioMediaUI mediaUI;
-
-    public TrackConfigController() {
+    public TrackConfigController() throws EasyconduiteException {
         super();
+        locale = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
     }
 
     @FXML
     private void handleClickOk(MouseEvent event) {
 
-        final Integer iValueFadeOut = fadeOutSpinner.getValue();
-        final Integer iValueFadeIn = fadeInSpinner.getValue();
         final EasyMedia media = mediaUI.getEasyMedia();
         media.setLoppable(loopTrack.isSelected());
         media.setName(nametrackfield.getText());
-        if(newKeyCode!=null){
+        if (newKeyCode != null) {
             media.setKeycode(newKeyCode);
         }
-        if(media instanceof AudioVideoMedia){
-            ((AudioVideoMedia) media).setFadeInDuration(new Duration(iValueFadeIn));
-            ((AudioVideoMedia) media).setFadeOutDuration(new Duration(iValueFadeOut));
-        }
+        if (secondaryController != null) secondaryController.updateSpecificMedia(media);
         mediaUI.actualizeUI();
-
+        LOG.debug("Media changed {}", media.toString());
         this.close(trackConfigPane);
     }
 
@@ -130,7 +128,7 @@ public class TrackConfigController extends DialogAbstractController implements I
                 e.printStackTrace();
             }
         } else {
-            final AudioVideoMedia audioMedia = (AudioVideoMedia) this.mediaUI.getEasyMedia();
+            final AudioMedia audioMedia = (AudioMedia) this.mediaUI.getEasyMedia();
             if (typedKeycode != audioMedia.getKeycode()) {
                 this.newKeyCode = typedKeycode;
                 keytrackfield.setText(KeyCodeHelper.toString(typedKeycode));
@@ -146,33 +144,38 @@ public class TrackConfigController extends DialogAbstractController implements I
         return false;
     }
 
-    public void setMediaUI(IEasyMediaUI mediaUI) {
+    public void initConfigData(IEasyMediaUI mediaUI, List<IEasyMediaUI> otherMediaUIs) {
+        this.mediaUI = mediaUI;
+        this.mediaUIList = otherMediaUIs;
         if (mediaUI != null) {
-            this.mediaUI = (AudioMediaUI) mediaUI;
-            final EasyMedia media = this.mediaUI.getEasyMedia();
+            TrackConfigController.this.mediaUI = mediaUI;
+            final EasyMedia media = TrackConfigController.this.mediaUI.getEasyMedia();
             nametrackfield.setText(media.getName());
             keytrackfield.setText(KeyCodeHelper.toString(media.getKeycode()));
             loopTrack.setSelected(media.getLoppable());
-            initializeSpinners((AudioVideoMedia) media);
+
+            secondaryController = null;
+            if (media instanceof AudioMedia) {
+                final String secondaryFxml = "/fxml/secondary/specAudioConfig.fxml";
+                secondaryController = new AudioConfigController((AudioMedia) media);
+                buildSpecializationArea(secondaryController, secondaryFxml);
+            } else if (media instanceof RemotePlayer) {
+                secondaryController = new RemoteConfigController((RemotePlayer) media);
+                final String secondaryFxml = "/fxml/secondary/specRemoteConfig.fxml";
+            } else {
+            }
         }
+
     }
 
-    public void setMediaUIList(List<IEasyMediaUI> mediaUIList) {
-        this.mediaUIList = mediaUIList;
-    }
-
-    private void initializeSpinners(AudioVideoMedia audioMedia) {
-
-        final SpinnerValueFactory<Integer> valueFadeInFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
-        fadeInSpinner.setValueFactory(valueFadeInFactory);
-        final SpinnerValueFactory<Integer> valueFadeOutFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
-        fadeOutSpinner.setValueFactory(valueFadeOutFactory);
-        if (audioMedia.getFadeInDuration() != null) {
-            fadeInSpinner.getValueFactory().setValue((int) audioMedia.getFadeInDuration().toSeconds());
-        }
-        if (audioMedia.getFadeOutDuration() != null) {
-            fadeOutSpinner.getValueFactory().setValue((int) audioMedia.getFadeOutDuration().toSeconds());
+    private void buildSpecializationArea(SpecificConfigurable secondaryController, String secondaryFxml) {
+        final FXMLLoader loader = new FXMLLoader(getClass().getResource(secondaryFxml), locale);
+        try {
+            loader.setController(secondaryController);
+            Parent specificParent = loader.load();
+            specializationArea.getChildren().add(specificParent);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
-
 }

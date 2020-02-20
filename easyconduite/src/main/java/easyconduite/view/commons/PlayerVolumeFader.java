@@ -16,7 +16,7 @@
  */
 package easyconduite.view.commons;
 
-import easyconduite.objects.media.AudioVideoMedia;
+import easyconduite.objects.media.AudioMedia;
 import javafx.animation.Transition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -32,14 +32,14 @@ public class PlayerVolumeFader extends Transition {
 //    private final EasyconduitePlayer easyPlayer;
 
     private final MediaPlayer player;
-    private final AudioVideoMedia audioVideoMedia;
+    private final AudioMedia audioMedia;
 //
 //    private final AudioMedia audioMedia;
 
-    public PlayerVolumeFader(AudioVideoMedia media) {
+    public PlayerVolumeFader(AudioMedia media) {
         super();
         this.player=media.getPlayer();
-        this.audioVideoMedia =media;
+        this.audioMedia =media;
 //        easyPlayer = player;
 //        audioMedia = media;
     }
@@ -69,14 +69,14 @@ public class PlayerVolumeFader extends Transition {
 
     private EventHandler<ActionEvent> getFadeInHandler() {
         return (ActionEvent event) -> {
-            player.setVolume(audioVideoMedia.getVolume());
+            player.setVolume(audioMedia.getVolume());
             setOnFinished(null);
         };
     }
 
     @Override
     protected void interpolate(double frac) {
-        player.setVolume(frac * audioVideoMedia.getVolume());
+        player.setVolume(frac * audioMedia.getVolume());
     }
 
 }

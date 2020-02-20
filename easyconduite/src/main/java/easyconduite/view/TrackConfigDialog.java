@@ -47,28 +47,31 @@ public class TrackConfigDialog extends Stage {
 
     private TrackConfigController configController;
 
-    public TrackConfigDialog(List<IEasyMediaUI> mediaUIList) throws IOException {
+    private TrackConfigDialog() {
+    }
+
+    public TrackConfigDialog(IEasyMediaUI mediaUI, List<IEasyMediaUI> mediaUIList) throws IOException {
         super();
         try {
             final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
             final FXMLLoader loader = new FXMLLoader(getClass().getResource(PATH_FXML), bundle);
             // Initialize controllers
-            final BorderPane dialogPane = loader.load();
+
+            final BorderPane dialogPane = new BorderPane();
+            loader.setRoot(dialogPane);
+            loader.load();
             configController = loader.getController();
-            configController.setMediaUIList(mediaUIList);
             this.setTitle("Configuration");
             this.initModality(Modality.APPLICATION_MODAL);
             this.initStyle(StageStyle.DECORATED);
             this.setResizable(false);
             Scene sceneConfig = new Scene(dialogPane);
             this.setScene(sceneConfig);
+            configController.initConfigData(mediaUI,mediaUIList);
+            this.showAndWait();
 
         } catch (EasyconduiteException e) {
-            LOG.error("An error occured during ResourceBundle creation",e);
+            LOG.error("An error occured during ResourceBundle creation", e);
         }
-    }
-
-    public TrackConfigController getConfigController() {
-        return configController;
     }
 }

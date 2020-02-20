@@ -20,7 +20,7 @@ import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.EasyMedia;
 import easyconduite.model.IEasyMediaUI;
 import easyconduite.objects.EasyConduiteProperties;
-import easyconduite.objects.media.AudioVideoMedia;
+import easyconduite.objects.media.AudioMedia;
 import easyconduite.objects.media.MediaFactory;
 import easyconduite.objects.project.MediaProject;
 import easyconduite.util.EasyConduitePropertiesHandler;
@@ -162,10 +162,8 @@ public class MainController extends StackPane implements Initializable {
         final TrackConfigDialog trackConfigDialog;
         try {
             audioMediaUi.stop();
-            trackConfigDialog = new TrackConfigDialog(getMediaUIList());
-            final TrackConfigController configController = trackConfigDialog.getConfigController();
-            configController.setMediaUI(audioMediaUi);
-            trackConfigDialog.showAndWait();
+            trackConfigDialog = new TrackConfigDialog(audioMediaUi,getMediaUIList());
+
         } catch (IOException ex) {
             LOG.error("Error occurend during TrackConfigDialog construction", ex);
         }
@@ -189,7 +187,7 @@ public class MainController extends StackPane implements Initializable {
     protected boolean isProjectErasable(MediaProject project) {
         if (project.isNeedToSave()) {
             Optional<ButtonType> result = ActionDialog.showConfirmation(locale.getString("dialog.warning.save.header"), locale.getString("dialog.warning.save.content"));
-            return result.isPresent() && result.get() != ButtonType.NO;
+            return result.isPresent() && result.get() == ButtonType.NO;
         }
         return true;
     }
@@ -241,7 +239,7 @@ public class MainController extends StackPane implements Initializable {
     }
 
     private void deleteOneTrack(IEasyMediaUI mediaUI) {
-        ((AudioVideoMedia) mediaUI.getEasyMedia()).getPlayer().dispose();
+        ((AudioMedia) mediaUI.getEasyMedia()).getPlayer().dispose();
         project.getEasyMediaList().remove(mediaUI.getEasyMedia());
         tableLayout.getChildren().remove(mediaUI);
         project.setNeedToSave(true);

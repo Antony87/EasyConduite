@@ -13,11 +13,12 @@ import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
-import java.io.File;
+import java.net.URI;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 
-public class AudioVideoMedia extends EasyMedia {
+public class AudioMedia extends EasyMedia {
 
     @JsonSerialize(using = DurationSerializer.class)
     @JsonDeserialize(using = DurationDeserializer.class)
@@ -27,7 +28,7 @@ public class AudioVideoMedia extends EasyMedia {
     @JsonDeserialize(using = DurationDeserializer.class)
     private Duration fadeOutDuration = Duration.ZERO;
 
-    private File mediaFile;
+    private URI resourcePath;
 
     private double volume = 0.5;
 
@@ -37,25 +38,31 @@ public class AudioVideoMedia extends EasyMedia {
     @JsonIgnore
     private PlayerVolumeFader fadeHandler;
 
-    public AudioVideoMedia() {
+    public AudioMedia() {
     }
 
-    public AudioVideoMedia(File file) {
+    public AudioMedia(URI resource) {
         super();
-        this.mediaFile = file;
+        this.resourcePath=resource;
     }
 
+    /**
+     * This method initialize a player for this type of media.
+     * @see MediaPlayer
+     * @throws EasyconduiteException
+     */
     public void initPlayer() throws EasyconduiteException {
 
         try {
-            final Media mediaForPlayer = new Media(this.getMediaFile().toURI().toString());
+            final Media mediaForPlayer = new Media(this.getResourcePath().toString());
             player = new MediaPlayer(mediaForPlayer);
             player.setVolume(this.getVolume());
             fadeHandler = new PlayerVolumeFader(this);
             player.setStartTime(Duration.ZERO);
 
             if(getName()==null){
-                setName(getMediaFile().getName());
+                final String name = Paths.get(getResourcePath()).getFileName().toString();
+                setName(name);
             }
 
             player.setOnEndOfMedia(() -> {
@@ -124,12 +131,12 @@ public class AudioVideoMedia extends EasyMedia {
         return player;
     }
 
-    public File getMediaFile() {
-        return mediaFile;
+    public URI getResourcePath() {
+        return resourcePath;
     }
 
-    public void setMediaFile(File mediaFile) {
-        this.mediaFile = mediaFile;
+    public void setResourcePath(URI resourcePath) {
+        this.resourcePath = resourcePath;
     }
 
     public double getVolume() {
@@ -143,17 +150,27 @@ public class AudioVideoMedia extends EasyMedia {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof AudioVideoMedia)) return false;
+        if (!(o instanceof AudioMedia)) return false;
         if (!super.equals(o)) return false;
-        AudioVideoMedia that = (AudioVideoMedia) o;
+        AudioMedia that = (AudioMedia) o;
         return Double.compare(that.volume, volume) == 0 &&
                 Objects.equals(fadeInDuration, that.fadeInDuration) &&
                 Objects.equals(fadeOutDuration, that.fadeOutDuration) &&
-                mediaFile.equals(that.mediaFile);
+                resourcePath.equals(that.resourcePath);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), fadeInDuration, fadeOutDuration, mediaFile, volume);
+        return Objects.hash(super.hashCode(), fadeInDuration, fadeOutDuration, resourcePath, volume);
+    }
+
+    @Override
+    public String toString() {
+        return "AudioMedia{" +
+                "fadeInDuration=" + fadeInDuration +
+                ", fadeOutDuration=" + fadeOutDuration +
+                ", resourcePath=" + resourcePath +
+                ", volume=" + volume +
+                "} " + super.toString();
     }
 }

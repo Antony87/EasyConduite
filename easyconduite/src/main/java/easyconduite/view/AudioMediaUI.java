@@ -20,7 +20,7 @@ import easyconduite.controllers.MainController;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.EasyMedia;
 import easyconduite.model.IEasyMediaUI;
-import easyconduite.objects.media.AudioVideoMedia;
+import easyconduite.objects.media.AudioMedia;
 import easyconduite.util.KeyCodeHelper;
 import easyconduite.view.commons.MediaSelectedPseudoClass;
 import easyconduite.view.commons.PlayingPseudoClass;
@@ -33,7 +33,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
@@ -54,7 +53,7 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
     private final Label timeLabel = new Label();
     private final Label keycodeLabel = new Label();
     private final Region repeatRegion = new Region();
-    private final AudioVideoMedia audioMedia;
+    private final AudioMedia audioMedia;
     private final BooleanProperty playingClass = new PlayingPseudoClass(this);
     private final BooleanProperty mediaSelectedClass = new MediaSelectedPseudoClass(this);
 
@@ -70,7 +69,7 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
     public AudioMediaUI(EasyMedia media, MainController controller) {
         super();
         LOG.info("Construct an AudioMedia {}", media);
-        this.audioMedia = (AudioVideoMedia) media;
+        this.audioMedia = (AudioMedia) media;
 
 
         ////////////////////////////////////////////////////////////////////////

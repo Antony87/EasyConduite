@@ -1,12 +1,12 @@
 package easyconduite.objects.media;
 
 import easyconduite.model.EasyMedia;
-import easyconduite.model.IEasyMedia;
+import easyconduite.model.ResourcePlayable;
 
 import java.io.File;
 
 /**
- * Cette classe implémente une Factory retournant un {@link IEasyMedia}.
+ * Cette classe implémente une Factory retournant un {@link ResourcePlayable}.
  */
 public class MediaFactory {
 
@@ -15,7 +15,7 @@ public class MediaFactory {
         if(param instanceof File){
             File mediaFile = (File)param;
             if(mediaFile.exists()){
-                return new AudioVideoMedia(mediaFile);
+                return new AudioMedia(mediaFile.toURI());
             }
         }
     return null;

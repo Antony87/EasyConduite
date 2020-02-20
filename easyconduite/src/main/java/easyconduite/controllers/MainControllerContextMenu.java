@@ -51,7 +51,9 @@ public class MainControllerContextMenu extends ContextMenu{
 
         final FlowPane tableLayout = mainController.getTableLayout();
         tableLayout.setOnContextMenuRequested(contextMenuEvent -> {
+            if(contextMenuEvent.getTarget().equals(tableLayout)){
                 this.show(tableLayout, contextMenuEvent.getScreenX(), contextMenuEvent.getScreenY());
+            }
         });
     }
 }

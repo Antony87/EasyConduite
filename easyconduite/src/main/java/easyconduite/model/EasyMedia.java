@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import easyconduite.objects.media.AudioVideoMedia;
+import easyconduite.objects.media.AudioMedia;
 import easyconduite.tools.jackson.DurationDeserializer;
 import easyconduite.tools.jackson.DurationSerializer;
 import javafx.scene.input.KeyCode;
@@ -22,9 +22,9 @@ import java.util.UUID;
         include = JsonTypeInfo.As.PROPERTY,
         property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = AudioVideoMedia.class, name = "audiovideomedia"),
+        @JsonSubTypes.Type(value = AudioMedia.class, name = "audiovideomedia"),
 })
-public abstract class EasyMedia implements IEasyMedia {
+public abstract class EasyMedia implements ResourcePlayable {
 
     private String name;
 
