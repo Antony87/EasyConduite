@@ -16,7 +16,7 @@ public class EasyProjectFixture {
 
         MediaProject project = new MediaProject();
         project.setName("valid project");
-        EasyMedia media = MediaFactory.getAudioVideoMedia(new File("C:\\Users\\V902832\\IdeaProjects\\EasyConduite\\easyconduite\\src\\test\\resources\\Alarme.wav"));
+        EasyMedia media = MediaFactory.getPlayableMedia(new File("C:\\Users\\V902832\\IdeaProjects\\EasyConduite\\easyconduite\\src\\test\\resources\\Alarme.wav"));
         media.setDuration(new Duration(1000));
         ((AudioMedia)media).setVolume(0.50);
         media.setLoppable(true);

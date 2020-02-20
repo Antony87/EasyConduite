@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.effect.Blend?>
-<?import javafx.scene.input.*?>
-<?import javafx.scene.layout.*?>
 <?import java.net.URL?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.input.KeyCodeCombination?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
 <fx:root fx:id="mainPane" type="StackPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.MainController">
    <children>
       <VBox maxHeight="1.7976931348623157E308" onKeyPressed="#handleKeyCodePlay">
@@ -43,6 +51,11 @@
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="I" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                            </accelerator></MenuItem>
+                        <Menu mnemonicParsing="false" text="Add remote...">
+                          <items>
+                            <MenuItem mnemonicParsing="false" text="KODI" />
+                          </items>
+                        </Menu>
                         <MenuItem mnemonicParsing="false" onAction="#menuEditTrack" text="%menu.track.edit">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="E" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />

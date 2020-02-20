@@ -57,22 +57,41 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 /**
- * This class implements a controller for audio table and AudioMediUI behaviors.
+ * This class implements the main controller for a Media Project.
+ * <p>This controller is instanciate by fxml/easyconduite_v3.fxml</p>
  *
  * @author A Fons
+ * @since 1.0
  */
 public class MainController extends StackPane implements Initializable {
 
     private static final Logger LOG = LogManager.getLogger(MainController.class);
+    /**
+     * message that appears on the header.
+     */
     private static final String DIALOG_ERROR_HEADER = "dialog.error.header";
     private final List<IEasyMediaUI> mediaUIList;
     private final ResourceBundle locale;
+    /**
+     * The properties of this application EasyConduite.
+     * @see easyconduite.Easyconduite
+     *
+     */
     private final EasyConduiteProperties appProperties;
+    /**
+     * The project.
+     */
     private MediaProject project;
 
+    /**
+     * This is the main Pane of the application.
+     */
     @FXML
     private StackPane mainPane;
 
+    /**
+     * This is the FlowPane, container of the MediaUI for the tracks.
+     */
     @FXML
     private FlowPane tableLayout;
 
@@ -158,12 +177,9 @@ public class MainController extends StackPane implements Initializable {
     }
 
     public void editTrack(IEasyMediaUI audioMediaUi) {
-
-        final TrackConfigDialog trackConfigDialog;
         try {
             audioMediaUi.stop();
-            trackConfigDialog = new TrackConfigDialog(audioMediaUi,getMediaUIList());
-
+            new TrackConfigDialog(audioMediaUi, getMediaUIList());
         } catch (IOException ex) {
             LOG.error("Error occurend during TrackConfigDialog construction", ex);
         }
@@ -211,7 +227,7 @@ public class MainController extends StackPane implements Initializable {
             if (audioFiles != null && !audioFiles.isEmpty()) {
                 appProperties.setLastImportDir(audioFiles.get(0).getParentFile().toPath());
                 audioFiles.forEach(file -> {
-                    final EasyMedia media = MediaFactory.getAudioVideoMedia(file);
+                    final EasyMedia media = MediaFactory.getPlayableMedia(file);
                     // ajout dans la liste du projet
                     project.getEasyMediaList().add(media);
                     // construction de l'UI.

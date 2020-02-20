@@ -162,6 +162,7 @@ public class TrackConfigController extends DialogAbstractController implements I
             } else if (media instanceof RemotePlayer) {
                 secondaryController = new RemoteConfigController((RemotePlayer) media);
                 final String secondaryFxml = "/fxml/secondary/specRemoteConfig.fxml";
+                buildSpecializationArea(secondaryController, secondaryFxml);
             } else {
             }
         }
