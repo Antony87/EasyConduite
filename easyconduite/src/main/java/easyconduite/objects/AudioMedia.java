@@ -34,8 +34,10 @@ import java.util.UUID;
  *
  * @author A.Fons
  * @version 1.2
+ * @deprecated
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
+@Deprecated
 public class AudioMedia {
 
     private UUID uniqueId = UUID.randomUUID();

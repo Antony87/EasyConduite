@@ -2,7 +2,7 @@ package easyconduite.model;
 
 import easyconduite.exception.EasyconduiteException;
 
-public interface IEasyMedia {
+public interface ResourcePlayable {
 
     /**
      * Méthode jouant un EasyMédia.

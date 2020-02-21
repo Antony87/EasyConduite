@@ -27,10 +27,23 @@ import javafx.scene.layout.FlowPane;
 
 import java.util.ResourceBundle;
 
-public class MainControllerContextMenu extends ContextMenu{
+/**
+ * This class implements Contextual menus for the main FlowPan of project.
+ * <p>
+ * Actions is :
+ * <ul>
+ *     <li>Import an file to a track</li>
+ *     <li>Clear all project, erase all tracks</li>
+ *     <li>Add all tracks to cue</li>
+ * </ul>
+ */
+public class MainControllerContextMenu extends ContextMenu {
 
     private final MainController mainController;
 
+    /**
+     * @param controller The controller who manage FlowPane actions
+     */
     public MainControllerContextMenu(MainController controller) {
         super();
         this.mainController = controller;
@@ -51,7 +64,9 @@ public class MainControllerContextMenu extends ContextMenu{
 
         final FlowPane tableLayout = mainController.getTableLayout();
         tableLayout.setOnContextMenuRequested(contextMenuEvent -> {
+            if (contextMenuEvent.getTarget().equals(tableLayout)) {
                 this.show(tableLayout, contextMenuEvent.getScreenX(), contextMenuEvent.getScreenY());
+            }
         });
     }
 }

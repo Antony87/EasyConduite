@@ -1,12 +1,14 @@
 package easyconduite.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import easyconduite.objects.media.AudioVideoMedia;
+import easyconduite.objects.media.AudioMedia;
 import easyconduite.tools.jackson.DurationDeserializer;
 import easyconduite.tools.jackson.DurationSerializer;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.input.KeyCode;
 import javafx.util.Duration;
 
@@ -22,9 +24,13 @@ import java.util.UUID;
         include = JsonTypeInfo.As.PROPERTY,
         property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = AudioVideoMedia.class, name = "audiovideomedia"),
+        @JsonSubTypes.Type(value = AudioMedia.class, name = "audiovideomedia"),
 })
-public abstract class EasyMedia implements IEasyMedia {
+public abstract class EasyMedia implements ResourcePlayable {
+
+    public enum Status{
+        PLAYING,PAUSED,STOPPED,READY
+    }
 
     private String name;
 
@@ -39,6 +45,9 @@ public abstract class EasyMedia implements IEasyMedia {
     private KeyCode keycode;
 
     private boolean loppable = false;
+
+    @JsonIgnore
+    private SimpleObjectProperty<Status> statusProperty = new SimpleObjectProperty<>(Status.READY);
 
     /**
      * @return Nom du EasyMédia.
@@ -97,6 +106,18 @@ public abstract class EasyMedia implements IEasyMedia {
 
     public void setLoppable(boolean loppable) {
         this.loppable = loppable;
+    }
+
+    public Status getStatusProperty() {
+        return statusProperty.get();
+    }
+
+    public SimpleObjectProperty<Status> statusPropertyProperty() {
+        return statusProperty;
+    }
+
+    public void setStatusProperty(Status statusProperty) {
+        this.statusProperty.set(statusProperty);
     }
 
     @Override

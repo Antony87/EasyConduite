@@ -6,14 +6,9 @@
     <id>win</id>
     <formats>
         <format>dir</format>
+        <format>zip</format>
     </formats>
     <includeBaseDirectory>false</includeBaseDirectory>
-    <fileSets>
-        <fileSet>
-            <directory>C:\Users\antony\Documents\openjdk-12.0.2_windows-x64_bin\jdk-12.0.2</directory>
-            <outputDirectory>\jre</outputDirectory>
-        </fileSet>
-    </fileSets>
     <dependencySets>
         <dependencySet>
             <scope>runtime</scope>
