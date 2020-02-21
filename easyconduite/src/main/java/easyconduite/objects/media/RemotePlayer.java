@@ -74,7 +74,7 @@ public class RemotePlayer extends EasyMedia {
     }
 
     @Override
-    public void initPlayer() throws EasyconduiteException {
+    public void initPlayer() {
 
 
         if(typeRemotePlayer.equals(Type.KODI)){
@@ -82,6 +82,11 @@ public class RemotePlayer extends EasyMedia {
 
         }
 
+
+    }
+
+    @Override
+    public void closePlayer() {
 
     }
 

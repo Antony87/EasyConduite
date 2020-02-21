@@ -17,10 +17,7 @@
 package easyconduite.controllers;
 
 import easyconduite.exception.EasyconduiteException;
-import easyconduite.model.DialogAbstractController;
-import easyconduite.model.EasyMedia;
-import easyconduite.model.IEasyMediaUI;
-import easyconduite.model.SpecificConfigurable;
+import easyconduite.model.*;
 import easyconduite.objects.media.AudioMedia;
 import easyconduite.objects.media.RemotePlayer;
 import easyconduite.util.EasyConduitePropertiesHandler;
@@ -60,7 +57,7 @@ public class TrackConfigController extends DialogAbstractController implements I
 
     private KeyCode newKeyCode;
 
-    private List<IEasyMediaUI> mediaUIList;
+    private List<UIResourcePlayable> mediaUIList;
 
     private SpecificConfigurable secondaryController;
 
@@ -79,7 +76,7 @@ public class TrackConfigController extends DialogAbstractController implements I
     @FXML
     private Pane specializationArea;
 
-    private IEasyMediaUI mediaUI;
+    private UIResourcePlayable mediaUI;
 
     public TrackConfigController() throws EasyconduiteException {
         super();
@@ -100,7 +97,7 @@ public class TrackConfigController extends DialogAbstractController implements I
             media.setKeycode(newKeyCode);
         }
         if (secondaryController != null) secondaryController.updateSpecificMedia(media);
-        mediaUI.actualizeUI();
+        ((AbstractUIMedia)mediaUI).actualizeUI();
         LOG.debug("Media changed {}", media.toString());
         this.close(trackConfigPane);
     }
@@ -137,14 +134,14 @@ public class TrackConfigController extends DialogAbstractController implements I
     }
 
     private boolean isKeyCodeExist(KeyCode keyCode) {
-        for (IEasyMediaUI ui : mediaUIList) {
+        for (UIResourcePlayable ui : mediaUIList) {
             final KeyCode code = ui.getEasyMedia().getKeycode();
             if (code != null && code.equals(keyCode)) return true;
         }
         return false;
     }
 
-    public void initConfigData(IEasyMediaUI mediaUI, List<IEasyMediaUI> otherMediaUIs) {
+    public void initConfigData(UIResourcePlayable mediaUI, List<UIResourcePlayable> otherMediaUIs) {
         this.mediaUI = mediaUI;
         this.mediaUIList = otherMediaUIs;
         if (mediaUI != null) {

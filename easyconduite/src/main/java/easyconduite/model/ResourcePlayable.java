@@ -24,4 +24,6 @@ public interface ResourcePlayable {
      */
     void initPlayer() throws EasyconduiteException;
 
+    void closePlayer();
+
 }

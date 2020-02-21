@@ -46,9 +46,6 @@ public abstract class EasyMedia implements ResourcePlayable {
 
     private boolean loppable = false;
 
-    @JsonIgnore
-    private SimpleObjectProperty<Status> statusProperty = new SimpleObjectProperty<>(Status.READY);
-
     /**
      * @return Nom du EasyMédia.
      */
@@ -106,18 +103,6 @@ public abstract class EasyMedia implements ResourcePlayable {
 
     public void setLoppable(boolean loppable) {
         this.loppable = loppable;
-    }
-
-    public Status getStatusProperty() {
-        return statusProperty.get();
-    }
-
-    public SimpleObjectProperty<Status> statusPropertyProperty() {
-        return statusProperty;
-    }
-
-    public void setStatusProperty(Status statusProperty) {
-        this.statusProperty.set(statusProperty);
     }
 
     @Override
