@@ -15,6 +15,7 @@ import javafx.util.Duration;
 
 import java.net.URI;
 import java.nio.file.Paths;
+import java.util.EnumMap;
 import java.util.Objects;
 
 
@@ -38,12 +39,21 @@ public class AudioMedia extends EasyMedia {
     @JsonIgnore
     private PlayerVolumeFader fadeHandler;
 
+    @JsonIgnore
+    private EnumMap<MediaPlayer.Status,Status> mapStatus = new EnumMap(MediaPlayer.Status.class);
+
     public AudioMedia() {
     }
 
     public AudioMedia(URI resource) {
         super();
         this.resourcePath=resource;
+        mapStatus.put(MediaPlayer.Status.PLAYING,Status.PLAYING);
+        mapStatus.put(MediaPlayer.Status.PAUSED,Status.PAUSED);
+        mapStatus.put(MediaPlayer.Status.STOPPED,Status.STOPPED);
+        mapStatus.put(MediaPlayer.Status.READY,Status.READY);
+        mapStatus.put(MediaPlayer.Status.UNKNOWN,Status.READY);
+        mapStatus.put(MediaPlayer.Status.STALLED,Status.READY);
     }
 
     /**
@@ -51,6 +61,7 @@ public class AudioMedia extends EasyMedia {
      * @see MediaPlayer
      * @throws EasyconduiteException
      */
+    @Override
     public void initPlayer() throws EasyconduiteException {
 
         try {
@@ -59,6 +70,10 @@ public class AudioMedia extends EasyMedia {
             player.setVolume(this.getVolume());
             fadeHandler = new PlayerVolumeFader(this);
             player.setStartTime(Duration.ZERO);
+
+
+
+            player.statusProperty().addListener((observable, oldValue, newValue) -> statusPropertyProperty().setValue(mapStatus.get(player.getStatus())));
 
             if(getName()==null){
                 final String name = Paths.get(getResourcePath()).getFileName().toString();
@@ -110,6 +125,7 @@ public class AudioMedia extends EasyMedia {
         player.stop();
         player.volumeProperty().setValue(this.getVolume());
     }
+
 
     public Duration getFadeInDuration() {
         return fadeInDuration;

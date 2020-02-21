@@ -1,5 +1,6 @@
 package easyconduite.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -7,6 +8,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import easyconduite.objects.media.AudioMedia;
 import easyconduite.tools.jackson.DurationDeserializer;
 import easyconduite.tools.jackson.DurationSerializer;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.input.KeyCode;
 import javafx.util.Duration;
 
@@ -26,6 +28,10 @@ import java.util.UUID;
 })
 public abstract class EasyMedia implements ResourcePlayable {
 
+    public enum Status{
+        PLAYING,PAUSED,STOPPED,READY
+    }
+
     private String name;
 
     @JsonSerialize(using = DurationSerializer.class)
@@ -39,6 +45,9 @@ public abstract class EasyMedia implements ResourcePlayable {
     private KeyCode keycode;
 
     private boolean loppable = false;
+
+    @JsonIgnore
+    private SimpleObjectProperty<Status> statusProperty = new SimpleObjectProperty<>(Status.READY);
 
     /**
      * @return Nom du EasyMédia.
@@ -97,6 +106,18 @@ public abstract class EasyMedia implements ResourcePlayable {
 
     public void setLoppable(boolean loppable) {
         this.loppable = loppable;
+    }
+
+    public Status getStatusProperty() {
+        return statusProperty.get();
+    }
+
+    public SimpleObjectProperty<Status> statusPropertyProperty() {
+        return statusProperty;
+    }
+
+    public void setStatusProperty(Status statusProperty) {
+        this.statusProperty.set(statusProperty);
     }
 
     @Override

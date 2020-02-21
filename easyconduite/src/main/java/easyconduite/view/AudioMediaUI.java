@@ -34,7 +34,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
@@ -45,6 +44,7 @@ import org.apache.logging.log4j.Logger;
  * AudioMedia.
  *
  * @author A Fons
+ * @since 1.0
  */
 public class AudioMediaUI extends VBox implements IEasyMediaUI {
 
@@ -59,12 +59,9 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
 
     /**
      * Constructor du UI custom control for an AudioMedia.
-     * <p>
-     * Not draw the control but construct object and assign a
-     * {@link MediaPlayer}.
      *
      * @param media a media wich be play.
-     * @see icons/MediaUI.png
+     * @param controller the main controller which interact with {@link AudioMediaUI}
      */
     public AudioMediaUI(EasyMedia media, MainController controller) {
         super();
@@ -98,7 +95,8 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
         try {
             audioMedia.initPlayer();
             // Listenner sur la fin de l'initialisation du player.
-            audioMedia.getPlayer().statusProperty().addListener((observableValue, oldValue, newValue) -> {
+
+            audioMedia.statusPropertyProperty().addListener((observableValue, oldValue, newValue) -> {
                 switch (newValue) {
                     case PAUSED:
                         playingClass.setValue(false);
@@ -163,6 +161,7 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
             }
             if (eventFocus.getClickCount() == 2) {
                 controller.editTrack(this);
+
             }
             eventFocus.consume();
         });
@@ -174,6 +173,12 @@ public class AudioMediaUI extends VBox implements IEasyMediaUI {
         this.getChildren().addAll(nameLabel, contextHbox, timeLabel, keycodeLabel, playPauseHbox);
     }
 
+    /**
+     * This is the time string formater for display human-readable the media duration.
+     *
+     * @param duration
+     * @return the time duration in mm:ss:dc format (dc = 1/10 s)
+     */
     private String formatTime(Duration duration) {
 
         if (duration.greaterThan(Duration.ZERO)) {

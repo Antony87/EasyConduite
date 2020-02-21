@@ -44,10 +44,13 @@ public class RemotePlayer extends EasyMedia {
     @JsonIgnore
     private final HttpClient httpClient;
 
+    @JsonIgnore
     private HttpPost playHttpPost;
 
+    @JsonIgnore
     private HttpPost pauseHttpPost;
 
+    @JsonIgnore
     private HttpPost stopHttpPost;
 
     public RemotePlayer(Type type) {

@@ -20,7 +20,7 @@
                               <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
-                        <Menu fx:id="openRecent" mnemonicParsing="false" text="Recent..." />
+                        <Menu fx:id="menuOpenRecent" mnemonicParsing="false" text="Recent..." />
                   <MenuItem mnemonicParsing="false" onAction="#menuFileSave" text="%menu.file.save">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
