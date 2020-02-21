@@ -25,12 +25,6 @@ package easyconduite.model;
  */
 public interface UIResourcePlayable {
 
-//    /**
-//     * Method which updates the UI fields according to the values ​of the EasyMedia object.
-//     * See {@link EasyMedia}.
-//     */
-//    void actualizeUI();
-
     /**
      * Method which return the EasyMedia object.
      * @return Object EasyMedia.

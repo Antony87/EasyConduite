@@ -21,13 +21,10 @@ import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.AbstractUIMedia;
 import easyconduite.model.EasyMedia;
 import easyconduite.objects.media.AudioMedia;
-import easyconduite.view.controls.ActionDialog;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Slider;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Region;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
@@ -89,19 +86,6 @@ public class AudioMediaUI extends AbstractUIMedia {
             });
 
         }
-
-        playPauseHbox.setOnMouseClicked(mouseEvent -> {
-            if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
-                Region target = (Region) mouseEvent.getTarget();
-                if (target.getStyleClass().contains("stopbutton")) {
-                    audioMedia.getPlayer().stop();
-                } else {
-                    playPause();
-                }
-            }
-            mouseEvent.consume();
-        });
-
 
         ///////////// current Time label
         audioMedia.getPlayer().currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> timeLabel.setText(formatTime(audioMedia.getDuration().subtract(newValue))));

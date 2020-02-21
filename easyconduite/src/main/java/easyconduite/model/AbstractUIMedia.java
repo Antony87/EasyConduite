@@ -21,26 +21,29 @@ import java.util.ResourceBundle;
 
 /**
  * This class implements the common behaviors of the Media UI.
+ *
+ * @author Antony Fons
+ * @since 3.0
  */
-public abstract class AbstractUIMedia extends VBox implements UIResourcePlayable{
-
-    private final VBox mediaVboxNode= new VBox();
+public abstract class AbstractUIMedia extends VBox implements UIResourcePlayable {
 
     static final Logger LOG = LogManager.getLogger(AudioMediaUI.class);
-    private final Label nameLabel = new Label();
     protected final Label timeLabel = new Label();
     protected final Label keycodeLabel = new Label();
-    private final Region repeatRegion = new Region();
     protected final HBox contextHbox = new HBox();
     protected final HBox playPauseHbox = new HBox();
+    private final VBox mediaVboxNode = new VBox();
+    protected final BooleanProperty playingClass = new PlayingPseudoClass(mediaVboxNode);
+    protected final BooleanProperty mediaSelectedClass = new MediaSelectedPseudoClass(mediaVboxNode);
+    private final Label nameLabel = new Label();
+    private final Region repeatRegion = new Region();
     private final EasyMedia easyMedia;
-    protected final BooleanProperty playingClass = new PlayingPseudoClass(this);
-    protected final BooleanProperty mediaSelectedClass = new MediaSelectedPseudoClass(this);
     protected ResourceBundle locale;
 
     /**
      * Constructeur.
-     * @param media the media displayed
+     *
+     * @param media      the media displayed
      * @param controller the main controller
      */
     public AbstractUIMedia(EasyMedia media, MainController controller) {
@@ -56,11 +59,25 @@ public abstract class AbstractUIMedia extends VBox implements UIResourcePlayable
         ////////////////////////////////////////////////////////////////////////
         // attribution css for Track VBOX
         mediaVboxNode.getStyleClass().add("audioMediaUi");
-        // Name of the track, just top of the VBOX (this).
+        // Gestion des mouse events pour la sélection de l'UI.
+        mediaVboxNode.setOnMouseClicked(eventFocus -> {
+            if (eventFocus.getButton().equals(MouseButton.PRIMARY)) {
+                mediaVboxNode.requestFocus();
+                if (mediaVboxNode.isFocused()) {
+                    controller.getMediaUIList().forEach(mediaUI -> setSelected(false));
+                    setSelected(true);
+                }
+            }
+            if (eventFocus.getClickCount() == 2) {
+                controller.editTrack(this);
+            }
+            eventFocus.consume();
+        });
+
         nameLabel.setMouseTransparent(true);
 
-        // Construction de la partie contextuelle
-        //TODO extraire dans une classe et créer une classe abstraite MediaUI.
+        // Construction de la partie contextuelle, centrale de l'UI.
+        // sans le slider de volume qui est spécifique.
         contextHbox.setId("contextHbox");
         final VBox infoVbox = new VBox();
         infoVbox.setId("infoVbox");
@@ -71,29 +88,26 @@ public abstract class AbstractUIMedia extends VBox implements UIResourcePlayable
         if (easyMedia.getLoppable()) {
             repeatRegion.getStyleClass().add("repeat");
         }
+
         infoVbox.getChildren().addAll(typeRegion, repeatRegion);
 
         playPauseHbox.getStyleClass().add("commandHbox");
-
         final Region playRegion = new Region();
         final Region stopRegion = new Region();
         stopRegion.getStyleClass().add("stopbutton");
         playRegion.getStyleClass().add("playbutton");
         playPauseHbox.getChildren().addAll(stopRegion, playRegion);
 
-        // Gestion des mouse events pour la sélection d'un UI.
-        mediaVboxNode.setOnMouseClicked(eventFocus -> {
-            if (eventFocus.getButton().equals(MouseButton.PRIMARY)) {
-                mediaVboxNode.requestFocus();
-                if (mediaVboxNode.isFocused()) {
-                    controller.getMediaUIList().forEach(mediaUI -> setSelected(false));
-                    setSelected(true);
+        playPauseHbox.setOnMouseClicked(mouseEvent -> {
+            if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
+                Region target = (Region) mouseEvent.getTarget();
+                if (target.getStyleClass().contains("stopbutton")) {
+                    stop();
+                } else {
+                    playPause();
                 }
             }
-            if (eventFocus.getClickCount() == 2) {
-                controller.editTrack((UIResourcePlayable) this);
-            }
-            eventFocus.consume();
+            mouseEvent.consume();
         });
 
         contextHbox.getChildren().add(infoVbox);
@@ -130,10 +144,12 @@ public abstract class AbstractUIMedia extends VBox implements UIResourcePlayable
     }
 
 
+    @Override
     public boolean isSelected() {
         return mediaSelectedClass.getValue();
     }
 
+    @Override
     public void setSelected(boolean selected) {
         mediaSelectedClass.setValue(selected);
     }
@@ -142,7 +158,14 @@ public abstract class AbstractUIMedia extends VBox implements UIResourcePlayable
         return mediaVboxNode;
     }
 
+    @Override
     public EasyMedia getEasyMedia() {
         return easyMedia;
     }
+
+    @Override
+    public abstract void playPause();
+
+    @Override
+    public abstract void stop();
 }

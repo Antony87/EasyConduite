@@ -230,10 +230,10 @@ public class MainController extends StackPane implements Initializable {
         event.consume();
     }
 
-    public void editTrack(UIResourcePlayable audioMediaUi) {
+    public void editTrack(UIResourcePlayable mediaUi) {
         try {
-            audioMediaUi.stop();
-            new TrackConfigDialog(audioMediaUi, getMediaUIList());
+            mediaUi.stop();
+            new TrackConfigDialog(mediaUi, getMediaUIList());
         } catch (IOException ex) {
             LOG.error("Error occurend during TrackConfigDialog construction", ex);
         }
