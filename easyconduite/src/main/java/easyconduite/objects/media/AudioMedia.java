@@ -40,26 +40,27 @@ public class AudioMedia extends EasyMedia {
     private PlayerVolumeFader fadeHandler;
 
     @JsonIgnore
-    private EnumMap<MediaPlayer.Status,Status> mapStatus = new EnumMap(MediaPlayer.Status.class);
+    private EnumMap<MediaPlayer.Status, Status> mapStatus = new EnumMap(MediaPlayer.Status.class);
 
     public AudioMedia() {
     }
 
     public AudioMedia(URI resource) {
         super();
-        this.resourcePath=resource;
-        mapStatus.put(MediaPlayer.Status.PLAYING,Status.PLAYING);
-        mapStatus.put(MediaPlayer.Status.PAUSED,Status.PAUSED);
-        mapStatus.put(MediaPlayer.Status.STOPPED,Status.STOPPED);
-        mapStatus.put(MediaPlayer.Status.READY,Status.READY);
-        mapStatus.put(MediaPlayer.Status.UNKNOWN,Status.READY);
-        mapStatus.put(MediaPlayer.Status.STALLED,Status.READY);
+        this.resourcePath = resource;
+        mapStatus.put(MediaPlayer.Status.PLAYING, Status.PLAYING);
+        mapStatus.put(MediaPlayer.Status.PAUSED, Status.PAUSED);
+        mapStatus.put(MediaPlayer.Status.STOPPED, Status.STOPPED);
+        mapStatus.put(MediaPlayer.Status.READY, Status.READY);
+        mapStatus.put(MediaPlayer.Status.UNKNOWN, Status.READY);
+        mapStatus.put(MediaPlayer.Status.STALLED, Status.READY);
     }
 
     /**
      * This method initialize a player for this type of media.
-     * @see MediaPlayer
+     *
      * @throws EasyconduiteException
+     * @see MediaPlayer
      */
     @Override
     public void initPlayer() throws EasyconduiteException {
@@ -72,10 +73,7 @@ public class AudioMedia extends EasyMedia {
             player.setStartTime(Duration.ZERO);
 
 
-
-            player.statusProperty().addListener((observable, oldValue, newValue) -> statusPropertyProperty().setValue(mapStatus.get(player.getStatus())));
-
-            if(getName()==null){
+            if (getName() == null) {
                 final String name = Paths.get(getResourcePath()).getFileName().toString();
                 setName(name);
             }
@@ -85,10 +83,11 @@ public class AudioMedia extends EasyMedia {
                     this.stop();
                     player.volumeProperty().setValue(getVolume());
                     this.getPlayer().setCycleCount(1);
-                }else{
+                } else {
                     player.seek(Duration.ZERO);
                 }
             });
+
 
         } catch (NullPointerException ne) {
             throw new EasyconduiteException("Impossible de trouver le fichier et de constituer le media", ne);
@@ -100,6 +99,11 @@ public class AudioMedia extends EasyMedia {
             final String msg = "Impossible de charger le fichier [" + me.getType().toString() + "]";
             throw new EasyconduiteException(msg, me);
         }
+    }
+
+    @Override
+    public void closePlayer() {
+        player.dispose();
     }
 
     @Override

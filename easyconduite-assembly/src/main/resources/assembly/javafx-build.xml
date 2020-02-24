@@ -8,16 +8,6 @@
         <format>dir</format>
         <format>zip</format>
     </formats>
-    <files>
-        <file>
-            <source>src/main/resources/scripts/easyconduite.bat</source>
-            <destName>easyconduite-${project.version}.bat</destName>
-            <filtered>true</filtered>
-        </file>
-        <file>
-            <source>target/easyconduite-${project.version}-win.jar</source>
-        </file>
-    </files>
     <includeBaseDirectory>false</includeBaseDirectory>
     <dependencySets>
         <dependencySet>
@@ -29,7 +19,7 @@
                 <exclude>com.antonyweb</exclude>
                 <exclude>com.fasterxml.jackson.core</exclude>
                 <exclude>org.apache.logging.log4j</exclude>
-                <exclude>javax.xml.bind</exclude>
+                <exclude>org.openjfx:*:*:win</exclude>
             </excludes>
         </dependencySet>
     </dependencySets>

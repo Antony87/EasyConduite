@@ -23,13 +23,7 @@ package easyconduite.model;
 /**
  * Interface qui défini le comportement de l'UI d'un Média.
  */
-public interface IEasyMediaUI {
-
-    /**
-     * Method which updates the UI fields according to the values ​of the EasyMedia object.
-     * See {@link EasyMedia}.
-     */
-    void actualizeUI();
+public interface UIResourcePlayable {
 
     /**
      * Method which return the EasyMedia object.
@@ -44,7 +38,8 @@ public interface IEasyMediaUI {
 
     void stop();
 
+    void setSelected(boolean b);
+
     boolean isSelected();
 
-    void setSelected(boolean selected);
 }

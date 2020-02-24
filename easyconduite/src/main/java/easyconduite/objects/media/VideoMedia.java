@@ -97,6 +97,11 @@ public class VideoMedia extends EasyMedia {
 
     }
 
+    @Override
+    public void closePlayer() {
+
+    }
+
 
     public File getMediaFile() {
         return mediaFile;

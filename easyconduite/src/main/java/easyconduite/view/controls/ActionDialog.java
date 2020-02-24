@@ -38,7 +38,7 @@ public class ActionDialog {
         } catch (EasyconduiteException e) {
             e.printStackTrace();
         }
-        final Alert a = getAlert("dialog.confirmation.title", header, content);
+        final Alert a = createAlert("dialog.confirmation.title", header, content);
         a.getButtonTypes().add(ButtonType.NO);
         a.getButtonTypes().add(ButtonType.YES);
         a.setAlertType(AlertType.CONFIRMATION);
@@ -46,18 +46,24 @@ public class ActionDialog {
     }
     
     public static void showWarning(String header, String content) {
-        final Alert a = getAlert("dialog.warning.title", header, content);
+        final Alert a = createAlert("dialog.warning.title", header, content);
         a.setAlertType(AlertType.WARNING);
         a.showAndWait();
     }
     
     public static void showInformation(String header, String content) {
-        final Alert a = getAlert("dialog.information.title", header, content);
+        final Alert a = createAlert("dialog.information.title", header, content);
         a.setAlertType(AlertType.INFORMATION);
         a.showAndWait();
     }
+
+    public static void showError(String header, String content){
+        final Alert a = createAlert("dialog.error.header", header, content);
+        a.setAlertType(AlertType.ERROR);
+        a.showAndWait();
+    }
     
-    private static Alert getAlert(String key_title, String header, String content) {
+    private static Alert createAlert(String key_title, String header, String content) {
         ResourceBundle bundle = null;
         try {
             bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
