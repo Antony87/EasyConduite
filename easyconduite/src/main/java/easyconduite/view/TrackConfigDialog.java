@@ -20,6 +20,7 @@ import easyconduite.controllers.TrackConfigController;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.UIResourcePlayable;
 import easyconduite.util.EasyConduitePropertiesHandler;
+import easyconduite.view.controls.ActionDialog;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -34,44 +35,45 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 /**
- * This class manage a dialog box, wich exposes affected key, name and repeat
- * for an audio track.
+ * This class manage a dialog box, wich exposes configuration UI of a Media.
  *
  * @author antony Fons
+ * @since 1.0
  */
 public class TrackConfigDialog extends Stage {
 
+    private static final String DIALOG_ERROR_HEADER = "dialog.error.header";
     static final Logger LOG = LogManager.getLogger(TrackConfigDialog.class);
 
     private static final String PATH_FXML = "/fxml/trackConfig.fxml";
 
     private TrackConfigController configController;
 
-    private TrackConfigDialog() {
-    }
-
-    public TrackConfigDialog(UIResourcePlayable mediaUI, List<UIResourcePlayable> mediaUIList) throws IOException {
+    public TrackConfigDialog(UIResourcePlayable mediaUI, List<UIResourcePlayable> mediaUIList) {
         super();
-        try {
-            final ResourceBundle bundle = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
-            final FXMLLoader loader = new FXMLLoader(getClass().getResource(PATH_FXML), bundle);
-            // Initialize controllers
 
-            final BorderPane dialogPane = new BorderPane();
+        ResourceBundle locale = null;
+        final BorderPane dialogPane = new BorderPane();
+        this.setTitle("Configuration");
+        this.initModality(Modality.APPLICATION_MODAL);
+        this.initStyle(StageStyle.DECORATED);
+        this.setResizable(false);
+        Scene sceneConfig = new Scene(dialogPane);
+        this.setScene(sceneConfig);
+
+        try {
+            locale = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
+            final FXMLLoader loader = new FXMLLoader(getClass().getResource(PATH_FXML), locale);
             loader.setRoot(dialogPane);
             loader.load();
             configController = loader.getController();
-            this.setTitle("Configuration");
-            this.initModality(Modality.APPLICATION_MODAL);
-            this.initStyle(StageStyle.DECORATED);
-            this.setResizable(false);
-            Scene sceneConfig = new Scene(dialogPane);
-            this.setScene(sceneConfig);
-            configController.initConfigData(mediaUI,mediaUIList);
-            this.showAndWait();
+            configController.initConfigData(mediaUI, mediaUIList);
 
-        } catch (EasyconduiteException e) {
-            LOG.error("An error occured during ResourceBundle creation", e);
+        } catch (IOException | EasyconduiteException e) {
+            ActionDialog.showException(locale.getString(DIALOG_ERROR_HEADER), locale.getString("easyconduitecontroler.save.error"),e);
+            LOG.error("Error occured during opening Config UI", e);
         }
+        this.showAndWait();
+
     }
 }

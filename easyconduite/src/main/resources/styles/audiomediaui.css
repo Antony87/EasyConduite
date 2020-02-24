@@ -118,6 +118,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-background-image: url('../icons/audio-file.png');
 }
 
+.typeKodi{
+    -fx-background-image: url('../icons/kodi.png');
+}
+
 .commandHbox > * {
     -fx-min-width: 30;
     -fx-max-width: 30;

@@ -32,9 +32,9 @@ public abstract class AbstractUIMedia extends VBox implements UIResourcePlayable
     protected final Label keycodeLabel = new Label();
     protected final HBox contextHbox = new HBox();
     protected final HBox playPauseHbox = new HBox();
-    private final VBox mediaVboxNode = new VBox();
-    protected final BooleanProperty playingClass = new PlayingPseudoClass(mediaVboxNode);
-    protected final BooleanProperty mediaSelectedClass = new MediaSelectedPseudoClass(mediaVboxNode);
+    protected final Region typeRegion = new Region();
+    protected final BooleanProperty playingClass = new PlayingPseudoClass(this);
+    protected final BooleanProperty mediaSelectedClass = new MediaSelectedPseudoClass(this);
     private final Label nameLabel = new Label();
     private final Region repeatRegion = new Region();
     private final EasyMedia easyMedia;
@@ -47,6 +47,7 @@ public abstract class AbstractUIMedia extends VBox implements UIResourcePlayable
      * @param controller the main controller
      */
     public AbstractUIMedia(EasyMedia media, MainController controller) {
+        super();
         this.easyMedia = media;
         try {
             locale = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
@@ -58,14 +59,14 @@ public abstract class AbstractUIMedia extends VBox implements UIResourcePlayable
         //                 Construction de l'UI
         ////////////////////////////////////////////////////////////////////////
         // attribution css for Track VBOX
-        mediaVboxNode.getStyleClass().add("audioMediaUi");
+        this.getStyleClass().add("audioMediaUi");
         // Gestion des mouse events pour la sélection de l'UI.
-        mediaVboxNode.setOnMouseClicked(eventFocus -> {
+        this.setOnMouseClicked(eventFocus -> {
             if (eventFocus.getButton().equals(MouseButton.PRIMARY)) {
-                mediaVboxNode.requestFocus();
-                if (mediaVboxNode.isFocused()) {
-                    controller.getMediaUIList().forEach(mediaUI -> setSelected(false));
-                    setSelected(true);
+                this.requestFocus();
+                if (this.isFocused()) {
+                    controller.getMediaUIList().forEach(mediaUI -> mediaUI.setSelected(false));
+                    this.setSelected(true);
                 }
             }
             if (eventFocus.getClickCount() == 2) {
@@ -81,9 +82,8 @@ public abstract class AbstractUIMedia extends VBox implements UIResourcePlayable
         contextHbox.setId("contextHbox");
         final VBox infoVbox = new VBox();
         infoVbox.setId("infoVbox");
-        final Region typeRegion = new Region();
         typeRegion.setId("typeRegion");
-        typeRegion.getStyleClass().add("typeAudio");
+
         repeatRegion.setId("repeatRegion");
         if (easyMedia.getLoppable()) {
             repeatRegion.getStyleClass().add("repeat");
@@ -111,10 +111,11 @@ public abstract class AbstractUIMedia extends VBox implements UIResourcePlayable
         });
 
         contextHbox.getChildren().add(infoVbox);
-        mediaVboxNode.getChildren().addAll(nameLabel, contextHbox, timeLabel, keycodeLabel, playPauseHbox);
+        this.getChildren().addAll(nameLabel, contextHbox, timeLabel, keycodeLabel, playPauseHbox);
 
     }
 
+    @Override
     public void actualizeUI() {
         nameLabel.setText(easyMedia.getName());
         timeLabel.setText(formatTime(easyMedia.getDuration()));
@@ -152,10 +153,6 @@ public abstract class AbstractUIMedia extends VBox implements UIResourcePlayable
     @Override
     public void setSelected(boolean selected) {
         mediaSelectedClass.setValue(selected);
-    }
-
-    public VBox getMediaVboxNode() {
-        return mediaVboxNode;
     }
 
     @Override

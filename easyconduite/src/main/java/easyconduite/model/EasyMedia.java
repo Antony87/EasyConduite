@@ -1,6 +1,5 @@
 package easyconduite.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -8,7 +7,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import easyconduite.objects.media.AudioMedia;
 import easyconduite.tools.jackson.DurationDeserializer;
 import easyconduite.tools.jackson.DurationSerializer;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.input.KeyCode;
 import javafx.util.Duration;
 
@@ -121,5 +119,17 @@ public abstract class EasyMedia implements ResourcePlayable {
     @Override
     public int hashCode() {
         return Objects.hash(name, duration, uniqueId, indexInTable, keycode, loppable);
+    }
+
+    @Override
+    public String toString() {
+        return "EasyMedia{" +
+                "name='" + name + '\'' +
+                ", duration=" + duration +
+                ", uniqueId=" + uniqueId +
+                ", indexInTable=" + indexInTable +
+                ", keycode=" + keycode +
+                ", loppable=" + loppable +
+                '}';
     }
 }

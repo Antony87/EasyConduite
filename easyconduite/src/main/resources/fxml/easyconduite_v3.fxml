@@ -53,7 +53,7 @@
                            </accelerator></MenuItem>
                         <Menu mnemonicParsing="false" text="%menu.track.addremote">
                           <items>
-                            <MenuItem fx:id="menuAddKodiPlayer" mnemonicParsing="false" text="kodi" />
+                            <MenuItem mnemonicParsing="false" onAction="#menuAddKodiPlayer" text="kodi" />
                               <MenuItem disable="true" mnemonicParsing="false" text="vlc" />
                           </items>
                         </Menu>

@@ -21,8 +21,13 @@ import easyconduite.util.EasyConduitePropertiesHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.stage.Modality;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -60,6 +65,30 @@ public class ActionDialog {
     public static void showError(String header, String content){
         final Alert a = createAlert("dialog.error.header", header, content);
         a.setAlertType(AlertType.ERROR);
+        a.showAndWait();
+    }
+
+    public static void showException(String header, String content, Exception e){
+        final Alert a = createAlert("dialog.exception.title", header, content);
+        a.setAlertType(AlertType.ERROR);
+        Label label = new Label("The exception stacktrace was:");
+
+        String stb = Arrays.toString(e.getStackTrace());
+
+        TextArea textArea = new TextArea(stb);
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+
+        textArea.setMaxWidth(Double.MAX_VALUE);
+        textArea.setMaxHeight(Double.MAX_VALUE);
+        GridPane.setVgrow(textArea, Priority.ALWAYS);
+        GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+        GridPane expContent = new GridPane();
+        expContent.setMaxWidth(Double.MAX_VALUE);
+        expContent.add(label, 0, 0);
+        expContent.add(textArea, 0, 1);
+        a.getDialogPane().setExpandableContent(expContent);
         a.showAndWait();
     }
     

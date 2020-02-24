@@ -21,9 +21,9 @@
 package easyconduite.objects.media;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.EasyMedia;
 import easyconduite.util.HTTPHandler;
+import javafx.util.Duration;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 
@@ -31,7 +31,7 @@ import java.net.URL;
 
 public class RemotePlayer extends EasyMedia {
 
-    enum Type{
+    public enum Type{
         KODI,VLC
     }
 
@@ -54,6 +54,8 @@ public class RemotePlayer extends EasyMedia {
     private HttpPost stopHttpPost;
 
     public RemotePlayer(Type type) {
+        setDuration(new Duration(0));
+        setName("");
         typeRemotePlayer=type;
         httpClient = HTTPHandler.getInstance().getHttpclient();
     }
@@ -90,4 +92,7 @@ public class RemotePlayer extends EasyMedia {
 
     }
 
+    public Type getTypeRemotePlayer() {
+        return typeRemotePlayer;
+    }
 }

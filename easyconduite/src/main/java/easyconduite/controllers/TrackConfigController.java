@@ -97,7 +97,7 @@ public class TrackConfigController extends DialogAbstractController implements I
             media.setKeycode(newKeyCode);
         }
         if (secondaryController != null) secondaryController.updateSpecificMedia(media);
-        ((AbstractUIMedia)mediaUI).actualizeUI();
+        mediaUI.actualizeUI();
         LOG.debug("Media changed {}", media.toString());
         this.close(trackConfigPane);
     }
@@ -125,8 +125,8 @@ public class TrackConfigController extends DialogAbstractController implements I
                 e.printStackTrace();
             }
         } else {
-            final AudioMedia audioMedia = (AudioMedia) this.mediaUI.getEasyMedia();
-            if (typedKeycode != audioMedia.getKeycode()) {
+            final EasyMedia media = this.mediaUI.getEasyMedia();
+            if (typedKeycode != media.getKeycode()) {
                 this.newKeyCode = typedKeycode;
                 keytrackfield.setText(KeyCodeHelper.toString(typedKeycode));
             }
@@ -145,8 +145,8 @@ public class TrackConfigController extends DialogAbstractController implements I
         this.mediaUI = mediaUI;
         this.mediaUIList = otherMediaUIs;
         if (mediaUI != null) {
-            TrackConfigController.this.mediaUI = mediaUI;
-            final EasyMedia media = TrackConfigController.this.mediaUI.getEasyMedia();
+            this.mediaUI = mediaUI;
+            final EasyMedia media = this.mediaUI.getEasyMedia();
             nametrackfield.setText(media.getName());
             keytrackfield.setText(KeyCodeHelper.toString(media.getKeycode()));
             loopTrack.setSelected(media.getLoppable());
@@ -163,7 +163,6 @@ public class TrackConfigController extends DialogAbstractController implements I
             } else {
             }
         }
-
     }
 
     private void buildSpecializationArea(SpecificConfigurable secondaryController, String secondaryFxml) {

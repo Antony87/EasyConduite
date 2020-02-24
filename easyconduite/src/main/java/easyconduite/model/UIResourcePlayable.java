@@ -42,4 +42,6 @@ public interface UIResourcePlayable {
 
     boolean isSelected();
 
+    void actualizeUI();
+
 }

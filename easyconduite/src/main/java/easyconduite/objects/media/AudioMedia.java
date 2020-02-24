@@ -72,7 +72,6 @@ public class AudioMedia extends EasyMedia {
             fadeHandler = new PlayerVolumeFader(this);
             player.setStartTime(Duration.ZERO);
 
-
             if (getName() == null) {
                 final String name = Paths.get(getResourcePath()).getFileName().toString();
                 setName(name);

@@ -53,16 +53,17 @@ public class AudioMediaUI extends AbstractUIMedia {
         LOG.info("Construct an AudioMedia {}", media);
         this.audioMedia = (AudioMedia) media;
 
-        if(audioMedia instanceof AudioMedia){
+        if(audioMedia != null){
             try {
                 LOG.trace("Initialisation du player");
                 audioMedia.initPlayer();
             } catch (EasyconduiteException e) {
+                //FIXME
                 e.printStackTrace();
             }
             audioMedia.getPlayer().statusProperty().addListener((observableValue, oldValue, newValue) -> {
                 if(newValue!=null){
-                    LOG.trace("Status player {}",newValue.toString());
+                    LOG.trace("Status player {} is {}",this.audioMedia.getName(),newValue);
                     switch (newValue) {
                         case PAUSED:
                             playingClass.setValue(false);
@@ -89,7 +90,7 @@ public class AudioMediaUI extends AbstractUIMedia {
 
         ///////////// current Time label
         audioMedia.getPlayer().currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> timeLabel.setText(formatTime(audioMedia.getDuration().subtract(newValue))));
-
+        super.typeRegion.getStyleClass().add("typeAudio");
         contextHbox.getChildren().add(new VolumeSlider());
     }
 
