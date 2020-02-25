@@ -19,22 +19,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     Created on : 8 déc. 2014, 17:58:02
     Author     : A. Fons
 */
-#trackConfigPane{
+.root{
     -fx-background-color: #373737;
-    -fx-pref-width: 500;
+    -fx-pref-width: 400;
+    -fx-min-width :300;
 }
 
-.vboxproperties{
--fx-spacing: 10;
--fx-alignment : top-center;
+.trackConfigVbox{
+    -fx-marging: 5;
+    -fx-spacing: 5;
 }
-
-.hboxproperties{
--fx-spacing: 5;
--fx-alignment : top-center;
-}
-
-
 
 .label{
     -fx-font-size: 10;
@@ -52,12 +46,29 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     -fx-background-color : #CFD8DC;
 }
 
-.text-field {
--fx-background-color: #455A64;
--fx-text-fill: #FFFFFF;
--fx-border-color : #FFFFFF;
--fx-pref-width: 80;
--fx-max-width:100;
+.gridConfig > .text-field {
+    -fx-background-color : #CFD8DC;
+    -fx-border-color : #FFFFFF;
+    -fx-pref-width: 80;
+    -fx-max-width:100;
+}
+
+#resourceTextField {
+    -fx-background-color : #CFD8DC;
+    -fx-border-color : #FFFFFF;
+    -fx-pref-width: 280;
+}
+
+#portTextField {
+    -fx-background-color : #CFD8DC;
+    -fx-border-color : #FFFFFF;
+    -fx-pref-width: 50;
+}
+
+#hostTextField {
+    -fx-background-color : #CFD8DC;
+    -fx-border-color : #FFFFFF;
+    -fx-pref-width: 150;
 }
 
 .spinner .text-field {
@@ -66,14 +77,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 -fx-border-color : #FFFFFF;
 }
 
-.configTitle{
+.titleHbox{
     -fx-pref-height : 50;
     -fx-spacing: 50;
     -fx-alignment: center;
     -fx-background-color: #464646;
 }
 
-.configTitle > .label{
+.titleHbox > .label{
     -fx-font-size: 18;
     -fx-font-weight: bold;
     -fx-text-fill: #599CA8;
@@ -93,28 +104,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     -fx-alignment: CENTER_RIGHT;
     -fx-min-height: 50;
     -fx-max-height: 50;
-}
-
-.middleVbox{
-    -fx-spacing: 10;
-    -fx-padding: 10 0 10 0;
-
-}
-
-.middleHbox{
-    -fx-min-height: 30;
-    -fx-max-height: 30;
-    -fx-spacing: 100;
-    -fx-alignment:CENTER;
-    -fx-border-color: #828282;
-    -fx-border-width: 1 0 0 0;
-}
-
-.linksHbox{
-    -fx-spacing: 10;
-    -fx-padding: 0 10 5 10;
-    -fx-border-color: #828282;
-    -fx-border-width: 0 0 1 0;
 }
 
 .gridConfig > .text-field{

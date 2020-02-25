@@ -20,7 +20,7 @@
 
 package easyconduite.controllers;
 
-import easyconduite.model.EasyMedia;
+import easyconduite.model.AbstractMedia;
 import easyconduite.model.SpecificConfigurable;
 import easyconduite.objects.media.AudioMedia;
 import javafx.fxml.FXML;
@@ -66,7 +66,7 @@ public class AudioConfigController implements Initializable, SpecificConfigurabl
     }
 
     @Override
-    public void updateSpecificMedia(EasyMedia media) {
+    public void updateSpecificMedia(AbstractMedia media) {
         final Integer iValueFadeOut = fadeOutSpinner.getValue();
         final Integer iValueFadeIn = fadeInSpinner.getValue();
         ((AudioMedia) media).setFadeInDuration(new Duration(iValueFadeIn * 1000));

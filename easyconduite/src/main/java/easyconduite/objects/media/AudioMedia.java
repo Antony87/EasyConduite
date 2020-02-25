@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import easyconduite.exception.EasyconduiteException;
-import easyconduite.model.EasyMedia;
+import easyconduite.model.AbstractMedia;
 import easyconduite.tools.jackson.DurationDeserializer;
 import easyconduite.tools.jackson.DurationSerializer;
 import easyconduite.view.commons.PlayerVolumeFader;
@@ -15,11 +15,10 @@ import javafx.util.Duration;
 
 import java.net.URI;
 import java.nio.file.Paths;
-import java.util.EnumMap;
 import java.util.Objects;
 
 
-public class AudioMedia extends EasyMedia {
+public class AudioMedia extends AbstractMedia {
 
     @JsonSerialize(using = DurationSerializer.class)
     @JsonDeserialize(using = DurationDeserializer.class)
@@ -39,21 +38,13 @@ public class AudioMedia extends EasyMedia {
     @JsonIgnore
     private PlayerVolumeFader fadeHandler;
 
-    @JsonIgnore
-    private EnumMap<MediaPlayer.Status, Status> mapStatus = new EnumMap(MediaPlayer.Status.class);
-
     public AudioMedia() {
+        super();
     }
 
     public AudioMedia(URI resource) {
-        super();
+        this();
         this.resourcePath = resource;
-        mapStatus.put(MediaPlayer.Status.PLAYING, Status.PLAYING);
-        mapStatus.put(MediaPlayer.Status.PAUSED, Status.PAUSED);
-        mapStatus.put(MediaPlayer.Status.STOPPED, Status.STOPPED);
-        mapStatus.put(MediaPlayer.Status.READY, Status.READY);
-        mapStatus.put(MediaPlayer.Status.UNKNOWN, Status.READY);
-        mapStatus.put(MediaPlayer.Status.STALLED, Status.READY);
     }
 
     /**

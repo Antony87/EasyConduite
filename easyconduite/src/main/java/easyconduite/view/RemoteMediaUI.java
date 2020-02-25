@@ -17,17 +17,10 @@
 package easyconduite.view;
 
 import easyconduite.controllers.MainController;
-import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.AbstractUIMedia;
-import easyconduite.model.EasyMedia;
-import easyconduite.objects.media.AudioMedia;
 import easyconduite.objects.media.RemotePlayer;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Slider;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.media.MediaPlayer.Status;
-import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -49,7 +42,7 @@ public class RemoteMediaUI extends AbstractUIMedia {
      * @param media a media wich be play.
      * @param controller the main controller which interact with {@link RemoteMediaUI}
      */
-    public RemoteMediaUI(EasyMedia media, MainController controller) {
+    public RemoteMediaUI(RemotePlayer media, MainController controller) {
         super(media,controller);
         LOG.info("Construct an AudioMedia {}", media);
         this.remoteMedia = (RemotePlayer) media;

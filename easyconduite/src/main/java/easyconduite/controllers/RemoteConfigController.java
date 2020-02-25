@@ -20,7 +20,7 @@
 
 package easyconduite.controllers;
 
-import easyconduite.model.EasyMedia;
+import easyconduite.model.AbstractMedia;
 import easyconduite.model.SpecificConfigurable;
 import easyconduite.objects.media.RemotePlayer;
 import javafx.fxml.FXML;
@@ -40,12 +40,15 @@ public class RemoteConfigController implements Initializable, SpecificConfigurab
     @FXML
     private TextField portTextField;
 
+    @FXML
+    private TextField resourceTextField;
+
     public RemoteConfigController(RemotePlayer media) {
         this.remoteMedia=media;
     }
 
     @Override
-    public void updateSpecificMedia(EasyMedia media) {
+    public void updateSpecificMedia(AbstractMedia media) {
 
     }
 

@@ -4,7 +4,7 @@ package easyconduite.objects.project;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import easyconduite.model.EasyMedia;
+import easyconduite.model.AbstractMedia;
 import easyconduite.objects.conduite.Conduite;
 
 import java.nio.file.Path;
@@ -21,14 +21,14 @@ public class MediaProject {
     private String name;
     private Conduite conduite;
     private Path projectPath;
-    private List<EasyMedia> easyMediaList;
+    private List<AbstractMedia> abstractMediaList;
 
     @JsonIgnore
     private boolean needToSave =false;
 
     public MediaProject() {
         this.conduite = new Conduite();
-        this.easyMediaList = new ArrayList<EasyMedia>(1);
+        this.abstractMediaList = new ArrayList<AbstractMedia>(1);
     }
 
     public String getName() {
@@ -55,12 +55,12 @@ public class MediaProject {
         this.projectPath = projectPath;
     }
 
-    public List<EasyMedia> getEasyMediaList() {
-        return easyMediaList;
+    public List<AbstractMedia> getAbstractMediaList() {
+        return abstractMediaList;
     }
 
-    public void setEasyMediaList(List<EasyMedia> easyMediaList) {
-        this.easyMediaList = easyMediaList;
+    public void setAbstractMediaList(List<AbstractMedia> abstractMediaList) {
+        this.abstractMediaList = abstractMediaList;
     }
 
     public boolean isNeedToSave() {

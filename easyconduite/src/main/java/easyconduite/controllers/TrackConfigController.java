@@ -32,8 +32,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -62,7 +63,7 @@ public class TrackConfigController extends DialogAbstractController implements I
     private SpecificConfigurable secondaryController;
 
     @FXML
-    private BorderPane trackConfigPane;
+    private VBox trackConfigVbox;
 
     @FXML
     private TextField nametrackfield;
@@ -74,7 +75,7 @@ public class TrackConfigController extends DialogAbstractController implements I
     private CheckBox loopTrack;
 
     @FXML
-    private Pane specializationArea;
+    private StackPane specificPane;
 
     private UIResourcePlayable mediaUI;
 
@@ -90,7 +91,7 @@ public class TrackConfigController extends DialogAbstractController implements I
     @FXML
     private void handleClickOk(MouseEvent event) {
 
-        final EasyMedia media = mediaUI.getEasyMedia();
+        final AbstractMedia media = mediaUI.getAbstractMedia();
         media.setLoppable(loopTrack.isSelected());
         media.setName(nametrackfield.getText());
         if (newKeyCode != null) {
@@ -99,12 +100,12 @@ public class TrackConfigController extends DialogAbstractController implements I
         if (secondaryController != null) secondaryController.updateSpecificMedia(media);
         mediaUI.actualizeUI();
         LOG.debug("Media changed {}", media.toString());
-        this.close(trackConfigPane);
+        this.close(trackConfigVbox);
     }
 
     @FXML
     private void handleClickCancel(MouseEvent event) {
-        this.close(trackConfigPane);
+        this.close(trackConfigVbox);
     }
 
     @FXML
@@ -125,7 +126,7 @@ public class TrackConfigController extends DialogAbstractController implements I
                 e.printStackTrace();
             }
         } else {
-            final EasyMedia media = this.mediaUI.getEasyMedia();
+            final AbstractMedia media = this.mediaUI.getAbstractMedia();
             if (typedKeycode != media.getKeycode()) {
                 this.newKeyCode = typedKeycode;
                 keytrackfield.setText(KeyCodeHelper.toString(typedKeycode));
@@ -135,7 +136,7 @@ public class TrackConfigController extends DialogAbstractController implements I
 
     private boolean isKeyCodeExist(KeyCode keyCode) {
         for (UIResourcePlayable ui : mediaUIList) {
-            final KeyCode code = ui.getEasyMedia().getKeycode();
+            final KeyCode code = ui.getAbstractMedia().getKeycode();
             if (code != null && code.equals(keyCode)) return true;
         }
         return false;
@@ -146,7 +147,7 @@ public class TrackConfigController extends DialogAbstractController implements I
         this.mediaUIList = otherMediaUIs;
         if (mediaUI != null) {
             this.mediaUI = mediaUI;
-            final EasyMedia media = this.mediaUI.getEasyMedia();
+            final AbstractMedia media = this.mediaUI.getAbstractMedia();
             nametrackfield.setText(media.getName());
             keytrackfield.setText(KeyCodeHelper.toString(media.getKeycode()));
             loopTrack.setSelected(media.getLoppable());
@@ -155,22 +156,22 @@ public class TrackConfigController extends DialogAbstractController implements I
             if (media instanceof AudioMedia) {
                 final String secondaryFxml = "/fxml/secondary/specAudioConfig.fxml";
                 secondaryController = new AudioConfigController((AudioMedia) media);
-                buildSpecializationArea(secondaryController, secondaryFxml);
+                buildSpecificPane(secondaryController, secondaryFxml);
             } else if (media instanceof RemotePlayer) {
                 secondaryController = new RemoteConfigController((RemotePlayer) media);
                 final String secondaryFxml = "/fxml/secondary/specRemoteConfig.fxml";
-                buildSpecializationArea(secondaryController, secondaryFxml);
+                buildSpecificPane(secondaryController, secondaryFxml);
             } else {
             }
         }
     }
 
-    private void buildSpecializationArea(SpecificConfigurable secondaryController, String secondaryFxml) {
+    private void buildSpecificPane(SpecificConfigurable secondaryController, String secondaryFxml) {
         final FXMLLoader loader = new FXMLLoader(getClass().getResource(secondaryFxml), locale);
         try {
             loader.setController(secondaryController);
             Parent specificParent = loader.load();
-            specializationArea.getChildren().add(specificParent);
+            specificPane.getChildren().add(specificParent);
         } catch (IOException e) {
             e.printStackTrace();
         }

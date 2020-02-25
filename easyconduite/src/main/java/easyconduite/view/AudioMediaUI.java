@@ -18,8 +18,8 @@ package easyconduite.view;
 
 import easyconduite.controllers.MainController;
 import easyconduite.exception.EasyconduiteException;
+import easyconduite.model.AbstractMedia;
 import easyconduite.model.AbstractUIMedia;
-import easyconduite.model.EasyMedia;
 import easyconduite.objects.media.AudioMedia;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ObservableValue;
@@ -48,7 +48,7 @@ public class AudioMediaUI extends AbstractUIMedia {
      * @param media a media wich be play.
      * @param controller the main controller which interact with {@link AudioMediaUI}
      */
-    public AudioMediaUI(EasyMedia media, MainController controller) {
+    public AudioMediaUI(AbstractMedia media, MainController controller) {
         super(media,controller);
         LOG.info("Construct an AudioMedia {}", media);
         this.audioMedia = (AudioMedia) media;

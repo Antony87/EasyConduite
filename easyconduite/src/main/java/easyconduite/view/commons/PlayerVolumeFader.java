@@ -29,19 +29,13 @@ import javafx.util.Duration;
  */
 public class PlayerVolumeFader extends Transition {
 
-//    private final EasyconduitePlayer easyPlayer;
-
     private final MediaPlayer player;
     private final AudioMedia audioMedia;
-//
-//    private final AudioMedia audioMedia;
 
     public PlayerVolumeFader(AudioMedia media) {
         super();
         this.player=media.getPlayer();
         this.audioMedia =media;
-//        easyPlayer = player;
-//        audioMedia = media;
     }
 
     public void fadeOut(Duration fadeDuration) {

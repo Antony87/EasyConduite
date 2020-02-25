@@ -37,7 +37,7 @@ public abstract class AbstractUIMedia extends VBox implements UIResourcePlayable
     protected final BooleanProperty mediaSelectedClass = new MediaSelectedPseudoClass(this);
     private final Label nameLabel = new Label();
     private final Region repeatRegion = new Region();
-    private final EasyMedia easyMedia;
+    private final AbstractMedia abstractMedia;
     protected ResourceBundle locale;
 
     /**
@@ -46,9 +46,9 @@ public abstract class AbstractUIMedia extends VBox implements UIResourcePlayable
      * @param media      the media displayed
      * @param controller the main controller
      */
-    public AbstractUIMedia(EasyMedia media, MainController controller) {
+    public AbstractUIMedia(AbstractMedia media, MainController controller) {
         super();
-        this.easyMedia = media;
+        this.abstractMedia = media;
         try {
             locale = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
         } catch (EasyconduiteException e) {
@@ -85,7 +85,7 @@ public abstract class AbstractUIMedia extends VBox implements UIResourcePlayable
         typeRegion.setId("typeRegion");
 
         repeatRegion.setId("repeatRegion");
-        if (easyMedia.getLoppable()) {
+        if (abstractMedia.getLoppable()) {
             repeatRegion.getStyleClass().add("repeat");
         }
 
@@ -117,11 +117,11 @@ public abstract class AbstractUIMedia extends VBox implements UIResourcePlayable
 
     @Override
     public void actualizeUI() {
-        nameLabel.setText(easyMedia.getName());
-        timeLabel.setText(formatTime(easyMedia.getDuration()));
-        keycodeLabel.setText(KeyCodeHelper.toString(this.easyMedia.getKeycode()));
+        nameLabel.setText(abstractMedia.getName());
+        timeLabel.setText(formatTime(abstractMedia.getDuration()));
+        keycodeLabel.setText(KeyCodeHelper.toString(this.abstractMedia.getKeycode()));
         repeatRegion.getStyleClass().remove("repeat");
-        if (easyMedia.getLoppable()) {
+        if (abstractMedia.getLoppable()) {
             repeatRegion.getStyleClass().add("repeat");
         }
     }
@@ -156,8 +156,8 @@ public abstract class AbstractUIMedia extends VBox implements UIResourcePlayable
     }
 
     @Override
-    public EasyMedia getEasyMedia() {
-        return easyMedia;
+    public AbstractMedia getAbstractMedia() {
+        return abstractMedia;
     }
 
     @Override

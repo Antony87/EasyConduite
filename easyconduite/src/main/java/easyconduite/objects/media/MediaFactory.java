@@ -1,13 +1,13 @@
 package easyconduite.objects.media;
 
-import easyconduite.model.EasyMedia;
+import easyconduite.model.AbstractMedia;
 import easyconduite.model.ResourcePlayable;
 
 import java.io.File;
 
 /**
- * This class is a factory of EasyMedia.
- * @see EasyMedia
+ * This class is a factory of AbstractMedia.
+ * @see AbstractMedia
  * @see ResourcePlayable
  *
  * @since 3.0
@@ -16,7 +16,7 @@ import java.io.File;
 public class MediaFactory {
 
     /**
-     * This method create a concrete playable media of EasyMedia.
+     * This method create a concrete playable media of AbstractMedia.
      * <p>
      *     The type of {@link ResourcePlayable} is determine by the param :
      *     <ul>
@@ -24,12 +24,12 @@ public class MediaFactory {
      *         <li>Param = {@link RemotePlayer.Type} then create {@link RemotePlayer}</li>
      *     </ul>
      * </p>
-     * @param param The param which is used to determine concrete type of EasyMedia
+     * @param param The param which is used to determine concrete type of AbstractMedia
      * @param <T>
      * @return an {@link ResourcePlayable} media
      */
-    public static <T> EasyMedia getPlayableMedia(T param) {
-        EasyMedia media=null;
+    public static <T> AbstractMedia createPlayableMedia(T param) {
+        AbstractMedia media=null;
         if(param instanceof File){
             File mediaFile = (File)param;
             if(mediaFile.exists()){

@@ -18,10 +18,23 @@
  *
  */
 
-package easyconduite.model;
+package easyconduite.view;
 
-public interface SpecificConfigurable {
+import easyconduite.controllers.MainController;
+import easyconduite.model.AbstractUIMedia;
+import easyconduite.model.UIResourcePlayable;
+import easyconduite.objects.media.AudioMedia;
+import easyconduite.objects.media.RemotePlayer;
 
-    void updateSpecificMedia(AbstractMedia media);
+public class MediaUIFactory {
 
+    public static <T> UIResourcePlayable createMediaUI(T mediaPlayable, MainController controller) {
+
+        if (mediaPlayable instanceof AudioMedia) {
+            return new AudioMediaUI((AudioMedia) mediaPlayable, controller);
+        } else if (mediaPlayable instanceof RemotePlayer) {
+            return new RemoteMediaUI((RemotePlayer) mediaPlayable, controller);
+        }
+        return null;
+    }
 }

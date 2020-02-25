@@ -24,6 +24,7 @@ import easyconduite.view.controls.ActionDialog;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -53,18 +54,18 @@ public class TrackConfigDialog extends Stage {
         super();
 
         ResourceBundle locale = null;
-        final BorderPane dialogPane = new BorderPane();
+        final VBox trackConfigVbox = new VBox();
         this.setTitle("Configuration");
         this.initModality(Modality.APPLICATION_MODAL);
         this.initStyle(StageStyle.DECORATED);
         this.setResizable(false);
-        Scene sceneConfig = new Scene(dialogPane);
+        Scene sceneConfig = new Scene(trackConfigVbox);
         this.setScene(sceneConfig);
 
         try {
             locale = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
             final FXMLLoader loader = new FXMLLoader(getClass().getResource(PATH_FXML), locale);
-            loader.setRoot(dialogPane);
+            loader.setRoot(trackConfigVbox);
             loader.load();
             configController = loader.getController();
             configController.initConfigData(mediaUI, mediaUIList);

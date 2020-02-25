@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import easyconduite.objects.media.AudioMedia;
+import easyconduite.objects.media.RemotePlayer;
 import easyconduite.tools.jackson.DurationDeserializer;
 import easyconduite.tools.jackson.DurationSerializer;
 import javafx.scene.input.KeyCode;
@@ -22,9 +23,10 @@ import java.util.UUID;
         include = JsonTypeInfo.As.PROPERTY,
         property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = AudioMedia.class, name = "audiovideomedia"),
+        @JsonSubTypes.Type(value = AudioMedia.class, name = "audiomedia"),
+        @JsonSubTypes.Type(value = RemotePlayer.class, name = "remotemedia"),
 })
-public abstract class EasyMedia implements ResourcePlayable {
+public abstract class AbstractMedia implements ResourcePlayable {
 
     public enum Status{
         PLAYING,PAUSED,STOPPED,READY
@@ -107,13 +109,13 @@ public abstract class EasyMedia implements ResourcePlayable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        EasyMedia easyMedia = (EasyMedia) o;
-        return indexInTable == easyMedia.indexInTable &&
-                Objects.equals(name, easyMedia.name) &&
-                Objects.equals(duration, easyMedia.duration) &&
-                uniqueId.equals(easyMedia.uniqueId) &&
-                keycode == easyMedia.keycode &&
-                Objects.equals(loppable, easyMedia.loppable);
+        AbstractMedia abstractMedia = (AbstractMedia) o;
+        return indexInTable == abstractMedia.indexInTable &&
+                Objects.equals(name, abstractMedia.name) &&
+                Objects.equals(duration, abstractMedia.duration) &&
+                uniqueId.equals(abstractMedia.uniqueId) &&
+                keycode == abstractMedia.keycode &&
+                Objects.equals(loppable, abstractMedia.loppable);
     }
 
     @Override
@@ -123,7 +125,7 @@ public abstract class EasyMedia implements ResourcePlayable {
 
     @Override
     public String toString() {
-        return "EasyMedia{" +
+        return "AbstractMedia{" +
                 "name='" + name + '\'' +
                 ", duration=" + duration +
                 ", uniqueId=" + uniqueId +

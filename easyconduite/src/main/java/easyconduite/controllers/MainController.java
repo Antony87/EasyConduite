@@ -17,7 +17,8 @@
 package easyconduite.controllers;
 
 import easyconduite.exception.EasyconduiteException;
-import easyconduite.model.EasyMedia;
+import easyconduite.model.AbstractUIMedia;
+import easyconduite.model.AbstractMedia;
 import easyconduite.model.UIResourcePlayable;
 import easyconduite.objects.EasyConduiteProperties;
 import easyconduite.objects.media.MediaFactory;
@@ -27,8 +28,7 @@ import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.Labels;
 import easyconduite.util.PersistenceHelper;
 import easyconduite.view.AboutDialogUI;
-import easyconduite.view.AudioMediaUI;
-import easyconduite.view.RemoteMediaUI;
+import easyconduite.view.MediaUIFactory;
 import easyconduite.view.TrackConfigDialog;
 import easyconduite.view.controls.ActionDialog;
 import easyconduite.view.controls.FileChooserControl;
@@ -125,9 +125,9 @@ public class MainController extends StackPane implements Initializable {
     private void openProject(File file) throws IOException {
         project = PersistenceHelper.openFromJson(file, MediaProject.class);
         project.setNeedToSave(false);
-        final List<EasyMedia> mediaList = project.getEasyMediaList();
-        for (EasyMedia media : mediaList) {
-            final AudioMediaUI mediaUI = new AudioMediaUI(media, this);
+        final List<AbstractMedia> mediaList = project.getAbstractMediaList();
+        for (AbstractMedia media : mediaList) {
+            final AbstractUIMedia mediaUI = (AbstractUIMedia) MediaUIFactory.createMediaUI(media, this);
             getTableLayout().getChildren().add(mediaUI);
         }
     }
@@ -195,12 +195,13 @@ public class MainController extends StackPane implements Initializable {
             if (audioFiles != null && !audioFiles.isEmpty()) {
                 appProperties.setLastImportDir(audioFiles.get(0).getParentFile().toPath());
                 audioFiles.forEach(file -> {
-                    final EasyMedia media = MediaFactory.getPlayableMedia(file);
+                    final AbstractMedia media = MediaFactory.createPlayableMedia(file);
                     // ajout dans la liste du projet
-                    project.getEasyMediaList().add(media);
+                    project.getAbstractMediaList().add(media);
                     // construction de l'UI.
-                    AudioMediaUI mediaUI = new AudioMediaUI(media, this);
-                    getTableLayout().getChildren().add(mediaUI);
+                    //AudioMediaUI mediaUI = new AudioMediaUI(media, this);
+                    final UIResourcePlayable mediaUI = MediaUIFactory.createMediaUI(media, this);
+                    getTableLayout().getChildren().add((AbstractUIMedia) mediaUI);
                     project.setNeedToSave(true);
                 });
             }
@@ -212,11 +213,13 @@ public class MainController extends StackPane implements Initializable {
 
     @FXML
     public void menuAddKodiPlayer(ActionEvent event) {
-        final EasyMedia media = MediaFactory.getPlayableMedia(RemotePlayer.Type.KODI);
-        project.getEasyMediaList().add(media);
-        RemoteMediaUI remoteMediaUI = new RemoteMediaUI(media, this);
-        editTrack(remoteMediaUI);
-        getTableLayout().getChildren().add(remoteMediaUI);
+        final AbstractMedia media = MediaFactory.createPlayableMedia(RemotePlayer.Type.KODI);
+        project.getAbstractMediaList().add(media);
+        //RemoteMediaUI remoteMediaUI = new RemoteMediaUI(media, this);
+        final UIResourcePlayable mediaUI = MediaUIFactory.createMediaUI(media, this);
+        assert mediaUI != null;
+        editTrack(mediaUI);
+        getTableLayout().getChildren().add((AbstractUIMedia) mediaUI);
         project.setNeedToSave(true);
     }
 
@@ -245,8 +248,8 @@ public class MainController extends StackPane implements Initializable {
     }
 
     private void deleteOneTrack(UIResourcePlayable mediaUI) {
-        mediaUI.getEasyMedia().closePlayer();
-        project.getEasyMediaList().remove(mediaUI.getEasyMedia());
+        mediaUI.getAbstractMedia().closePlayer();
+        project.getAbstractMediaList().remove(mediaUI.getAbstractMedia());
         tableLayout.getChildren().remove(mediaUI);
         project.setNeedToSave(true);
     }
@@ -268,9 +271,10 @@ public class MainController extends StackPane implements Initializable {
     protected void clearProject() {
         final List<UIResourcePlayable> mediaUIs = getMediaUIList();
         for (UIResourcePlayable mediaUI : mediaUIs) {
+            //TODO concuurent exception
             deleteOneTrack(mediaUI);
         }
-        project = null;
+        project.setName(null);
     }
 
     @FXML
@@ -278,7 +282,7 @@ public class MainController extends StackPane implements Initializable {
         if (!event.isControlDown() && !event.isAltDown()) {
             LOG.trace("Key {} pressed ", event.getCode().getName());
             for (UIResourcePlayable mediaUI : this.getMediaUIList()) {
-                if (mediaUI.getEasyMedia().getKeycode() == event.getCode()) {
+                if (mediaUI.getAbstractMedia().getKeycode() == event.getCode()) {
                     mediaUI.playPause();
                     event.consume();
                 }
@@ -288,14 +292,14 @@ public class MainController extends StackPane implements Initializable {
 
     @FXML
     private void handlePauseAll(ActionEvent event) {
-        this.getMediaUIList().forEach(mediaUI -> mediaUI.getEasyMedia().pause());
+        this.getMediaUIList().forEach(mediaUI -> mediaUI.getAbstractMedia().pause());
         event.consume();
     }
 
 
     @FXML
     private void handleStopAll(ActionEvent event) {
-        this.getMediaUIList().forEach(mediaUI -> mediaUI.getEasyMedia().stop());
+        this.getMediaUIList().forEach(mediaUI -> mediaUI.getAbstractMedia().stop());
         event.consume();
     }
 

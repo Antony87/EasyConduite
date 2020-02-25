@@ -26,10 +26,10 @@ package easyconduite.model;
 public interface UIResourcePlayable {
 
     /**
-     * Method which return the EasyMedia object.
-     * @return Object EasyMedia.
+     * Method which return the AbstractMedia object.
+     * @return Object AbstractMedia.
      */
-    EasyMedia getEasyMedia();
+    AbstractMedia getAbstractMedia();
 
     /**
      * Method that changes the status play or pause of a player.

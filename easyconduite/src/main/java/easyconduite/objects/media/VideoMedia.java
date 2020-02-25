@@ -22,7 +22,7 @@ package easyconduite.objects.media;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import easyconduite.exception.EasyconduiteException;
-import easyconduite.model.EasyMedia;
+import easyconduite.model.AbstractMedia;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
@@ -30,7 +30,7 @@ import javafx.util.Duration;
 
 import java.io.File;
 
-public class VideoMedia extends EasyMedia {
+public class VideoMedia extends AbstractMedia {
 
     private File mediaFile;
 
