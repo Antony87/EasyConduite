@@ -18,12 +18,11 @@ package easyconduite.view;
 
 import easyconduite.controllers.TrackConfigController;
 import easyconduite.exception.EasyconduiteException;
-import easyconduite.model.UIResourcePlayable;
+import easyconduite.model.UIMediaPlayable;
 import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.view.controls.ActionDialog;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -50,7 +49,7 @@ public class TrackConfigDialog extends Stage {
 
     private TrackConfigController configController;
 
-    public TrackConfigDialog(UIResourcePlayable mediaUI, List<UIResourcePlayable> mediaUIList) {
+    public TrackConfigDialog(UIMediaPlayable mediaUI, List<UIMediaPlayable> mediaUIList) {
         super();
 
         ResourceBundle locale = null;
@@ -68,7 +67,7 @@ public class TrackConfigDialog extends Stage {
             loader.setRoot(trackConfigVbox);
             loader.load();
             configController = loader.getController();
-            configController.initConfigData(mediaUI, mediaUIList);
+            configController.initUIConfig(mediaUI, mediaUIList);
 
         } catch (IOException | EasyconduiteException e) {
             ActionDialog.showException(locale.getString(DIALOG_ERROR_HEADER), locale.getString("easyconduitecontroler.save.error"),e);

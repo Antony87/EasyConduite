@@ -17,7 +17,9 @@
 package easyconduite.controllers;
 
 import easyconduite.exception.EasyconduiteException;
-import easyconduite.model.*;
+import easyconduite.model.AbstractMedia;
+import easyconduite.model.SpecificConfigurable;
+import easyconduite.model.UIMediaPlayable;
 import easyconduite.objects.media.AudioMedia;
 import easyconduite.objects.media.RemotePlayer;
 import easyconduite.util.EasyConduitePropertiesHandler;
@@ -32,9 +34,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,7 +50,7 @@ import java.util.ResourceBundle;
  *
  * @author antony
  */
-public class TrackConfigController extends DialogAbstractController implements Initializable {
+public class TrackConfigController implements Initializable {
 
     static final Logger LOG = LogManager.getLogger(TrackConfigController.class);
     private static final String KEY_ASSIGN_ERROR = "trackconfigcontroller.key.error";
@@ -58,7 +60,7 @@ public class TrackConfigController extends DialogAbstractController implements I
 
     private KeyCode newKeyCode;
 
-    private List<UIResourcePlayable> mediaUIList;
+    private List<UIMediaPlayable> mediaUIList;
 
     private SpecificConfigurable secondaryController;
 
@@ -77,7 +79,7 @@ public class TrackConfigController extends DialogAbstractController implements I
     @FXML
     private StackPane specificPane;
 
-    private UIResourcePlayable mediaUI;
+    private UIMediaPlayable mediaUI;
 
     public TrackConfigController() throws EasyconduiteException {
         super();
@@ -100,12 +102,13 @@ public class TrackConfigController extends DialogAbstractController implements I
         if (secondaryController != null) secondaryController.updateSpecificMedia(media);
         mediaUI.actualizeUI();
         LOG.debug("Media changed {}", media.toString());
-        this.close(trackConfigVbox);
+        this.close();
+
     }
 
     @FXML
     private void handleClickCancel(MouseEvent event) {
-        this.close(trackConfigVbox);
+        this.close();
     }
 
     @FXML
@@ -135,14 +138,14 @@ public class TrackConfigController extends DialogAbstractController implements I
     }
 
     private boolean isKeyCodeExist(KeyCode keyCode) {
-        for (UIResourcePlayable ui : mediaUIList) {
+        for (UIMediaPlayable ui : mediaUIList) {
             final KeyCode code = ui.getAbstractMedia().getKeycode();
             if (code != null && code.equals(keyCode)) return true;
         }
         return false;
     }
 
-    public void initConfigData(UIResourcePlayable mediaUI, List<UIResourcePlayable> otherMediaUIs) {
+    public void initUIConfig(UIMediaPlayable mediaUI, List<UIMediaPlayable> otherMediaUIs) {
         this.mediaUI = mediaUI;
         this.mediaUIList = otherMediaUIs;
         if (mediaUI != null) {
@@ -164,6 +167,11 @@ public class TrackConfigController extends DialogAbstractController implements I
             } else {
             }
         }
+    }
+
+    private void close(){
+        final Stage stage = (Stage) trackConfigVbox.getScene().getWindow();
+        stage.close();
     }
 
     private void buildSpecificPane(SpecificConfigurable secondaryController, String secondaryFxml) {

@@ -21,13 +21,16 @@
 package easyconduite.objects.media;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import easyconduite.exception.EasyconduiteException;
+import easyconduite.exception.RemotePlayableException;
 import easyconduite.model.AbstractMedia;
-import easyconduite.util.HTTPHandler;
+import easyconduite.model.RemotePlayable;
+import easyconduite.tools.kodi.KodiPlayer;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.util.Duration;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
 
-import java.net.URL;
+import java.net.URI;
 
 public class RemotePlayer extends AbstractMedia {
 
@@ -35,38 +38,35 @@ public class RemotePlayer extends AbstractMedia {
         KODI,VLC
     }
 
-    private Type typeRemotePlayer;
+    private URI resource;
 
-    private URL remotePlayerURL;
+    private Type type;
+
+    private String host;
 
     private int port;
 
     @JsonIgnore
-    private final HttpClient httpClient;
+    private RemotePlayable player;
 
     @JsonIgnore
-    private HttpPost playHttpPost;
-
-    @JsonIgnore
-    private HttpPost pauseHttpPost;
-
-    @JsonIgnore
-    private HttpPost stopHttpPost;
+    private ObjectProperty<MediaStatus> status = new SimpleObjectProperty<>();
 
     public RemotePlayer() {
         super();
-        httpClient = HTTPHandler.getInstance().getHttpclient();
     }
 
     public RemotePlayer(Type type) {
         this();
         setDuration(new Duration(0));
-        typeRemotePlayer=type;
+        this.type =type;
+        this.status.setValue(MediaStatus.UNKNOWN);
     }
 
     @Override
     public void play() {
-
+        final MediaStatus mediaStatus = player.play();
+        statusProperty().setValue(mediaStatus);
     }
 
     @Override
@@ -80,15 +80,16 @@ public class RemotePlayer extends AbstractMedia {
     }
 
     @Override
-    public void initPlayer() {
+    public void initPlayer() throws EasyconduiteException {
 
-
-        if(typeRemotePlayer.equals(Type.KODI)){
-
+        if(type.equals(Type.KODI)){
+            try {
+                player = new KodiPlayer(this);
+            } catch (RemotePlayableException e) {
+                throw new EasyconduiteException("",e);
+            }
 
         }
-
-
     }
 
     @Override
@@ -96,7 +97,47 @@ public class RemotePlayer extends AbstractMedia {
 
     }
 
-    public Type getTypeRemotePlayer() {
-        return typeRemotePlayer;
+    public String getHost() {
+        return host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public URI getResource() {
+        return resource;
+    }
+
+    public void setResource(URI resource) {
+        this.resource = resource;
+    }
+
+    public MediaStatus getStatus() {
+        return status.get();
+    }
+
+    public ObjectProperty<MediaStatus> statusProperty() {
+        return status;
+    }
+
+    public void setStatus(MediaStatus mediaStatus) {
+        this.status.set(mediaStatus);
     }
 }

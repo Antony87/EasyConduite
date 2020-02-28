@@ -21,14 +21,13 @@
 package easyconduite.view;
 
 import easyconduite.controllers.MainController;
-import easyconduite.model.AbstractUIMedia;
-import easyconduite.model.UIResourcePlayable;
+import easyconduite.model.UIMediaPlayable;
 import easyconduite.objects.media.AudioMedia;
 import easyconduite.objects.media.RemotePlayer;
 
 public class MediaUIFactory {
 
-    public static <T> UIResourcePlayable createMediaUI(T mediaPlayable, MainController controller) {
+    public static <T> UIMediaPlayable createMediaUI(T mediaPlayable, MainController controller) {
 
         if (mediaPlayable instanceof AudioMedia) {
             return new AudioMediaUI((AudioMedia) mediaPlayable, controller);

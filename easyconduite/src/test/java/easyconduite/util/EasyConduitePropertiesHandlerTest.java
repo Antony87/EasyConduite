@@ -20,29 +20,27 @@
 
 package easyconduite.util;
 
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import easyconduite.exception.EasyconduiteException;
+import easyconduite.objects.EasyConduiteProperties;
+import org.junit.jupiter.api.Test;
 
-public class HTTPHandler {
+import java.text.MessageFormat;
+import java.util.Properties;
 
-    private static  HTTPHandler INSTANCE;
+import static org.junit.jupiter.api.Assertions.*;
 
-    private final CloseableHttpClient httpclient;
+class EasyConduitePropertiesHandlerTest {
 
-    private HTTPHandler() {
-        httpclient = HttpClients.createDefault();
-    }
+    @Test
+    void getKodiProperties() throws EasyconduiteException {
+        Properties appProps = EasyConduitePropertiesHandler.getInstance().getKodiProperties();
+        System.out.println(appProps.getProperty("kodi.open"));
 
-    public static HTTPHandler getInstance() {
-        if (INSTANCE == null) {
-            synchronized (HTTPHandler.class) {
-                INSTANCE = new HTTPHandler();
-            }
-        }
-        return INSTANCE;
-    }
+        String open = appProps.getProperty("Player.Open");
 
-    public CloseableHttpClient getHttpclient() {
-        return httpclient;
+        System.out.println(MessageFormat.format(open,"toto"));
+
+        String ping = appProps.getProperty("JSONRPC.Ping");
+        System.out.println(MessageFormat.format(ping,""));
     }
 }

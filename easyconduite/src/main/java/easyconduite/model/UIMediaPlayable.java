@@ -18,31 +18,31 @@
  *
  */
 
-package easyconduite.util;
+package easyconduite.model;
 
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+/**
+ * This interface defines the behavior of the UI of a media.
+ * <p>{@link AbstractUIMedia}</p>
+ */
+public interface UIMediaPlayable {
 
-public class HTTPHandler {
+    /**
+     * Method which return the AbstractMedia object.
+     * @return Object AbstractMedia.
+     */
+    AbstractMedia getAbstractMedia();
 
-    private static  HTTPHandler INSTANCE;
+    /**
+     * Method that changes the status play or pause of a player.
+     */
+    void playPause();
 
-    private final CloseableHttpClient httpclient;
+    void stop();
 
-    private HTTPHandler() {
-        httpclient = HttpClients.createDefault();
-    }
+    void setSelected(boolean b);
 
-    public static HTTPHandler getInstance() {
-        if (INSTANCE == null) {
-            synchronized (HTTPHandler.class) {
-                INSTANCE = new HTTPHandler();
-            }
-        }
-        return INSTANCE;
-    }
+    boolean isSelected();
 
-    public CloseableHttpClient getHttpclient() {
-        return httpclient;
-    }
+    void actualizeUI();
+
 }

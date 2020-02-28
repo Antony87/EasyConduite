@@ -21,7 +21,12 @@ import easyconduite.objects.EasyConduiteProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Paths;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 /**
@@ -39,6 +44,8 @@ public class EasyConduitePropertiesHandler {
     private EasyConduiteProperties applicationProperties;
 
     private final ResourceBundle localBundle;
+
+    private Properties kodiProperties;
 
     private static final Logger LOG = LogManager.getLogger(EasyConduitePropertiesHandler.class);
 
@@ -64,6 +71,10 @@ public class EasyConduitePropertiesHandler {
                     }
             );
 
+            final InputStream input = EasyConduitePropertiesHandler.class.getClassLoader().getResourceAsStream("kodi.properties");
+            kodiProperties = new Properties();
+            kodiProperties.load(input);
+
         } catch (IOException e) {
             LOG.error("Erreur lecture/ecriture json",e);
             throw new EasyconduiteException();
@@ -81,6 +92,10 @@ public class EasyConduitePropertiesHandler {
 
     public ResourceBundle getLocalBundle() {
         return localBundle;
+    }
+
+    public Properties getKodiProperties() {
+        return kodiProperties;
     }
 
     /**

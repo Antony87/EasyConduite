@@ -45,17 +45,12 @@ public class RemoteMediaUI extends AbstractUIMedia {
     public RemoteMediaUI(RemotePlayer media, MainController controller) {
         super(media,controller);
         LOG.info("Construct an AudioMedia {}", media);
-        this.remoteMedia = (RemotePlayer) media;
-
-        if(remoteMedia != null){
-            LOG.trace("Initialisation du player");
-            remoteMedia.initPlayer();
-        }
+        this.remoteMedia = media;
 
         ///////////// current Time label
         //audioMedia.getPlayer().currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> timeLabel.setText(formatTime(audioMedia.getDuration().subtract(newValue))));
 
-        if(remoteMedia.getTypeRemotePlayer().equals(RemotePlayer.Type.KODI)){
+        if(remoteMedia.getType().equals(RemotePlayer.Type.KODI)){
             super.typeRegion.getStyleClass().add("typeKodi");
         }
 
@@ -64,7 +59,7 @@ public class RemoteMediaUI extends AbstractUIMedia {
 
     @Override
     public void playPause() {
-
+        remoteMedia.play();
     }
 
     @Override

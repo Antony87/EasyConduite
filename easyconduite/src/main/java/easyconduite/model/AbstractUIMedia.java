@@ -25,7 +25,7 @@ import java.util.ResourceBundle;
  * @author Antony Fons
  * @since 3.0
  */
-public abstract class AbstractUIMedia extends VBox implements UIResourcePlayable {
+public abstract class AbstractUIMedia extends VBox implements UIMediaPlayable {
 
     static final Logger LOG = LogManager.getLogger(AudioMediaUI.class);
     protected final Label timeLabel = new Label();

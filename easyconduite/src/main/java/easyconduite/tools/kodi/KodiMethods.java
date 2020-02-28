@@ -18,30 +18,22 @@
  *
  */
 
-package easyconduite.model;
+package easyconduite.tools.kodi;
 
-/**
- * Interface qui défini le comportement de l'UI d'un Média.
- */
-public interface UIResourcePlayable {
+public enum KodiMethods {
 
-    /**
-     * Method which return the AbstractMedia object.
-     * @return Object AbstractMedia.
-     */
-    AbstractMedia getAbstractMedia();
+    OPEN("Player.Open"),
+    PING("JSONRPC.Ping"),
+    GET_ACTIVE_PLAYERS("Player.GetActivePlayers")
+    ;
 
-    /**
-     * Method that changes the status play or pause of a player.
-     */
-    void playPause();
+    protected String method;
 
-    void stop();
+    KodiMethods(String method) {
+        this.method=method;
+    }
 
-    void setSelected(boolean b);
-
-    boolean isSelected();
-
-    void actualizeUI();
-
+    public String getMethod() {
+        return this.method;
+    }
 }

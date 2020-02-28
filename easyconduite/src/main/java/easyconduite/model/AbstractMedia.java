@@ -26,10 +26,10 @@ import java.util.UUID;
         @JsonSubTypes.Type(value = AudioMedia.class, name = "audiomedia"),
         @JsonSubTypes.Type(value = RemotePlayer.class, name = "remotemedia"),
 })
-public abstract class AbstractMedia implements ResourcePlayable {
+public abstract class AbstractMedia implements MediaPlayable {
 
-    public enum Status{
-        PLAYING,PAUSED,STOPPED,READY
+    public enum MediaStatus {
+        HALTED,UNKNOWN,PLAYING,PAUSED,STOPPED,READY
     }
 
     private String name;

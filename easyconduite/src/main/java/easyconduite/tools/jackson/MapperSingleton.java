@@ -18,31 +18,30 @@
  *
  */
 
-package easyconduite.util;
+package easyconduite.tools.jackson;
 
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class HTTPHandler {
+public class MapperSingleton {
 
-    private static  HTTPHandler INSTANCE;
+    private static MapperSingleton INSTANCE;
 
-    private final CloseableHttpClient httpclient;
+    private final ObjectMapper mapperJson;
 
-    private HTTPHandler() {
-        httpclient = HttpClients.createDefault();
+    private MapperSingleton() {
+        mapperJson = new ObjectMapper();
     }
 
-    public static HTTPHandler getInstance() {
+    public static MapperSingleton getMapper() {
         if (INSTANCE == null) {
-            synchronized (HTTPHandler.class) {
-                INSTANCE = new HTTPHandler();
+            synchronized (MapperSingleton.class) {
+                INSTANCE = new MapperSingleton();
             }
         }
         return INSTANCE;
     }
 
-    public CloseableHttpClient getHttpclient() {
-        return httpclient;
+    public ObjectMapper getMapperJson() {
+        return mapperJson;
     }
 }

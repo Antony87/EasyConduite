@@ -63,7 +63,7 @@ public class AudioMediaUI extends AbstractUIMedia {
             }
             audioMedia.getPlayer().statusProperty().addListener((observableValue, oldValue, newValue) -> {
                 if(newValue!=null){
-                    LOG.trace("Status player {} is {}",this.audioMedia.getName(),newValue);
+                    LOG.trace("MediaStatus player {} is {}",this.audioMedia.getName(),newValue);
                     switch (newValue) {
                         case PAUSED:
                             playingClass.setValue(false);

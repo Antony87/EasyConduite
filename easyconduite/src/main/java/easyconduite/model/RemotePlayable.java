@@ -18,31 +18,18 @@
  *
  */
 
-package easyconduite.util;
+package easyconduite.model;
 
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+public interface RemotePlayable {
 
-public class HTTPHandler {
+    boolean isActive();
 
-    private static  HTTPHandler INSTANCE;
+    AbstractMedia.MediaStatus play();
 
-    private final CloseableHttpClient httpclient;
+    AbstractMedia.MediaStatus pause();
 
-    private HTTPHandler() {
-        httpclient = HttpClients.createDefault();
-    }
+    AbstractMedia.MediaStatus stop();
 
-    public static HTTPHandler getInstance() {
-        if (INSTANCE == null) {
-            synchronized (HTTPHandler.class) {
-                INSTANCE = new HTTPHandler();
-            }
-        }
-        return INSTANCE;
-    }
+    AbstractMedia.MediaStatus getStatus();
 
-    public CloseableHttpClient getHttpclient() {
-        return httpclient;
-    }
 }

@@ -18,31 +18,26 @@
  *
  */
 
-package easyconduite.util;
+package easyconduite.tools.kodi;
 
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import easyconduite.objects.media.RemotePlayer;
+import org.junit.jupiter.api.Test;
 
-public class HTTPHandler {
+import java.io.File;
 
-    private static  HTTPHandler INSTANCE;
+import static org.junit.jupiter.api.Assertions.*;
 
-    private final CloseableHttpClient httpclient;
+class KodiRequestBuilderTest {
 
-    private HTTPHandler() {
-        httpclient = HttpClients.createDefault();
-    }
+    @Test
+    void build() {
+        RemotePlayer remote = new RemotePlayer(RemotePlayer.Type.KODI);
+        remote.setResource(new File("C:/Users/V902832/IdeaProjects/EasyConduite/easyconduite/src/test/resources/test.mp4").toURI());
+        final File file = new File(remote.getResource());
 
-    public static HTTPHandler getInstance() {
-        if (INSTANCE == null) {
-            synchronized (HTTPHandler.class) {
-                INSTANCE = new HTTPHandler();
-            }
-        }
-        return INSTANCE;
-    }
+        System.out.println(new KodiRequestBuilder(KodiMethods.OPEN).setFile(file).build());
 
-    public CloseableHttpClient getHttpclient() {
-        return httpclient;
+
+
     }
 }
