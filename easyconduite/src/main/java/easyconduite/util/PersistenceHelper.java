@@ -24,11 +24,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -134,5 +131,14 @@ public class PersistenceHelper {
             return lastDirectory;
         }
         return null;
+    }
+
+    public static String separatorsToSystem(String res) {
+        if (res==null) return null;
+        if (File.separatorChar=='\\') {
+            // From Windows to Linux/Mac
+            return res.replace('\\', '/');
+        }
+        return res;
     }
 }

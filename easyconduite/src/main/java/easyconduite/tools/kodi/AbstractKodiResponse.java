@@ -20,25 +20,13 @@
 
 package easyconduite.tools.kodi;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import easyconduite.tools.jackson.MapperSingleton;
-
-import java.io.IOException;
-import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class KodiResponse {
+public abstract class AbstractKodiResponse {
 
-    public String jsonrpc;
-    public String id;
-    @JsonProperty("result")
-    public List<ActivePlayer> result;
-
-    public KodiResponse() {
-    }
+    private String jsonrpc;
+    private String id;
 
     public String getJsonrpc() {
         return jsonrpc;
@@ -54,25 +42,5 @@ public class KodiResponse {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public List<ActivePlayer> getResult() {
-        return result;
-    }
-
-    public void setResult(List<ActivePlayer> result) {
-        this.result = result;
-    }
-
-    @JsonIgnore
-    public static KodiResponse build(String json){
-        final ObjectMapper mapperJson = MapperSingleton.getMapper().getMapperJson();
-        KodiResponse kodiResponse = null;
-        try {
-                kodiResponse = mapperJson.readValue(json,KodiResponse.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return kodiResponse;
     }
 }

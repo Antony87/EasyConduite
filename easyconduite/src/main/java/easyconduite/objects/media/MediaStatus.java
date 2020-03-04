@@ -18,26 +18,8 @@
  *
  */
 
-package easyconduite.tools.kodi;
+package easyconduite.objects.media;
 
-import easyconduite.objects.media.RemotePlayer;
-import org.junit.jupiter.api.Test;
-
-import java.io.File;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-class KodiRequestBuilderTest {
-
-    @Test
-    void build() {
-        RemotePlayer remote = new RemotePlayer(RemotePlayer.Type.KODI);
-        remote.setResource(new File("C:/Users/V902832/IdeaProjects/EasyConduite/easyconduite/src/test/resources/test.mp4").toURI());
-        final File file = new File(remote.getResource());
-
-        System.out.println(new KodiRequestBuilder(KodiMethods.OPEN).setFile(file).build());
-
-
-
-    }
+public enum MediaStatus {
+    HALTED,UNKNOWN,PLAYING,PAUSED,STOPPED,READY
 }

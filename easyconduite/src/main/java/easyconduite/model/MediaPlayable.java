@@ -2,6 +2,8 @@ package easyconduite.model;
 
 import easyconduite.exception.EasyconduiteException;
 
+import java.net.URISyntaxException;
+
 public interface MediaPlayable {
 
     /**

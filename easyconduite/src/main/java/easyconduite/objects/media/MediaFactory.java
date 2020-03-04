@@ -21,7 +21,7 @@ public class MediaFactory {
      *     The type of {@link MediaPlayable} is determine by the param :
      *     <ul>
      *         <li>Param = {@link File} then create {@link AudioMedia}</li>
-     *         <li>Param = {@link RemotePlayer.Type} then create {@link RemotePlayer}</li>
+     *         <li>Param = {@link RemoteMedia.Type} then create {@link RemoteMedia}</li>
      *     </ul>
      * </p>
      * @param param The param which is used to determine concrete type of AbstractMedia
@@ -35,8 +35,8 @@ public class MediaFactory {
             if(mediaFile.exists()){
                 return new AudioMedia(mediaFile.toURI());
             }
-        }else if(param.equals(RemotePlayer.Type.KODI)){
-                return new RemotePlayer((RemotePlayer.Type) param);
+        }else if(param.equals(RemoteMedia.Type.KODI)){
+                return new RemoteMedia((RemoteMedia.Type) param);
         }
     return null;
     }

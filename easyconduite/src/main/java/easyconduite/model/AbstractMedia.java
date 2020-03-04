@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import easyconduite.objects.media.AudioMedia;
-import easyconduite.objects.media.RemotePlayer;
+import easyconduite.objects.media.RemoteMedia;
 import easyconduite.tools.jackson.DurationDeserializer;
 import easyconduite.tools.jackson.DurationSerializer;
 import javafx.scene.input.KeyCode;
@@ -24,13 +24,9 @@ import java.util.UUID;
         property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = AudioMedia.class, name = "audiomedia"),
-        @JsonSubTypes.Type(value = RemotePlayer.class, name = "remotemedia"),
+        @JsonSubTypes.Type(value = RemoteMedia.class, name = "remotemedia"),
 })
 public abstract class AbstractMedia implements MediaPlayable {
-
-    public enum MediaStatus {
-        HALTED,UNKNOWN,PLAYING,PAUSED,STOPPED,READY
-    }
 
     private String name;
 

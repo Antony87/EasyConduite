@@ -21,33 +21,26 @@ import easyconduite.objects.EasyConduiteProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
 /**
  * This class implements singleton design pattern and offers methods to manage
  * user datas.<br>
- * If ./user.dat file isn't find, an userdata object is instanciate with default
+ * If ./easyconduite.dat file isn't find, an userdata object is instanciate with default
  * values.
  *
  * @author antony
  */
 public class EasyConduitePropertiesHandler {
 
-    private static EasyConduitePropertiesHandler INSTANCE;
-
-    private EasyConduiteProperties applicationProperties;
-
-    private final ResourceBundle localBundle;
-
-    private Properties kodiProperties;
-
     private static final Logger LOG = LogManager.getLogger(EasyConduitePropertiesHandler.class);
+    private static EasyConduitePropertiesHandler INSTANCE;
+    private final ResourceBundle localBundle;
+    private EasyConduiteProperties applicationProperties;
+    private Properties kodiProperties;
 
     private EasyConduitePropertiesHandler() throws EasyconduiteException {
         LOG.debug("EasyConduiteProperties singleton construct");
@@ -86,18 +79,6 @@ public class EasyConduitePropertiesHandler {
 
     }
 
-    public EasyConduiteProperties getApplicationProperties() {
-        return applicationProperties;
-    }
-
-    public ResourceBundle getLocalBundle() {
-        return localBundle;
-    }
-
-    public Properties getKodiProperties() {
-        return kodiProperties;
-    }
-
     /**
      * This method returns an INSTANCE of ApplicationPropertiesHelper.
      *
@@ -112,4 +93,15 @@ public class EasyConduitePropertiesHandler {
         return INSTANCE;
     }
 
+    public EasyConduiteProperties getApplicationProperties() {
+        return applicationProperties;
+    }
+
+    public ResourceBundle getLocalBundle() {
+        return localBundle;
+    }
+
+    public Properties getKodiProperties() {
+        return kodiProperties;
+    }
 }

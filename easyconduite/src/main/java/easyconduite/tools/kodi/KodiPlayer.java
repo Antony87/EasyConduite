@@ -21,17 +21,17 @@
 package easyconduite.tools.kodi;
 
 import easyconduite.exception.RemotePlayableException;
-import easyconduite.model.AbstractMedia;
 import easyconduite.model.RemotePlayable;
-import easyconduite.objects.media.RemotePlayer;
+import easyconduite.objects.media.MediaStatus;
+import easyconduite.objects.media.RemoteMedia;
 import easyconduite.util.HTTPHandler;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.hc.core5.net.URIBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,32 +45,33 @@ import java.util.List;
 public class KodiPlayer implements RemotePlayable {
 
     private static final Logger LOG = LogManager.getLogger(KodiPlayer.class);
-    private final RemotePlayer remotePlayer;
+    private final HttpClient httpClient;
     private URI kodiRpcURI;
     private HttpPost openHttpPost;
     private HttpPost pingHttpPost;
     private HttpPost activeHttpPost;
-    private AbstractMedia.MediaStatus status;
+    private final File resourceFile;
+    private MediaStatus status;
 
-    public KodiPlayer(RemotePlayer remote) throws RemotePlayableException {
+    public KodiPlayer(RemoteMedia remote) throws RemotePlayableException {
         LOG.debug("KodiPlayer constructor called");
-        remotePlayer = remote;
         kodiRpcURI = null;
+        httpClient = HTTPHandler.getInstance().getHttpclient();
+        resourceFile = new File(remote.getResource());
         try {
-            kodiRpcURI = new URIBuilder().setScheme("http").setHost(remotePlayer.getHost()).setPort(remotePlayer.getPort()).setPath("/jsonrpc").build();
-            pingHttpPost = getOpenHttPost(new KodiRequestBuilder(KodiMethods.PING).build());
-            final File file = new File(remotePlayer.getResource());
-            openHttpPost = getOpenHttPost(new KodiRequestBuilder(KodiMethods.OPEN).setFile(file).build());
-            activeHttpPost = getOpenHttPost(new KodiRequestBuilder(KodiMethods.GET_ACTIVE_PLAYERS).build());
+            kodiRpcURI = new URIBuilder().setScheme("http").setHost(remote.getHost()).setPort(remote.getPort()).setPath("/jsonrpc").build();
+            pingHttpPost = getHttPost(KodiRequestHelper.getMethodRequest(KodiMethods.PING));
+            openHttpPost = getHttPost(KodiRequestHelper.getOpenRequest(resourceFile));
+            activeHttpPost = getHttPost(KodiRequestHelper.getMethodRequest(KodiMethods.GET_ACTIVE_PLAYERS));
+
 
         } catch (URISyntaxException e) {
             throw new RemotePlayableException("Exception JsonProcessing or URI Syntax", e);
         }
     }
 
-    private HttpPost getOpenHttPost(String kodiRequest) {
-        final HttpPost httpPost = new HttpPost();
-        httpPost.setURI(kodiRpcURI);
+    private HttpPost getHttPost(String kodiRequest) {
+        final HttpPost httpPost = new HttpPost(kodiRpcURI);
         final StringEntity entity = new StringEntity(kodiRequest, ContentType.APPLICATION_JSON);
         httpPost.setEntity(entity);
         return httpPost;
@@ -78,12 +79,11 @@ public class KodiPlayer implements RemotePlayable {
 
     @Override
     public boolean isActive() {
-        final HttpClient httpClient = HTTPHandler.getInstance().getHttpclient();
         try {
             CloseableHttpResponse response = (CloseableHttpResponse) httpClient.execute(pingHttpPost);
-            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            if (response.getCode() == HttpStatus.SC_OK) {
                 final String responseString = new String(response.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8);
-                LOG.trace("Response = {}", responseString);
+                LOG.trace("Ping Response = {}", responseString);
                 if (responseString.contains("\"pong\""))
                     return true;
             }
@@ -93,20 +93,18 @@ public class KodiPlayer implements RemotePlayable {
         return false;
     }
 
-    public Integer getActivePlayerId(){
-        final HttpClient httpClient = HTTPHandler.getInstance().getHttpclient();
+    public Integer getActivePlayerId() {
         Integer playerId = null;
         try {
             CloseableHttpResponse response = (CloseableHttpResponse) httpClient.execute(activeHttpPost);
-            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            if (response.getCode() == HttpStatus.SC_OK) {
                 final String responseString = new String(response.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8);
-                LOG.trace("Response = {}", responseString);
-                final KodiResponse kodiResponse = KodiResponse.build(responseString);
-                final List<ActivePlayer> result = kodiResponse.getResult();
-                if(!result.isEmpty()){
-                    ActivePlayer activePlayer = kodiResponse.getResult().get(0);
-                    LOG.trace("ActivePlayer = {}", activePlayer);
-                    playerId = activePlayer.getPlayerid();
+                LOG.trace("getActivePlayerId Response = {}", responseString);
+                final KodiActiveResponse kodiActiveResponse = KodiRequestHelper.build(responseString, KodiActiveResponse.class);
+                final List<KodiActiveResponse.KodiActivePlayer> result = kodiActiveResponse.getResult();
+                if (!result.isEmpty()) {
+                    playerId = kodiActiveResponse.getResult().get(0).getPlayerid();
+                    LOG.trace("KodiActivePlayer = {}", playerId);
                 }
             }
         } catch (IOException e) {
@@ -115,18 +113,49 @@ public class KodiPlayer implements RemotePlayable {
         return playerId;
     }
 
+    public KodiItemResponse.KodiItem getItem(Integer playerId) {
+        final HttpPost itemHttpPost = getHttPost(KodiRequestHelper.getGetItemRequest(playerId));
+        KodiItemResponse.KodiItem kodiItem = null;
+        if (playerId != null) {
+            try {
+                CloseableHttpResponse response = (CloseableHttpResponse) httpClient.execute(itemHttpPost);
+                if (response.getCode() == HttpStatus.SC_OK) {
+                    LOG.trace("HTTPPost {}", itemHttpPost.getEntity());
+                    final String responseString = new String(response.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8);
+                    if (!responseString.contains("error")) {
+                        final KodiItemResponse kodiResponse = KodiRequestHelper.build(responseString, KodiItemResponse.class);
+                        kodiItem = kodiResponse.getResult().getItem();
+                        LOG.trace("KodiItemResponseResponse = {}", kodiItem);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return kodiItem;
+    }
+
     @Override
-    public AbstractMedia.MediaStatus play() {
-        final HttpClient httpClient = HTTPHandler.getInstance().getHttpclient();
-        status = AbstractMedia.MediaStatus.HALTED;
-        if(getActivePlayerId()==null){
+    public MediaStatus play() {
+        status = MediaStatus.UNKNOWN;
+        final Integer activePlayerId = getActivePlayerId();
+        if (activePlayerId != null) {
+            final KodiItemResponse.KodiItem kodiItem = getItem(activePlayerId);
+            if(kodiItem!=null){
+                File itemFile = new File(kodiItem.getFile());
+                if(!itemFile.equals(resourceFile)){
+                    stop();
+                }
+            }
+        }
+        if (status!= MediaStatus.PLAYING) {
             try {
                 CloseableHttpResponse response = (CloseableHttpResponse) httpClient.execute(openHttpPost);
-                if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                if (response.getCode() == HttpStatus.SC_OK) {
                     final String responseString = new String(response.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8);
-                    LOG.trace("Response = {}", responseString);
+                    LOG.trace("Play Response = {}", responseString);
                     if (responseString.contains("\"result\"") && responseString.contains("\"OK\""))
-                        status = AbstractMedia.MediaStatus.PLAYING;
+                        status = MediaStatus.PLAYING;
                 }
 
             } catch (IOException e) {
@@ -137,17 +166,30 @@ public class KodiPlayer implements RemotePlayable {
     }
 
     @Override
-    public AbstractMedia.MediaStatus pause() {
+    public MediaStatus pause() {
         return null;
     }
 
     @Override
-    public AbstractMedia.MediaStatus stop() {
-        return null;
-    }
+    public MediaStatus stop() {
+        status = MediaStatus.UNKNOWN;
 
-    @Override
-    public AbstractMedia.MediaStatus getStatus() {
+            final HttpPost itemHttpPost = getHttPost(KodiRequestHelper.getGetStopRequest(1));
+            try {
+                CloseableHttpResponse response = (CloseableHttpResponse) httpClient.execute(openHttpPost);
+                final String responseString = new String(response.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8);
+                LOG.trace("Stop Response = {}", responseString);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            status = MediaStatus.STOPPED;
+
         return status;
     }
+
+    @Override
+    public MediaStatus getStatus() {
+        return status;
+    }
+
 }

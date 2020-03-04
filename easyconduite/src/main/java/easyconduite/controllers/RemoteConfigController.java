@@ -22,7 +22,7 @@ package easyconduite.controllers;
 
 import easyconduite.model.AbstractMedia;
 import easyconduite.model.SpecificConfigurable;
-import easyconduite.objects.media.RemotePlayer;
+import easyconduite.objects.media.RemoteMedia;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
@@ -34,7 +34,7 @@ import java.util.ResourceBundle;
 
 public class RemoteConfigController implements Initializable, SpecificConfigurable {
 
-    private RemotePlayer remoteMedia;
+    private RemoteMedia remoteMedia;
 
     @FXML
     private TextField hostTextField;
@@ -45,13 +45,13 @@ public class RemoteConfigController implements Initializable, SpecificConfigurab
     @FXML
     private TextField resourceTextField;
 
-    public RemoteConfigController(RemotePlayer media) {
+    public RemoteConfigController(RemoteMedia media) {
         this.remoteMedia=media;
     }
 
     @Override
     public void updateSpecificMedia(AbstractMedia media) {
-        remoteMedia= (RemotePlayer) media;
+        remoteMedia= (RemoteMedia) media;
 
         final URI resourceURI = new File(resourceTextField.getText()).toURI();
         remoteMedia.setResource(resourceURI);

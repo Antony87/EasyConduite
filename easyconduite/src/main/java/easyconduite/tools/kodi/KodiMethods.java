@@ -24,9 +24,10 @@ public enum KodiMethods {
 
     OPEN("Player.Open"),
     PING("JSONRPC.Ping"),
-    GET_ACTIVE_PLAYERS("Player.GetActivePlayers")
+    GET_ACTIVE_PLAYERS("Player.GetActivePlayers"),
+    STOP("Player.Stop"),
+    GET_ITEM("Player.GetItem");
     ;
-
     protected String method;
 
     KodiMethods(String method) {

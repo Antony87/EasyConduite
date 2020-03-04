@@ -39,27 +39,19 @@ import java.util.Objects;
  */
 public class EasyConduiteProperties {
 
+    @JsonIgnore
+    private final SimpleLongProperty changeCompteur = new SimpleLongProperty();
     private Locale locale = new Locale(System.getProperty("user.language"), System.getProperty("user.country"));
-
     private int windowWith = 800;
-
     private int windowHeight = 600;
-
     private File lastFileProject;
-
     @JsonSerialize(using = ApacheLogSerializer.class)
     @JsonDeserialize(using = ApacheLogDeserializer.class)
     private Level logLevel = Level.OFF;
-
     private Path lastProjectDir;
-
     private Path lastImportDir;
-
     @JsonIgnore
     private boolean isSavingNeeded = false;
-
-    @JsonIgnore
-    private final SimpleLongProperty changeCompteur = new SimpleLongProperty();
 
     public EasyConduiteProperties() {
     }
@@ -139,12 +131,12 @@ public class EasyConduiteProperties {
         return changeCompteur.get();
     }
 
-    public SimpleLongProperty changeCompteurProperty() {
-        return changeCompteur;
-    }
-
     public void setChangeCompteur(long changeCompteur) {
         this.changeCompteur.set(changeCompteur);
+    }
+
+    public SimpleLongProperty changeCompteurProperty() {
+        return changeCompteur;
     }
 
     private void updateChangeCount() {

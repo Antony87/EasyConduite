@@ -18,7 +18,7 @@ package easyconduite.view;
 
 import easyconduite.controllers.MainController;
 import easyconduite.model.AbstractUIMedia;
-import easyconduite.objects.media.RemotePlayer;
+import easyconduite.objects.media.RemoteMedia;
 import javafx.beans.property.DoubleProperty;
 import javafx.scene.control.Slider;
 import org.apache.logging.log4j.LogManager;
@@ -34,7 +34,7 @@ import org.apache.logging.log4j.Logger;
 public class RemoteMediaUI extends AbstractUIMedia {
 
     static final Logger LOG = LogManager.getLogger(RemoteMediaUI.class);
-    private final RemotePlayer remoteMedia;
+    private final RemoteMedia remoteMedia;
 
     /**
      * Constructor du UI custom control for an AudioMedia.
@@ -42,15 +42,37 @@ public class RemoteMediaUI extends AbstractUIMedia {
      * @param media a media wich be play.
      * @param controller the main controller which interact with {@link RemoteMediaUI}
      */
-    public RemoteMediaUI(RemotePlayer media, MainController controller) {
+    public RemoteMediaUI(RemoteMedia media, MainController controller) {
         super(media,controller);
         LOG.info("Construct an AudioMedia {}", media);
         this.remoteMedia = media;
 
+        remoteMedia.statusProperty().addListener((observableValue, oldValue, newValue) -> {
+            if(newValue!=null){
+                LOG.trace("MediaStatus player {} is {}",this.remoteMedia.getName(),newValue);
+                switch (newValue) {
+                    case PAUSED:
+                        playingClass.setValue(false);
+                        break;
+                    case PLAYING:
+                        playingClass.setValue(true);
+                        break;
+                    case READY:
+                        playingClass.setValue(false);
+                        break;
+                    case STOPPED:
+                        playingClass.setValue(false);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+
         ///////////// current Time label
         //audioMedia.getPlayer().currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> timeLabel.setText(formatTime(audioMedia.getDuration().subtract(newValue))));
 
-        if(remoteMedia.getType().equals(RemotePlayer.Type.KODI)){
+        if(remoteMedia.getType().equals(RemoteMedia.Type.KODI)){
             super.typeRegion.getStyleClass().add("typeKodi");
         }
 

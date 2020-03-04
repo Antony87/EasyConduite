@@ -22,7 +22,7 @@ import easyconduite.model.AbstractUIMedia;
 import easyconduite.model.UIMediaPlayable;
 import easyconduite.objects.EasyConduiteProperties;
 import easyconduite.objects.media.MediaFactory;
-import easyconduite.objects.media.RemotePlayer;
+import easyconduite.objects.media.RemoteMedia;
 import easyconduite.objects.project.MediaProject;
 import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.Labels;
@@ -216,7 +216,7 @@ public class MainController extends StackPane implements Initializable {
 
     @FXML
     public void menuAddKodiPlayer(ActionEvent event) {
-        final AbstractMedia media = MediaFactory.createPlayableMedia(RemotePlayer.Type.KODI);
+        final AbstractMedia media = MediaFactory.createPlayableMedia(RemoteMedia.Type.KODI);
         project.getAbstractMediaList().add(media);
         final UIMediaPlayable mediaUI = MediaUIFactory.createMediaUI(media, this);
         try {

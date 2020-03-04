@@ -21,7 +21,7 @@ import easyconduite.model.AbstractMedia;
 import easyconduite.model.SpecificConfigurable;
 import easyconduite.model.UIMediaPlayable;
 import easyconduite.objects.media.AudioMedia;
-import easyconduite.objects.media.RemotePlayer;
+import easyconduite.objects.media.RemoteMedia;
 import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.KeyCodeHelper;
 import easyconduite.view.controls.ActionDialog;
@@ -160,8 +160,8 @@ public class TrackConfigController implements Initializable {
                 final String secondaryFxml = "/fxml/secondary/specAudioConfig.fxml";
                 secondaryController = new AudioConfigController((AudioMedia) media);
                 buildSpecificPane(secondaryController, secondaryFxml);
-            } else if (media instanceof RemotePlayer) {
-                secondaryController = new RemoteConfigController((RemotePlayer) media);
+            } else if (media instanceof RemoteMedia) {
+                secondaryController = new RemoteConfigController((RemoteMedia) media);
                 final String secondaryFxml = "/fxml/secondary/specRemoteConfig.fxml";
                 buildSpecificPane(secondaryController, secondaryFxml);
             } else {

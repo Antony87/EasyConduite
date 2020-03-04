@@ -23,7 +23,7 @@ package easyconduite.view;
 import easyconduite.controllers.MainController;
 import easyconduite.model.UIMediaPlayable;
 import easyconduite.objects.media.AudioMedia;
-import easyconduite.objects.media.RemotePlayer;
+import easyconduite.objects.media.RemoteMedia;
 
 public class MediaUIFactory {
 
@@ -31,8 +31,8 @@ public class MediaUIFactory {
 
         if (mediaPlayable instanceof AudioMedia) {
             return new AudioMediaUI((AudioMedia) mediaPlayable, controller);
-        } else if (mediaPlayable instanceof RemotePlayer) {
-            return new RemoteMediaUI((RemotePlayer) mediaPlayable, controller);
+        } else if (mediaPlayable instanceof RemoteMedia) {
+            return new RemoteMediaUI((RemoteMedia) mediaPlayable, controller);
         }
         return null;
     }
