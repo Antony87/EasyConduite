@@ -17,7 +17,7 @@
 package easyconduite.util;
 
 import easyconduite.exception.EasyconduiteException;
-import easyconduite.objects.EasyConduiteProperties;
+import easyconduite.EasyConduiteProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

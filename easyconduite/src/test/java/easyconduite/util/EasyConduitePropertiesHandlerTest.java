@@ -21,13 +21,10 @@
 package easyconduite.util;
 
 import easyconduite.exception.EasyconduiteException;
-import easyconduite.objects.EasyConduiteProperties;
 import org.junit.jupiter.api.Test;
 
 import java.text.MessageFormat;
 import java.util.Properties;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class EasyConduitePropertiesHandlerTest {
 

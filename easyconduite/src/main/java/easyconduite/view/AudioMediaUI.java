@@ -20,7 +20,7 @@ import easyconduite.controllers.MainController;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.AbstractMedia;
 import easyconduite.model.AbstractUIMedia;
-import easyconduite.objects.media.AudioMedia;
+import easyconduite.media.AudioMedia;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Slider;

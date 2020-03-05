@@ -17,7 +17,6 @@
 package easyconduite;
 
 import easyconduite.controllers.MainController;
-import easyconduite.objects.EasyConduiteProperties;
 import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.LoggingHelper;
 import javafx.application.Application;

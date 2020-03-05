@@ -21,9 +21,7 @@
 package easyconduite.util;
 
 import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 
@@ -33,25 +31,11 @@ import java.nio.charset.StandardCharsets;
 
 public class HTTPHandler {
 
-    private static  HTTPHandler INSTANCE;
-
-    private final CloseableHttpClient httpclient;
-
-    private HTTPHandler() {
-        httpclient = HttpClients.createDefault();
-    }
-
-    public static HTTPHandler getInstance() {
-        if (INSTANCE == null) {
-            synchronized (HTTPHandler.class) {
-                INSTANCE = new HTTPHandler();
-            }
-        }
-        return INSTANCE;
-    }
-
     public static String getResponse(CloseableHttpResponse response) throws IOException {
         return new String(response.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8);
+    }
+
+    private HTTPHandler() {
     }
 
     public static  HttpPost getHttPost(String request, URI hostUri) {
@@ -59,9 +43,5 @@ public class HTTPHandler {
         final StringEntity entity = new StringEntity(request, ContentType.APPLICATION_JSON);
         httpPost.setEntity(entity);
         return httpPost;
-    }
-
-    public CloseableHttpClient getHttpclient() {
-        return httpclient;
     }
 }

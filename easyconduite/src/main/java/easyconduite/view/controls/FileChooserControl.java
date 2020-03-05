@@ -17,7 +17,7 @@
 package easyconduite.view.controls;
 
 import easyconduite.exception.EasyconduiteException;
-import easyconduite.objects.EasyConduiteProperties;
+import easyconduite.EasyConduiteProperties;
 import easyconduite.util.EasyConduitePropertiesHandler;
 import javafx.stage.FileChooser;
 

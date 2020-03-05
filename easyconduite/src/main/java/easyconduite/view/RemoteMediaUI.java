@@ -18,7 +18,7 @@ package easyconduite.view;
 
 import easyconduite.controllers.MainController;
 import easyconduite.model.AbstractUIMedia;
-import easyconduite.objects.media.RemoteMedia;
+import easyconduite.media.RemoteMedia;
 import javafx.beans.property.DoubleProperty;
 import javafx.scene.control.Slider;
 import org.apache.logging.log4j.LogManager;

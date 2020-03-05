@@ -24,38 +24,27 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.tools.jackson.MapperSingleton;
 import easyconduite.util.EasyConduitePropertiesHandler;
-import easyconduite.util.PersistenceHelper;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Properties;
 
-public class KodiRequestHelper {
+public class KodiRequest {
 
-    public static String getOpenRequest(File file){
-        String json = "";
-        final Properties kodiProps;
-        try {
-            kodiProps = EasyConduitePropertiesHandler.getInstance().getKodiProperties();
-            String pattern = kodiProps.getProperty(KodiMethods.OPEN.getMethod());
-            json = MessageFormat.format(pattern, PersistenceHelper.separatorsToSystem(file.getCanonicalPath()));
-        } catch (EasyconduiteException | IOException e) {
-            e.printStackTrace();
-        }
-        return json;
+    public static final String OPEN ="'{'\"jsonrpc\":\"2.0\",\"id\":\"1\",\"method\":\"Player.Open\",\"params\":'{'\"item\":'{'\"file\":\"{0}\"'}}}'";
+    public static final String ITEM ="'{'\"jsonrpc\":\"2.0\",\"id\":\"1\",\"method\":\"Player.GetItem\",\"params\":'{'\"properties\": [\"title\",\"duration\", \"file\"],\"playerid\":{0}'}}'";
+    public static final String ACTIVE ="{\"jsonrpc\":\"2.0\",\"id\":\"1\",\"method\":\"Player.GetActivePlayers\"}";
+    public static final String STOP="'{'\"jsonrpc\":\"2.0\",\"id\":\"1\",\"method\":\"Player.Stop\",\"params\":'{'\"playerid\":{0}'}}'";
+
+    public static String getJsonRequest(String... arguments){
+        return MessageFormat.format(arguments[0], arguments[1]);
     }
 
     public static String getGetItemRequest(Integer playerId){
         String json = "";
         final Properties kodiProps;
-        try {
-            kodiProps = EasyConduitePropertiesHandler.getInstance().getKodiProperties();
-            String pattern = kodiProps.getProperty(KodiMethods.GET_ITEM.getMethod());
-            json = MessageFormat.format(pattern, playerId);
-        } catch (EasyconduiteException e) {
-            e.printStackTrace();
-        }
+
+        json = MessageFormat.format(ITEM, playerId);
         return json;
     }
 
@@ -66,20 +55,6 @@ public class KodiRequestHelper {
             kodiProps = EasyConduitePropertiesHandler.getInstance().getKodiProperties();
             String pattern = kodiProps.getProperty(KodiMethods.STOP.getMethod());
             json = MessageFormat.format(pattern, playerId);
-        } catch (EasyconduiteException e) {
-            e.printStackTrace();
-        }
-        return json;
-    }
-
-
-    public static String getMethodRequest(KodiMethods method){
-        String json = "";
-        final Properties kodiProps;
-        try {
-            kodiProps = EasyConduitePropertiesHandler.getInstance().getKodiProperties();
-            String pattern = kodiProps.getProperty(method.getMethod());
-            json = MessageFormat.format(pattern, "");
         } catch (EasyconduiteException e) {
             e.printStackTrace();
         }

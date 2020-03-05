@@ -17,7 +17,7 @@
  *  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package easyconduite.objects;
+package easyconduite;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

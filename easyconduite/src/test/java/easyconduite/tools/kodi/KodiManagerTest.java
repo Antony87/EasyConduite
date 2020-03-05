@@ -21,7 +21,8 @@
 package easyconduite.tools.kodi;
 
 import easyconduite.exception.RemotePlayableException;
-import easyconduite.objects.media.RemoteMedia;
+import easyconduite.media.RemoteMedia;
+import easyconduite.tools.HttpClientForMedias;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -71,11 +72,11 @@ class KodiManagerTest {
     @Order(1)
     void registerKodiPlayer() throws URISyntaxException {
 
-        observer.registerKodiPlayer(remote1);
-        observer.registerKodiPlayer(remote2);
-        KodiManager.MediasHost mediasHost = observer.getMediaHostMap().get(remote1.getHost());
+        observer.registerKodiMedia(remote1);
+        observer.registerKodiMedia(remote2);
+        HttpClientForMedias httpClientForMedias = observer.getMediaHostMap().get(remote1.getHost());
         assertEquals(1, observer.getMediaHostMap().size());
-        assertEquals(2, mediasHost.getMediaList().size());
+        assertEquals(2, httpClientForMedias.getMediaList().size());
 
     }
 
@@ -86,7 +87,7 @@ class KodiManagerTest {
         assertThrows(IllegalArgumentException.class, new Executable() {
             @Override
             public void execute() throws Throwable {
-                observer.registerKodiPlayer(remote2);
+                observer.registerKodiMedia(remote2);
             }
         });
 
@@ -98,7 +99,7 @@ class KodiManagerTest {
         assertThrows(IllegalArgumentException.class, new Executable() {
             @Override
             public void execute() throws Throwable {
-                observer.unRegisterKodiPlayer(remote3);
+                observer.unRegisterKodiMedia(remote3);
             }
         });
     }
@@ -106,7 +107,7 @@ class KodiManagerTest {
     @Test
     @Order(4)
     void registredOtherHost() throws URISyntaxException {
-        observer.registerKodiPlayer(remote3);
+        observer.registerKodiMedia(remote3);
         assertEquals(2, observer.getMediaHostMap().size());
     }
 

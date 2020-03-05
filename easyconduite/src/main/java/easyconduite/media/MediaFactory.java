@@ -1,4 +1,4 @@
-package easyconduite.objects.media;
+package easyconduite.media;
 
 import easyconduite.model.AbstractMedia;
 import easyconduite.model.MediaPlayable;

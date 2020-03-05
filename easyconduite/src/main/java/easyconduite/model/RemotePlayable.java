@@ -20,9 +20,15 @@
 
 package easyconduite.model;
 
-import easyconduite.objects.media.MediaStatus;
+import easyconduite.media.RemoteMedia;
 
 public interface RemotePlayable {
+
+    void play(RemoteMedia media);
+
+    void pause(RemoteMedia media);
+
+    void stop(RemoteMedia media);
 
     boolean isActive();
 }

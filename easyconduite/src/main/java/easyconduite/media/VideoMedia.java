@@ -18,7 +18,7 @@
  *
  */
 
-package easyconduite.objects.media;
+package easyconduite.media;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import easyconduite.exception.EasyconduiteException;

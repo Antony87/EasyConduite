@@ -5,9 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.fixture.EasyProjectFixture;
-import easyconduite.objects.EasyConduiteProperties;
-import easyconduite.objects.media.AudioMedia;
-import easyconduite.objects.project.MediaProject;
+import easyconduite.EasyConduiteProperties;
+import easyconduite.media.AudioMedia;
+import easyconduite.project.MediaProject;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;

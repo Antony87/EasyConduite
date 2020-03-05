@@ -22,7 +22,7 @@ package easyconduite.controllers;
 
 import easyconduite.model.AbstractMedia;
 import easyconduite.model.SpecificConfigurable;
-import easyconduite.objects.media.AudioMedia;
+import easyconduite.media.AudioMedia;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Spinner;

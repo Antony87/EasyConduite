@@ -1,9 +1,9 @@
 package easyconduite.fixture;
 
 import easyconduite.model.AbstractMedia;
-import easyconduite.objects.media.AudioMedia;
-import easyconduite.objects.media.MediaFactory;
-import easyconduite.objects.project.MediaProject;
+import easyconduite.media.AudioMedia;
+import easyconduite.media.MediaFactory;
+import easyconduite.project.MediaProject;
 import javafx.scene.input.KeyCode;
 import javafx.util.Duration;
 

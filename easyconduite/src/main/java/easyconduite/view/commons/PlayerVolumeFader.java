@@ -16,7 +16,7 @@
  */
 package easyconduite.view.commons;
 
-import easyconduite.objects.media.AudioMedia;
+import easyconduite.media.AudioMedia;
 import javafx.animation.Transition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

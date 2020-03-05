@@ -18,7 +18,7 @@
  *
  */
 
-package easyconduite.objects.media;
+package easyconduite.media;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import easyconduite.model.AbstractMedia;
@@ -34,13 +34,16 @@ import java.util.Objects;
 
 public class RemoteMedia extends AbstractMedia {
 
-    public enum Type{
-        KODI,VLC
+    public enum Type {
+        KODI, VLC
     }
 
-    public enum Action{
-        PLAY,STOP,PAUSE
+    public enum Action {
+        PLAY, STOP, PAUSE
     }
+
+    @JsonIgnore
+    private Action action;
 
     private URI resource;
 
@@ -51,7 +54,7 @@ public class RemoteMedia extends AbstractMedia {
     private int port;
 
     @JsonIgnore
-    private RemotePlayable player;
+    private RemotePlayable remoteManager;
 
     @JsonIgnore
     private ObjectProperty<MediaStatus> status = new SimpleObjectProperty<>();
@@ -63,14 +66,13 @@ public class RemoteMedia extends AbstractMedia {
     public RemoteMedia(Type type) {
         this();
         setDuration(new Duration(0));
-        this.type =type;
+        this.type = type;
         this.status.setValue(MediaStatus.UNKNOWN);
     }
 
     @Override
     public void play() {
-        final MediaStatus mediaStatus = player.play();
-        statusProperty().setValue(mediaStatus);
+        remoteManager.play(this);
     }
 
     @Override
@@ -80,16 +82,16 @@ public class RemoteMedia extends AbstractMedia {
 
     @Override
     public void stop() {
-
+        remoteManager.stop(this);
     }
 
     @Override
     public void initPlayer() {
 
-        if(type.equals(Type.KODI)){
-            KodiManager observer = KodiManager.getInstance();
+        if (type.equals(Type.KODI)) {
+            remoteManager = KodiManager.getInstance();
             try {
-                observer.registerKodiPlayer(this);
+                ((KodiManager) remoteManager).registerKodiMedia(this);
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
@@ -145,6 +147,14 @@ public class RemoteMedia extends AbstractMedia {
         this.status.set(mediaStatus);
     }
 
+    public Action getAction() {
+        return action;
+    }
+
+    public void setAction(Action action) {
+        this.action = action;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -169,7 +179,7 @@ public class RemoteMedia extends AbstractMedia {
                 ", type=" + type +
                 ", host='" + host + '\'' +
                 ", port=" + port +
-                ", player=" + player +
+                ", player=" + remoteManager +
                 ", status=" + status +
                 "} " + super.toString();
     }

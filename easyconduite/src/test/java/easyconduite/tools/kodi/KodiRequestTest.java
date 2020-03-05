@@ -18,22 +18,15 @@
  *
  */
 
-package easyconduite.view;
+package easyconduite.tools.kodi;
 
-import easyconduite.controllers.MainController;
-import easyconduite.model.UIMediaPlayable;
-import easyconduite.media.AudioMedia;
-import easyconduite.media.RemoteMedia;
+import org.junit.jupiter.api.Test;
 
-public class MediaUIFactory {
+class KodiRequestTest {
 
-    public static <T> UIMediaPlayable createMediaUI(T mediaPlayable, MainController controller) {
+    @Test
+    void getGetItemRequest() {
 
-        if (mediaPlayable instanceof AudioMedia) {
-            return new AudioMediaUI((AudioMedia) mediaPlayable, controller);
-        } else if (mediaPlayable instanceof RemoteMedia) {
-            return new RemoteMediaUI((RemoteMedia) mediaPlayable, controller);
-        }
-        return null;
+        System.out.println(KodiRequest.getGetItemRequest(1));
     }
 }

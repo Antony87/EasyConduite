@@ -21,7 +21,7 @@
 package easyconduite.view.controls;
 
 import easyconduite.exception.EasyconduiteException;
-import easyconduite.objects.project.MediaProject;
+import easyconduite.project.MediaProject;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;

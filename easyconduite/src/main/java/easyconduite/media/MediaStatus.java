@@ -18,7 +18,7 @@
  *
  */
 
-package easyconduite.objects.media;
+package easyconduite.media;
 
 public enum MediaStatus {
     HALTED,UNKNOWN,PLAYING,PAUSED,STOPPED,READY
