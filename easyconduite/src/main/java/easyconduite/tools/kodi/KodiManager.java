@@ -191,7 +191,7 @@ public class KodiManager implements RemotePlayable {
             if (response.getCode() == HttpStatus.SC_OK) {
                 final String responseString = HTTPHandler.getResponse(response);
                 LOG.trace("getActivePlayerId Response = {}", responseString);
-                final KodiActiveResponse kodiActiveResponse = KodiRequest.build(responseString, KodiActiveResponse.class);
+                final KodiActiveResponse kodiActiveResponse = KodiRequest.buildResponse(responseString, KodiActiveResponse.class);
                 final List<KodiActiveResponse.KodiActivePlayer> result = kodiActiveResponse.getResult();
                 if (!result.isEmpty()) {
                     playerId = kodiActiveResponse.getResult().get(0).getPlayerid();
@@ -216,7 +216,7 @@ public class KodiManager implements RemotePlayable {
             if (response.getCode() == HttpStatus.SC_OK) {
                 final String responseString = new String(response.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8);
                 if (!responseString.contains("error")) {
-                    final KodiItemResponse kodiResponse = KodiRequest.build(responseString, KodiItemResponse.class);
+                    final KodiItemResponse kodiResponse = KodiRequest.buildResponse(responseString, KodiItemResponse.class);
                     kodiItem = kodiResponse.getResult().getItem();
                     LOG.trace("KodiItemResponseResponse = {}", kodiItem);
                 }

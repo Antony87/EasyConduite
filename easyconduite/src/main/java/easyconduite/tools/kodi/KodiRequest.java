@@ -61,7 +61,7 @@ public class KodiRequest {
         return json;
     }
 
-    public static <T> T build(String json, Class classe){
+    public static <T> T buildResponse(String json, Class classe){
         final ObjectMapper mapperJson = MapperSingleton.getMapper().getMapperJson();
         T kodiResponse = null;
         try {
