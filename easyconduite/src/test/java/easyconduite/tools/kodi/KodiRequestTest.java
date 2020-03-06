@@ -27,6 +27,11 @@ class KodiRequestTest {
     @Test
     void getGetItemRequest() {
 
-        System.out.println(KodiRequest.getGetItemRequest(1));
+        System.out.println(KodiRequest.getJsonRequest(KodiRequest.ITEM,"1"));
+
+        String fileS ="C:/Users/V902832/IdeaProjects/EasyConduite/easyconduite/src/test/resources/test.mp4";
+        System.out.println(KodiRequest.getJsonRequest(KodiRequest.OPEN,fileS));
+
+
     }
 }

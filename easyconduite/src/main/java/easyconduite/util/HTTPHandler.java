@@ -20,10 +20,15 @@
 
 package easyconduite.util;
 
+import easyconduite.tools.kodi.KodiManager;
+import org.apache.hc.client5.http.classic.HttpClient;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URI;
@@ -31,17 +36,26 @@ import java.nio.charset.StandardCharsets;
 
 public class HTTPHandler {
 
-    public static String getResponse(CloseableHttpResponse response) throws IOException {
-        return new String(response.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8);
-    }
+    private static final Logger LOG = LogManager.getLogger(HTTPHandler.class);
 
     private HTTPHandler() {
     }
 
-    public static  HttpPost getHttPost(String request, URI hostUri) {
+
+    public static String getResponse(HttpClient httpClient, URI hostUri, String jsonRequest) throws IOException {
+        LOG.trace("Enter in with hostUri {} and jsonRequest {}",hostUri,jsonRequest);
         final HttpPost httpPost = new HttpPost(hostUri);
-        final StringEntity entity = new StringEntity(request, ContentType.APPLICATION_JSON);
+        final StringEntity entity = new StringEntity(jsonRequest, ContentType.APPLICATION_JSON);
         httpPost.setEntity(entity);
-        return httpPost;
+        CloseableHttpResponse response = null;
+        String responseString = "";
+            response = (CloseableHttpResponse) httpClient.execute(httpPost);
+            if(response.getCode() == HttpStatus.SC_OK){
+                responseString = new String(response.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8);
+            }else{
+                LOG.error("Error occured with Http Code {}",response.getCode());
+            }
+            LOG.trace("Response string : {}",responseString);
+        return responseString;
     }
 }

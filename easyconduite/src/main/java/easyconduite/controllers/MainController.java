@@ -217,17 +217,18 @@ public class MainController extends StackPane implements Initializable {
     @FXML
     public void menuAddKodiPlayer(ActionEvent event) {
         final AbstractMedia media = MediaFactory.createPlayableMedia(RemoteMedia.Type.KODI);
-        project.getAbstractMediaList().add(media);
         final UIMediaPlayable mediaUI = MediaUIFactory.createMediaUI(media, this);
         try {
-            editTrack(Objects.requireNonNull(mediaUI));
+            new TrackConfigDialog(mediaUI, getMediaUIList());
             getTableLayout().getChildren().add((AbstractUIMedia) mediaUI);
             media.initPlayer();
+            project.getAbstractMediaList().add(media);
             project.setNeedToSave(true);
         } catch (NullPointerException | EasyconduiteException e) {
             ActionDialog.showException(locale.getString(DIALOG_EXCEPTION_HEADER), locale.getString("menu.track.kodiexception"), e);
             LOG.error("Error occured during create Kodi media", e);
         }
+
         event.consume();
     }
 

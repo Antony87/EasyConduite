@@ -21,6 +21,7 @@
 package easyconduite.media;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import easyconduite.exception.RemotePlayableException;
 import easyconduite.model.AbstractMedia;
 import easyconduite.model.RemotePlayable;
 import easyconduite.tools.kodi.KodiManager;
@@ -29,7 +30,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.util.Duration;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Objects;
 
 public class RemoteMedia extends AbstractMedia {
@@ -67,7 +67,7 @@ public class RemoteMedia extends AbstractMedia {
         this();
         setDuration(new Duration(0));
         this.type = type;
-        this.status.setValue(MediaStatus.UNKNOWN);
+        this.status.setValue(MediaStatus.STOPPED);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class RemoteMedia extends AbstractMedia {
             remoteManager = KodiManager.getInstance();
             try {
                 ((KodiManager) remoteManager).registerKodiMedia(this);
-            } catch (URISyntaxException e) {
+            } catch (RemotePlayableException e) {
                 e.printStackTrace();
             }
         }

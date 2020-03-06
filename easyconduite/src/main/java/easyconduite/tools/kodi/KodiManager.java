@@ -25,24 +25,21 @@ import easyconduite.exception.RemotePlayableException;
 import easyconduite.media.MediaStatus;
 import easyconduite.media.RemoteMedia;
 import easyconduite.model.RemotePlayable;
-import easyconduite.tools.HttpClientForMedias;
+import easyconduite.tools.HttpMedias;
 import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.HTTPHandler;
 import easyconduite.util.PersistenceHelper;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.util.Duration;
-import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
-import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -52,13 +49,16 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class KodiManager implements RemotePlayable {
 
     private static final Logger LOG = LogManager.getLogger(KodiManager.class);
+    private static final String RESULT = "\"result\"";
+    private static final String OK = "\"OK\"";
     private static KodiManager instance;
+    private final HttpClient httpClient;
     private final Queue<RemoteMedia> clientActionsQueue;
-    private final String activePlayerRequest;
-    private final Map<String, HttpClientForMedias> mediaHostMap;
+    private final Map<String, HttpMedias> mediaHostMap;
 
     private KodiManager() {
-        activePlayerRequest = KodiRequest.getJsonRequest(KodiRequest.ACTIVE,null);
+        LOG.trace("Construct KodiManager singleton");
+        httpClient = HttpClients.createDefault();
         clientActionsQueue = new ConcurrentLinkedQueue<>();
         mediaHostMap = new ConcurrentHashMap<>();
         HostListenerService hostListenerService = new HostListenerService();
@@ -102,36 +102,36 @@ public class KodiManager implements RemotePlayable {
         return itemFile.equals(mediaFile);
     }
 
-    public void registerKodiMedia(RemoteMedia media) throws URISyntaxException {
+    public void registerKodiMedia(RemoteMedia media) throws RemotePlayableException {
         final String host = media.getHost();
         if (!mediaHostMap.containsKey(host)) {
-            final HttpClientForMedias httpClientForMedias = new HttpClientForMedias(media);
-            httpClientForMedias.getMediaList().add(media);
-            mediaHostMap.put(host, httpClientForMedias);
+            final HttpMedias httpMedias = new HttpMedias();
+            httpMedias.addToMediaList(media);
+            mediaHostMap.put(host, httpMedias);
             LOG.debug("kodiMedia created to registred list : {}", media);
         } else {
-            final HttpClientForMedias mediaHost = mediaHostMap.get(host);
+            final HttpMedias mediaHost = mediaHostMap.get(host);
             List<RemoteMedia> mediasList = mediaHost.getMediaList();
             if (mediasList.contains(media)) {
                 LOG.debug("This media {} is already registrered", media);
-                throw new IllegalArgumentException("This media is not registrered");
+                throw new RemotePlayableException("This media is not registrered");
             }
             mediasList.add(media);
             LOG.debug("kodiMedia added to registred list : {}", media);
         }
     }
 
-    public void unRegisterKodiMedia(RemoteMedia media) {
+    public void unRegisterKodiMedia(RemoteMedia media) throws RemotePlayableException {
         final String host = media.getHost();
         if (!mediaHostMap.containsKey(host)) {
             LOG.debug("This host {} is not registrered", host);
             throw new IllegalArgumentException("This host is not registrered");
         } else {
-            final HttpClientForMedias httpClientForMedias = mediaHostMap.get(host);
-            final List<RemoteMedia> mediaList = httpClientForMedias.getMediaList();
+            final HttpMedias httpMedias = mediaHostMap.get(host);
+            final List<RemoteMedia> mediaList = httpMedias.getMediaList();
             if (!mediaList.contains(media)) {
                 LOG.debug("This media {} is not registrered", media);
-                throw new IllegalArgumentException("This media is not registrered");
+                throw new RemotePlayableException("This media is not registrered");
             }
             mediaList.remove(media);
             if (mediaList.isEmpty()) mediaHostMap.remove(host);
@@ -139,26 +139,17 @@ public class KodiManager implements RemotePlayable {
     }
 
     private boolean openKodiMedia(RemoteMedia media) {
-        CloseableHttpResponse response = null;
-        HttpPost openHttpPost = null;
+        final String host = media.getHost();
+        final HttpMedias httpMedias = mediaHostMap.get(host);
         try {
-            if (media == null) throw new IllegalArgumentException("RemoteMedia is NULL");
-            final String host = media.getHost();
-            if (host == null) throw new IllegalArgumentException("host is NULL");
-            final HttpClientForMedias httpClientForMedias = mediaHostMap.get(host);
             final String fileString = PersistenceHelper.separatorsToSystem(new File(media.getResource()).getCanonicalPath());
-            final String jsonRequest = KodiRequest.getJsonRequest(KodiRequest.OPEN,fileString);
-            openHttpPost = HTTPHandler.getHttPost(jsonRequest, httpClientForMedias.getUri());
-            response = (CloseableHttpResponse) httpClientForMedias.getHttpClient().execute(openHttpPost);
-            if (response.getCode() == HttpStatus.SC_OK) {
-                final String responseString = new String(response.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8);
-                if (responseString.contains("\"result\"") && responseString.contains("\"OK\"")) {
-                    return true;
-                }
+            final String jsonRequest = KodiRequest.getJsonRequest(KodiRequest.OPEN, fileString);
+            final String responseString = HTTPHandler.getResponse(httpClient, httpMedias.getUri(), jsonRequest);
+            if (responseString.contains(RESULT) && responseString.contains(OK)) {
+                return true;
             }
-        } catch (IOException | IllegalArgumentException e) {
-            LOG.error("Error occured during HttpPost {} whith Response {} ", openHttpPost, response, e);
-            return false;
+        } catch (IOException e) {
+            LOG.error("This media {} can not be opened", media);
         }
         return false;
     }
@@ -171,7 +162,7 @@ public class KodiManager implements RemotePlayable {
 
     @Override
     public void pause(RemoteMedia media) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -183,24 +174,16 @@ public class KodiManager implements RemotePlayable {
     public Integer getActivePlayer(String hostAdr) {
         Integer playerId = null;
         try {
-            final HttpClientForMedias httpClientForMedias = mediaHostMap.get(hostAdr);
-            if (httpClientForMedias == null)
-                throw new IllegalArgumentException("MediaHost is NULL");
-            final HttpPost httpPost = HTTPHandler.getHttPost(activePlayerRequest, httpClientForMedias.getUri());
-            final CloseableHttpResponse response = (CloseableHttpResponse) httpClientForMedias.getHttpClient().execute(httpPost);
-            if (response.getCode() == HttpStatus.SC_OK) {
-                final String responseString = HTTPHandler.getResponse(response);
-                LOG.trace("getActivePlayerId Response = {}", responseString);
-                final KodiActiveResponse kodiActiveResponse = KodiRequest.buildResponse(responseString, KodiActiveResponse.class);
-                final List<KodiActiveResponse.KodiActivePlayer> result = kodiActiveResponse.getResult();
-                if (!result.isEmpty()) {
-                    playerId = kodiActiveResponse.getResult().get(0).getPlayerid();
-                    LOG.trace("KodiActivePlayer = {}", playerId);
-                }
+            final HttpMedias httpMedias = mediaHostMap.get(hostAdr);
+            final String jsonRequest = KodiRequest.getJsonRequest(KodiRequest.ACTIVE, null);
+            final String responseString = HTTPHandler.getResponse(httpClient, httpMedias.getUri(), jsonRequest);
+            final KodiActiveResponse kodiActiveResponse = KodiRequest.buildResponse(responseString, KodiActiveResponse.class);
+            final List<KodiActiveResponse.KodiActivePlayer> result = kodiActiveResponse.getResult();
+            if (!result.isEmpty()) {
+                playerId = kodiActiveResponse.getResult().get(0).getPlayerid();
             }
-        } catch (IOException | IllegalArgumentException e) {
+        } catch (IOException e) {
             LOG.error("Exception within getActivePlayer with host {}", hostAdr, e);
-            playerId = null;
         }
         return playerId;
     }
@@ -208,21 +191,16 @@ public class KodiManager implements RemotePlayable {
     public KodiItemResponse.KodiItem getItem(String hostAdr, Integer playerId) throws RemotePlayableException {
         KodiItemResponse.KodiItem kodiItem = null;
         try {
-            if (hostAdr == null) throw new IllegalArgumentException("hostAdr is NULL");
-            if (playerId == null) throw new IllegalArgumentException("playerId is NULL");
-            final HttpClientForMedias httpClientForMedias = mediaHostMap.get(hostAdr);
-            final HttpPost itemHttpPost = HTTPHandler.getHttPost(KodiRequest.getGetItemRequest(playerId), httpClientForMedias.getUri());
-            final CloseableHttpResponse response = (CloseableHttpResponse) httpClientForMedias.getHttpClient().execute(itemHttpPost);
-            if (response.getCode() == HttpStatus.SC_OK) {
-                final String responseString = new String(response.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8);
-                if (!responseString.contains("error")) {
-                    final KodiItemResponse kodiResponse = KodiRequest.buildResponse(responseString, KodiItemResponse.class);
-                    kodiItem = kodiResponse.getResult().getItem();
-                    LOG.trace("KodiItemResponseResponse = {}", kodiItem);
-                }
+            if (playerId == null) throw new RemotePlayableException("playerId is NULL");
+            final HttpMedias httpMedias = mediaHostMap.get(hostAdr);
+            final String jsonRequest = KodiRequest.getJsonRequest(KodiRequest.ITEM, playerId.toString());
+            final String responseString = HTTPHandler.getResponse(httpClient, httpMedias.getUri(), jsonRequest);
+            if (!responseString.contains("error")) {
+                final KodiItemResponse kodiResponse = KodiRequest.buildResponse(responseString, KodiItemResponse.class);
+                kodiItem = kodiResponse.getResult().getItem();
             }
-        } catch (IOException | IllegalArgumentException e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            LOG.error("Exception within getItem with host {} and playerId {}", hostAdr, playerId, e);
             throw new RemotePlayableException();
         }
         return kodiItem;
@@ -232,29 +210,23 @@ public class KodiManager implements RemotePlayable {
         // si le media est déja stoppé, on considère l'action finie.
         if (media.getStatus() == MediaStatus.STOPPED) return true;
         final String host = media.getHost();
-        if (host == null) throw new IllegalArgumentException("host is NULL");
         // si il n'y a pas de player actif, on considère le média stoppé
         final Integer activePlayer = getActivePlayer(host);
         if (activePlayer == null) return true;
-        CloseableHttpResponse response = null;
-        HttpPost stopHttpPost = null;
         try {
-            final HttpClientForMedias httpClientForMedias = mediaHostMap.get(host);
-            stopHttpPost = HTTPHandler.getHttPost(KodiRequest.getGetStopRequest(activePlayer), httpClientForMedias.getUri());
-            response = (CloseableHttpResponse) httpClientForMedias.getHttpClient().execute(stopHttpPost);
-            if (response.getCode() == HttpStatus.SC_OK) {
-                final String responseString = new String(response.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8);
-                if (responseString.contains("\"result\"") && responseString.contains("\"OK\"")) {
-                    return true;
-                }
+            final HttpMedias httpMedias = mediaHostMap.get(host);
+            final String jsonRequest = KodiRequest.getJsonRequest(KodiRequest.STOP, activePlayer.toString());
+            final String responseString = HTTPHandler.getResponse(httpClient, httpMedias.getUri(), jsonRequest);
+            if (responseString.contains(RESULT) && responseString.contains(OK)) {
+                return true;
             }
-        } catch (IOException | IllegalArgumentException e) {
-            LOG.error("Error occured during HttpPost {} whith Response {} ", stopHttpPost, response, e);
+        } catch (IOException e) {
+            LOG.error("Error occured whith host {} and RemoteMedia {} ", host, media, e);
         }
         return false;
     }
 
-    public Map<String, HttpClientForMedias> getMediaHostMap() {
+    public Map<String, HttpMedias> getMediaHostMap() {
         return mediaHostMap;
     }
 
@@ -270,7 +242,8 @@ public class KodiManager implements RemotePlayable {
                 @Override
                 protected Void call() {
                     // Itération sur chaque host
-                    for (Map.Entry<String, HttpClientForMedias> mediaHost : mediaHostMap.entrySet()) {
+                    for (Map.Entry<String, HttpMedias> mediaHost : mediaHostMap.entrySet()) {
+                        LOG.trace("Task listener sur MediaHost {}",mediaHost.getKey());
                         final String host = mediaHost.getKey();
                         final Integer activePlayer = getActivePlayer(host);
                         final List<RemoteMedia> mediaList = mediaHost.getValue().getMediaList();
@@ -289,6 +262,7 @@ public class KodiManager implements RemotePlayable {
 
         private void executeAction(RemoteMedia media) {
             RemoteMedia.Action action = media.getAction();
+            LOG.trace("Action called on media {}", media.getAction());
             switch (action) {
                 case PLAY:
                     if (media.getStatus() != MediaStatus.PLAYING && openKodiMedia(media)) {
@@ -305,5 +279,4 @@ public class KodiManager implements RemotePlayable {
             }
         }
     }
-
 }

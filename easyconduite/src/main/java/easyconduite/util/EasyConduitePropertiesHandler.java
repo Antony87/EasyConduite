@@ -16,14 +16,12 @@
  */
 package easyconduite.util;
 
-import easyconduite.exception.EasyconduiteException;
 import easyconduite.EasyConduiteProperties;
+import easyconduite.exception.EasyconduiteException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
 /**
@@ -37,39 +35,34 @@ import java.util.ResourceBundle;
 public class EasyConduitePropertiesHandler {
 
     private static final Logger LOG = LogManager.getLogger(EasyConduitePropertiesHandler.class);
-    private static EasyConduitePropertiesHandler INSTANCE;
+    private static EasyConduitePropertiesHandler instance;
     private final ResourceBundle localBundle;
     private EasyConduiteProperties applicationProperties;
-    private Properties kodiProperties;
 
     private EasyConduitePropertiesHandler() throws EasyconduiteException {
         LOG.debug("EasyConduiteProperties singleton construct");
         try {
             if (Constants.FILE_EASYCONDUITE_PROPS.exists()) {
-                applicationProperties = PersistenceHelper.openFromJson(Constants.FILE_EASYCONDUITE_PROPS,EasyConduiteProperties.class);
+                applicationProperties = PersistenceHelper.openFromJson(Constants.FILE_EASYCONDUITE_PROPS, EasyConduiteProperties.class);
                 LOG.trace("easyconduite.dat file found. [{}]", applicationProperties);
             } else {
                 LOG.trace("easyconduite.dat file not found, create default EasyConduiteProperties");
                 applicationProperties = new EasyConduiteProperties();
-                PersistenceHelper.saveToJson(applicationProperties,Constants.FILE_EASYCONDUITE_PROPS);
+                PersistenceHelper.saveToJson(applicationProperties, Constants.FILE_EASYCONDUITE_PROPS);
             }
 
             applicationProperties.changeCompteurProperty().addListener((observableValue, number, t1) -> {
                         LOG.trace("ApplicationProperties [{}] changes", applicationProperties);
                         try {
-                            PersistenceHelper.saveToJson(applicationProperties,Constants.FILE_EASYCONDUITE_PROPS);
+                            PersistenceHelper.saveToJson(applicationProperties, Constants.FILE_EASYCONDUITE_PROPS);
                         } catch (IOException e) {
-                            throw new RuntimeException();
+                            LOG.error("Error occured during wrting to Json file",e);
                         }
                     }
             );
 
-            final InputStream input = EasyConduitePropertiesHandler.class.getClassLoader().getResourceAsStream("kodi.properties");
-            kodiProperties = new Properties();
-            kodiProperties.load(input);
-
         } catch (IOException e) {
-            LOG.error("Erreur lecture/ecriture json",e);
+            LOG.error("Erreur lecture/ecriture json", e);
             throw new EasyconduiteException();
         }
 
@@ -85,12 +78,12 @@ public class EasyConduitePropertiesHandler {
      * @return fourni une instance unique
      */
     public static EasyConduitePropertiesHandler getInstance() throws EasyconduiteException {
-        if (INSTANCE == null) {
+        if (instance == null) {
             synchronized (EasyConduitePropertiesHandler.class) {
-                INSTANCE = new EasyConduitePropertiesHandler();
+                instance = new EasyConduitePropertiesHandler();
             }
         }
-        return INSTANCE;
+        return instance;
     }
 
     public EasyConduiteProperties getApplicationProperties() {
@@ -99,9 +92,5 @@ public class EasyConduitePropertiesHandler {
 
     public ResourceBundle getLocalBundle() {
         return localBundle;
-    }
-
-    public Properties getKodiProperties() {
-        return kodiProperties;
     }
 }

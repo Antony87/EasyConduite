@@ -21,16 +21,16 @@
 package easyconduite.tools.kodi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import easyconduite.exception.EasyconduiteException;
 import easyconduite.tools.jackson.MapperSingleton;
-import easyconduite.util.EasyConduitePropertiesHandler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.Properties;
 
 public class KodiRequest {
 
+    private static final Logger LOG = LogManager.getLogger(KodiRequest.class);
     public static final String OPEN ="'{'\"jsonrpc\":\"2.0\",\"id\":\"1\",\"method\":\"Player.Open\",\"params\":'{'\"item\":'{'\"file\":\"{0}\"'}}}'";
     public static final String ITEM ="'{'\"jsonrpc\":\"2.0\",\"id\":\"1\",\"method\":\"Player.GetItem\",\"params\":'{'\"properties\": [\"title\",\"duration\", \"file\"],\"playerid\":{0}'}}'";
     public static final String ACTIVE ="{\"jsonrpc\":\"2.0\",\"id\":\"1\",\"method\":\"Player.GetActivePlayers\"}";
@@ -40,25 +40,7 @@ public class KodiRequest {
         return MessageFormat.format(arguments[0], arguments[1]);
     }
 
-    public static String getGetItemRequest(Integer playerId){
-        String json = "";
-        final Properties kodiProps;
-
-        json = MessageFormat.format(ITEM, playerId);
-        return json;
-    }
-
-    public static String getGetStopRequest(Integer playerId){
-        String json = "";
-        final Properties kodiProps;
-        try {
-            kodiProps = EasyConduitePropertiesHandler.getInstance().getKodiProperties();
-            String pattern = kodiProps.getProperty(KodiMethods.STOP.getMethod());
-            json = MessageFormat.format(pattern, playerId);
-        } catch (EasyconduiteException e) {
-            e.printStackTrace();
-        }
-        return json;
+    private KodiRequest() {
     }
 
     public static <T> T buildResponse(String json, Class classe){
@@ -67,7 +49,7 @@ public class KodiRequest {
         try {
             kodiResponse = (T) mapperJson.readValue(json,classe);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("Error occured during json readValue of {}",json);
         }
         return kodiResponse;
     }
