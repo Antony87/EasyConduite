@@ -20,6 +20,7 @@
 
 package easyconduite.controllers;
 
+import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.AbstractMedia;
 import easyconduite.model.SpecificConfigurable;
 import easyconduite.media.RemoteMedia;
@@ -57,6 +58,11 @@ public class RemoteConfigController implements Initializable, SpecificConfigurab
         remoteMedia.setResource(resourceURI);
         remoteMedia.setHost(hostTextField.getText());
         remoteMedia.setPort(Integer.valueOf(portTextField.getText()));
+        try {
+            media.initPlayer();
+        } catch (EasyconduiteException e) {
+            e.printStackTrace();
+        }
 
     }
 
