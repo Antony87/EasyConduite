@@ -72,6 +72,9 @@ public class RemoteMedia extends AbstractMedia {
     @JsonIgnore
     private ObjectProperty<MediaStatus> status = new SimpleObjectProperty<>();
 
+    @JsonIgnore
+    private boolean playerInitialized=false;
+
     public RemoteMedia() {
         super();
     }
@@ -85,7 +88,7 @@ public class RemoteMedia extends AbstractMedia {
 
     @Override
     public void play() {
-        remoteManager.play(this);
+        if(playerInitialized) remoteManager.play(this);
     }
 
     @Override
@@ -95,7 +98,7 @@ public class RemoteMedia extends AbstractMedia {
 
     @Override
     public void stop() {
-        if(remoteManager!=null) remoteManager.stop(this);
+        if(playerInitialized) remoteManager.stop(this);
     }
 
     @Override
@@ -105,6 +108,7 @@ public class RemoteMedia extends AbstractMedia {
             remoteManager = KodiManager.getInstance();
             try {
                 ((KodiManager) remoteManager).registerKodiMedia(this);
+                playerInitialized=true;
             } catch (RemotePlayableException e) {
                LOG.error("Error occured with RemoteMedia {}",this);
                throw new EasyconduiteException(e.getMessage());
@@ -174,6 +178,10 @@ public class RemoteMedia extends AbstractMedia {
 
     public void setAction(Action action) {
         this.action = action;
+    }
+
+    public boolean isPlayerInitialized() {
+        return playerInitialized;
     }
 
     @Override

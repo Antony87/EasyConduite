@@ -58,6 +58,7 @@ public class RemoteConfigController implements Initializable, SpecificConfigurab
         remoteMedia.setResource(resourceURI);
         remoteMedia.setHost(hostTextField.getText());
         remoteMedia.setPort(Integer.valueOf(portTextField.getText()));
+
         try {
             media.initPlayer();
         } catch (EasyconduiteException e) {
