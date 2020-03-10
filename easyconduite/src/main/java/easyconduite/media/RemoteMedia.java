@@ -31,7 +31,10 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.validator.constraints.Range;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.util.Objects;
 
@@ -51,12 +54,16 @@ public class RemoteMedia extends AbstractMedia {
     @JsonIgnore
     private Action action;
 
+    @NotBlank
     private URI resource;
 
+    @NotNull
     private Type type;
 
+    @NotBlank
     private String host;
 
+    @Range(min = 0,max = 64000)
     private int port;
 
     @JsonIgnore
