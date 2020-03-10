@@ -17,6 +17,7 @@
 package easyconduite.view;
 
 import easyconduite.controllers.MainController;
+import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.AbstractUIMedia;
 import easyconduite.media.RemoteMedia;
 import javafx.beans.property.DoubleProperty;
@@ -42,10 +43,18 @@ public class RemoteMediaUI extends AbstractUIMedia {
      * @param media a media wich be play.
      * @param controller the main controller which interact with {@link RemoteMediaUI}
      */
-    public RemoteMediaUI(RemoteMedia media, MainController controller) {
+    public RemoteMediaUI(RemoteMedia media, MainController controller)  {
         super(media,controller);
         LOG.info("Construct an AudioMedia {}", media);
         this.remoteMedia = media;
+
+        if(media.isInitializable()){
+            try {
+                media.initPlayer();
+            } catch (EasyconduiteException e) {
+                e.printStackTrace();
+            }
+        }
 
         remoteMedia.statusProperty().addListener((observableValue, oldValue, newValue) -> {
             if(newValue!=null){

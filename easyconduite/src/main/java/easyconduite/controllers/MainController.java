@@ -16,13 +16,13 @@
  */
 package easyconduite.controllers;
 
+import easyconduite.EasyConduiteProperties;
 import easyconduite.exception.EasyconduiteException;
+import easyconduite.media.MediaFactory;
+import easyconduite.media.RemoteMedia;
 import easyconduite.model.AbstractMedia;
 import easyconduite.model.AbstractUIMedia;
 import easyconduite.model.UIMediaPlayable;
-import easyconduite.EasyConduiteProperties;
-import easyconduite.media.MediaFactory;
-import easyconduite.media.RemoteMedia;
 import easyconduite.project.MediaProject;
 import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.Labels;
@@ -216,14 +216,16 @@ public class MainController extends StackPane implements Initializable {
 
     @FXML
     public void menuAddKodiPlayer(ActionEvent event) {
-        final AbstractMedia media = MediaFactory.createPlayableMedia(RemoteMedia.Type.KODI);
+        final RemoteMedia media = (RemoteMedia) MediaFactory.createPlayableMedia(RemoteMedia.Type.KODI);
         final UIMediaPlayable mediaUI = MediaUIFactory.createMediaUI(media, this);
         try {
             new TrackConfigDialog(mediaUI, getMediaUIList());
-            getTableLayout().getChildren().add((AbstractUIMedia) mediaUI);
-            media.initPlayer();
-            project.getAbstractMediaList().add(media);
-            project.setNeedToSave(true);
+            if (media.isInitializable()) {
+                getTableLayout().getChildren().add((AbstractUIMedia) mediaUI);
+                media.initPlayer();
+                project.getAbstractMediaList().add(media);
+                project.setNeedToSave(true);
+            }
         } catch (NullPointerException | EasyconduiteException e) {
             ActionDialog.showException(locale.getString(DIALOG_EXCEPTION_HEADER), locale.getString("menu.track.kodiexception"), e);
             LOG.error("Error occured during create Kodi media", e);

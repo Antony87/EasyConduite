@@ -21,6 +21,7 @@
 package easyconduite.media;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import easyconduite.exception.EasyconduiteException;
 import easyconduite.exception.RemotePlayableException;
 import easyconduite.model.AbstractMedia;
 import easyconduite.model.RemotePlayable;
@@ -28,11 +29,16 @@ import easyconduite.tools.kodi.KodiManager;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.util.Duration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.net.URI;
 import java.util.Objects;
 
 public class RemoteMedia extends AbstractMedia {
+
+    @JsonIgnore
+    private static final Logger LOG = LogManager.getLogger(RemoteMedia.class);
 
     public enum Type {
         KODI, VLC
@@ -82,18 +88,19 @@ public class RemoteMedia extends AbstractMedia {
 
     @Override
     public void stop() {
-        remoteManager.stop(this);
+        if(remoteManager!=null) remoteManager.stop(this);
     }
 
     @Override
-    public void initPlayer() {
+    public void initPlayer() throws EasyconduiteException {
 
         if (type.equals(Type.KODI)) {
             remoteManager = KodiManager.getInstance();
             try {
                 ((KodiManager) remoteManager).registerKodiMedia(this);
             } catch (RemotePlayableException e) {
-                e.printStackTrace();
+               LOG.error("Error occured with RemoteMedia {}",this);
+               throw new EasyconduiteException(e.getMessage());
             }
         }
     }
@@ -101,6 +108,13 @@ public class RemoteMedia extends AbstractMedia {
     @Override
     public void closePlayer() {
 
+    }
+
+    public boolean isInitializable(){
+        if(host==null) return false;
+        if(resource==null) return false;
+        if(host.isEmpty()||resource.toString().isEmpty()) return false;
+        return type != null;
     }
 
     public String getHost() {
@@ -159,17 +173,16 @@ public class RemoteMedia extends AbstractMedia {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof RemoteMedia)) return false;
-        if (!super.getName().equals(((RemoteMedia) o).getName())) return false;
         RemoteMedia that = (RemoteMedia) o;
         return port == that.port &&
-                Objects.equals(resource, that.resource) &&
+                resource.equals(that.resource) &&
                 type == that.type &&
-                Objects.equals(host, that.host);
+                host.equals(that.host);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.getName(), resource, type, host, port);
+        return Objects.hash(resource, type, host, port);
     }
 
     @Override

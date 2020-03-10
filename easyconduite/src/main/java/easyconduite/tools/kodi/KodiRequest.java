@@ -33,7 +33,7 @@ public class KodiRequest {
     private static final Logger LOG = LogManager.getLogger(KodiRequest.class);
     public static final String OPEN ="'{'\"jsonrpc\":\"2.0\",\"id\":\"1\",\"method\":\"Player.Open\",\"params\":'{'\"item\":'{'\"file\":\"{0}\"'}}}'";
     public static final String ITEM ="'{'\"jsonrpc\":\"2.0\",\"id\":\"1\",\"method\":\"Player.GetItem\",\"params\":'{'\"properties\": [\"title\",\"duration\", \"file\"],\"playerid\":{0}'}}'";
-    public static final String ACTIVE ="{\"jsonrpc\":\"2.0\",\"id\":\"1\",\"method\":\"Player.GetActivePlayers\"}";
+    public static final String ACTIVE ="'{'\"jsonrpc\":\"2.0\",\"id\":\"1\",\"method\":\"Player.GetActivePlayers\"'}'";
     public static final String STOP="'{'\"jsonrpc\":\"2.0\",\"id\":\"1\",\"method\":\"Player.Stop\",\"params\":'{'\"playerid\":{0}'}}'";
 
     public static String getJsonRequest(String... arguments){
