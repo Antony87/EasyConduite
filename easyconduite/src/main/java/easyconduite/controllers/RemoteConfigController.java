@@ -20,8 +20,8 @@
 
 package easyconduite.controllers;
 
+import easyconduite.exception.EasyconduiteException;
 import easyconduite.media.RemoteMedia;
-import easyconduite.model.AbstractMedia;
 import easyconduite.model.BaseController;
 import easyconduite.model.MediaConfigurable;
 import easyconduite.model.UIMediaPlayable;
@@ -42,27 +42,21 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.io.File;
 import java.net.URI;
-import java.net.URL;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Set;
 
 public class RemoteConfigController extends BaseController implements MediaConfigurable {
 
     static final Logger LOG = LogManager.getLogger(RemoteConfigController.class);
-    private Validator validator;
 
     private UIMediaPlayable mediaUI;
 
-    private RemoteMedia remoteMedia;
     @FXML
     private TextField hostTextField;
     @FXML
     private TextField portTextField;
     @FXML
     private TextField resourceTextField;
-    @FXML
-    private GridPane specificPane;
 
     @FXML
     private GridPane commonConfig;
@@ -76,16 +70,27 @@ public class RemoteConfigController extends BaseController implements MediaConfi
     @FXML
     private void handleClickOk(MouseEvent event) {
 
-        final RemoteMedia media = (RemoteMedia) mediaUI.getAbstractMedia();
-        commonConfigController.saveCommonsProperties(media);
-        mediaUI.actualizeUI();
-        LOG.debug("Media changed {}", media);
-        this.close();
+        if(validateFields()){
+            final RemoteMedia media = (RemoteMedia) mediaUI.getAbstractMedia();
+            if (!media.isInitialized()){
+                try {
+                    saveMediaProperties(media);
+                    media.initPlayer();
+                } catch (EasyconduiteException e) {
+                    e.printStackTrace();
+                }
+            }else{
+                saveMediaProperties(media);
+            }
+            mediaUI.actualizeUI();
+            LOG.debug("Media changed {}", media);
+            close();
+        }
     }
 
     @FXML
     private void handleClickCancel(MouseEvent event) {
-        this.close();
+        close();
     }
 
     private void close() {
@@ -93,30 +98,31 @@ public class RemoteConfigController extends BaseController implements MediaConfi
         stage.close();
     }
 
+    private void saveMediaProperties(RemoteMedia media){
+        final URI resourceURI = new File(getResourceTextField()).toURI();
+        media.setResource(resourceURI);
+        media.setHost(getHostTextField());
+        media.setPort(Integer.parseInt(getPortTextField()));
+        commonConfigController.saveCommonsProperties(media);
+    }
 
-    public boolean updateSpecificMedia(AbstractMedia media) {
+
+    public boolean validateFields() {
+
+        final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        final Validator validator = factory.getValidator();
 
         final Set<ConstraintViolation<RemoteConfigController>> violation = validator.validate(this);
-        if (violation.size() > 0) {
+        if (!violation.isEmpty()) {
             violation.forEach(r -> {
-                LOG.trace("Property Path {}", r.getPropertyPath().toString());
+                LOG.trace("Property Path {}", r.getPropertyPath());
                 String textFieldName=r.getPropertyPath().toString();
-                ((TextField)specificPane.lookup("#"+textFieldName)).setPromptText("enter a value please !");
+                ((TextField)trackConfigVbox.lookup("#"+textFieldName)).setPromptText("enter a value please !");
             });
             return false;
         }
-        remoteMedia = (RemoteMedia) media;
-        final URI resourceURI = new File(resourceTextField.getText()).toURI();
-        remoteMedia.setResource(resourceURI);
-        remoteMedia.setHost(hostTextField.getText());
-        remoteMedia.setPort(Integer.valueOf(portTextField.getText()));
-        return true;
-    }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
+        return true;
     }
 
     @NotBlank
