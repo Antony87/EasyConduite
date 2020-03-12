@@ -58,13 +58,6 @@ public class AudioConfigController extends BaseController implements MediaConfig
     @FXML
     private CommonConfigController commonConfigController;
 
-//    public AudioConfigController() {
-//    }
-//
-//    public AudioConfigController(AudioMedia media) {
-//        this.media = media;
-//    }
-
     @FXML
     private void handleClickOk(MouseEvent event) {
 

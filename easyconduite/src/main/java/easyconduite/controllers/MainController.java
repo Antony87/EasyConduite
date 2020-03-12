@@ -219,7 +219,7 @@ public class MainController extends BaseController {
         try {
             new TrackConfigDialog(mediaUI, getMediaUIList());
             // if RemoteMedia is initialized then added
-            if(!media.isInitialized()){
+            if(media.isInitialized()){
                 media.initPlayer();
                 getTableLayout().getChildren().add((AbstractUIMedia) mediaUI);
                 project.getAbstractMediaList().add(media);
