@@ -20,21 +20,28 @@
 
 package easyconduite.controllers;
 
-import easyconduite.model.AbstractMedia;
-import easyconduite.model.SpecificConfigurable;
 import easyconduite.media.AudioMedia;
+import easyconduite.model.BaseController;
+import easyconduite.model.MediaConfigurable;
+import easyconduite.model.UIMediaPlayable;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.List;
 
-public class AudioConfigController implements Initializable, SpecificConfigurable {
+public class AudioConfigController extends BaseController implements MediaConfigurable {
 
-    private AudioMedia media;
+    static final Logger LOG = LogManager.getLogger(AudioConfigController.class);
+
+    private UIMediaPlayable mediaUI;
 
     @FXML
     private Spinner<Integer> fadeInSpinner;
@@ -42,13 +49,42 @@ public class AudioConfigController implements Initializable, SpecificConfigurabl
     @FXML
     private Spinner<Integer> fadeOutSpinner;
 
-    public AudioConfigController(AudioMedia media) {
-        this.media = media;
+    @FXML
+    private GridPane commonConfig;
+
+    @FXML
+    private VBox trackConfigVbox;
+
+    @FXML
+    private CommonConfigController commonConfigController;
+
+//    public AudioConfigController() {
+//    }
+//
+//    public AudioConfigController(AudioMedia media) {
+//        this.media = media;
+//    }
+
+    @FXML
+    private void handleClickOk(MouseEvent event) {
+
+        final AudioMedia media = (AudioMedia) mediaUI.getAbstractMedia();
+        commonConfigController.saveCommonsProperties(media);
+        media.setFadeInDuration(new Duration(fadeInSpinner.getValue()));
+        media.setFadeOutDuration(new Duration(fadeOutSpinner.getValue()));
+        mediaUI.actualizeUI();
+        LOG.debug("Media changed {}", media);
+        this.close();
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        initializeSpinners(media);
+    @FXML
+    private void handleClickCancel(MouseEvent event) {
+        this.close();
+    }
+
+    private void close() {
+        final Stage stage = (Stage) trackConfigVbox.getScene().getWindow();
+        stage.close();
     }
 
     private void initializeSpinners(AudioMedia audioMedia) {
@@ -66,11 +102,11 @@ public class AudioConfigController implements Initializable, SpecificConfigurabl
     }
 
     @Override
-    public void updateSpecificMedia(AbstractMedia media) {
-        final Integer iValueFadeOut = fadeOutSpinner.getValue();
-        final Integer iValueFadeIn = fadeInSpinner.getValue();
-        ((AudioMedia) media).setFadeInDuration(new Duration(iValueFadeIn * 1000));
-        ((AudioMedia) media).setFadeOutDuration(new Duration(iValueFadeOut * 1000));
+    public void setFields(UIMediaPlayable mediaUI, List<UIMediaPlayable> otherMediaUIs) {
+        this.mediaUI = mediaUI;
+        final AudioMedia media = (AudioMedia) this.mediaUI.getAbstractMedia();
+        initializeSpinners(media);
+        commonConfigController.setFields(mediaUI, otherMediaUIs);
     }
 
 }

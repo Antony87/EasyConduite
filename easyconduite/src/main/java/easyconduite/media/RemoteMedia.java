@@ -39,15 +39,6 @@ public class RemoteMedia extends AbstractMedia {
 
     @JsonIgnore
     private static final Logger LOG = LogManager.getLogger(RemoteMedia.class);
-
-    public enum Type {
-        KODI, VLC
-    }
-
-    public enum Action {
-        PLAY, STOP, PAUSE
-    }
-
     @JsonIgnore
     private Action action;
 
@@ -61,7 +52,6 @@ public class RemoteMedia extends AbstractMedia {
 
     @JsonIgnore
     private RemotePlayable remoteManager;
-
     @JsonIgnore
     private ObjectProperty<MediaStatus> status = new SimpleObjectProperty<>();
 
@@ -78,17 +68,17 @@ public class RemoteMedia extends AbstractMedia {
 
     @Override
     public void play() {
-        remoteManager.play(this);
+        if (isInitialized()) remoteManager.play(this);
     }
 
     @Override
     public void pause() {
-
+        // reste à implementer
     }
 
     @Override
     public void stop() {
-        if(remoteManager!=null) remoteManager.stop(this);
+        if (isInitialized()) remoteManager.stop(this);
     }
 
     @Override
@@ -98,39 +88,29 @@ public class RemoteMedia extends AbstractMedia {
             remoteManager = KodiManager.getInstance();
             try {
                 ((KodiManager) remoteManager).registerKodiMedia(this);
+                setInitialized(true);
             } catch (RemotePlayableException e) {
-               LOG.error("Error occured with RemoteMedia {}",this);
-               throw new EasyconduiteException(e.getMessage());
+                LOG.error("Error occured with RemoteMedia {}", this);
+                throw new EasyconduiteException(e.getMessage());
             }
         }
     }
 
     @Override
     public void closePlayer() {
-
-    }
-
-    public boolean isInitializable(){
-        if(host==null) return false;
-        if(resource==null) return false;
-        if(host.isEmpty()||resource.toString().isEmpty()) return false;
-        return type != null;
+        //TODO a implementer
     }
 
     public String getHost() {
         return host;
     }
 
-    public int getPort() {
-        return port;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
-    }
-
     public void setHost(String host) {
         this.host = host;
+    }
+
+    public int getPort() {
+        return port;
     }
 
     public void setPort(int port) {
@@ -139,6 +119,10 @@ public class RemoteMedia extends AbstractMedia {
 
     public Type getType() {
         return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
     }
 
     public URI getResource() {
@@ -153,12 +137,12 @@ public class RemoteMedia extends AbstractMedia {
         return status.get();
     }
 
-    public ObjectProperty<MediaStatus> statusProperty() {
-        return status;
-    }
-
     public void setStatus(MediaStatus mediaStatus) {
         this.status.set(mediaStatus);
+    }
+
+    public ObjectProperty<MediaStatus> statusProperty() {
+        return status;
     }
 
     public Action getAction() {
@@ -195,5 +179,13 @@ public class RemoteMedia extends AbstractMedia {
                 ", player=" + remoteManager +
                 ", status=" + status +
                 "} " + super.toString();
+    }
+
+    public enum Type {
+        KODI, VLC
+    }
+
+    public enum Action {
+        PLAY, STOP, PAUSE
     }
 }

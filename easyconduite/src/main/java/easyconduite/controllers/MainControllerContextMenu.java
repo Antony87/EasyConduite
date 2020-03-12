@@ -47,7 +47,7 @@ public class MainControllerContextMenu extends ContextMenu {
     public MainControllerContextMenu(MainController controller) {
         super();
         this.mainController = controller;
-        final ResourceBundle locale = mainController.getLocale();
+        final ResourceBundle locale = mainController.getresourceBundle();
         final MenuItem cmTitle = new MenuItem(locale.getString("menu.table.title"));
         cmTitle.setDisable(true);
         final SeparatorMenuItem cmSeparator = new SeparatorMenuItem();

@@ -16,8 +16,8 @@
  */
 package easyconduite.view;
 
-import easyconduite.controllers.TrackConfigController;
 import easyconduite.exception.EasyconduiteException;
+import easyconduite.model.MediaConfigurable;
 import easyconduite.model.UIMediaPlayable;
 import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.view.controls.ActionDialog;
@@ -45,9 +45,8 @@ public class TrackConfigDialog extends Stage {
     private static final String DIALOG_ERROR_HEADER = "dialog.error.header";
     static final Logger LOG = LogManager.getLogger(TrackConfigDialog.class);
 
-    private static final String PATH_FXML = "/fxml/trackConfig.fxml";
-
-    private TrackConfigController configController;
+    private static final String PATH_FXML_AUDIO = "/fxml/secondary/AudioConfig_v3.fxml";
+    private static final String PATH_FXML_REMOTE = "/fxml/secondary/RemoteConfig_v3.fxml";
 
     public TrackConfigDialog(UIMediaPlayable mediaUI, List<UIMediaPlayable> mediaUIList) {
         super();
@@ -60,14 +59,19 @@ public class TrackConfigDialog extends Stage {
         this.setResizable(false);
         Scene sceneConfig = new Scene(trackConfigVbox);
         this.setScene(sceneConfig);
-
+        String fxmlPath="";
+        if(mediaUI instanceof AudioMediaUI){
+            fxmlPath=PATH_FXML_AUDIO;
+        }else if(mediaUI instanceof RemoteMediaUI){
+            fxmlPath=PATH_FXML_REMOTE;
+        }
         try {
             locale = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
-            final FXMLLoader loader = new FXMLLoader(getClass().getResource(PATH_FXML), locale);
+            final FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath), locale);
             loader.setRoot(trackConfigVbox);
             loader.load();
-            configController = loader.getController();
-            configController.initUIConfig(mediaUI, mediaUIList);
+            MediaConfigurable configController = loader.getController();
+            configController.setFields(mediaUI, mediaUIList);
 
         } catch (IOException | EasyconduiteException e) {
             ActionDialog.showException(locale.getString(DIALOG_ERROR_HEADER), locale.getString("easyconduitecontroler.save.error"),e);

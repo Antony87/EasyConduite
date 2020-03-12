@@ -68,6 +68,8 @@ public class AudioMedia extends AbstractMedia {
                 setName(name);
             }
 
+            setInitialized(true);
+
             player.setOnEndOfMedia(() -> {
                 if (!this.getLoppable()) {
                     this.stop();

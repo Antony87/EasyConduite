@@ -48,14 +48,6 @@ public class RemoteMediaUI extends AbstractUIMedia {
         LOG.info("Construct an AudioMedia {}", media);
         this.remoteMedia = media;
 
-        if(media.isInitializable()){
-            try {
-                media.initPlayer();
-            } catch (EasyconduiteException e) {
-                e.printStackTrace();
-            }
-        }
-
         remoteMedia.statusProperty().addListener((observableValue, oldValue, newValue) -> {
             if(newValue!=null){
                 LOG.trace("MediaStatus player {} is {}",this.remoteMedia.getName(),newValue);

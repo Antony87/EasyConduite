@@ -20,8 +20,10 @@
 
 package easyconduite.model;
 
-public interface SpecificConfigurable {
+import java.util.List;
 
-    void updateSpecificMedia(AbstractMedia media);
+public interface MediaConfigurable {
+
+    void setFields(UIMediaPlayable mediaUI, List<UIMediaPlayable> mediaUIs);
 
 }

@@ -22,6 +22,7 @@ import easyconduite.media.MediaFactory;
 import easyconduite.media.RemoteMedia;
 import easyconduite.model.AbstractMedia;
 import easyconduite.model.AbstractUIMedia;
+import easyconduite.model.BaseController;
 import easyconduite.model.UIMediaPlayable;
 import easyconduite.project.MediaProject;
 import easyconduite.util.EasyConduitePropertiesHandler;
@@ -36,7 +37,6 @@ import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Menu;
@@ -60,7 +60,7 @@ import java.util.*;
  * @author A Fons
  * @since 1.0
  */
-public class MainController extends StackPane implements Initializable {
+public class MainController extends BaseController {
 
     private static final Logger LOG = LogManager.getLogger(MainController.class);
     /**
@@ -72,7 +72,6 @@ public class MainController extends StackPane implements Initializable {
      * <p>This avoids being directly dependent on tableLayout</p>
      */
     private final List<UIMediaPlayable> mediaUIList;
-    private final ResourceBundle locale;
     /**
      * The properties of this application EasyConduite.
      *
@@ -101,7 +100,6 @@ public class MainController extends StackPane implements Initializable {
         project = new MediaProject();
         mediaUIList = new ArrayList<>(0);
         appProperties = EasyConduitePropertiesHandler.getInstance().getApplicationProperties();
-        locale = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
     }
 
     /* ============================================================================
@@ -119,7 +117,7 @@ public class MainController extends StackPane implements Initializable {
                 if (projectfile != null) openProject(projectfile);
                 appProperties.setLastFileProject(projectfile);
             } catch (EasyconduiteException | IOException e) {
-                ActionDialog.showException(locale.getString(DIALOG_EXCEPTION_HEADER), locale.getString("easyconduitecontroler.open.error"), e);
+                ActionDialog.showException(resourceBundle.getString(DIALOG_EXCEPTION_HEADER), resourceBundle.getString("easyconduitecontroler.open.error"), e);
                 LOG.error("Error occured during opening project", e);
             }
         }
@@ -159,7 +157,7 @@ public class MainController extends StackPane implements Initializable {
                 }
                 project.setNeedToSave(false);
             } catch (EasyconduiteException | IOException e) {
-                ActionDialog.showException(locale.getString(DIALOG_EXCEPTION_HEADER), locale.getString("easyconduitecontroler.save.error"), e);
+                ActionDialog.showException(resourceBundle.getString(DIALOG_EXCEPTION_HEADER), resourceBundle.getString("easyconduitecontroler.save.error"), e);
                 LOG.error("Error occured during saving project", e);
             }
         }
@@ -209,7 +207,7 @@ public class MainController extends StackPane implements Initializable {
                 });
             }
         } catch (EasyconduiteException e) {
-            ActionDialog.showException(locale.getString(DIALOG_EXCEPTION_HEADER), locale.getString("easyconduitecontroler.import.error"), e);
+            ActionDialog.showException(resourceBundle.getString(DIALOG_EXCEPTION_HEADER), resourceBundle.getString("easyconduitecontroler.import.error"), e);
         }
         event.consume();
     }
@@ -220,17 +218,17 @@ public class MainController extends StackPane implements Initializable {
         final UIMediaPlayable mediaUI = MediaUIFactory.createMediaUI(media, this);
         try {
             new TrackConfigDialog(mediaUI, getMediaUIList());
-            if (media.isInitializable()) {
-                getTableLayout().getChildren().add((AbstractUIMedia) mediaUI);
+            // if RemoteMedia is initialized then added
+            if(!media.isInitialized()){
                 media.initPlayer();
+                getTableLayout().getChildren().add((AbstractUIMedia) mediaUI);
                 project.getAbstractMediaList().add(media);
                 project.setNeedToSave(true);
             }
         } catch (NullPointerException | EasyconduiteException e) {
-            ActionDialog.showException(locale.getString(DIALOG_EXCEPTION_HEADER), locale.getString("menu.track.kodiexception"), e);
+            ActionDialog.showException(resourceBundle.getString(DIALOG_EXCEPTION_HEADER), resourceBundle.getString("menu.track.kodiexception"), e);
             LOG.error("Error occured during create Kodi media", e);
         }
-
         event.consume();
     }
 
@@ -243,14 +241,14 @@ public class MainController extends StackPane implements Initializable {
 
     public void editTrack(UIMediaPlayable mediaUi) {
         mediaUi.stop();
-        new TrackConfigDialog(mediaUi, getMediaUIList());
+        final TrackConfigDialog configDialog = new TrackConfigDialog(mediaUi, getMediaUIList());
     }
 
     @FXML
     public void menuTrackDelete(ActionEvent event) {
         final Optional<UIMediaPlayable> optionnal = getMediaUIList().stream().filter(UIMediaPlayable::isSelected).findFirst();
         if (optionnal.isPresent()) {
-            final Optional<ButtonType> result = ActionDialog.showConfirmation(locale.getString(Labels.MSG_DELETE_HEADER), locale.getString(Labels.MSG_DELETE_CONT));
+            final Optional<ButtonType> result = ActionDialog.showConfirmation(resourceBundle.getString(Labels.MSG_DELETE_HEADER), resourceBundle.getString(Labels.MSG_DELETE_CONT));
             if (result.get() == ButtonType.OK || result.get() == ButtonType.YES) {
                 deleteOneTrack(optionnal.get());
             }
@@ -267,7 +265,7 @@ public class MainController extends StackPane implements Initializable {
 
     protected boolean isProjectErasable(MediaProject project) {
         if (project.isNeedToSave()) {
-            Optional<ButtonType> result = ActionDialog.showConfirmation(locale.getString("dialog.warning.save.header"), locale.getString("dialog.warning.save.content"));
+            Optional<ButtonType> result = ActionDialog.showConfirmation(resourceBundle.getString("dialog.warning.save.header"), resourceBundle.getString("dialog.warning.save.content"));
             return result.isPresent() && result.get() == ButtonType.NO;
         }
         return true;
@@ -326,6 +324,7 @@ public class MainController extends StackPane implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        super.initialize(url,rb);
         LOG.debug("EasyConduite MainController is initialized");
 
         if (appProperties.getLastFileProject() != null) {
@@ -336,7 +335,7 @@ public class MainController extends StackPane implements Initializable {
                     try {
                         openProject(new File(appProperties.getLastFileProject().toString()));
                     } catch (IOException e) {
-                        ActionDialog.showException(locale.getString(DIALOG_EXCEPTION_HEADER), locale.getString("easyconduitecontroler.open.error"), e);
+                        ActionDialog.showException(resourceBundle.getString(DIALOG_EXCEPTION_HEADER), resourceBundle.getString("easyconduitecontroler.open.error"), e);
                         LOG.error("Error occured during opening project", e);
                     }
                 }
@@ -373,8 +372,8 @@ public class MainController extends StackPane implements Initializable {
         return project;
     }
 
-    public ResourceBundle getLocale() {
-        return locale;
+    public ResourceBundle getresourceBundle() {
+        return resourceBundle;
     }
 
     public FlowPane getTableLayout() {
