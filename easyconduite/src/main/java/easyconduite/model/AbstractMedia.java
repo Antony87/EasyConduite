@@ -1,5 +1,6 @@
 package easyconduite.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -41,6 +42,9 @@ public abstract class AbstractMedia implements MediaPlayable {
     private KeyCode keycode;
 
     private boolean loppable = false;
+
+    @JsonIgnore
+    private boolean initialized = false;
 
     /**
      * @return Nom du EasyMédia.
@@ -99,6 +103,18 @@ public abstract class AbstractMedia implements MediaPlayable {
 
     public void setLoppable(boolean loppable) {
         this.loppable = loppable;
+    }
+
+    /**
+     *
+     * @return retourne TRUE si le média a été correctement initialisé par la methode initPlayer
+     */
+    public boolean isInitialized() {
+        return initialized;
+    }
+
+    public void setInitialized(boolean initialized) {
+        this.initialized = initialized;
     }
 
     @Override

@@ -16,8 +16,8 @@
  */
 package easyconduite.view;
 
-import easyconduite.controllers.TrackConfigController;
 import easyconduite.exception.EasyconduiteException;
+import easyconduite.model.MediaConfigurable;
 import easyconduite.model.UIMediaPlayable;
 import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.view.controls.ActionDialog;
@@ -35,45 +35,63 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 /**
- * This class manage a dialog box, wich exposes configuration UI of a Media.
+ * This class creates the dialog in terms of {@link UIMediaPlayable}.<br>
+ * If mediaUI is instance of {@link AudioMediaUI} then controller is {@link easyconduite.controllers.AudioConfigController}.<br>
+ * If mediaUI is instance of {@link RemoteMediaUI} then controller is {@link easyconduite.controllers.RemoteConfigController}.
  *
  * @author antony Fons
  * @since 1.0
  */
 public class TrackConfigDialog extends Stage {
 
+    /**************************************************************************
+     * Private fields
+     **************************************************************************/
+
     private static final String DIALOG_ERROR_HEADER = "dialog.error.header";
     static final Logger LOG = LogManager.getLogger(TrackConfigDialog.class);
 
-    private static final String PATH_FXML = "/fxml/trackConfig.fxml";
+    private static final String PATH_FXML_AUDIO = "/fxml/secondary/AudioConfig_v3.fxml";
+    private static final String PATH_FXML_REMOTE = "/fxml/secondary/RemoteConfig_v3.fxml";
 
-    private TrackConfigController configController;
 
+    /**
+     * Creates a dialog stage with the given MediaUIs.
+     *
+     * @param mediaUI     The {@link UIMediaPlayable} implementation who will be configured.
+     *                    MediaUI controls {@link easyconduite.model.MediaPlayable}.
+     * @param mediaUIList
+     */
     public TrackConfigDialog(UIMediaPlayable mediaUI, List<UIMediaPlayable> mediaUIList) {
         super();
 
         ResourceBundle locale = null;
         final VBox trackConfigVbox = new VBox();
-        this.setTitle("Configuration");
-        this.initModality(Modality.APPLICATION_MODAL);
-        this.initStyle(StageStyle.DECORATED);
-        this.setResizable(false);
+        setTitle("Configuration");
+        initModality(Modality.APPLICATION_MODAL);
+        initStyle(StageStyle.DECORATED);
+        setResizable(false);
         Scene sceneConfig = new Scene(trackConfigVbox);
-        this.setScene(sceneConfig);
+        setScene(sceneConfig);
 
+        String fxmlPath = "";
+        if (mediaUI instanceof AudioMediaUI) {
+            fxmlPath = PATH_FXML_AUDIO;
+        } else if (mediaUI instanceof RemoteMediaUI) {
+            fxmlPath = PATH_FXML_REMOTE;
+        }
         try {
             locale = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
-            final FXMLLoader loader = new FXMLLoader(getClass().getResource(PATH_FXML), locale);
+            final FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath), locale);
             loader.setRoot(trackConfigVbox);
             loader.load();
-            configController = loader.getController();
-            configController.initUIConfig(mediaUI, mediaUIList);
+            MediaConfigurable configController = loader.getController();
+            configController.setFields(mediaUI, mediaUIList);
 
         } catch (IOException | EasyconduiteException e) {
-            ActionDialog.showException(locale.getString(DIALOG_ERROR_HEADER), locale.getString("easyconduitecontroler.save.error"),e);
+            ActionDialog.showException(locale.getString(DIALOG_ERROR_HEADER), locale.getString("easyconduitecontroler.save.error"), e);
             LOG.error("Error occured during opening Config UI", e);
         }
-        this.showAndWait();
-
+        showAndWait();
     }
 }

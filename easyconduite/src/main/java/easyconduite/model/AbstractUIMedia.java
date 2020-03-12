@@ -160,9 +160,4 @@ public abstract class AbstractUIMedia extends VBox implements UIMediaPlayable {
         return abstractMedia;
     }
 
-    @Override
-    public abstract void playPause();
-
-    @Override
-    public abstract void stop();
 }
