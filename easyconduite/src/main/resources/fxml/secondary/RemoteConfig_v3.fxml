@@ -20,7 +20,7 @@
          </children>
       </HBox>
       <fx:include fx:id="commonConfig" source="CommonConfig_v3.fxml" />
-      <GridPane alignment="CENTER" hgap="10.0" stylesheets="@../../styles/trackConfig.css" vgap="5.0">
+      <GridPane alignment="CENTER" hgap="10.0" styleClass="gridConfig" stylesheets="@../../styles/trackConfig.css" vgap="5.0">
          <columnConstraints>
             <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
             <ColumnConstraints fillWidth="false" halignment="LEFT" />
@@ -35,14 +35,14 @@
                   <Insets left="10.0" />
                </padding></Label>
             <Label text=" Host : " GridPane.rowIndex="1" />
-            <HBox alignment="CENTER_LEFT" fillHeight="false" spacing="10.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
+            <HBox alignment="CENTER_LEFT" fillHeight="false" spacing="10.0" styleClass="gridConfig" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
                <children>
                   <TextField fx:id="hostTextField" />
                   <Label text="port : " />
-                  <TextField fx:id="portTextField" prefHeight="27.0" prefWidth="33.0" />
+                  <TextField fx:id="portTextField" prefWidth="33.0" />
                </children>
             </HBox>
-            <TextField fx:id="resourceTextField" prefHeight="27.0" prefWidth="280.0" GridPane.columnIndex="1" />
+            <TextField fx:id="resourceTextField" prefWidth="300.0" GridPane.columnIndex="1" />
          </children>
       </GridPane>
       <HBox styleClass="bottomHbox">
