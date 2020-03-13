@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<fx:root fx:id="trackConfigVbox" alignment="CENTER" styleClass="trackConfigVbox" stylesheets="@../../styles/trackConfig.css" type="VBox" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.RemoteConfigController">
+<fx:root fx:id="trackConfigVbox" alignment="CENTER" styleClass="trackConfigVbox" stylesheets="@../../styles/trackConfig.css" type="VBox" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="easyconduite.controllers.RemoteConfigController">
    <children>
       <HBox alignment="CENTER" styleClass="titleHbox">
          <children>
@@ -37,9 +37,9 @@
             <Label text=" Host : " GridPane.rowIndex="1" />
             <HBox alignment="CENTER_LEFT" fillHeight="false" spacing="10.0" styleClass="gridConfig" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
                <children>
-                  <TextField fx:id="hostTextField" />
+                  <TextField fx:id="hostTextField" prefHeight="27.0" prefWidth="167.0" />
                   <Label text="port : " />
-                  <TextField fx:id="portTextField" prefWidth="33.0" />
+                  <TextField fx:id="portTextField" prefHeight="27.0" prefWidth="57.0" />
                </children>
             </HBox>
             <TextField fx:id="resourceTextField" prefWidth="300.0" GridPane.columnIndex="1" />

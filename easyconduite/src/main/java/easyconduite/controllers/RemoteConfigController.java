@@ -26,9 +26,9 @@ import easyconduite.model.BaseController;
 import easyconduite.model.MediaConfigurable;
 import easyconduite.model.UIMediaPlayable;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
@@ -47,7 +47,11 @@ import java.util.Set;
 
 public class RemoteConfigController extends BaseController implements MediaConfigurable {
 
-    static final Logger LOG = LogManager.getLogger(RemoteConfigController.class);
+    private static final Logger LOG = LogManager.getLogger(RemoteConfigController.class);
+
+    private static final String ERROR_FIELD_CSS="-fx-border-color : red;";
+
+    private static final String VALID_FIELD_CSS="-fx-border-color : #FFFFFF;";
 
     private UIMediaPlayable mediaUI;
 
@@ -59,9 +63,6 @@ public class RemoteConfigController extends BaseController implements MediaConfi
     private TextField resourceTextField;
 
     @FXML
-    private GridPane commonConfig;
-
-    @FXML
     private VBox trackConfigVbox;
 
     @FXML
@@ -70,16 +71,16 @@ public class RemoteConfigController extends BaseController implements MediaConfi
     @FXML
     private void handleClickOk(MouseEvent event) {
 
-        if(validateFields()){
+        if (validateFields()) {
             final RemoteMedia media = (RemoteMedia) mediaUI.getAbstractMedia();
-            if (!media.isInitialized()){
+            if (!media.isInitialized()) {
                 try {
                     saveMediaProperties(media);
                     media.initPlayer();
                 } catch (EasyconduiteException e) {
-                    e.printStackTrace();
+                    LOG.error("Error during player init of media {}",media);
                 }
-            }else{
+            } else {
                 saveMediaProperties(media);
             }
             mediaUI.actualizeUI();
@@ -98,7 +99,7 @@ public class RemoteConfigController extends BaseController implements MediaConfi
         stage.close();
     }
 
-    private void saveMediaProperties(RemoteMedia media){
+    private void saveMediaProperties(RemoteMedia media) {
         final URI resourceURI = new File(getResourceTextField()).toURI();
         media.setResource(resourceURI);
         media.setHost(getHostTextField());
@@ -106,22 +107,23 @@ public class RemoteConfigController extends BaseController implements MediaConfi
         commonConfigController.saveCommonsProperties(media);
     }
 
-
     public boolean validateFields() {
 
         final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         final Validator validator = factory.getValidator();
 
+        Set<Node> textFields = trackConfigVbox.lookupAll(".gridConfig > .text-field");
+        textFields.forEach(node -> node.setStyle(VALID_FIELD_CSS));
+
         final Set<ConstraintViolation<RemoteConfigController>> violation = validator.validate(this);
         if (!violation.isEmpty()) {
             violation.forEach(r -> {
-                LOG.trace("Property Path {}", r.getPropertyPath());
-                String textFieldName=r.getPropertyPath().toString();
-                ((TextField)trackConfigVbox.lookup("#"+textFieldName)).setPromptText("enter a value please !");
+                final String textFieldName = r.getPropertyPath().toString();
+                final TextField textField = ((TextField) trackConfigVbox.lookup("#" + textFieldName));
+                textField.setStyle(ERROR_FIELD_CSS);
             });
             return false;
         }
-
         return true;
     }
 

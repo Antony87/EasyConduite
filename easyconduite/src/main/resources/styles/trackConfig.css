@@ -33,7 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 .label{
     -fx-font-size: 10;
     -fx-text-fill: #FFFFFF;
-    -fx-alignment: CENTER;
+    /*-fx-alignment: CENTER;*/
     -fx-padding: 0 5 0 10;
 }
 
@@ -49,10 +49,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 .gridConfig > .text-field {
     -fx-background-color : #CFD8DC;
+    -fx-alignment :  baseline-left;
     -fx-border-color : #FFFFFF;
     -fx-border-radius : 5;
-    /*-fx-pref-width: 80;
-    -fx-max-width:100;*/
+    -fx-font-size: 12;
+    -fx-text-fill: #000000;
 }
 
 /*#resourceTextField {
@@ -111,8 +112,3 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     -fx-max-height: 50;
 }
 
-.gridConfig > .text-field{
-    -fx-alignment: CENTER;
-    -fx-font-size: 12;
-    -fx-text-fill: #000000;
-}
