@@ -52,6 +52,7 @@ public class RemoteMedia extends AbstractMedia {
 
     @JsonIgnore
     private RemotePlayable remoteManager;
+
     @JsonIgnore
     private ObjectProperty<MediaStatus> status = new SimpleObjectProperty<>();
 
