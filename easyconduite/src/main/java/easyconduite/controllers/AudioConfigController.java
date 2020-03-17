@@ -63,8 +63,8 @@ public class AudioConfigController extends BaseController implements MediaConfig
 
         final AudioMedia media = (AudioMedia) mediaUI.getAbstractMedia();
         commonConfigController.saveCommonsProperties(media);
-        media.setFadeInDuration(new Duration(fadeInSpinner.getValue()));
-        media.setFadeOutDuration(new Duration(fadeOutSpinner.getValue()));
+        media.setFadeInDuration(new Duration(fadeInSpinner.getValue()*1000));
+        media.setFadeOutDuration(new Duration(fadeOutSpinner.getValue()*1000));
         mediaUI.actualizeUI();
         LOG.debug("Media changed {}", media);
         this.close();

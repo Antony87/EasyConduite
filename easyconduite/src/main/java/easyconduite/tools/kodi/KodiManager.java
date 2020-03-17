@@ -132,6 +132,7 @@ public class KodiManager implements RemotePlayable {
 
     public Integer getActivePlayer(KodiHost kodiHost) {
         Integer playerId = null;
+        boolean activeHost=false;
         try {
             CloseableHttpResponse response = (CloseableHttpResponse) httpClient.execute(kodiHost.getActiveHttpPost());
             String responseString;
@@ -141,13 +142,19 @@ public class KodiManager implements RemotePlayable {
                 final List<KodiActiveResponse.KodiActivePlayer> result = kodiActiveResponse.getResult();
                 if (!result.isEmpty()) {
                     playerId = kodiActiveResponse.getResult().get(0).getPlayerid();
+                    activeHost=true;
                 }
             } else {
                 LOG.error("Error occured with Http Code {}", response.getCode());
+                activeHost=false;
             }
             LOG.trace("PlayerId is {} for KodiHost {}", playerId, kodiHost);
         } catch (IOException e) {
-            LOG.error("Exception within getActivePlayer with host {}", kodiHost, e);
+            LOG.trace("Exception within getActivePlayer with host {} Media is deactivated", kodiHost, e.getMessage());
+            activeHost=false;
+        }
+        for (KodiMedia media : kodiHost.getKodiMedialist()) {
+            media.getRemoteMedia().setActiveHost(activeHost);
         }
         return playerId;
     }

@@ -31,6 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-max-width: 100;
     -fx-spacing: 5;
     -fx-padding: 5 2 5 2;
+    -fx-border-radius : 4;
     /* definition couleurs
     .dark-primary-color    #455A64;
     .default-primary-color #607D8B;
@@ -60,7 +61,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-max-height: 25;
     -fx-min-width: 96;
     -fx-max-width: 96;
-    -fx-font-size: 12;
+    -fx-font-size: 14;
     -fx-text-fill: #FFFFFF;
     -fx-alignment:CENTER;
 }

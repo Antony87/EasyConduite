@@ -26,7 +26,9 @@ import easyconduite.exception.RemotePlayableException;
 import easyconduite.model.AbstractMedia;
 import easyconduite.model.RemotePlayable;
 import easyconduite.tools.kodi.KodiManager;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
@@ -55,6 +57,9 @@ public class RemoteMedia extends AbstractMedia {
 
     @JsonIgnore
     private ObjectProperty<MediaStatus> status = new SimpleObjectProperty<>();
+
+    @JsonIgnore
+    private BooleanProperty activeHost = new SimpleBooleanProperty();
 
     public RemoteMedia() {
         super();
@@ -144,6 +149,18 @@ public class RemoteMedia extends AbstractMedia {
 
     public ObjectProperty<MediaStatus> statusProperty() {
         return status;
+    }
+
+    public boolean isActiveHost() {
+        return activeHost.get();
+    }
+
+    public BooleanProperty activeHostProperty() {
+        return activeHost;
+    }
+
+    public void setActiveHost(boolean activeHost) {
+        this.activeHost.set(activeHost);
     }
 
     public Action getAction() {
