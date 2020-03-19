@@ -48,7 +48,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 .audioMediaUi:mediaselected{
-     -fx-border-color:  #A2ABB5;
+     -fx-border-color:  #94c2e2;
  }
 
  .audioMediaUi:playing{
@@ -74,33 +74,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 .jfx-slider > .track {
-     -fx-background-color: #285D82;
-         -fx-background-radius: 5;
-         -fx-background-insets: 0;
-         -fx-pref-width: 4px;
-         -fx-pref-height: 4px;
+    -fx-background-color: #285D82;
+    -fx-background-radius: 5;
+    -fx-background-insets: 0;
+    -fx-pref-width: 4px;
+    -fx-pref-height: 4px;
 }
 
 .jfx-slider {
     -fx-orientation: vertical;
+    -jfx-indicator-position: right;
 }
 
 .jfx-slider > .colored-track {
      -fx-background-color: #9A031E;
-              -fx-background-radius: 5;
-              -fx-background-insets: 0;
-              -fx-pref-width: 4px;
-              -fx-pref-height: 4px;
+     -fx-background-radius: 5;
+     -fx-background-insets: 0;
+     -fx-pref-width: 4px;
+     -fx-pref-height: 4px;
 }
 
 .jfx-slider > .thumb {
      -fx-background-color: #9A031E;
 }
 
-
-
-.jfx-slider-style .track {
-    -fx-pref-width: 10px;
+/* Styling the animated thumb */
+.jfx-slider > .animated-thumb {
+     -fx-background-color: #285D82;
 }
 
 #timeLabel{
@@ -146,7 +146,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 .typeAudio{
-    -fx-background-image: url('../icons/audio-file.png');
+    -fx-background-image: url('../icons/music.png');
 }
 
 .typeKodi{

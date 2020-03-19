@@ -19,12 +19,12 @@ package easyconduite.view;
 import com.jfoenix.controls.JFXSlider;
 import easyconduite.controllers.MainController;
 import easyconduite.exception.EasyconduiteException;
+import easyconduite.media.AudioMedia;
 import easyconduite.model.AbstractMedia;
 import easyconduite.model.AbstractUIMedia;
-import easyconduite.media.AudioMedia;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.geometry.Orientation;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.MediaPlayer.Status;
@@ -47,15 +47,15 @@ public class AudioMediaUI extends AbstractUIMedia {
     /**
      * Constructor du UI custom control for an AudioMedia.
      *
-     * @param media a media wich be play.
+     * @param media      a media wich be play.
      * @param controller the main controller which interact with {@link AudioMediaUI}
      */
     public AudioMediaUI(AbstractMedia media, MainController controller) {
-        super(media,controller);
+        super(media, controller);
         LOG.info("Construct an AudioMedia {}", media);
         this.audioMedia = (AudioMedia) media;
 
-        if(audioMedia != null){
+        if (audioMedia != null) {
             try {
                 LOG.trace("Initialisation du player");
                 audioMedia.initPlayer();
@@ -64,8 +64,8 @@ public class AudioMediaUI extends AbstractUIMedia {
                 e.printStackTrace();
             }
             audioMedia.getPlayer().statusProperty().addListener((observableValue, oldValue, newValue) -> {
-                if(newValue!=null){
-                    LOG.trace("MediaStatus player {} is {}",this.audioMedia.getName(),newValue);
+                if (newValue != null) {
+                    LOG.trace("MediaStatus player {} is {}", this.audioMedia.getName(), newValue);
                     switch (newValue) {
                         case PAUSED:
                             playingClass.setValue(false);
@@ -118,28 +118,36 @@ public class AudioMediaUI extends AbstractUIMedia {
         audioMedia.getPlayer().stop();
     }
 
-    private class VolumeSlider extends Slider {
-
-        protected VolumeSlider() {
-            super(0, 1, audioMedia.getVolume());
-            final DoubleProperty volumeProperty = VolumeSlider.this.valueProperty();
-            volumeProperty.bindBidirectional(audioMedia.getPlayer().volumeProperty());
-            VolumeSlider.this.setOnMouseReleased((MouseEvent event) -> {
-                if (event.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
-                    audioMedia.setVolume(volumeProperty.getValue());
-                    audioMedia.getPlayer().setVolume(volumeProperty.getValue());
-                }
-                event.consume();
-            });
-        }
-    }
-
     private class JFXVolumeSlider extends JFXSlider {
+        private boolean changing;
 
         protected JFXVolumeSlider() {
-            super(0, 100, audioMedia.getVolume()*100);
-            //this.setOrientation(Orientation.VERTICAL);
-            this.setIndicatorPosition(IndicatorPosition.RIGHT);
+            super(0, 100, audioMedia.getVolume() * 100);
+            final DoubleProperty volumeProperty = JFXVolumeSlider.this.valueProperty();
+            final DoubleProperty volumePlayer = audioMedia.getPlayer().volumeProperty();
+
+            volumePlayer.addListener((observableValue, oldvalue, newvalue) -> {
+                if (!changing) {
+                    try {
+                        changing = true;
+                        volumeProperty.set(newvalue.doubleValue()*100);
+                    } finally {
+                        changing = false;
+                    }
+                }
+            });
+
+            volumeProperty.addListener((observableValue, oldvalue, newvalue) -> {
+                if (!changing) {
+                    try {
+                        changing = true;
+                        volumePlayer.set(newvalue.doubleValue()/100);
+                        audioMedia.setVolume(volumeProperty.getValue() / 100);
+                    } finally {
+                        changing = false;
+                    }
+                }
+            });
         }
     }
 }

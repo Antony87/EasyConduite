@@ -19,40 +19,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     Author     : antony
 */
 
-/*
-.dark-primary-color    #455A64;
-.default-primary-color #607D8B;
-.light-primary-color   #CFD8DC;
-.text-primary-color    #FFFFFF;
-.accent-color          #9E9E9E;
-.primary-text-color    #212121;
-.secondary-text-color  #757575;
-.divider-color         #BDBDBD;
-*/
-
-
 #trackstable{
     -fx-background-color: #262626;
     -fx-pref-width: 1024;
     -fx-pref-height : 700;
 }
-
-#trackDetail{
-    -fx-min-width: 20;
-    -fx-max-width: 150;
-}
-
-#tracksBase > .button{
-    -fx-font-size: 14;
-    -fx-background-color: #9E9E9E;
-    -fx-background-position : center;
-    -fx-background-repeat: no-repeat;
-    -fx-background-image: url('../icons/add.png');
-}
-#tracksBase > .button:hover{
-    -fx-background-color : #CFD8DC;
-}
-
 
 #tableLayout{
     -fx-hgap: 5;
@@ -61,7 +32,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 #tableLayout .menu-item{
-    -fx-font-size: 10;
+    -fx-font-size: 12;
 }
 
 .tab-pane {
@@ -76,14 +47,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-border-width: 1px ;
     -fx-border-color: #828282 #373737 #000000 #373737 ;
     -fx-start-margin: 2;
-}
-
-#menuTimer{
-    -fx-alignment: CENTER_RIGHT;
-}
-
-#timer{
-    -fx-background-color :#2D2D2D;
 }
 
 .rectDragStart{
