@@ -41,14 +41,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     .primary-text-color    #212121;
     .secondary-text-color  #757575;
     .divider-color         #BDBDBD;*/
-    backgroundColor : #464646;
+    backgroundColor : #2E292C;
     /*backgroundPlayingColor : #455A64;*/
-    backgroundPlayingColor : #165AAC;
+    backgroundPlayingColor : #1D435D;
     -fx-background-color : backgroundColor;
 }
 
 .audioMediaUi:mediaselected{
-     -fx-border-color:  #FFFFFF;
+     -fx-border-color:  #A2ABB5;
  }
 
  .audioMediaUi:playing{
@@ -71,6 +71,36 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     /*-fx-max-height: 100;*/
     /*-fx-padding: 0 0 5 0;*/
     -fx-orientation: vertical;
+}
+
+.jfx-slider > .track {
+     -fx-background-color: #285D82;
+         -fx-background-radius: 5;
+         -fx-background-insets: 0;
+         -fx-pref-width: 4px;
+         -fx-pref-height: 4px;
+}
+
+.jfx-slider {
+    -fx-orientation: vertical;
+}
+
+.jfx-slider > .colored-track {
+     -fx-background-color: #9A031E;
+              -fx-background-radius: 5;
+              -fx-background-insets: 0;
+              -fx-pref-width: 4px;
+              -fx-pref-height: 4px;
+}
+
+.jfx-slider > .thumb {
+     -fx-background-color: #9A031E;
+}
+
+
+
+.jfx-slider-style .track {
+    -fx-pref-width: 10px;
 }
 
 #timeLabel{

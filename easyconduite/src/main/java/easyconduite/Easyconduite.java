@@ -68,7 +68,7 @@ public class Easyconduite extends Application {
         loader.setRoot(root);
         loader.load();
         Scene scene = new Scene(root);
-        
+
         MainController controler = loader.getController();
         
         stage.setOnCloseRequest((WindowEvent event) -> {

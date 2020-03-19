@@ -16,6 +16,7 @@
  */
 package easyconduite.view;
 
+import com.jfoenix.controls.JFXSlider;
 import easyconduite.controllers.MainController;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.AbstractMedia;
@@ -23,6 +24,7 @@ import easyconduite.model.AbstractUIMedia;
 import easyconduite.media.AudioMedia;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Orientation;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.MediaPlayer.Status;
@@ -91,7 +93,7 @@ public class AudioMediaUI extends AbstractUIMedia {
         ///////////// current Time label
         audioMedia.getPlayer().currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> timeLabel.setText(formatTime(audioMedia.getDuration().subtract(newValue))));
         super.typeRegion.getStyleClass().add("typeAudio");
-        contextHbox.getChildren().add(new VolumeSlider());
+        contextHbox.getChildren().add(new JFXVolumeSlider());
     }
 
     @Override
@@ -129,6 +131,15 @@ public class AudioMediaUI extends AbstractUIMedia {
                 }
                 event.consume();
             });
+        }
+    }
+
+    private class JFXVolumeSlider extends JFXSlider {
+
+        protected JFXVolumeSlider() {
+            super(0, 100, audioMedia.getVolume()*100);
+            //this.setOrientation(Orientation.VERTICAL);
+            this.setIndicatorPosition(IndicatorPosition.RIGHT);
         }
     }
 }
