@@ -61,7 +61,7 @@ public class KodiMedia {
 
 
         } catch (IOException | URISyntaxException e) {
-            LOG.error("Error occured during KodiMedia constructor with RemoteMedia",remoteMedia,e);
+            LOG.error("Error occured during KodiMedia constructor with RemoteMedia {}",remoteMedia,e);
             throw new RemotePlayableException();
         }
     }
