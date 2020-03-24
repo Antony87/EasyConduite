@@ -20,47 +20,39 @@
 
 package easyconduite.controllers;
 
+import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.validation.RegexValidator;
+import com.jfoenix.validation.RequiredFieldValidator;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.media.RemoteMedia;
 import easyconduite.model.BaseController;
 import easyconduite.model.MediaConfigurable;
 import easyconduite.model.UIMediaPlayable;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 import java.io.File;
 import java.net.URI;
+import java.net.URL;
 import java.util.List;
-import java.util.Set;
+import java.util.ResourceBundle;
 
 public class RemoteConfigController extends BaseController implements MediaConfigurable {
 
     private static final Logger LOG = LogManager.getLogger(RemoteConfigController.class);
 
-    private static final String ERROR_FIELD_CSS="-fx-border-color : red;";
-
-    private static final String VALID_FIELD_CSS="-fx-border-color : #FFFFFF;";
-
     private UIMediaPlayable mediaUI;
 
     @FXML
-    private TextField hostTextField;
+    private JFXTextField hostTextField;
     @FXML
-    private TextField portTextField;
+    private JFXTextField portTextField;
     @FXML
-    private TextField resourceTextField;
+    private JFXTextField resourceTextField;
 
     @FXML
     private VBox trackConfigVbox;
@@ -78,7 +70,7 @@ public class RemoteConfigController extends BaseController implements MediaConfi
                     saveMediaProperties(media);
                     media.initPlayer();
                 } catch (EasyconduiteException e) {
-                    LOG.error("Error during player init of media {}",media);
+                    LOG.error("Error during player init of media {}", media);
                 }
             } else {
                 saveMediaProperties(media);
@@ -100,47 +92,37 @@ public class RemoteConfigController extends BaseController implements MediaConfi
     }
 
     private void saveMediaProperties(RemoteMedia media) {
-        final URI resourceURI = new File(getResourceTextField()).toURI();
+        final URI resourceURI = new File(resourceTextField.getText()).toURI();
         media.setResource(resourceURI);
-        media.setHost(getHostTextField());
-        media.setPort(Integer.parseInt(getPortTextField()));
+        media.setHost(hostTextField.getText());
+        media.setPort(Integer.parseInt(portTextField.getText()));
         commonConfigController.saveCommonsProperties(media);
     }
 
     public boolean validateFields() {
-
-        final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        final Validator validator = factory.getValidator();
-
-        Set<Node> textFields = trackConfigVbox.lookupAll(".gridConfig > .text-field");
-        textFields.forEach(node -> node.setStyle(VALID_FIELD_CSS));
-
-        final Set<ConstraintViolation<RemoteConfigController>> violation = validator.validate(this);
-        if (!violation.isEmpty()) {
-            violation.forEach(r -> {
-                final String textFieldName = r.getPropertyPath().toString();
-                final TextField textField = ((TextField) trackConfigVbox.lookup("#" + textFieldName));
-                textField.setStyle(ERROR_FIELD_CSS);
-            });
-            return false;
-        }
-        return true;
+        boolean validate = true;
+        if (!portTextField.validate()) validate = false;
+        if (!hostTextField.validate()) validate = false;
+        if (!resourceTextField.validate()) validate = false;
+        return validate;
     }
 
-    @NotBlank
-    public String getHostTextField() {
-        return hostTextField.getText();
-    }
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        super.initialize(location, resources);
 
-    @NotBlank
-    @Pattern(regexp = "\\d{3,5}")
-    public String getPortTextField() {
-        return portTextField.getText();
-    }
+        RegexValidator portValidator = new RegexValidator();
+        portValidator.setRegexPattern("\\d{3,5}");
+        portValidator.setMessage(resourceBundle.getString("configuration.port.error"));
+        portTextField.getValidators().add(portValidator);
+        portTextField.setPromptText("ex : 8089");
 
-    @NotBlank
-    public String getResourceTextField() {
-        return resourceTextField.getText();
+        RequiredFieldValidator requiredValidator = new RequiredFieldValidator();
+        hostTextField.setPromptText("ex : localhost");
+        hostTextField.getValidators().add(requiredValidator);
+
+        resourceTextField.getValidators().add(requiredValidator);
+
     }
 
     @Override

@@ -83,7 +83,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 .jfx-slider {
     -fx-orientation: vertical;
-    -jfx-indicator-position: right;
+    -jfx-indicator-position: left;
 }
 
 .jfx-slider > .colored-track {

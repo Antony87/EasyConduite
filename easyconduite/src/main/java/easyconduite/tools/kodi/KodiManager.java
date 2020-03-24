@@ -45,6 +45,11 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+/**
+ * This class implements the features for manage a Kodi player.
+ * @see https://kodi.wiki/view/JSON-RPC_API/v8
+ *
+ */
 public class KodiManager implements RemotePlayable {
 
     private static final Logger LOG = LogManager.getLogger(KodiManager.class);
@@ -150,11 +155,11 @@ public class KodiManager implements RemotePlayable {
             }
             LOG.trace("PlayerId is {} for KodiHost {}", playerId, kodiHost);
         } catch (IOException e) {
-            LOG.trace("Exception within getActivePlayer with host {} Media is deactivated", kodiHost, e.getMessage());
+            LOG.trace("Exception within getActivePlayer with host {} Media is deactivated", kodiHost);
             activeHost=false;
         }
         for (KodiMedia media : kodiHost.getKodiMedialist()) {
-            media.getRemoteMedia().setActiveHost(activeHost);
+            media.getRemoteMedia().activeHostProperty().setValue(activeHost);
         }
         return playerId;
     }

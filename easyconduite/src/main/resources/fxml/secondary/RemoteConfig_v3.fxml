@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -37,12 +37,12 @@
             <Label text=" Host : " GridPane.rowIndex="1" />
             <HBox alignment="CENTER_LEFT" fillHeight="false" spacing="10.0" styleClass="gridConfig" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
                <children>
-                  <TextField fx:id="hostTextField" prefHeight="27.0" prefWidth="167.0" />
+                  <JFXTextField fx:id="hostTextField" />
                   <Label text="port : " />
-                  <TextField fx:id="portTextField" prefHeight="27.0" prefWidth="57.0" />
+                  <JFXTextField fx:id="portTextField" prefHeight="27.0" prefWidth="57.0" />
                </children>
             </HBox>
-            <TextField fx:id="resourceTextField" prefWidth="300.0" GridPane.columnIndex="1" />
+            <JFXTextField fx:id="resourceTextField" prefHeight="27.0" prefWidth="285.0" GridPane.columnIndex="1" />
          </children>
       </GridPane>
       <HBox styleClass="bottomHbox">

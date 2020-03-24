@@ -46,6 +46,8 @@ public class RemoteMedia extends AbstractMedia {
 
     private URI resource;
 
+    private double volume = 0.5;
+
     private Type type;
 
     private String host;
@@ -137,6 +139,14 @@ public class RemoteMedia extends AbstractMedia {
 
     public void setResource(URI resource) {
         this.resource = resource;
+    }
+
+    public double getVolume() {
+        return volume;
+    }
+
+    public void setVolume(double volume) {
+        this.volume = volume;
     }
 
     public MediaStatus getStatus() {

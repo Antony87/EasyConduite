@@ -16,12 +16,13 @@
  */
 package easyconduite.view;
 
+import com.jfoenix.controls.JFXSlider;
 import easyconduite.controllers.MainController;
-import easyconduite.exception.EasyconduiteException;
-import easyconduite.model.AbstractUIMedia;
 import easyconduite.media.RemoteMedia;
+import easyconduite.model.AbstractUIMedia;
 import javafx.beans.property.DoubleProperty;
-import javafx.scene.control.Slider;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,17 +41,17 @@ public class RemoteMediaUI extends AbstractUIMedia {
     /**
      * Constructor du UI custom control for an AudioMedia.
      *
-     * @param media a media wich be play.
+     * @param media      a media wich be play.
      * @param controller the main controller which interact with {@link RemoteMediaUI}
      */
-    public RemoteMediaUI(RemoteMedia media, MainController controller)  {
-        super(media,controller);
+    public RemoteMediaUI(RemoteMedia media, MainController controller) {
+        super(media, controller);
         LOG.info("Construct an AudioMedia {}", media);
         this.remoteMedia = media;
 
         remoteMedia.statusProperty().addListener((observableValue, oldValue, newValue) -> {
-            if(newValue!=null){
-                LOG.trace("MediaStatus player {} is {}",this.remoteMedia.getName(),newValue);
+            if (newValue != null) {
+                LOG.trace("MediaStatus player {} is {}", this.remoteMedia.getName(), newValue);
                 switch (newValue) {
                     case PAUSED:
                         playingClass.setValue(false);
@@ -70,14 +71,24 @@ public class RemoteMediaUI extends AbstractUIMedia {
             }
         });
 
+        playPauseHbox.setDisable(true);
+
+        remoteMedia.activeHostProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                LOG.trace("activeHostProperty old {} new {}", oldValue, newValue);
+                //TODO le listener ne récupère que les changements.
+            }
+        });
+
         ///////////// current Time label
         //audioMedia.getPlayer().currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> timeLabel.setText(formatTime(audioMedia.getDuration().subtract(newValue))));
 
-        if(remoteMedia.getType().equals(RemoteMedia.Type.KODI)){
+        if (remoteMedia.getType().equals(RemoteMedia.Type.KODI)) {
             super.typeRegion.getStyleClass().add("typeKodi");
         }
 
-        contextHbox.getChildren().add(new VolumeSlider());
+        contextHbox.getChildren().add(new JFXVolumeSlider());
     }
 
     @Override
@@ -90,11 +101,12 @@ public class RemoteMediaUI extends AbstractUIMedia {
         remoteMedia.stop();
     }
 
-    private class VolumeSlider extends Slider {
+    private class JFXVolumeSlider extends JFXSlider {
+        private boolean changing;
 
-        protected VolumeSlider() {
-            super(0, 1, 0.5);
-            final DoubleProperty volumeProperty = VolumeSlider.this.valueProperty();
+        protected JFXVolumeSlider() {
+            super(0, 100, remoteMedia.getVolume() * 100);
+            final DoubleProperty volumeProperty = RemoteMediaUI.JFXVolumeSlider.this.valueProperty();
         }
     }
 }
