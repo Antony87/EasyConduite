@@ -34,6 +34,8 @@ public abstract class AbstractUIMedia extends VBox implements UIMediaPlayable {
      */
     private static final String DIALOG_EXCEPTION_HEADER = "dialog.exception.header";
 
+    private static final String REPEAT_CSS="repeat";
+
     protected final Label timeLabel = new Label();
 
     protected final Label keycodeLabel = new Label();
@@ -102,7 +104,7 @@ public abstract class AbstractUIMedia extends VBox implements UIMediaPlayable {
 
         repeatRegion.setId("repeatRegion");
         if (abstractMedia.getLoppable()) {
-            repeatRegion.getStyleClass().add("repeat");
+            repeatRegion.getStyleClass().add(REPEAT_CSS);
         }
 
         infoVbox.getChildren().addAll(typeRegion, repeatRegion);
@@ -136,16 +138,16 @@ public abstract class AbstractUIMedia extends VBox implements UIMediaPlayable {
         nameLabel.setText(abstractMedia.getName());
         timeLabel.setText(formatTime(abstractMedia.getDuration()));
         keycodeLabel.setText(KeyCodeHelper.toString(this.abstractMedia.getKeycode()));
-        repeatRegion.getStyleClass().remove("repeat");
+        repeatRegion.getStyleClass().remove(REPEAT_CSS);
         if (abstractMedia.getLoppable()) {
-            repeatRegion.getStyleClass().add("repeat");
+            repeatRegion.getStyleClass().add(REPEAT_CSS);
         }
     }
 
     /**
      * This is the time string formater for display human-readable the media duration.
      *
-     * @param duration
+     * @param duration a duration
      * @return the time duration in mm:ss:dc format (dc = 1/10 s)
      */
     protected String formatTime(Duration duration) {
