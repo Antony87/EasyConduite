@@ -43,7 +43,7 @@ class KodiManagerTest {
     @Order(1)
     void registerOneKodiMedia() throws RemotePlayableException {
 
-        RemoteMedia media1 = new RemoteMedia(RemoteMedia.Type.KODI);
+        RemoteMedia media1 = new RemoteMedia(RemoteMedia.RemoteType.KODI);
         media1.setName("test1");
         media1.setHost("localhost");
         media1.setPort(8089);
@@ -60,7 +60,7 @@ class KodiManagerTest {
     @Order(2)
     public void registerTwoKodifMedia() throws RemotePlayableException {
 
-        RemoteMedia media1 = new RemoteMedia(RemoteMedia.Type.KODI);
+        RemoteMedia media1 = new RemoteMedia(RemoteMedia.RemoteType.KODI);
         media1.setName("test1");
         media1.setHost("localhost");
         media1.setPort(8089);
@@ -68,7 +68,7 @@ class KodiManagerTest {
 
         manager.registerKodiMedia(media1);
 
-        RemoteMedia media2 = new RemoteMedia(RemoteMedia.Type.KODI);
+        RemoteMedia media2 = new RemoteMedia(RemoteMedia.RemoteType.KODI);
         media2.setName("test1");
         media2.setHost("localhost");
         media2.setPort(8089);
@@ -77,7 +77,7 @@ class KodiManagerTest {
         manager.registerKodiMedia(media2);
         assertEquals(1, manager.getMapKodiHosts().size());
 
-        RemoteMedia media3 = new RemoteMedia(RemoteMedia.Type.KODI);
+        RemoteMedia media3 = new RemoteMedia(RemoteMedia.RemoteType.KODI);
         media3.setName("test1");
         media3.setHost("127.0.0.0");
         media3.setPort(8089);

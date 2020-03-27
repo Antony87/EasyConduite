@@ -24,6 +24,6 @@ import java.util.List;
 
 public interface MediaConfigurable {
 
-    void setFields(UIMediaPlayable mediaUI, List<UIMediaPlayable> mediaUIs);
+    void setConfigUI(UIMediaPlayable mediaUI, List<UIMediaPlayable> mediaUIs);
 
 }

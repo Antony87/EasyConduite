@@ -113,7 +113,7 @@ public class CommonConfigController extends BaseController implements MediaConfi
     }
 
     @Override
-    public void setFields(UIMediaPlayable mediaUI, List<UIMediaPlayable> mediaUIList){
+    public void setConfigUI(UIMediaPlayable mediaUI, List<UIMediaPlayable> mediaUIList){
         this.mediaUI=mediaUI;
         this.mediaUIList=mediaUIList;
         AbstractMedia media = this.mediaUI.getAbstractMedia();

@@ -124,13 +124,17 @@ public class RemoteConfigController extends BaseController implements MediaConfi
         hostTextField.getValidators().add(requiredValidator);
 
         resourceTextField.getValidators().add(requiredValidator);
-
     }
 
-
     @Override
-    public void setFields(UIMediaPlayable mediaUI, List<UIMediaPlayable> mediaUIs) {
+    public void setConfigUI(UIMediaPlayable mediaUI, List<UIMediaPlayable> mediaUIs) {
         this.mediaUI = mediaUI;
-        commonConfigController.setFields(mediaUI, mediaUIs);
+        final RemoteMedia media = (RemoteMedia) mediaUI.getAbstractMedia();
+        if(media.isInitialized()){
+            resourceTextField.setText(media.getResource().getPath().substring(1));
+            hostTextField.setText(media.getHost());
+            portTextField.setText(String.valueOf(media.getPort()));
+        }
+        commonConfigController.setConfigUI(mediaUI, mediaUIs);
     }
 }

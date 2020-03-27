@@ -56,13 +56,13 @@ public class AudioMediaUI extends AbstractUIMedia {
         this.audioMedia = (AudioMedia) media;
 
         if (audioMedia != null) {
-            try {
-                LOG.trace("Initialisation du player");
-                audioMedia.initPlayer();
-            } catch (EasyconduiteException e) {
-                //FIXME
-                e.printStackTrace();
-            }
+//            try {
+//                LOG.trace("Initialisation du player");
+//                audioMedia.initPlayer();
+//            } catch (EasyconduiteException e) {
+//                //FIXME
+//                e.printStackTrace();
+//            }
             audioMedia.getPlayer().statusProperty().addListener((observableValue, oldValue, newValue) -> {
                 if (newValue != null) {
                     LOG.trace("MediaStatus player {} is {}", this.audioMedia.getName(), newValue);

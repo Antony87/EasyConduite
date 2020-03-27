@@ -129,6 +129,11 @@ public class MainController extends BaseController {
         project.setNeedToSave(false);
         final List<AbstractMedia> mediaList = project.getAbstractMediaList();
         for (AbstractMedia media : mediaList) {
+            try {
+                media.initPlayer();
+            } catch (EasyconduiteException e) {
+                e.printStackTrace();
+            }
             final AbstractUIMedia mediaUI = (AbstractUIMedia) MediaUIFactory.createMediaUI(media, this);
             getTableLayout().getChildren().add(mediaUI);
         }
@@ -198,6 +203,11 @@ public class MainController extends BaseController {
                 appProperties.setLastImportDir(audioFiles.get(0).getParentFile().toPath());
                 audioFiles.forEach(file -> {
                     final AbstractMedia media = MediaFactory.createPlayableMedia(file);
+                    try {
+                        media.initPlayer();
+                    } catch (EasyconduiteException e) {
+                        e.printStackTrace();
+                    }
                     // ajout dans la liste du projet
                     project.getAbstractMediaList().add(media);
                     // construction de l'UI.
@@ -214,7 +224,7 @@ public class MainController extends BaseController {
 
     @FXML
     public void menuAddKodiPlayer(ActionEvent event) {
-        final RemoteMedia media = (RemoteMedia) MediaFactory.createPlayableMedia(RemoteMedia.Type.KODI);
+        final RemoteMedia media = (RemoteMedia) MediaFactory.createPlayableMedia(RemoteMedia.RemoteType.KODI);
         final UIMediaPlayable mediaUI = MediaUIFactory.createMediaUI(media, this);
         try {
             new TrackConfigDialog(mediaUI, getMediaUIList());

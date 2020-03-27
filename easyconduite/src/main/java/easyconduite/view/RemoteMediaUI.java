@@ -20,19 +20,13 @@ import com.jfoenix.controls.JFXSlider;
 import easyconduite.controllers.MainController;
 import easyconduite.media.RemoteMedia;
 import easyconduite.model.AbstractUIMedia;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.scene.control.Tooltip;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.List;
 
 /**
  * This class encapsulates logics and behaviors about Custom UI Control of an
@@ -63,16 +57,12 @@ public class RemoteMediaUI extends AbstractUIMedia {
                 LOG.trace("MediaStatus player {} is {}", this.remoteMedia.getName(), newValue);
                 switch (newValue) {
                     case PAUSED:
+                    case READY:
+                    case STOPPED:
                         playingClass.setValue(false);
                         break;
                     case PLAYING:
                         playingClass.setValue(true);
-                        break;
-                    case READY:
-                        playingClass.setValue(false);
-                        break;
-                    case STOPPED:
-                        playingClass.setValue(false);
                         break;
                     default:
                         break;
@@ -81,9 +71,9 @@ public class RemoteMediaUI extends AbstractUIMedia {
         });
 
 
-        Tooltip.install(typeRegion,typeRegionToolTip);
+        Tooltip.install(typeRegion, typeRegionToolTip);
 
-        if (remoteMedia.getType().equals(RemoteMedia.Type.KODI)) {
+        if (remoteMedia.getType().equals(RemoteMedia.RemoteType.KODI)) {
             super.typeRegion.getStyleClass().add("typeKodi");
         }
 
@@ -92,7 +82,7 @@ public class RemoteMediaUI extends AbstractUIMedia {
         ActiveHostObserver hostObserver = new ActiveHostObserver();
         hostObserver.setPeriod(Duration.millis(1000));
         hostObserver.start();
-
+        this.actualizeUI();
     }
 
     @Override
@@ -108,6 +98,7 @@ public class RemoteMediaUI extends AbstractUIMedia {
     private class JFXVolumeSlider extends JFXSlider {
         private boolean changing;
 
+        //TODO implémenter, dans le KodiManager, le changement de volume lorsque l'on relache
         protected JFXVolumeSlider() {
             super(0, 100, remoteMedia.getVolume() * 100);
             final DoubleProperty volumeProperty = RemoteMediaUI.JFXVolumeSlider.this.valueProperty();
@@ -120,8 +111,7 @@ public class RemoteMediaUI extends AbstractUIMedia {
         typeRegionToolTip.setText(remoteMedia.getHost());
     }
 
-    private class ActiveHostObserver extends ScheduledService<Void>{
-
+    private class ActiveHostObserver extends ScheduledService<Void> {
         @Override
         protected Task<Void> createTask() {
 
@@ -131,14 +121,14 @@ public class RemoteMediaUI extends AbstractUIMedia {
                     boolean active = remoteMedia.isActiveHost();
                     boolean kodiactive = typeRegion.getStyleClass().contains("typeKodi");
                     boolean kodiactiveKo = typeRegion.getStyleClass().contains("typeKodiKo");
-                    if(!active && kodiactive){
+                    if (!active && kodiactive) {
                         typeRegion.getStyleClass().remove("typeKodi");
                         typeRegion.getStyleClass().add("typeKodiKo");
-                        if(!playPauseHbox.isDisable()) playPauseHbox.setDisable(true);
-                    }else if(active && kodiactiveKo){
+                        if (!playPauseHbox.isDisable()) playPauseHbox.setDisable(true);
+                    } else if (active && kodiactiveKo) {
                         typeRegion.getStyleClass().remove("typeKodiKo");
                         typeRegion.getStyleClass().add("typeKodi");
-                        if(playPauseHbox.isDisable()) playPauseHbox.setDisable(false);
+                        if (playPauseHbox.isDisable()) playPauseHbox.setDisable(false);
                     }
                     return null;
                 }

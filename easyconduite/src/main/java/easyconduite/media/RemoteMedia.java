@@ -48,7 +48,7 @@ public class RemoteMedia extends AbstractMedia {
 
     private double volume = 0.5;
 
-    private Type type;
+    private RemoteType type;
 
     private String host;
 
@@ -67,7 +67,7 @@ public class RemoteMedia extends AbstractMedia {
         super();
     }
 
-    public RemoteMedia(Type type) {
+    public RemoteMedia(RemoteType type) {
         this();
         setDuration(new Duration(0));
         this.type = type;
@@ -76,7 +76,7 @@ public class RemoteMedia extends AbstractMedia {
 
     @Override
     public void play() {
-        if (isInitialized()) remoteManager.play(this);
+        if (isInitialized() && isActiveHost()) remoteManager.play(this);
     }
 
     @Override
@@ -86,13 +86,13 @@ public class RemoteMedia extends AbstractMedia {
 
     @Override
     public void stop() {
-        if (isInitialized()) remoteManager.stop(this);
+        if (isInitialized() && isActiveHost()) remoteManager.stop(this);
     }
 
     @Override
     public void initPlayer() throws EasyconduiteException {
 
-        if (type.equals(Type.KODI)) {
+        if (type.equals(RemoteType.KODI)) {
             remoteManager = KodiManager.getInstance();
             try {
                 ((KodiManager) remoteManager).registerKodiMedia(this);
@@ -125,12 +125,12 @@ public class RemoteMedia extends AbstractMedia {
         this.port = port;
     }
 
-    public Type getType() {
+    public RemoteType getType() {
         return type;
     }
 
-    public void setType(Type type) {
-        this.type = type;
+    public void setType(RemoteType remoteType) {
+        this.type = remoteType;
     }
 
     public URI getResource() {
@@ -165,12 +165,12 @@ public class RemoteMedia extends AbstractMedia {
         return activeHost.get();
     }
 
-    public BooleanProperty activeHostProperty() {
-        return activeHost;
-    }
-
     public void setActiveHost(boolean activeHost) {
         this.activeHost.set(activeHost);
+    }
+
+    public BooleanProperty activeHostProperty() {
+        return activeHost;
     }
 
     public Action getAction() {
@@ -209,7 +209,7 @@ public class RemoteMedia extends AbstractMedia {
                 "} " + super.toString();
     }
 
-    public enum Type {
+    public enum RemoteType {
         KODI, VLC
     }
 

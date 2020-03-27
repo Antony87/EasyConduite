@@ -95,11 +95,11 @@ public class AudioConfigController extends BaseController implements MediaConfig
     }
 
     @Override
-    public void setFields(UIMediaPlayable mediaUI, List<UIMediaPlayable> otherMediaUIs) {
+    public void setConfigUI(UIMediaPlayable mediaUI, List<UIMediaPlayable> otherMediaUIs) {
         this.mediaUI = mediaUI;
         final AudioMedia media = (AudioMedia) this.mediaUI.getAbstractMedia();
         initializeSpinners(media);
-        commonConfigController.setFields(mediaUI, otherMediaUIs);
+        commonConfigController.setConfigUI(mediaUI, otherMediaUIs);
     }
 
 }

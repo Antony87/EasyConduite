@@ -265,7 +265,7 @@ public class KodiManager implements RemotePlayable {
 
         private void executeAction(RemoteMedia media) throws RemotePlayableException {
             RemoteMedia.Action action = media.getAction();
-            LOG.trace("Action called on media {}", media.getAction());
+            LOG.trace("Action called on media {}", action);
             switch (action) {
                 case PLAY:
                     if (openKodiMedia(media)) {

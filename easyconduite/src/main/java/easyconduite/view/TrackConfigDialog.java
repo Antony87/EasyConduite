@@ -86,7 +86,7 @@ public class TrackConfigDialog extends Stage {
             loader.setRoot(trackConfigVbox);
             loader.load();
             MediaConfigurable configController = loader.getController();
-            configController.setFields(mediaUI, mediaUIList);
+            configController.setConfigUI(mediaUI, mediaUIList);
 
         } catch (IOException | EasyconduiteException e) {
             ActionDialog.showException(locale.getString(DIALOG_ERROR_HEADER), locale.getString("easyconduitecontroler.save.error"), e);
