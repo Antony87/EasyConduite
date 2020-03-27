@@ -20,15 +20,23 @@ import com.jfoenix.controls.JFXSlider;
 import easyconduite.controllers.MainController;
 import easyconduite.media.RemoteMedia;
 import easyconduite.model.AbstractUIMedia;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.ScheduledService;
+import javafx.concurrent.Task;
+import javafx.scene.control.Tooltip;
+import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.List;
+
 /**
  * This class encapsulates logics and behaviors about Custom UI Control of an
- * AudioMedia.
+ * RemoteMedia (Kodi or VLC).
  *
  * @author A Fons
  * @since 1.0
@@ -37,6 +45,7 @@ public class RemoteMediaUI extends AbstractUIMedia {
 
     static final Logger LOG = LogManager.getLogger(RemoteMediaUI.class);
     private final RemoteMedia remoteMedia;
+    private final Tooltip typeRegionToolTip = new Tooltip();
 
     /**
      * Constructor du UI custom control for an AudioMedia.
@@ -71,24 +80,19 @@ public class RemoteMediaUI extends AbstractUIMedia {
             }
         });
 
-        playPauseHbox.setDisable(true);
 
-        remoteMedia.activeHostProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                LOG.trace("activeHostProperty old {} new {}", oldValue, newValue);
-                //TODO le listener ne récupère que les changements.
-            }
-        });
-
-        ///////////// current Time label
-        //audioMedia.getPlayer().currentTimeProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> timeLabel.setText(formatTime(audioMedia.getDuration().subtract(newValue))));
+        Tooltip.install(typeRegion,typeRegionToolTip);
 
         if (remoteMedia.getType().equals(RemoteMedia.Type.KODI)) {
             super.typeRegion.getStyleClass().add("typeKodi");
         }
 
         contextHbox.getChildren().add(new JFXVolumeSlider());
+
+        ActiveHostObserver hostObserver = new ActiveHostObserver();
+        hostObserver.setPeriod(Duration.millis(1000));
+        hostObserver.start();
+
     }
 
     @Override
@@ -109,4 +113,37 @@ public class RemoteMediaUI extends AbstractUIMedia {
             final DoubleProperty volumeProperty = RemoteMediaUI.JFXVolumeSlider.this.valueProperty();
         }
     }
+
+    @Override
+    public void actualizeUI() {
+        super.actualizeUI();
+        typeRegionToolTip.setText(remoteMedia.getHost());
+    }
+
+    private class ActiveHostObserver extends ScheduledService<Void>{
+
+        @Override
+        protected Task<Void> createTask() {
+
+            return new Task<Void>() {
+                @Override
+                protected Void call() {
+                    boolean active = remoteMedia.isActiveHost();
+                    boolean kodiactive = typeRegion.getStyleClass().contains("typeKodi");
+                    boolean kodiactiveKo = typeRegion.getStyleClass().contains("typeKodiKo");
+                    if(!active && kodiactive){
+                        typeRegion.getStyleClass().remove("typeKodi");
+                        typeRegion.getStyleClass().add("typeKodiKo");
+                        if(!playPauseHbox.isDisable()) playPauseHbox.setDisable(true);
+                    }else if(active && kodiactiveKo){
+                        typeRegion.getStyleClass().remove("typeKodiKo");
+                        typeRegion.getStyleClass().add("typeKodi");
+                        if(playPauseHbox.isDisable()) playPauseHbox.setDisable(false);
+                    }
+                    return null;
+                }
+            };
+        }
+    }
+
 }

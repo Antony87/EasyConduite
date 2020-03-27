@@ -7,6 +7,7 @@ import easyconduite.util.KeyCodeHelper;
 import easyconduite.view.AudioMediaUI;
 import easyconduite.view.commons.MediaSelectedPseudoClass;
 import easyconduite.view.commons.PlayingPseudoClass;
+import easyconduite.view.controls.ActionDialog;
 import javafx.beans.property.BooleanProperty;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
@@ -27,17 +28,32 @@ import java.util.ResourceBundle;
  */
 public abstract class AbstractUIMedia extends VBox implements UIMediaPlayable {
 
-    static final Logger LOG = LogManager.getLogger(AudioMediaUI.class);
+    static final Logger LOG = LogManager.getLogger(AbstractUIMedia.class);
+    /**
+     * message that appears on the dialog box header.
+     */
+    private static final String DIALOG_EXCEPTION_HEADER = "dialog.exception.header";
+
     protected final Label timeLabel = new Label();
+
     protected final Label keycodeLabel = new Label();
+
     protected final HBox contextHbox = new HBox();
+
     protected final HBox playPauseHbox = new HBox();
+
     protected final Region typeRegion = new Region();
+
     protected final BooleanProperty playingClass = new PlayingPseudoClass(this);
+
     protected final BooleanProperty mediaSelectedClass = new MediaSelectedPseudoClass(this);
+
     private final Label nameLabel = new Label();
+
     private final Region repeatRegion = new Region();
+
     private final AbstractMedia abstractMedia;
+
     protected ResourceBundle locale;
 
     /**
@@ -52,8 +68,8 @@ public abstract class AbstractUIMedia extends VBox implements UIMediaPlayable {
         try {
             locale = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
         } catch (EasyconduiteException e) {
-            //TODO
-            e.printStackTrace();
+            ActionDialog.showException(locale.getString(DIALOG_EXCEPTION_HEADER), locale.getString("task.create.error"), e);
+            LOG.error("Error occured within constructor {}",this,e);
         }
         ////////////////////////////////////////////////////////////////////////
         //                 Construction de l'UI

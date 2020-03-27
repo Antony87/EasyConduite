@@ -21,6 +21,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 /*Css class for Vbox AudioMediaUI parent.*/
+@import 'material-design.css';
+
 .audioMediaUi{
     -fx-alignment: CENTER;
     -fx-border-color:  #828282;
@@ -32,19 +34,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-spacing: 5;
     -fx-padding: 5 2 5 2;
     -fx-border-radius : 4;
-    /* definition couleurs
-    .dark-primary-color    #455A64;
-    .default-primary-color #607D8B;
-    .light-primary-color   #CFD8DC;
-    .text-primary-color    #FFFFFF;
-    .accent-color          #9E9E9E;
-    .primary-text-color    #212121;
-    .secondary-text-color  #757575;
-    .divider-color         #BDBDBD;*/
-    backgroundColor : #2E292C;
-    /*backgroundPlayingColor : #455A64;*/
     backgroundPlayingColor : #1D435D;
-    -fx-background-color : backgroundColor;
+    -fx-background-color : -grey-800;
 }
 
 .audioMediaUi:mediaselected{
@@ -52,7 +43,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  }
 
  .audioMediaUi:playing{
-     -fx-background-color :  backgroundPlayingColor;
+     -fx-background-color :  -blue-grey-600;
  }
 
 /*Css class for audio name label within AudioMediaUI Vbox.*/
@@ -61,7 +52,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-max-height: 25;
     -fx-min-width: 96;
     -fx-max-width: 96;
-    -fx-font-size: 14;
+    -fx-font-size: 12;
     -fx-text-fill: #FFFFFF;
     -fx-alignment:CENTER;
 }
@@ -74,7 +65,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 .jfx-slider > .track {
-    -fx-background-color: #285D82;
+    -fx-background-color: -orange-300;
     -fx-background-radius: 5;
     -fx-background-insets: 0;
     -fx-pref-width: 4px;
@@ -87,7 +78,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 .jfx-slider > .colored-track {
-     -fx-background-color: #9A031E;
+     -fx-background-color: -red-400;
      -fx-background-radius: 5;
      -fx-background-insets: 0;
      -fx-pref-width: 4px;
@@ -95,7 +86,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 .jfx-slider > .thumb {
-     -fx-background-color: #9A031E;
+     -fx-background-color: #d32f2f;
 }
 
 /* Styling the animated thumb */
@@ -119,6 +110,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-spacing: 10;
     -fx-min-height: 32;
     -fx-max-height: 32;
+}
+
+.tooltip{
+    -fx-font-size: 10;
+    -fx-text-fill: #FFFFFF;
 }
 
 #contextHbox{
@@ -153,6 +149,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-background-image: url('../icons/kodi.png');
 }
 
+.typeKodiKo{
+    -fx-background-image: url('../icons/kodiko.png');
+}
+
 .commandHbox > * {
     -fx-min-width: 30;
     -fx-max-width: 30;
@@ -161,17 +161,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 .playbutton{
-    -fx-background-image: url('../icons/002-play.png');
+    -fx-background-image: url('../icons/play.png');
     -fx-background-position : center;
     -fx-background-repeat: no-repeat;
 }
 
 .audioMediaUi:playing .playbutton{
-    -fx-background-image: url('../icons/003-pause.png');
+    -fx-background-image: url('../icons/pause.png');
 }
 
 .stopbutton{
-    -fx-background-image: url('../icons/001-stop.png');
+    -fx-background-image: url('../icons/stop.png');
     -fx-background-repeat: no-repeat;
 }
 

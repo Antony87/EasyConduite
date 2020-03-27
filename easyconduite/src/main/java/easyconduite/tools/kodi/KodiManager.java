@@ -147,13 +147,13 @@ public class KodiManager implements RemotePlayable {
                 final List<KodiActiveResponse.KodiActivePlayer> result = kodiActiveResponse.getResult();
                 if (!result.isEmpty()) {
                     playerId = kodiActiveResponse.getResult().get(0).getPlayerid();
-                    activeHost=true;
+
                 }
+                activeHost=true;
             } else {
                 LOG.error("Error occured with Http Code {}", response.getCode());
                 activeHost=false;
             }
-            LOG.trace("PlayerId is {} for KodiHost {}", playerId, kodiHost);
         } catch (IOException e) {
             LOG.trace("Exception within getActivePlayer with host {} Media is deactivated", kodiHost);
             activeHost=false;

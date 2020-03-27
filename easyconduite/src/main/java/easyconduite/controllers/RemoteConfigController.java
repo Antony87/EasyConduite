@@ -111,6 +111,8 @@ public class RemoteConfigController extends BaseController implements MediaConfi
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
 
+        commonConfigController.getLoopTrack().setDisable(true);
+
         RegexValidator portValidator = new RegexValidator();
         portValidator.setRegexPattern("\\d{3,5}");
         portValidator.setMessage(resourceBundle.getString("configuration.port.error"));
@@ -124,6 +126,7 @@ public class RemoteConfigController extends BaseController implements MediaConfi
         resourceTextField.getValidators().add(requiredValidator);
 
     }
+
 
     @Override
     public void setFields(UIMediaPlayable mediaUI, List<UIMediaPlayable> mediaUIs) {
