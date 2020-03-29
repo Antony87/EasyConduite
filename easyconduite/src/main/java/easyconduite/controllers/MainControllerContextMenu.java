@@ -55,8 +55,7 @@ public class MainControllerContextMenu extends ContextMenu {
         cmImportTrack.setOnAction(this.mainController::menuImportAudio);
         final MenuItem cmCloseProject = new MenuItem(locale.getString("menu.project.clear"));
         cmCloseProject.setOnAction(e -> {
-            if (this.mainController.isProjectErasable(this.mainController.getProject()))
-                this.mainController.clearProject();
+            this.mainController.menuCloseProject(e);
         });
         final MenuItem cmAddAllToCue = new MenuItem(locale.getString("menu.table.addToCue"));
         cmAddAllToCue.setDisable(true);
