@@ -118,9 +118,8 @@
                     <version>${javafx.version}</version>
                     <classifier>linux</classifier>
                 </dependency>
-
             </dependencies>
-            <id>create-dir-linux</id>
+            <id>create-tar-linux</id>
             <build>
                 <plugins>
                     <plugin>
@@ -130,7 +129,7 @@
                         <configuration>
                             <finalName>easyconduite</finalName>
                             <descriptors>
-                                <descriptor>${resourcesDir}\assembly\javafx-build.xml</descriptor>
+                                <descriptor>${resourcesDir}\assembly\javafx-build-linux.xml</descriptor>
                             </descriptors>
                         </configuration>
                         <executions>
