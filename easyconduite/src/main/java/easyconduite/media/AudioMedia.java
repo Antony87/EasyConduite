@@ -95,6 +95,7 @@ public class AudioMedia extends AbstractMedia {
 
     @Override
     public void closePlayer() {
+        this.stop();
         player.dispose();
     }
 
