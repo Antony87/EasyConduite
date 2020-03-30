@@ -137,6 +137,22 @@
                 <configuration>
                     <options>
                         <option>-Djava.library.path=C:\tmp</option>
+                        <option>--module-path</option>
+                        <option>C:\Users\antony\Documents\openjfx-11.0.2_windows-x64_bin-sdk\javafx-sdk-11.0.2\lib</option>
+                        <option>--add-modules</option>
+                        <option>javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media</option>
+                        <option>--add-opens</option>
+                        <option>javafx.base/com.sun.javafx.runtime=ALL-UNNAMED</option>
+                        <option>--add-opens</option>
+                        <option>javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED</option>
+                        <option>--add-opens</option>
+                        <option>javafx.controls/com.sun.javafx.scene.control=ALL-UNNAMED</option>
+                        <option>--add-opens</option>
+                        <option>javafx.base/com.sun.javafx.event=ALL-UNNAMED</option>
+                        <option>--add-opens</option>
+                        <option>javafx.base/com.sun.javafx.runtime=ALL-UNNAMED</option>
+                        <option>--add-opens</option>
+                        <option>javafx.graphics/com.sun.javafx.scene=ALL-UNNAMED</option>
                     </options>
                     <mainClass>easyconduite.Easyconduite</mainClass>
                     <!--suppress UnresolvedMavenProperty -->

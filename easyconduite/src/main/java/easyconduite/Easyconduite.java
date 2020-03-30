@@ -77,6 +77,8 @@ public class Easyconduite extends Application {
             controler.menuQuit(new ActionEvent());
             event.consume();
         });
+
+        stage.setTitle("Easyconduite v 3.0");
                 
         stage.setScene(scene);
         stage.getScene().getWindow().setHeight(properties.getWindowHeight());

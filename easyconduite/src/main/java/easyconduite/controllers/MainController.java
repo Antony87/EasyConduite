@@ -16,6 +16,7 @@
  */
 package easyconduite.controllers;
 
+import com.jfoenix.controls.JFXSpinner;
 import easyconduite.EasyConduiteProperties;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.media.MediaFactory;
@@ -44,6 +45,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import org.apache.logging.log4j.LogManager;
@@ -52,7 +54,10 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -97,6 +102,11 @@ public class MainController extends BaseController {
     @FXML
     private FlowPane tableLayout;
 
+    @FXML
+    private Pane infoPane;
+
+    private JFXSpinner waitSpinner;
+
     public MainController() throws EasyconduiteException {
         LOG.debug("EasyConduite MainController is instantiated");
         project = new MediaProject();
@@ -110,6 +120,7 @@ public class MainController extends BaseController {
 
     @FXML
     private void menuFileOpen(ActionEvent event) {
+        infoPane.getChildren().add(waitSpinner);
         if (isProjectErasable(this.project)) {
             clearProject();
             try {
@@ -121,6 +132,8 @@ public class MainController extends BaseController {
             } catch (EasyconduiteException | IOException e) {
                 ActionDialog.showException(resourceBundle.getString(DIALOG_EXCEPTION_HEADER), resourceBundle.getString("easyconduitecontroler.open.error"), e);
                 LOG.error("Error occured during opening project", e);
+            } finally {
+                infoPane.getChildren().remove(waitSpinner);
             }
         }
         event.consume();
@@ -213,10 +226,12 @@ public class MainController extends BaseController {
 
     @FXML
     public void menuImportAudio(ActionEvent event) {
+        infoPane.getChildren().add(waitSpinner);
         try {
             final FileChooser fileChooser = new FileChooserControl.FileChooserBuilder().asType(FileChooserControl.Action.OPEN_AUDIO).build();
             final List<File> audioFiles = fileChooser.showOpenMultipleDialog(null);
             if (audioFiles != null && !audioFiles.isEmpty()) {
+
                 appProperties.setLastImportDir(audioFiles.get(0).getParentFile().toPath());
                 audioFiles.forEach(file -> {
                     final AbstractMedia media = MediaFactory.createPlayableMedia(file);
@@ -238,7 +253,10 @@ public class MainController extends BaseController {
             }
         } catch (EasyconduiteException e) {
             ActionDialog.showException(resourceBundle.getString(DIALOG_EXCEPTION_HEADER), resourceBundle.getString("easyconduitecontroler.import.error"), e);
+        } finally {
+            infoPane.getChildren().remove(waitSpinner);
         }
+
         event.consume();
     }
 
@@ -311,7 +329,6 @@ public class MainController extends BaseController {
     @FXML
     private void menuPreferences(ActionEvent event) {
         //TODO a refaire
-        event.consume();
     }
 
     protected void clearProject() {
@@ -406,6 +423,13 @@ public class MainController extends BaseController {
                 }
             }
         });
+
+        // initialisation du spinner pour l'infoPane
+        waitSpinner = new JFXSpinner();
+        waitSpinner.layoutXProperty().bind(infoPane.widthProperty().subtract(waitSpinner.widthProperty()).divide(2));
+        waitSpinner.layoutYProperty().bind(infoPane.heightProperty().subtract(waitSpinner.heightProperty()).divide(2));
+
+
     }
 
     public MediaProject getProject() {
