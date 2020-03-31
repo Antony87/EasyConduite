@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     Created on : 30 sept. 2018, 20:32:26
     Author     : antony
 */
+@import 'material-design.css';
 
 #trackstable{
     -fx-background-color: #262626;
@@ -58,3 +59,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-fill: #599CA8;
     -fx-opacity: 0.3;
 }
+
