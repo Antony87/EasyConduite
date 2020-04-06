@@ -95,6 +95,12 @@ public class RemoteMediaUI extends AbstractUIMedia {
         remoteMedia.stop();
     }
 
+    @Override
+    public void actualizeUI() {
+        super.actualizeUI();
+        typeRegionToolTip.setText(remoteMedia.getHost());
+    }
+
     private class JFXVolumeSlider extends JFXSlider {
         private boolean changing;
 
@@ -103,12 +109,6 @@ public class RemoteMediaUI extends AbstractUIMedia {
             super(0, 100, remoteMedia.getVolume() * 100);
             final DoubleProperty volumeProperty = RemoteMediaUI.JFXVolumeSlider.this.valueProperty();
         }
-    }
-
-    @Override
-    public void actualizeUI() {
-        super.actualizeUI();
-        typeRegionToolTip.setText(remoteMedia.getHost());
     }
 
     private class ActiveHostObserver extends ScheduledService<Void> {

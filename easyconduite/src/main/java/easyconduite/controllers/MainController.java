@@ -147,9 +147,11 @@ public class MainController extends BaseController {
             try {
                 media.initPlayer();
             } catch (EasyconduiteException e) {
-                e.printStackTrace();
+                ActionDialog.showError(resourceBundle.getString("dialog.error.header"),resourceBundle.getString("easyconduitecontroler.open.error"));
+                LOG.error("Error occured during player initialize at media {}",media);
             }
             final AbstractUIMedia mediaUI = (AbstractUIMedia) MediaUIFactory.createMediaUI(media, this);
+            //TODO ajouter le média en fonction de l'id dans la table.
             getTableLayout().getChildren().add(mediaUI);
         }
     }
