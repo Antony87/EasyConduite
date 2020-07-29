@@ -105,7 +105,14 @@
                 <Tab text="%tab.tracktable.name">
                     <FlowPane fx:id="tableLayout" maxHeight="1.7976931348623157E308" rowValignment="TOP" VBox.vgrow="ALWAYS" />
                   </Tab>
-                <Tab text="%tab.cue.name" />
+                <Tab closable="false" text="%tab.cue.name">
+                     <content>
+                        <Pane>
+                           <children>
+                              <fx:include fx:id="conduite" source="secondary/CueTab_v3.fxml" />
+                           </children>
+                        </Pane>
+                     </content></Tab>
               </tabs>
             </TabPane>
             <StackPane maxHeight="30.0" minHeight="30.0" prefHeight="30.0" VBox.vgrow="NEVER" />

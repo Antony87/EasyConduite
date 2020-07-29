@@ -44,6 +44,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -105,6 +106,12 @@ public class MainController extends BaseController {
     @FXML
     private Pane infoPane;
 
+    @FXML
+    private ConduiteController conduiteController;
+
+    @FXML
+    private BorderPane conduite;
+
     private JFXSpinner waitSpinner;
 
     public MainController() throws EasyconduiteException {
@@ -147,8 +154,8 @@ public class MainController extends BaseController {
             try {
                 media.initPlayer();
             } catch (EasyconduiteException e) {
-                ActionDialog.showError(resourceBundle.getString("dialog.error.header"),resourceBundle.getString("easyconduitecontroler.open.error"));
-                LOG.error("Error occured during player initialize at media {}",media);
+                ActionDialog.showError(resourceBundle.getString("dialog.error.header"), resourceBundle.getString("easyconduitecontroler.open.error"));
+                LOG.error("Error occured during player initialize at media {}", media);
             }
             final AbstractUIMedia mediaUI = (AbstractUIMedia) MediaUIFactory.createMediaUI(media, this);
             //TODO ajouter le média en fonction de l'id dans la table.
@@ -245,6 +252,7 @@ public class MainController extends BaseController {
                     }
                     // ajout dans la liste du projet
                     project.getAbstractMediaList().add(media);
+                    conduiteController.addMedia(media);
                     // construction de l'UI.
                     final UIMediaPlayable mediaUI = MediaUIFactory.createMediaUI(media, this);
                     final ObservableList<Node> table = getTableLayout().getChildren();
@@ -430,6 +438,8 @@ public class MainController extends BaseController {
         waitSpinner = new JFXSpinner();
         waitSpinner.layoutXProperty().bind(infoPane.widthProperty().subtract(waitSpinner.widthProperty()).divide(2));
         waitSpinner.layoutYProperty().bind(infoPane.heightProperty().subtract(waitSpinner.heightProperty()).divide(2));
+
+        conduiteController.setMainController(this);
 
 
     }

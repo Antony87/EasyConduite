@@ -60,3 +60,36 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-opacity: 0.3;
 }
 
+.conduiteRegion{
+    -fx-background-color :  -grey-600;
+    -fx-min-height: 30;
+    -fx-max-height: 30;
+    -fx-pref-width: 30;
+    -fx-min-width: 30;
+}
+.labelConduite{
+    -fx-min-height: 30;
+    -fx-max-height: 30;
+    -fx-min-width: 96;
+    -fx-max-width: 96;
+    -fx-border-color:  -grey-600;
+    -fx-border-style: solid;
+    -fx-border-width: 0px 0px 1px 1px ;
+    -fx-font-size: 12;
+    -fx-text-fill: #FFFFFF;
+    -fx-alignment:CENTER;
+}
+
+.labelHeadTrigger{
+    -fx-min-height: 30;
+    -fx-max-height: 30;
+    -fx-pref-width: 30;
+    -fx-min-width: 30;
+    -fx-border-color:  -grey-600;
+    -fx-border-style: solid;
+    -fx-border-width: 1px 0px 0px 1px ;
+    -fx-font-size: 12;
+    -fx-text-fill: #FFFFFF;
+    -fx-alignment:CENTER;
+}
+
