@@ -37,11 +37,6 @@ public class TriggerActionRegion extends Region {
         colIndexProperty().setValue(colIndex);
         rowIndexProperty().setValue(rowIndex);
         gridToAdd.add(this,getColIndex(),getRowIndex());
-
-        this.setOnMouseClicked(event -> {
-            System.out.println("clicked "+rowIndex);
-        });
-
     }
 
     public int getColIndex() {

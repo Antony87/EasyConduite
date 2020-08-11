@@ -1,17 +1,23 @@
 package easyconduite.conduite;
 
+import java.util.SortedMap;
 import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.TreeMap;
 
 public class Conduite {
 
-    private final SortedSet<Trigger> triggers;
+    private final SortedMap<Integer,Trigger> triggers;
 
     public Conduite() {
-        triggers = new TreeSet<>();
+        triggers = new TreeMap<>();
     }
 
-    public SortedSet<Trigger> getTriggers() {
+    public void addNewTrigger(){
+        final Trigger trigger = new Trigger(this);
+        triggers.put(trigger.getIndex(),trigger);
+    }
+
+    public SortedMap<Integer,Trigger> getTriggers() {
         return triggers;
     }
 }

@@ -23,15 +23,27 @@ package easyconduite.conduite;
 import easyconduite.media.MediaStatus;
 import easyconduite.model.AbstractMedia;
 
-public class MediaAction {
+import java.util.Objects;
+import java.util.SortedMap;
+
+public class MediaAction implements Comparable {
+
+    private final int index;
 
     private final AbstractMedia media;
 
     private MediaStatus status;
 
-    public MediaAction(AbstractMedia media, MediaStatus status) {
+    public MediaAction(Trigger trigger, AbstractMedia media, MediaStatus status) {
         this.media = media;
         this.status = status;
+        SortedMap<Integer, MediaAction> actions = trigger.getMediaActions();
+        if(actions.isEmpty()){
+            index =1;
+        }else{
+            final Integer last = actions.lastKey();
+            index = last+1;
+        }
     }
 
     public void switchToStatut() {
@@ -58,5 +70,32 @@ public class MediaAction {
 
     public void setStatus(MediaStatus status) {
         this.status = status;
+    }
+
+    public Integer getIndex() {
+        return index;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MediaAction)) return false;
+        MediaAction that = (MediaAction) o;
+        return index == that.index &&
+                media.equals(that.media) &&
+                status == that.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(index, media, status);
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        MediaAction action = (MediaAction) o;
+        if (index == action.index) return 0;
+        if (index > action.index) return 1;
+        return -1;
     }
 }

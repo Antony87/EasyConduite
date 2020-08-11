@@ -20,8 +20,10 @@
 
 package easyconduite.conduite;
 
-import java.util.ArrayList;
-import java.util.List;
+import easyconduite.media.MediaStatus;
+import easyconduite.model.AbstractMedia;
+
+import java.util.*;
 
 /**
  * this class implements track trigger features.
@@ -30,14 +32,28 @@ public class Trigger implements Comparable {
 
     private int index;
 
-    private final List<MediaAction> mediaActions;
+    private final SortedMap<Integer,MediaAction> mediaActions;
 
-    public Trigger() {
-       mediaActions = new ArrayList<>();
+    public Trigger(Conduite conduite) {
+        SortedMap<Integer,Trigger> triggers = conduite.getTriggers();
+        if(triggers.isEmpty()){
+            index =1;
+        }else{
+            final Integer last = triggers.lastKey();
+            index = last+1;
+        }
+        mediaActions = new TreeMap<>();
     }
 
     public void playActions() {
-        mediaActions.forEach(mediaAction -> mediaAction.switchToStatut());
+        mediaActions.forEach((integer, mediaAction) -> {
+            mediaAction.switchToStatut();
+        });
+    }
+
+    public void addNewMediaAction(AbstractMedia media){
+        MediaAction action = new MediaAction(this,media, MediaStatus.UNKNOWN);
+        mediaActions.put(action.getIndex(),action);
     }
 
     @Override
@@ -48,6 +64,20 @@ public class Trigger implements Comparable {
         return -1;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Trigger)) return false;
+        Trigger trigger = (Trigger) o;
+        return index == trigger.index &&
+                Objects.equals(mediaActions, trigger.mediaActions);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(index, mediaActions);
+    }
+
     public int getIndex() {
         return index;
     }
@@ -56,7 +86,7 @@ public class Trigger implements Comparable {
         this.index = index;
     }
 
-    public List<MediaAction> getMediaActions() {
+    public SortedMap<Integer,MediaAction> getMediaActions() {
         return mediaActions;
     }
 }

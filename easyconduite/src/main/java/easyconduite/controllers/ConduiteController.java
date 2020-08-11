@@ -20,7 +20,10 @@
 
 package easyconduite.controllers;
 
+import easyconduite.conduite.Conduite;
+import easyconduite.conduite.MediaAction;
 import easyconduite.conduite.Trigger;
+import easyconduite.media.MediaStatus;
 import easyconduite.model.AbstractMedia;
 import easyconduite.model.BaseController;
 import easyconduite.view.controls.TriggerActionRegion;
@@ -46,10 +49,7 @@ public class ConduiteController extends BaseController {
 
     private MainController mainController;
 
-    /**
-     * grid column of the trigger, Trigger
-     */
-    private Map<Integer, Trigger> triggersMap;
+    private Conduite conduite;
 
     /**
      * grid row of the media
@@ -63,25 +63,27 @@ public class ConduiteController extends BaseController {
 
     public ConduiteController() {
         LOG.debug("EasyConduite ConduiteController is instantiated");
+        conduite = new Conduite();
         grid = new GridPane();
         grid.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-        triggersMap = new TreeMap<>();
         tracksMap = new TreeMap<>();
-
     }
 
     @FXML
     public void addTriggerAction(ActionEvent event) {
 
-        int nbrColumns = grid.getColumnCount();
-        triggersMap.put(nbrColumns, new Trigger());
-        LOG.debug("Add trigger to triggersMap whit index : {}", nbrColumns);
-        final Label titleTrigger = new Label("" + nbrColumns);
+        conduite.addNewTrigger();
+        final Trigger trigger = conduite.getTriggers().get(conduite.getTriggers().lastKey());
+        int index = trigger.getIndex();
+        final Label titleTrigger = new Label("" + index);
         titleTrigger.getStyleClass().add("labelHeadTrigger");
-        grid.add(titleTrigger, nbrColumns, 0);
+        grid.add(titleTrigger, index, 0);
+
         tracksMap.forEach((row, abstractMedia) -> {
-            final TriggerActionRegion regionTrigger = new TriggerActionRegion(row, nbrColumns, grid);
-            LOG.debug("region added at row: {} column: {}", regionTrigger.getRowIndex(), regionTrigger.getColIndex());
+            addTriggerActionRegion(trigger,row,index);
+//            final MediaAction action = new MediaAction(trigger,abstractMedia, MediaStatus.UNKNOWN);
+//            trigger.getMediaActions().add(action);
+            trigger.addNewMediaAction(abstractMedia);
         });
 
     }
@@ -92,13 +94,25 @@ public class ConduiteController extends BaseController {
         final Label titleMedia = new Label(name);
         titleMedia.getStyleClass().add("labelConduite");
         int nbrRows = grid.getRowCount();
-        triggersMap.forEach((column, trigger) -> {
-            final TriggerActionRegion regionTrigger = new TriggerActionRegion(nbrRows, column, grid);
-            LOG.debug("region added at row: {} column: {}", regionTrigger.getRowIndex(), regionTrigger.getColIndex());
+
+        conduite.getTriggers().forEach((index, trigger) -> {
+            addTriggerActionRegion(trigger,nbrRows,index);
         });
+
 
         grid.add(titleMedia, 0, nbrRows);
         tracksMap.put(nbrRows, media);
+    }
+
+    private void addTriggerActionRegion(Trigger trigger, int row, int column){
+        final TriggerActionRegion regionTrigger = new TriggerActionRegion(row, column, grid);
+        LOG.debug("region added at row: {} column: {}", regionTrigger.getRowIndex(), regionTrigger.getColIndex());
+
+        regionTrigger.setOnMouseClicked(event -> {
+            System.out.println(trigger.getIndex());
+            System.out.println("media : "+tracksMap.get(row).getName());
+        });
+
     }
 
     @Override
