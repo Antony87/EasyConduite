@@ -42,6 +42,7 @@ import java.net.URL;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class ConduiteController extends BaseController {
 
@@ -56,6 +57,8 @@ public class ConduiteController extends BaseController {
      */
     private Map<Integer, AbstractMedia> tracksMap;
 
+    private Map<AbstractMedia,TreeSet<MediaAction>> tracksActionsMap;
+
     @FXML
     private BorderPane cueBorderPane;
 
@@ -67,6 +70,8 @@ public class ConduiteController extends BaseController {
         grid = new GridPane();
         grid.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
         tracksMap = new TreeMap<>();
+        tracksActionsMap = new TreeMap<>();
+
     }
 
     @FXML
@@ -79,11 +84,17 @@ public class ConduiteController extends BaseController {
         titleTrigger.getStyleClass().add("labelHeadTrigger");
         grid.add(titleTrigger, index, 0);
 
-        tracksMap.forEach((row, abstractMedia) -> {
-            addTriggerActionRegion(trigger,row,index);
+        tracksActionsMap.keySet().forEach(media -> {
+            final MediaAction action = new MediaAction(trigger,media, MediaStatus.UNKNOWN);
+            trigger.getMediaActions().add(action);
+
+        });
+
+        tracksMap.forEach((row, media) -> {
+            addTriggerActionRegion(trigger,media,row,index);
 //            final MediaAction action = new MediaAction(trigger,abstractMedia, MediaStatus.UNKNOWN);
 //            trigger.getMediaActions().add(action);
-            trigger.addNewMediaAction(abstractMedia);
+            //trigger.addNewMediaAction(media);
         });
 
     }
@@ -96,21 +107,25 @@ public class ConduiteController extends BaseController {
         int nbrRows = grid.getRowCount();
 
         conduite.getTriggers().forEach((index, trigger) -> {
-            addTriggerActionRegion(trigger,nbrRows,index);
+            final MediaAction mediaAction = new MediaAction(trigger,media,MediaStatus.UNKNOWN);
+            trigger.getMediaActions().add(mediaAction);
+            addTriggerActionRegion(trigger,media,nbrRows,index);
         });
-
 
         grid.add(titleMedia, 0, nbrRows);
         tracksMap.put(nbrRows, media);
+        tracksActionsMap.putIfAbsent(media,new TreeSet<>());
     }
 
-    private void addTriggerActionRegion(Trigger trigger, int row, int column){
-        final TriggerActionRegion regionTrigger = new TriggerActionRegion(row, column, grid);
+    private void addTriggerActionRegion(Trigger trigger, AbstractMedia media, int row, int column){
+
+        final TriggerActionRegion regionTrigger = new TriggerActionRegion(trigger, media, row, column, grid);
         LOG.debug("region added at row: {} column: {}", regionTrigger.getRowIndex(), regionTrigger.getColIndex());
 
         regionTrigger.setOnMouseClicked(event -> {
             System.out.println(trigger.getIndex());
-            System.out.println("media : "+tracksMap.get(row).getName());
+            System.out.println("media : "+regionTrigger.getMedia().getName());
+
         });
 
     }

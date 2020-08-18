@@ -24,7 +24,7 @@ import easyconduite.media.MediaStatus;
 import easyconduite.model.AbstractMedia;
 
 import java.util.Objects;
-import java.util.SortedMap;
+import java.util.TreeSet;
 
 public class MediaAction implements Comparable {
 
@@ -37,11 +37,11 @@ public class MediaAction implements Comparable {
     public MediaAction(Trigger trigger, AbstractMedia media, MediaStatus status) {
         this.media = media;
         this.status = status;
-        SortedMap<Integer, MediaAction> actions = trigger.getMediaActions();
+        TreeSet<MediaAction> actions = trigger.getMediaActions();
         if(actions.isEmpty()){
             index =1;
         }else{
-            final Integer last = actions.lastKey();
+            final Integer last = actions.last().getIndex();
             index = last+1;
         }
     }

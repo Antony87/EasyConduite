@@ -32,28 +32,28 @@ public class Trigger implements Comparable {
 
     private int index;
 
-    private final SortedMap<Integer,MediaAction> mediaActions;
+    private final TreeSet<MediaAction> mediaActions;
 
     public Trigger(Conduite conduite) {
-        SortedMap<Integer,Trigger> triggers = conduite.getTriggers();
+        final SortedMap<Integer,Trigger> triggers = conduite.getTriggers();
         if(triggers.isEmpty()){
             index =1;
         }else{
             final Integer last = triggers.lastKey();
             index = last+1;
         }
-        mediaActions = new TreeMap<>();
+        mediaActions = new TreeSet<>();
     }
 
     public void playActions() {
-        mediaActions.forEach((integer, mediaAction) -> {
+        mediaActions.forEach((mediaAction) -> {
             mediaAction.switchToStatut();
         });
     }
 
     public void addNewMediaAction(AbstractMedia media){
         MediaAction action = new MediaAction(this,media, MediaStatus.UNKNOWN);
-        mediaActions.put(action.getIndex(),action);
+        mediaActions.add(action);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class Trigger implements Comparable {
         this.index = index;
     }
 
-    public SortedMap<Integer,MediaAction> getMediaActions() {
+    public TreeSet<MediaAction> getMediaActions() {
         return mediaActions;
     }
 }

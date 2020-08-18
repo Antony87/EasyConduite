@@ -20,6 +20,8 @@
 
 package easyconduite.view.controls;
 
+import easyconduite.conduite.Trigger;
+import easyconduite.model.AbstractMedia;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.layout.GridPane;
@@ -31,8 +33,15 @@ public class TriggerActionRegion extends Region {
 
     private IntegerProperty rowIndex = new SimpleIntegerProperty();
 
-    public TriggerActionRegion(Integer rowIndex, Integer colIndex, GridPane gridToAdd) {
+    private final Trigger trigger;
+
+    private final AbstractMedia media;
+
+    public TriggerActionRegion(Trigger trigger, AbstractMedia media, Integer rowIndex, Integer colIndex, GridPane gridToAdd) {
         super();
+        this.trigger = trigger;
+        this.media = media;
+        this.trigger.addNewMediaAction(media);
         this.getStyleClass().add("conduiteRegion");
         colIndexProperty().setValue(colIndex);
         rowIndexProperty().setValue(rowIndex);
@@ -61,5 +70,13 @@ public class TriggerActionRegion extends Region {
 
     public void setRowIndex(int rowIndex) {
         this.rowIndex.set(rowIndex);
+    }
+
+    public Trigger getTrigger() {
+        return trigger;
+    }
+
+    public AbstractMedia getMedia() {
+        return media;
     }
 }
