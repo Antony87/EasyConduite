@@ -114,7 +114,7 @@ public class ConduiteController extends BaseController {
 
         grid.add(titleMedia, 0, nbrRows);
         tracksMap.put(nbrRows, media);
-        tracksActionsMap.putIfAbsent(media,new TreeSet<>());
+        //tracksActionsMap.putIfAbsent(media,new TreeSet<>());
     }
 
     private void addTriggerActionRegion(Trigger trigger, AbstractMedia media, int row, int column){

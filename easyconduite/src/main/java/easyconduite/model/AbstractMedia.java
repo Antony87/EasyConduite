@@ -43,8 +43,8 @@ public abstract class AbstractMedia implements MediaPlayable {
 
     private boolean loppable = false;
 
-    @JsonIgnore
-    private boolean initialized = false;
+//    @JsonIgnore
+//    private boolean initialized = false;
 
     /**
      * @return Nom du EasyMédia.
@@ -109,13 +109,13 @@ public abstract class AbstractMedia implements MediaPlayable {
      *
      * @return retourne TRUE si le média a été correctement initialisé par la methode initPlayer
      */
-    public boolean isInitialized() {
-        return initialized;
-    }
-
-    public void setInitialized(boolean initialized) {
-        this.initialized = initialized;
-    }
+//    public boolean isInitialized() {
+//        return initialized;
+//    }
+//
+//    public void setInitialized(boolean initialized) {
+//        this.initialized = initialized;
+//    }
 
     @Override
     public boolean equals(Object o) {

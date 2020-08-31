@@ -24,15 +24,16 @@ import easyconduite.controllers.MainController;
 import easyconduite.model.UIMediaPlayable;
 import easyconduite.media.AudioMedia;
 import easyconduite.media.RemoteMedia;
+import easyconduite.project.ProjectContext;
 
 public class MediaUIFactory {
 
-    public static <T> UIMediaPlayable createMediaUI(T mediaPlayable, MainController controller) {
+    public static <T> UIMediaPlayable createMediaUI(T mediaPlayable) {
 
         if (mediaPlayable instanceof AudioMedia) {
-            return new AudioMediaUI((AudioMedia) mediaPlayable, controller);
+            return new AudioMediaUI((AudioMedia) mediaPlayable);
         } else if (mediaPlayable instanceof RemoteMedia) {
-            return new RemoteMediaUI((RemoteMedia) mediaPlayable, controller);
+            return new RemoteMediaUI((RemoteMedia) mediaPlayable);
         }
         return null;
     }

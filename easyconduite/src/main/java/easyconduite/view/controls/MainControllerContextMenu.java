@@ -18,8 +18,12 @@
  *
  */
 
-package easyconduite.controllers;
+package easyconduite.view.controls;
 
+import easyconduite.controllers.MainController;
+import easyconduite.exception.EasyconduiteException;
+import easyconduite.project.ProjectContext;
+import easyconduite.util.EasyConduitePropertiesHandler;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
@@ -39,29 +43,24 @@ import java.util.ResourceBundle;
  */
 public class MainControllerContextMenu extends ContextMenu {
 
-    private final MainController mainController;
-
-    /**
-     * @param controller The controller who manage FlowPane actions
-     */
-    public MainControllerContextMenu(MainController controller) {
+    public MainControllerContextMenu() throws EasyconduiteException {
         super();
-        this.mainController = controller;
-        final ResourceBundle locale = mainController.getresourceBundle();
+        MainController controller = ProjectContext.getContext().getMainControler();
+        ResourceBundle locale = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
         final MenuItem cmTitle = new MenuItem(locale.getString("menu.table.title"));
         cmTitle.setDisable(true);
         final SeparatorMenuItem cmSeparator = new SeparatorMenuItem();
         final MenuItem cmImportTrack = new MenuItem(locale.getString("menu.track.import"));
-        cmImportTrack.setOnAction(this.mainController::menuImportAudio);
+        cmImportTrack.setOnAction(controller::menuImportAudio);
         final MenuItem cmCloseProject = new MenuItem(locale.getString("menu.project.clear"));
         cmCloseProject.setOnAction(e -> {
-            this.mainController.menuCloseProject(e);
+            controller.menuCloseProject(e);
         });
         final MenuItem cmAddAllToCue = new MenuItem(locale.getString("menu.table.addToCue"));
         cmAddAllToCue.setDisable(true);
         this.getItems().addAll(cmTitle, cmSeparator, cmImportTrack, cmCloseProject, cmAddAllToCue);
 
-        final FlowPane tableLayout = mainController.getTableLayout();
+        final FlowPane tableLayout = controller.getTableLayout();
         tableLayout.setOnContextMenuRequested(contextMenuEvent -> {
             if (contextMenuEvent.getTarget().equals(tableLayout)) {
                 this.show(tableLayout, contextMenuEvent.getScreenX(), contextMenuEvent.getScreenY());

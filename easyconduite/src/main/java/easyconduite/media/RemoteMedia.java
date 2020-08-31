@@ -22,19 +22,17 @@ package easyconduite.media;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import easyconduite.exception.EasyconduiteException;
-import easyconduite.exception.RemotePlayableException;
 import easyconduite.model.AbstractMedia;
 import easyconduite.model.RemotePlayable;
-import easyconduite.tools.kodi.KodiManager;
-import javafx.beans.property.BooleanProperty;
+import easyconduite.tools.kodi.KodiPlayer;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.util.Objects;
 
 public class RemoteMedia extends AbstractMedia {
@@ -44,7 +42,7 @@ public class RemoteMedia extends AbstractMedia {
     @JsonIgnore
     private Action action;
 
-    private URI resource;
+    private Path resource;
 
     private double volume = 0.5;
 
@@ -55,13 +53,10 @@ public class RemoteMedia extends AbstractMedia {
     private int port;
 
     @JsonIgnore
-    private RemotePlayable remoteManager;
+    private RemotePlayable remotePlayer;
 
     @JsonIgnore
-    private ObjectProperty<MediaStatus> status = new SimpleObjectProperty<>();
-
-    @JsonIgnore
-    private BooleanProperty activeHost = new SimpleBooleanProperty();
+    private ObjectProperty<MediaStatus> statut = new SimpleObjectProperty();
 
     public RemoteMedia() {
         super();
@@ -71,35 +66,72 @@ public class RemoteMedia extends AbstractMedia {
         this();
         setDuration(new Duration(0));
         this.type = type;
-        this.status.setValue(MediaStatus.STOPPED);
+        setStatut(MediaStatus.UNKNOWN);
     }
 
     @Override
     public void play() {
-        if (isInitialized() && isActiveHost()) remoteManager.play(this);
+        switch (statut.getValue()) {
+            case READY:
+            case STOPPED:
+            case PAUSED:
+                remotePlayer.play(this);
+                setStatut(MediaStatus.PLAYING);
+                break;
+            case PLAYING:
+            case HALTED:
+            case UNKNOWN:
+            default:
+                break;
+        }
     }
 
     @Override
     public void pause() {
-        // reste à implementer
+        switch (statut.getValue()) {
+            case PLAYING:
+                remotePlayer.stop(this);
+                setStatut(MediaStatus.STOPPED);
+                break;
+            case READY:
+            case STOPPED:
+            case PAUSED:
+            case HALTED:
+            case UNKNOWN:
+            default:
+                break;
+        }
     }
 
     @Override
     public void stop() {
-        if (isInitialized() && isActiveHost()) remoteManager.stop(this);
+        switch (statut.getValue()) {
+            case PAUSED:
+            case PLAYING:
+                remotePlayer.stop(this);
+                setStatut(MediaStatus.STOPPED);
+                break;
+            case READY:
+            case STOPPED:
+            case HALTED:
+            case UNKNOWN:
+            default:
+                break;
+        }
     }
 
     @Override
     public void initPlayer() throws EasyconduiteException {
 
         if (type.equals(RemoteType.KODI)) {
-            remoteManager = KodiManager.getInstance();
+            if (remotePlayer == null) {
+                remotePlayer = new KodiPlayer(this);
+            }
             try {
-                ((KodiManager) remoteManager).registerKodiMedia(this);
-                setInitialized(true);
-            } catch (RemotePlayableException e) {
-                LOG.error("Error occured with RemoteMedia {}", this);
-                throw new EasyconduiteException(e.getMessage());
+                ((KodiPlayer) remotePlayer).initializePlayer(this);
+                setStatut(MediaStatus.UNKNOWN);
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -133,11 +165,11 @@ public class RemoteMedia extends AbstractMedia {
         this.type = remoteType;
     }
 
-    public URI getResource() {
+    public Path getResource() {
         return resource;
     }
 
-    public void setResource(URI resource) {
+    public void setResource(Path resource) {
         this.resource = resource;
     }
 
@@ -149,28 +181,16 @@ public class RemoteMedia extends AbstractMedia {
         this.volume = volume;
     }
 
-    public MediaStatus getStatus() {
-        return status.get();
+    public MediaStatus getStatut() {
+        return statut.get();
     }
 
-    public void setStatus(MediaStatus mediaStatus) {
-        this.status.set(mediaStatus);
+    public ObjectProperty<MediaStatus> statutProperty() {
+        return statut;
     }
 
-    public ObjectProperty<MediaStatus> statusProperty() {
-        return status;
-    }
-
-    public boolean isActiveHost() {
-        return activeHost.get();
-    }
-
-    public void setActiveHost(boolean activeHost) {
-        this.activeHost.set(activeHost);
-    }
-
-    public BooleanProperty activeHostProperty() {
-        return activeHost;
+    public void setStatut(MediaStatus statut) {
+        this.statut.set(statut);
     }
 
     public Action getAction() {
@@ -204,8 +224,8 @@ public class RemoteMedia extends AbstractMedia {
                 ", type=" + type +
                 ", host='" + host + '\'' +
                 ", port=" + port +
-                ", player=" + remoteManager +
-                ", status=" + status +
+                ", player=" + remotePlayer +
+                ", status=" + statut +
                 "} " + super.toString();
     }
 

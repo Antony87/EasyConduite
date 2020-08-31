@@ -24,10 +24,13 @@ import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.RegexValidator;
 import com.jfoenix.validation.RequiredFieldValidator;
 import easyconduite.exception.EasyconduiteException;
+import easyconduite.media.MediaFactory;
 import easyconduite.media.RemoteMedia;
 import easyconduite.model.BaseController;
-import easyconduite.model.MediaConfigurable;
 import easyconduite.model.UIMediaPlayable;
+import easyconduite.model.UImediaConfigurable;
+import easyconduite.project.ProjectContext;
+import easyconduite.view.MediaUIFactory;
 import javafx.fxml.FXML;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
@@ -35,15 +38,15 @@ import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
-import java.net.URI;
 import java.net.URL;
-import java.util.List;
+import java.nio.file.Paths;
 import java.util.ResourceBundle;
 
-public class RemoteConfigController extends BaseController implements MediaConfigurable {
+public class RemoteConfigController extends BaseController implements UImediaConfigurable {
 
     private static final Logger LOG = LogManager.getLogger(RemoteConfigController.class);
+
+    private static final ProjectContext context = ProjectContext.getContext();
 
     private UIMediaPlayable mediaUI;
 
@@ -64,19 +67,22 @@ public class RemoteConfigController extends BaseController implements MediaConfi
     private void handleClickOk(MouseEvent event) {
 
         if (validateFields()) {
-            final RemoteMedia media = (RemoteMedia) mediaUI.getAbstractMedia();
-            if (!media.isInitialized()) {
+            if (mediaUI == null) {
+                final RemoteMedia media = (RemoteMedia) MediaFactory.createPlayableMedia(RemoteMedia.RemoteType.KODI);
+                final UIMediaPlayable mediaUI = MediaUIFactory.createMediaUI(media);
+                updateMediaValues(media);
                 try {
-                    saveMediaProperties(media);
                     media.initPlayer();
+                    final MainController controller = context.getMainControler();
+                    controller.getMediaUIList().add(mediaUI);
                 } catch (EasyconduiteException e) {
                     LOG.error("Error during player init of media {}", media);
                 }
             } else {
-                saveMediaProperties(media);
+                final RemoteMedia media = (RemoteMedia) mediaUI.getAbstractMedia();
+                updateMediaValues(media);
             }
             mediaUI.actualizeUI();
-            LOG.debug("Media changed {}", media);
             close();
         }
     }
@@ -91,12 +97,11 @@ public class RemoteConfigController extends BaseController implements MediaConfi
         stage.close();
     }
 
-    private void saveMediaProperties(RemoteMedia media) {
-        final URI resourceURI = new File(resourceTextField.getText()).toURI();
-        media.setResource(resourceURI);
+    private void updateMediaValues(RemoteMedia media) {
+        media.setResource(Paths.get(resourceTextField.getText()));
         media.setHost(hostTextField.getText());
         media.setPort(Integer.parseInt(portTextField.getText()));
-        commonConfigController.saveCommonsProperties(media);
+        commonConfigController.updateCommonsValues(media);
     }
 
     public boolean validateFields() {
@@ -122,19 +127,16 @@ public class RemoteConfigController extends BaseController implements MediaConfi
         RequiredFieldValidator requiredValidator = new RequiredFieldValidator();
         hostTextField.setPromptText("ex : localhost");
         hostTextField.getValidators().add(requiredValidator);
-
         resourceTextField.getValidators().add(requiredValidator);
     }
 
     @Override
-    public void setConfigUI(UIMediaPlayable mediaUI, List<UIMediaPlayable> mediaUIs) {
+    public void updateUI(UIMediaPlayable mediaUI) {
         this.mediaUI = mediaUI;
         final RemoteMedia media = (RemoteMedia) mediaUI.getAbstractMedia();
-        if(media.isInitialized()){
-            resourceTextField.setText(media.getResource().getPath().substring(1));
-            hostTextField.setText(media.getHost());
-            portTextField.setText(String.valueOf(media.getPort()));
-        }
-        commonConfigController.setConfigUI(mediaUI, mediaUIs);
+        resourceTextField.setText(media.getResource().toString());
+        hostTextField.setText(media.getHost());
+        portTextField.setText(String.valueOf(media.getPort()));
+        commonConfigController.updateUI(mediaUI);
     }
 }

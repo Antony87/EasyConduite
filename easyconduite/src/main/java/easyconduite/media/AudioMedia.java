@@ -12,13 +12,17 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.net.URI;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.Objects;
 
 
 public class AudioMedia extends AbstractMedia {
+
+    @JsonIgnore
+    static final Logger LOG = LogManager.getLogger(AudioMedia.class);
 
     @JsonSerialize(using = DurationSerializer.class)
     @JsonDeserialize(using = DurationDeserializer.class)
@@ -28,7 +32,7 @@ public class AudioMedia extends AbstractMedia {
     @JsonDeserialize(using = DurationDeserializer.class)
     private Duration fadeOutDuration = Duration.ZERO;
 
-    private URI resourcePath;
+    private Path resourcePath;
 
     private double volume = 0.5;
 
@@ -42,7 +46,7 @@ public class AudioMedia extends AbstractMedia {
         super();
     }
 
-    public AudioMedia(URI resource) {
+    public AudioMedia(Path resource) {
         this();
         this.resourcePath = resource;
     }
@@ -57,18 +61,17 @@ public class AudioMedia extends AbstractMedia {
     public void initPlayer() throws EasyconduiteException {
 
         try {
-            final Media mediaForPlayer = new Media(this.getResourcePath().toString());
+            final Media mediaForPlayer = new Media(this.getResourcePath().toUri().toString());
             player = new MediaPlayer(mediaForPlayer);
+            LOG.trace("Create Player {} whit Media {}",player, mediaForPlayer.getSource());
             player.setVolume(this.getVolume());
             fadeHandler = new PlayerVolumeFader(this);
             player.setStartTime(Duration.ZERO);
 
             if (getName() == null) {
-                final String name = Paths.get(getResourcePath()).getFileName().toString();
+                final String name = getResourcePath().toFile().getName();
                 setName(name);
             }
-
-            setInitialized(true);
 
             player.setOnEndOfMedia(() -> {
                 if (!this.getLoppable()) {
@@ -144,11 +147,11 @@ public class AudioMedia extends AbstractMedia {
         return player;
     }
 
-    public URI getResourcePath() {
+    public Path getResourcePath() {
         return resourcePath;
     }
 
-    public void setResourcePath(URI resourcePath) {
+    public void setResourcePath(Path resourcePath) {
         this.resourcePath = resourcePath;
     }
 

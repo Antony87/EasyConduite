@@ -22,7 +22,7 @@ package easyconduite.controllers;
 
 import easyconduite.media.AudioMedia;
 import easyconduite.model.BaseController;
-import easyconduite.model.MediaConfigurable;
+import easyconduite.model.UImediaConfigurable;
 import easyconduite.model.UIMediaPlayable;
 import javafx.fxml.FXML;
 import javafx.scene.control.Spinner;
@@ -35,9 +35,7 @@ import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.List;
-
-public class AudioConfigController extends BaseController implements MediaConfigurable {
+public class AudioConfigController extends BaseController implements UImediaConfigurable {
 
     static final Logger LOG = LogManager.getLogger(AudioConfigController.class);
 
@@ -60,9 +58,10 @@ public class AudioConfigController extends BaseController implements MediaConfig
 
     @FXML
     private void handleClickOk(MouseEvent event) {
-
+        LOG.trace("ok clicked whith AudioMediaUI {}",mediaUI);
         final AudioMedia media = (AudioMedia) mediaUI.getAbstractMedia();
-        commonConfigController.saveCommonsProperties(media);
+
+        commonConfigController.updateCommonsValues(media);
         media.setFadeInDuration(new Duration(fadeInSpinner.getValue()*1000));
         media.setFadeOutDuration(new Duration(fadeOutSpinner.getValue()*1000));
         mediaUI.actualizeUI();
@@ -95,11 +94,12 @@ public class AudioConfigController extends BaseController implements MediaConfig
     }
 
     @Override
-    public void setConfigUI(UIMediaPlayable mediaUI, List<UIMediaPlayable> otherMediaUIs) {
+    public void updateUI(UIMediaPlayable mediaUI) {
+        LOG.trace("Configuration ConfigDialog {}",mediaUI);
         this.mediaUI = mediaUI;
         final AudioMedia media = (AudioMedia) this.mediaUI.getAbstractMedia();
         initializeSpinners(media);
-        commonConfigController.setConfigUI(mediaUI, otherMediaUIs);
+        commonConfigController.updateUI(mediaUI);
     }
 
 }

@@ -23,8 +23,9 @@ package easyconduite.controllers;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.AbstractMedia;
 import easyconduite.model.BaseController;
-import easyconduite.model.MediaConfigurable;
+import easyconduite.model.UImediaConfigurable;
 import easyconduite.model.UIMediaPlayable;
+import easyconduite.project.ProjectContext;
 import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.KeyCodeHelper;
 import easyconduite.view.controls.ActionDialog;
@@ -38,14 +39,12 @@ import javafx.scene.input.MouseEvent;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class CommonConfigController extends BaseController implements MediaConfigurable {
+public class CommonConfigController extends BaseController implements UImediaConfigurable {
 
     protected static final String KEY_ASSIGN_ERROR = "trackconfigcontroller.key.error";
     protected static final String KEY_ASSIGN_OTHER = "trackconfigcontroller.key.other";
-
+    private static final ProjectContext context = ProjectContext.getContext();
     private KeyCode newKeyCode;
-
-    private List<UIMediaPlayable> mediaUIList;
 
     private UIMediaPlayable mediaUI;
 
@@ -85,6 +84,7 @@ public class CommonConfigController extends BaseController implements MediaConfi
     }
 
     private boolean isKeyCodeExist(KeyCode keyCode) {
+        final List<UIMediaPlayable> mediaUIList = context.getMainControler().getMediaUIList();
         for (UIMediaPlayable ui : mediaUIList) {
             final KeyCode code = ui.getAbstractMedia().getKeycode();
             if (code != null && code.equals(keyCode)) return true;
@@ -92,7 +92,7 @@ public class CommonConfigController extends BaseController implements MediaConfi
         return false;
     }
 
-    protected void saveCommonsProperties(AbstractMedia media){
+    protected void updateCommonsValues(AbstractMedia media){
         media.setLoppable(loopTrack.isSelected());
         media.setName(nametrackfield.getText());
         if (newKeyCode != null) {
@@ -113,9 +113,8 @@ public class CommonConfigController extends BaseController implements MediaConfi
     }
 
     @Override
-    public void setConfigUI(UIMediaPlayable mediaUI, List<UIMediaPlayable> mediaUIList){
+    public void updateUI(UIMediaPlayable mediaUI){
         this.mediaUI=mediaUI;
-        this.mediaUIList=mediaUIList;
         AbstractMedia media = this.mediaUI.getAbstractMedia();
         nametrackfield.setText(media.getName());
         keytrackfield.setText(KeyCodeHelper.toString(media.getKeycode()));

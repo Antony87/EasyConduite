@@ -24,7 +24,7 @@ import easyconduite.exception.RemotePlayableException;
 import easyconduite.media.RemoteMedia;
 import org.junit.jupiter.api.*;
 
-import java.io.File;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,7 +47,7 @@ class KodiManagerTest {
         media1.setName("test1");
         media1.setHost("localhost");
         media1.setPort(8089);
-        media1.setResource(new File("C:/Users/V902832/IdeaProjects/EasyConduite/easyconduite/src/test/resources/test.mp4").toURI());
+        media1.setResource(Paths.get("C:/Users/V902832/IdeaProjects/EasyConduite/easyconduite/src/test/resources/test.mp4"));
 
         manager.registerKodiMedia(media1);
         assertEquals(2, manager.getMapKodiHosts().size());
@@ -64,7 +64,7 @@ class KodiManagerTest {
         media1.setName("test1");
         media1.setHost("localhost");
         media1.setPort(8089);
-        media1.setResource(new File("C:/Users/V902832/IdeaProjects/EasyConduite/easyconduite/src/test/resources/test.mp4").toURI());
+        media1.setResource(Paths.get("C:/Users/V902832/IdeaProjects/EasyConduite/easyconduite/src/test/resources/test.mp4"));
 
         manager.registerKodiMedia(media1);
 
@@ -73,7 +73,7 @@ class KodiManagerTest {
         media2.setHost("localhost");
         media2.setPort(8089);
         // test with test2.mp4 file name.
-        media2.setResource(new File("C:/Users/V902832/IdeaProjects/EasyConduite/easyconduite/src/test/resources/test2.mp4").toURI());
+        media2.setResource(Paths.get("C:/Users/V902832/IdeaProjects/EasyConduite/easyconduite/src/test/resources/test2.mp4"));
         manager.registerKodiMedia(media2);
         assertEquals(1, manager.getMapKodiHosts().size());
 
@@ -82,13 +82,13 @@ class KodiManagerTest {
         media3.setHost("127.0.0.0");
         media3.setPort(8089);
         // test with test2.mp4 file name.
-        media3.setResource(new File("C:/Users/V902832/IdeaProjects/EasyConduite/easyconduite/src/test/resources/test.mp4").toURI());
+        media3.setResource(Paths.get("C:/Users/V902832/IdeaProjects/EasyConduite/easyconduite/src/test/resources/test.mp4"));
         manager.registerKodiMedia(media3);
 
         String hostKey = media3.getHost() + ":" + media3.getPort();
-        List<KodiMedia> kodiMediaList = manager.getMapKodiHosts().get(hostKey).getKodiMedialist();
+        List<KodiPlayer> kodiPlayerList = manager.getMapKodiHosts().get(hostKey).getKodiMedialist();
         assertEquals(2, manager.getMapKodiHosts().size());
-        assertEquals(1, kodiMediaList.size());
+        assertEquals(1, kodiPlayerList.size());
 
 
     }

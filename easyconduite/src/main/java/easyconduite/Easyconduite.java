@@ -17,6 +17,7 @@
 package easyconduite;
 
 import easyconduite.controllers.MainController;
+import easyconduite.project.ProjectContext;
 import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.LoggingHelper;
 import javafx.application.Application;
@@ -70,6 +71,7 @@ public class Easyconduite extends Application {
         Scene scene = new Scene(root);
 
         MainController controler = loader.getController();
+        ProjectContext.getContext().putMainControler(controler);
         
         stage.setOnCloseRequest((WindowEvent event) -> {
             properties.setWindowHeight((int) stage.getScene().getWindow().getHeight());
@@ -86,7 +88,7 @@ public class Easyconduite extends Application {
         stage.show();
 
     }
-    
+
     /**
      * @param args the command line arguments
      */

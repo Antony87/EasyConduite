@@ -18,6 +18,7 @@ package easyconduite.view;
 
 import com.jfoenix.controls.JFXSlider;
 import easyconduite.controllers.MainController;
+import easyconduite.media.MediaStatus;
 import easyconduite.media.RemoteMedia;
 import easyconduite.model.AbstractUIMedia;
 import javafx.beans.property.DoubleProperty;
@@ -45,18 +46,19 @@ public class RemoteMediaUI extends AbstractUIMedia {
      * Constructor du UI custom control for an AudioMedia.
      *
      * @param media      a media wich be play.
-     * @param controller the main controller which interact with {@link RemoteMediaUI}
      */
-    public RemoteMediaUI(RemoteMedia media, MainController controller) {
-        super(media, controller);
+    public RemoteMediaUI(RemoteMedia media) {
+        super(media);
         LOG.info("Construct an AudioMedia {}", media);
         this.remoteMedia = media;
 
-        remoteMedia.statusProperty().addListener((observableValue, oldValue, newValue) -> {
+        remoteMedia.statutProperty().addListener((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
                 LOG.trace("MediaStatus player {} is {}", this.remoteMedia.getName(), newValue);
                 switch (newValue) {
                     case PAUSED:
+                        playingClass.setValue(false);
+                        break;
                     case READY:
                     case STOPPED:
                         playingClass.setValue(false);
@@ -80,14 +82,29 @@ public class RemoteMediaUI extends AbstractUIMedia {
         contextHbox.getChildren().add(new JFXVolumeSlider());
 
         ActiveHostObserver hostObserver = new ActiveHostObserver();
-        hostObserver.setPeriod(Duration.millis(1000));
+        hostObserver.setPeriod(Duration.millis(2000));
         hostObserver.start();
         this.actualizeUI();
     }
 
     @Override
     public void playPause() {
-        remoteMedia.play();
+        switch (remoteMedia.getStatut()){
+            case PAUSED:
+                remoteMedia.play();
+                break;
+            case READY:
+                remoteMedia.play();
+                break;
+            case STOPPED:
+                remoteMedia.play();
+                break;
+            case PLAYING:
+                remoteMedia.stop();
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
@@ -118,14 +135,14 @@ public class RemoteMediaUI extends AbstractUIMedia {
             return new Task<Void>() {
                 @Override
                 protected Void call() {
-                    boolean active = remoteMedia.isActiveHost();
+                    MediaStatus status = remoteMedia.getStatut();
                     boolean kodiactive = typeRegion.getStyleClass().contains("typeKodi");
                     boolean kodiactiveKo = typeRegion.getStyleClass().contains("typeKodiKo");
-                    if (!active && kodiactive) {
+                    if ((status==MediaStatus.UNKNOWN || status==MediaStatus.HALTED) && kodiactive) {
                         typeRegion.getStyleClass().remove("typeKodi");
                         typeRegion.getStyleClass().add("typeKodiKo");
                         if (!playPauseHbox.isDisable()) playPauseHbox.setDisable(true);
-                    } else if (active && kodiactiveKo) {
+                    } else if (kodiactiveKo) {
                         typeRegion.getStyleClass().remove("typeKodiKo");
                         typeRegion.getStyleClass().add("typeKodi");
                         if (playPauseHbox.isDisable()) playPauseHbox.setDisable(false);

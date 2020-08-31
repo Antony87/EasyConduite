@@ -33,7 +33,7 @@ public class MediaFactory {
         if(param instanceof File){
             File mediaFile = (File)param;
             if(mediaFile.exists()){
-                return new AudioMedia(mediaFile.toURI());
+                return new AudioMedia(mediaFile.toPath());
             }
         }else if(param.equals(RemoteMedia.RemoteType.KODI)){
                 return new RemoteMedia((RemoteMedia.RemoteType) param);

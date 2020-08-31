@@ -48,10 +48,9 @@ public class AudioMediaUI extends AbstractUIMedia {
      * Constructor du UI custom control for an AudioMedia.
      *
      * @param media      a media wich be play.
-     * @param controller the main controller which interact with {@link AudioMediaUI}
      */
-    public AudioMediaUI(AbstractMedia media, MainController controller) {
-        super(media, controller);
+    public AudioMediaUI(AbstractMedia media) {
+        super(media);
         LOG.info("Construct an AudioMedia {}", media);
         this.audioMedia = (AudioMedia) media;
 

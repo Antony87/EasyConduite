@@ -43,9 +43,6 @@ public class MediaProject {
     private Path projectPath;
     private List<AbstractMedia> abstractMediaList;
 
-    @JsonIgnore
-    private boolean needToSave =false;
-
     public MediaProject() {
         this.conduite = new Conduite();
         this.abstractMediaList = new ArrayList<AbstractMedia>(1);
@@ -81,13 +78,5 @@ public class MediaProject {
 
     public void setAbstractMediaList(List<AbstractMedia> abstractMediaList) {
         this.abstractMediaList = abstractMediaList;
-    }
-
-    public boolean isNeedToSave() {
-        return needToSave;
-    }
-
-    public void setNeedToSave(boolean needToSave) {
-        this.needToSave = needToSave;
     }
 }

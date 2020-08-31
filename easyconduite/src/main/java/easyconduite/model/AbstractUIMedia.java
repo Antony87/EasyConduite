@@ -2,6 +2,7 @@ package easyconduite.model;
 
 import easyconduite.controllers.MainController;
 import easyconduite.exception.EasyconduiteException;
+import easyconduite.project.ProjectContext;
 import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.KeyCodeHelper;
 import easyconduite.view.AudioMediaUI;
@@ -58,14 +59,17 @@ public abstract class AbstractUIMedia extends VBox implements UIMediaPlayable {
 
     protected ResourceBundle locale;
 
+    protected final MainController controller;
+
     /**
      * Constructeur.
      *
      * @param media      the media displayed
-     * @param controller the main controller
      */
-    public AbstractUIMedia(AbstractMedia media, MainController controller) {
+    public AbstractUIMedia(AbstractMedia media) {
         super();
+        LOG.trace("Construct AbstractUIMedia with {}",media);
+        controller = ProjectContext.getContext().getMainControler();
         this.abstractMedia = media;
         try {
             locale = EasyConduitePropertiesHandler.getInstance().getLocalBundle();

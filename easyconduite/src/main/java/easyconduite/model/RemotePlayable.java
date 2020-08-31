@@ -29,6 +29,4 @@ public interface RemotePlayable {
     void pause(RemoteMedia media);
 
     void stop(RemoteMedia media);
-
-    boolean isActive();
 }
