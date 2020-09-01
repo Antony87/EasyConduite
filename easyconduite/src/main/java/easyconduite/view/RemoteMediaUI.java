@@ -17,15 +17,10 @@
 package easyconduite.view;
 
 import com.jfoenix.controls.JFXSlider;
-import easyconduite.controllers.MainController;
-import easyconduite.media.MediaStatus;
 import easyconduite.media.RemoteMedia;
 import easyconduite.model.AbstractUIMedia;
 import javafx.beans.property.DoubleProperty;
-import javafx.concurrent.ScheduledService;
-import javafx.concurrent.Task;
 import javafx.scene.control.Tooltip;
-import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,8 +34,13 @@ import org.apache.logging.log4j.Logger;
 public class RemoteMediaUI extends AbstractUIMedia {
 
     static final Logger LOG = LogManager.getLogger(RemoteMediaUI.class);
+    public static final String KODI_OK_CSS="typeKodi";
+    public static final String KODI_KO_CSS="typeKodiKo";
     private final RemoteMedia remoteMedia;
+    private Boolean playerReady;
     private final Tooltip typeRegionToolTip = new Tooltip();
+    private String activePlayerCss;
+    private String inactivePlayerCss;
 
     /**
      * Constructor du UI custom control for an AudioMedia.
@@ -51,20 +51,25 @@ public class RemoteMediaUI extends AbstractUIMedia {
         super(media);
         LOG.info("Construct an AudioMedia {}", media);
         this.remoteMedia = media;
+        setPlayerReady(false);
 
         remoteMedia.statutProperty().addListener((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
                 LOG.trace("MediaStatus player {} is {}", this.remoteMedia.getName(), newValue);
                 switch (newValue) {
                     case PAUSED:
-                        playingClass.setValue(false);
-                        break;
                     case READY:
                     case STOPPED:
                         playingClass.setValue(false);
+                        setReadyIcon(true);
                         break;
                     case PLAYING:
                         playingClass.setValue(true);
+                        setReadyIcon(true);
+                        break;
+                    case UNKNOWN:
+                    case HALTED:
+                        setReadyIcon(false);
                         break;
                     default:
                         break;
@@ -72,30 +77,34 @@ public class RemoteMediaUI extends AbstractUIMedia {
             }
         });
 
-
         Tooltip.install(typeRegion, typeRegionToolTip);
 
         if (remoteMedia.getType().equals(RemoteMedia.RemoteType.KODI)) {
-            super.typeRegion.getStyleClass().add("typeKodi");
+            activePlayerCss=KODI_OK_CSS;
+            inactivePlayerCss=KODI_KO_CSS;
         }
-
+        typeRegion.getStyleClass().add(inactivePlayerCss);
         contextHbox.getChildren().add(new JFXVolumeSlider());
-
-        ActiveHostObserver hostObserver = new ActiveHostObserver();
-        hostObserver.setPeriod(Duration.millis(2000));
-        hostObserver.start();
         this.actualizeUI();
+    }
+
+    private void setReadyIcon(boolean etat){
+        if(etat){
+            typeRegion.getStyleClass().remove(inactivePlayerCss);
+            typeRegion.getStyleClass().add(activePlayerCss);
+            playPauseHbox.setDisable(false);
+        }else{
+            typeRegion.getStyleClass().remove(activePlayerCss);
+            typeRegion.getStyleClass().add(inactivePlayerCss);
+            playPauseHbox.setDisable(true);
+        }
     }
 
     @Override
     public void playPause() {
         switch (remoteMedia.getStatut()){
             case PAUSED:
-                remoteMedia.play();
-                break;
             case READY:
-                remoteMedia.play();
-                break;
             case STOPPED:
                 remoteMedia.play();
                 break;
@@ -128,29 +137,12 @@ public class RemoteMediaUI extends AbstractUIMedia {
         }
     }
 
-    private class ActiveHostObserver extends ScheduledService<Void> {
-        @Override
-        protected Task<Void> createTask() {
+    public Boolean getPlayerReady() {
+        return playerReady;
+    }
 
-            return new Task<Void>() {
-                @Override
-                protected Void call() {
-                    MediaStatus status = remoteMedia.getStatut();
-                    boolean kodiactive = typeRegion.getStyleClass().contains("typeKodi");
-                    boolean kodiactiveKo = typeRegion.getStyleClass().contains("typeKodiKo");
-                    if ((status==MediaStatus.UNKNOWN || status==MediaStatus.HALTED) && kodiactive) {
-                        typeRegion.getStyleClass().remove("typeKodi");
-                        typeRegion.getStyleClass().add("typeKodiKo");
-                        if (!playPauseHbox.isDisable()) playPauseHbox.setDisable(true);
-                    } else if (kodiactiveKo) {
-                        typeRegion.getStyleClass().remove("typeKodiKo");
-                        typeRegion.getStyleClass().add("typeKodi");
-                        if (playPauseHbox.isDisable()) playPauseHbox.setDisable(false);
-                    }
-                    return null;
-                }
-            };
-        }
+    public void setPlayerReady(Boolean playerReady) {
+        this.playerReady = playerReady;
     }
 
 }

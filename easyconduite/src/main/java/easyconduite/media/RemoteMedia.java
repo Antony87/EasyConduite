@@ -22,6 +22,7 @@ package easyconduite.media;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import easyconduite.exception.EasyconduiteException;
+import easyconduite.exception.RemotePlayableException;
 import easyconduite.model.AbstractMedia;
 import easyconduite.model.RemotePlayable;
 import easyconduite.tools.kodi.KodiPlayer;
@@ -40,23 +41,14 @@ public class RemoteMedia extends AbstractMedia {
     @JsonIgnore
     private static final Logger LOG = LogManager.getLogger(RemoteMedia.class);
     @JsonIgnore
-    private Action action;
-
+    private final ObjectProperty<MediaStatus> statut = new SimpleObjectProperty();
     private Path resource;
-
     private double volume = 0.5;
-
     private RemoteType type;
-
     private String host;
-
     private int port;
-
     @JsonIgnore
     private RemotePlayable remotePlayer;
-
-    @JsonIgnore
-    private ObjectProperty<MediaStatus> statut = new SimpleObjectProperty();
 
     public RemoteMedia() {
         super();
@@ -75,12 +67,9 @@ public class RemoteMedia extends AbstractMedia {
             case READY:
             case STOPPED:
             case PAUSED:
-                remotePlayer.play(this);
+                remotePlayer.play();
                 setStatut(MediaStatus.PLAYING);
                 break;
-            case PLAYING:
-            case HALTED:
-            case UNKNOWN:
             default:
                 break;
         }
@@ -90,7 +79,7 @@ public class RemoteMedia extends AbstractMedia {
     public void pause() {
         switch (statut.getValue()) {
             case PLAYING:
-                remotePlayer.stop(this);
+                remotePlayer.stop();
                 setStatut(MediaStatus.STOPPED);
                 break;
             case READY:
@@ -108,7 +97,7 @@ public class RemoteMedia extends AbstractMedia {
         switch (statut.getValue()) {
             case PAUSED:
             case PLAYING:
-                remotePlayer.stop(this);
+                remotePlayer.stop();
                 setStatut(MediaStatus.STOPPED);
                 break;
             case READY:
@@ -122,16 +111,12 @@ public class RemoteMedia extends AbstractMedia {
 
     @Override
     public void initPlayer() throws EasyconduiteException {
-
         if (type.equals(RemoteType.KODI)) {
-            if (remotePlayer == null) {
-                remotePlayer = new KodiPlayer(this);
-            }
+            if (remotePlayer == null) remotePlayer = new KodiPlayer(this);
             try {
-                ((KodiPlayer) remotePlayer).initializePlayer(this);
-                setStatut(MediaStatus.UNKNOWN);
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
+                ((KodiPlayer) remotePlayer).initializePlayer();
+            } catch (RemotePlayableException e) {
+                throw new EasyconduiteException(e.getMessage());
             }
         }
     }
@@ -185,20 +170,16 @@ public class RemoteMedia extends AbstractMedia {
         return statut.get();
     }
 
-    public ObjectProperty<MediaStatus> statutProperty() {
-        return statut;
-    }
-
     public void setStatut(MediaStatus statut) {
         this.statut.set(statut);
     }
 
-    public Action getAction() {
-        return action;
+    public ObjectProperty<MediaStatus> statutProperty() {
+        return statut;
     }
 
-    public void setAction(Action action) {
-        this.action = action;
+    public RemotePlayable getRemotePlayer() {
+        return remotePlayer;
     }
 
     @Override
@@ -231,9 +212,5 @@ public class RemoteMedia extends AbstractMedia {
 
     public enum RemoteType {
         KODI, VLC
-    }
-
-    public enum Action {
-        PLAY, STOP, PAUSE
     }
 }

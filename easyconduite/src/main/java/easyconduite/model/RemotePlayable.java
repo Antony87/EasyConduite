@@ -20,13 +20,11 @@
 
 package easyconduite.model;
 
-import easyconduite.media.RemoteMedia;
-
 public interface RemotePlayable {
 
-    void play(RemoteMedia media);
+    void play();
 
-    void pause(RemoteMedia media);
+    void pause();
 
-    void stop(RemoteMedia media);
+    void stop();
 }

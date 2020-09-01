@@ -5,7 +5,6 @@ import easyconduite.exception.EasyconduiteException;
 import easyconduite.project.ProjectContext;
 import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.KeyCodeHelper;
-import easyconduite.view.AudioMediaUI;
 import easyconduite.view.commons.MediaSelectedPseudoClass;
 import easyconduite.view.commons.PlayingPseudoClass;
 import easyconduite.view.controls.ActionDialog;
@@ -30,12 +29,13 @@ import java.util.ResourceBundle;
 public abstract class AbstractUIMedia extends VBox implements UIMediaPlayable {
 
     static final Logger LOG = LogManager.getLogger(AbstractUIMedia.class);
+    private static final MainController controller = ProjectContext.getContext().getMainControler();
     /**
      * message that appears on the dialog box header.
      */
     private static final String DIALOG_EXCEPTION_HEADER = "dialog.exception.header";
 
-    private static final String REPEAT_CSS="repeat";
+    private static final String REPEAT_CSS = "repeat";
 
     protected final Label timeLabel = new Label();
 
@@ -59,23 +59,20 @@ public abstract class AbstractUIMedia extends VBox implements UIMediaPlayable {
 
     protected ResourceBundle locale;
 
-    protected final MainController controller;
-
     /**
      * Constructeur.
      *
-     * @param media      the media displayed
+     * @param media the media displayed
      */
     public AbstractUIMedia(AbstractMedia media) {
         super();
-        LOG.trace("Construct AbstractUIMedia with {}",media);
-        controller = ProjectContext.getContext().getMainControler();
+        LOG.trace("Construct AbstractUIMedia with {}", media);
         this.abstractMedia = media;
         try {
             locale = EasyConduitePropertiesHandler.getInstance().getLocalBundle();
         } catch (EasyconduiteException e) {
             ActionDialog.showException(locale.getString(DIALOG_EXCEPTION_HEADER), locale.getString("task.create.error"), e);
-            LOG.error("Error occured within constructor {}",this,e);
+            LOG.error("Error occured within constructor {}", this, e);
         }
         ////////////////////////////////////////////////////////////////////////
         //                 Construction de l'UI

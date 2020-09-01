@@ -69,7 +69,7 @@ public class RemoteConfigController extends BaseController implements UImediaCon
         if (validateFields()) {
             if (mediaUI == null) {
                 final RemoteMedia media = (RemoteMedia) MediaFactory.createPlayableMedia(RemoteMedia.RemoteType.KODI);
-                final UIMediaPlayable mediaUI = MediaUIFactory.createMediaUI(media);
+                mediaUI = MediaUIFactory.createMediaUI(media);
                 updateMediaValues(media);
                 try {
                     media.initPlayer();
@@ -81,6 +81,11 @@ public class RemoteConfigController extends BaseController implements UImediaCon
             } else {
                 final RemoteMedia media = (RemoteMedia) mediaUI.getAbstractMedia();
                 updateMediaValues(media);
+                try {
+                    media.initPlayer();
+                } catch (EasyconduiteException e) {
+                    e.printStackTrace();
+                }
             }
             mediaUI.actualizeUI();
             close();

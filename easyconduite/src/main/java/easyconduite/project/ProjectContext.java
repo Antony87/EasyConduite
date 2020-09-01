@@ -26,11 +26,10 @@ import java.util.HashMap;
 
 public class ProjectContext {
 
-    private static ProjectContext instance;
     private static final String MAIN_CTRL = "maincontroler";
+    private static ProjectContext instance;
+    private static boolean needToSave = false;
     private HashMap<String, Object> context;
-
-    private static Boolean needToSave =false;
 
     private ProjectContext() {
         context = new HashMap<>();
@@ -53,11 +52,11 @@ public class ProjectContext {
         context.putIfAbsent(MAIN_CTRL, mainController);
     }
 
-    public Boolean isNeedToSave() {
+    public boolean isNeedToSave() {
         return needToSave;
     }
 
-    public void setNeedToSave(Boolean needToSave) {
-        ProjectContext.needToSave = needToSave;
+    public void setNeedToSave(boolean b) {
+        needToSave = b;
     }
 }
