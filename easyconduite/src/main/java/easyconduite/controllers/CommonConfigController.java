@@ -23,8 +23,8 @@ package easyconduite.controllers;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.model.AbstractMedia;
 import easyconduite.model.BaseController;
-import easyconduite.model.UImediaConfigurable;
 import easyconduite.model.UIMediaPlayable;
+import easyconduite.model.UImediaConfigurable;
 import easyconduite.project.ProjectContext;
 import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.KeyCodeHelper;
@@ -74,7 +74,7 @@ public class CommonConfigController extends BaseController implements UImediaCon
                 //FIXME
                 e.printStackTrace();
             }
-        } else {
+        } else if (mediaUI != null) {
             final AbstractMedia media = this.mediaUI.getAbstractMedia();
             if (typedKeycode != media.getKeycode()) {
                 this.newKeyCode = typedKeycode;
@@ -92,7 +92,7 @@ public class CommonConfigController extends BaseController implements UImediaCon
         return false;
     }
 
-    protected void updateCommonsValues(AbstractMedia media){
+    protected void updateCommonsValues(AbstractMedia media) {
         media.setLoppable(loopTrack.isSelected());
         media.setName(nametrackfield.getText());
         if (newKeyCode != null) {
@@ -113,8 +113,8 @@ public class CommonConfigController extends BaseController implements UImediaCon
     }
 
     @Override
-    public void updateUI(UIMediaPlayable mediaUI){
-        this.mediaUI=mediaUI;
+    public void updateUI(UIMediaPlayable mediaUI) {
+        this.mediaUI = mediaUI;
         AbstractMedia media = this.mediaUI.getAbstractMedia();
         nametrackfield.setText(media.getName());
         keytrackfield.setText(KeyCodeHelper.toString(media.getKeycode()));

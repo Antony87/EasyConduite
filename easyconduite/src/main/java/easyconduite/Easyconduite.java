@@ -21,6 +21,7 @@ import easyconduite.project.ProjectContext;
 import easyconduite.util.EasyConduitePropertiesHandler;
 import easyconduite.util.LoggingHelper;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -76,7 +77,7 @@ public class Easyconduite extends Application {
         stage.setOnCloseRequest((WindowEvent event) -> {
             properties.setWindowHeight((int) stage.getScene().getWindow().getHeight());
             properties.setWindowWith((int) stage.getScene().getWindow().getWidth());
-            controler.menuQuit(new ActionEvent());
+            quitEasyConduite();
             event.consume();
         });
 
@@ -94,6 +95,10 @@ public class Easyconduite extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public static void quitEasyConduite(){
+        Platform.exit();
     }
 
 }

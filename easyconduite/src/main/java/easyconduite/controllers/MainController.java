@@ -18,6 +18,7 @@ package easyconduite.controllers;
 
 import com.jfoenix.controls.JFXSpinner;
 import easyconduite.EasyConduiteProperties;
+import easyconduite.Easyconduite;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.media.MediaFactory;
 import easyconduite.model.AbstractMedia;
@@ -32,7 +33,6 @@ import easyconduite.util.PersistenceHelper;
 import easyconduite.view.*;
 import easyconduite.view.controls.ActionDialog;
 import easyconduite.view.controls.FileChooserControl;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -225,7 +225,7 @@ public class MainController extends BaseController {
         if (!isProjectErasable()) {
             this.menuFileSaveProject(event);
         }
-        Platform.exit();
+        Easyconduite.quitEasyConduite();
     }
 
     /* ============================================================================
