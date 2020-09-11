@@ -1,6 +1,7 @@
 package easyconduite.model;
 
 import easyconduite.exception.EasyconduiteException;
+import javafx.scene.input.KeyCode;
 
 public interface MediaPlayable {
 
@@ -30,5 +31,13 @@ public interface MediaPlayable {
      * <p>For example, call dispose method for {@link javafx.scene.media.MediaPlayer}</p>
      */
     void closePlayer();
+
+    KeyCode getKeycode();
+
+    boolean getLoppable();
+
+    String getName();
+
+
 
 }

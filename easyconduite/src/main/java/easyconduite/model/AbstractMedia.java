@@ -1,6 +1,5 @@
 package easyconduite.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -35,7 +34,7 @@ public abstract class AbstractMedia implements MediaPlayable {
     @JsonDeserialize(using = DurationDeserializer.class)
     private Duration duration;
 
-    private Long uniqueId = UUID.randomUUID().getMostSignificantBits();
+    private final Long uniqueId = UUID.randomUUID().getMostSignificantBits();
 
     private int indexInTable;
 
@@ -43,12 +42,13 @@ public abstract class AbstractMedia implements MediaPlayable {
 
     private boolean loppable = false;
 
-//    @JsonIgnore
-//    private boolean initialized = false;
+//    public AbstractMedia() {
+//    }
 
     /**
      * @return Nom du EasyMédia.
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -86,6 +86,7 @@ public abstract class AbstractMedia implements MediaPlayable {
     /**
      * @return le code {@link KeyCode} associé au EasyMédia pour pause,play,stop.
      */
+    @Override
     public KeyCode getKeycode() {
         return keycode;
     }
@@ -97,6 +98,7 @@ public abstract class AbstractMedia implements MediaPlayable {
     /**
      * @return Boolean si le EasyMédia est jouable en boucle.
      */
+    @Override
     public boolean getLoppable() {
         return loppable;
     }
@@ -104,18 +106,6 @@ public abstract class AbstractMedia implements MediaPlayable {
     public void setLoppable(boolean loppable) {
         this.loppable = loppable;
     }
-
-    /**
-     *
-     * @return retourne TRUE si le média a été correctement initialisé par la methode initPlayer
-     */
-//    public boolean isInitialized() {
-//        return initialized;
-//    }
-//
-//    public void setInitialized(boolean initialized) {
-//        this.initialized = initialized;
-//    }
 
     @Override
     public boolean equals(Object o) {

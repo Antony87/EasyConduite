@@ -23,7 +23,7 @@ public class PersistenceTest {
     public void testSerialization() throws IOException {
 
         MediaProject project = EasyProjectFixture.getValidProject();
-        AudioMedia media1 = (AudioMedia) project.getAbstractMediaList().get(0);
+        AudioMedia media1 = (AudioMedia) project.getMediaPlayables().get(0);
                 //PersistenceHelper.saveToXml(project, new File("src/test/resources/test.xml"));
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS,false);
@@ -33,7 +33,7 @@ public class PersistenceTest {
         System.out.println(jsonDataString);
 
         MediaProject project2 = mapper.readValue(jsonDataString,MediaProject.class);
-        AudioMedia media2 = (AudioMedia) project2.getAbstractMediaList().get(0);
+        AudioMedia media2 = (AudioMedia) project2.getMediaPlayables().get(0);
 
         assertEquals(media1.getVolume(),media2.getVolume());
         assertEquals(media1.getResourcePath(),media2.getResourcePath());
@@ -46,11 +46,11 @@ public class PersistenceTest {
     public void testPersistenceHelper_Media() throws IOException {
 
         MediaProject project = EasyProjectFixture.getValidProject();
-        AudioMedia media1 = (AudioMedia) project.getAbstractMediaList().get(0);
+        AudioMedia media1 = (AudioMedia) project.getMediaPlayables().get(0);
         PersistenceHelper.saveToJson(project,new File("C:\\Users\\V902832\\IdeaProjects\\EasyConduite\\easyconduite\\src\\test\\resources\\test.ecp"));
 
         MediaProject project2 = PersistenceHelper.openFromJson(new File("C:\\Users\\V902832\\IdeaProjects\\EasyConduite\\easyconduite\\src\\test\\resources\\test.ecp"), MediaProject.class);
-        AudioMedia media2 = (AudioMedia) project2.getAbstractMediaList().get(0);
+        AudioMedia media2 = (AudioMedia) project2.getMediaPlayables().get(0);
         assertEquals(media1.getVolume(),media2.getVolume());
         assertEquals(media1.getResourcePath(),media2.getResourcePath());
         assertEquals(media1.getDuration(),media2.getDuration());

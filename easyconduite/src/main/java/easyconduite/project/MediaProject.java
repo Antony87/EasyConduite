@@ -21,11 +21,10 @@
 
 package easyconduite.project;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import easyconduite.model.AbstractMedia;
 import easyconduite.conduite.Conduite;
+import easyconduite.model.MediaPlayable;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -41,11 +40,11 @@ public class MediaProject {
     private String name;
     private Conduite conduite;
     private Path projectPath;
-    private List<AbstractMedia> abstractMediaList;
+    private List<MediaPlayable> mediaPlayables;
 
     public MediaProject() {
         this.conduite = new Conduite();
-        this.abstractMediaList = new ArrayList<AbstractMedia>(1);
+        this.mediaPlayables = new ArrayList<>(100);
     }
 
     public String getName() {
@@ -72,11 +71,11 @@ public class MediaProject {
         this.projectPath = projectPath;
     }
 
-    public List<AbstractMedia> getAbstractMediaList() {
-        return abstractMediaList;
+    public List<MediaPlayable> getMediaPlayables() {
+        return mediaPlayables;
     }
 
-    public void setAbstractMediaList(List<AbstractMedia> abstractMediaList) {
-        this.abstractMediaList = abstractMediaList;
+    public void setMediaPlayables(List<MediaPlayable> mediaPlayables) {
+        this.mediaPlayables = mediaPlayables;
     }
 }

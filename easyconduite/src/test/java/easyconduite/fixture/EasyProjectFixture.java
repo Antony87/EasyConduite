@@ -21,7 +21,7 @@ public class EasyProjectFixture {
         ((AudioMedia)media).setVolume(0.50);
         media.setLoppable(true);
         media.setKeycode(KeyCode.A);
-        project.getAbstractMediaList().add(media);
+        project.getMediaPlayables().add(media);
 
         return project;
     }

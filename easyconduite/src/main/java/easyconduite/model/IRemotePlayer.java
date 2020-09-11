@@ -20,7 +20,7 @@
 
 package easyconduite.model;
 
-public interface RemotePlayable {
+public interface IRemotePlayer {
 
     void play();
 

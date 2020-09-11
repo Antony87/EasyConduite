@@ -30,7 +30,6 @@ import easyconduite.model.BaseController;
 import easyconduite.model.UIMediaPlayable;
 import easyconduite.model.UImediaConfigurable;
 import easyconduite.project.ProjectContext;
-import easyconduite.view.MediaUIFactory;
 import javafx.fxml.FXML;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
@@ -69,17 +68,19 @@ public class RemoteConfigController extends BaseController implements UImediaCon
         if (validateFields()) {
             if (mediaUI == null) {
                 final RemoteMedia media = (RemoteMedia) MediaFactory.createPlayableMedia(RemoteMedia.RemoteType.KODI);
-                mediaUI = MediaUIFactory.createMediaUI(media);
+                //mediaUI = MediaUIFactory.createMediaUI(media);
                 updateMediaValues(media);
                 try {
                     media.initPlayer();
                     final MainController controller = context.getMainControler();
-                    controller.getMediaUIList().add(mediaUI);
+                    mediaUI = controller.addMediaToTracks(media);
+                    controller.getProject().getMediaPlayables().add(media);
+                    //controller.getMediaUIList().add(mediaUI);
                 } catch (EasyconduiteException e) {
                     LOG.error("Error during player init of media {}", media);
                 }
             } else {
-                final RemoteMedia media = (RemoteMedia) mediaUI.getAbstractMedia();
+                final RemoteMedia media = (RemoteMedia) mediaUI.getMediaPlayable();
                 updateMediaValues(media);
                 try {
                     media.initPlayer();
@@ -138,7 +139,7 @@ public class RemoteConfigController extends BaseController implements UImediaCon
     @Override
     public void updateUI(UIMediaPlayable mediaUI) {
         this.mediaUI = mediaUI;
-        final RemoteMedia media = (RemoteMedia) mediaUI.getAbstractMedia();
+        final RemoteMedia media = (RemoteMedia) mediaUI.getMediaPlayable();
         resourceTextField.setText(media.getResource().toString());
         hostTextField.setText(media.getHost());
         portTextField.setText(String.valueOf(media.getPort()));

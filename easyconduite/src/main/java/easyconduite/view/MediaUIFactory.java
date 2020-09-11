@@ -20,11 +20,9 @@
 
 package easyconduite.view;
 
-import easyconduite.controllers.MainController;
-import easyconduite.model.UIMediaPlayable;
 import easyconduite.media.AudioMedia;
 import easyconduite.media.RemoteMedia;
-import easyconduite.project.ProjectContext;
+import easyconduite.model.UIMediaPlayable;
 
 public class MediaUIFactory {
 

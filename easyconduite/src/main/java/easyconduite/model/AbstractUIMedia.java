@@ -175,7 +175,7 @@ public abstract class AbstractUIMedia extends VBox implements UIMediaPlayable {
     }
 
     @Override
-    public AbstractMedia getAbstractMedia() {
+    public AbstractMedia getMediaPlayable() {
         return abstractMedia;
     }
 

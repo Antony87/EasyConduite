@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.exception.RemotePlayableException;
 import easyconduite.model.AbstractMedia;
-import easyconduite.model.RemotePlayable;
+import easyconduite.model.IRemotePlayer;
 import easyconduite.tools.kodi.KodiPlayer;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -32,7 +32,6 @@ import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.Objects;
 
@@ -48,7 +47,7 @@ public class RemoteMedia extends AbstractMedia {
     private String host;
     private int port;
     @JsonIgnore
-    private RemotePlayable remotePlayer;
+    private IRemotePlayer remotePlayer;
 
     public RemoteMedia() {
         super();
@@ -123,7 +122,7 @@ public class RemoteMedia extends AbstractMedia {
 
     @Override
     public void closePlayer() {
-        //TODO a implementer
+        remotePlayer=null;
     }
 
     public String getHost() {
@@ -178,7 +177,7 @@ public class RemoteMedia extends AbstractMedia {
         return statut;
     }
 
-    public RemotePlayable getRemotePlayer() {
+    public IRemotePlayer getRemotePlayer() {
         return remotePlayer;
     }
 

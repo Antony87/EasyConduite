@@ -23,7 +23,7 @@ package easyconduite.tools.kodi;
 import easyconduite.exception.RemotePlayableException;
 import easyconduite.media.MediaStatus;
 import easyconduite.media.RemoteMedia;
-import easyconduite.model.RemotePlayable;
+import easyconduite.model.IRemotePlayer;
 import easyconduite.util.PersistenceHelper;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
@@ -39,22 +39,27 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
-public class KodiPlayer implements RemotePlayable {
+public class KodiPlayer implements IRemotePlayer {
 
     public static final String CONTENT_TYPE = "Content-Type";
     public static final String APP_JSON = "application/json";
     private static final int HTTP_OK = 200;
     private static final Logger LOG = LogManager.getLogger(KodiPlayer.class);
     private final HttpClient client;
+    private final HttpClient client2;
     private final RemoteMedia remoteMedia;
+    private String mediaFileName;
     private HttpRequest playRequest;
     private HttpRequest stopRequest;
     private HttpRequest activeRequest;
+    private HttpRequest itemRequest;
 
     public KodiPlayer(RemoteMedia media) {
         LOG.debug("Constructor called with RemoteMedia {}", media);
         remoteMedia = media;
+        mediaFileName = remoteMedia.getResource().getFileName().toString();
         client = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
+        client2 = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
     }
 
     public void initializePlayer() throws RemotePlayableException {
@@ -69,10 +74,13 @@ public class KodiPlayer implements RemotePlayable {
         final String jsonRequestPlay = KodiRequest.getJsonRequest(KodiRequest.OPEN, fileString);
         final String jsonRequestStop = KodiRequest.getJsonRequest(KodiRequest.STOP, "1");
         final String jsonRequestActive = KodiRequest.getJsonRequest(KodiRequest.ACTIVE, null);
+        final String jsonRequestItem = KodiRequest.getJsonRequest(KodiRequest.ITEM, "1");
 
         playRequest = HttpRequest.newBuilder().uri(hostUri).POST(HttpRequest.BodyPublishers.ofString(jsonRequestPlay)).header(CONTENT_TYPE, APP_JSON).build();
         stopRequest = HttpRequest.newBuilder().uri(hostUri).POST(HttpRequest.BodyPublishers.ofString(jsonRequestStop)).header(CONTENT_TYPE, APP_JSON).build();
         activeRequest = HttpRequest.newBuilder().uri(hostUri).POST(HttpRequest.BodyPublishers.ofString(jsonRequestActive)).header(CONTENT_TYPE, APP_JSON).build();
+        itemRequest = HttpRequest.newBuilder().uri(hostUri).POST(HttpRequest.BodyPublishers.ofString(jsonRequestItem)).header(CONTENT_TYPE, APP_JSON).build();
+        LOG.trace("item request {}",jsonRequestItem);
 
         this.remoteMedia.setStatut(MediaStatus.UNKNOWN);
 
@@ -94,6 +102,32 @@ public class KodiPlayer implements RemotePlayable {
                             remoteMedia.setStatut(MediaStatus.READY);
                         }
                     }
+                } else {
+                    remoteMedia.setStatut(MediaStatus.HALTED);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setMediaStatus() {
+        try {
+            client.sendAsync(itemRequest, HttpResponse.BodyHandlers.ofString()).thenAccept(reponse -> {
+                if (reponse.statusCode() == HTTP_OK) {
+                    try{
+                        final String responseString = new String(reponse.body().getBytes(), StandardCharsets.UTF_8);
+                        final KodiItemResponse kodiItemResponse = KodiRequest.buildResponse(responseString, KodiItemResponse.class);
+                        final KodiItemResponse.KodiItem kodiItem = kodiItemResponse.getResult().getItem();
+                        if (kodiItem.getLabel().equals(this.mediaFileName)) {
+                            remoteMedia.setStatut(MediaStatus.PLAYING);
+                        } else {
+                            remoteMedia.setStatut(MediaStatus.READY);
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
                 } else {
                     remoteMedia.setStatut(MediaStatus.HALTED);
                 }
@@ -167,6 +201,7 @@ public class KodiPlayer implements RemotePlayable {
                 @Override
                 protected Void call() {
                     setStatusFromHost();
+                    setMediaStatus();
                     return null;
                 }
             };

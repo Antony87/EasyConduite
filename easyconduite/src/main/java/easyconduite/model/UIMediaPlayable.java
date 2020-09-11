@@ -30,7 +30,7 @@ public interface UIMediaPlayable {
      * Method which return the AbstractMedia object.
      * @return Object AbstractMedia.
      */
-    AbstractMedia getAbstractMedia();
+    MediaPlayable getMediaPlayable();
 
     /**
      * Method that changes the status play or pause of a player.

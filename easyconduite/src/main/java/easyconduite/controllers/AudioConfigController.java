@@ -59,7 +59,7 @@ public class AudioConfigController extends BaseController implements UImediaConf
     @FXML
     private void handleClickOk(MouseEvent event) {
         LOG.trace("ok clicked whith AudioMediaUI {}",mediaUI);
-        final AudioMedia media = (AudioMedia) mediaUI.getAbstractMedia();
+        final AudioMedia media = (AudioMedia) mediaUI.getMediaPlayable();
 
         commonConfigController.updateCommonsValues(media);
         media.setFadeInDuration(new Duration(fadeInSpinner.getValue()*1000));
@@ -97,7 +97,7 @@ public class AudioConfigController extends BaseController implements UImediaConf
     public void updateUI(UIMediaPlayable mediaUI) {
         LOG.trace("Configuration ConfigDialog {}",mediaUI);
         this.mediaUI = mediaUI;
-        final AudioMedia media = (AudioMedia) this.mediaUI.getAbstractMedia();
+        final AudioMedia media = (AudioMedia) this.mediaUI.getMediaPlayable();
         initializeSpinners(media);
         commonConfigController.updateUI(mediaUI);
     }

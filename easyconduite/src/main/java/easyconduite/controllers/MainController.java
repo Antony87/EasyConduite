@@ -21,10 +21,7 @@ import easyconduite.EasyConduiteProperties;
 import easyconduite.Easyconduite;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.media.MediaFactory;
-import easyconduite.model.AbstractMedia;
-import easyconduite.model.AbstractUIMedia;
-import easyconduite.model.BaseController;
-import easyconduite.model.UIMediaPlayable;
+import easyconduite.model.*;
 import easyconduite.project.MediaProject;
 import easyconduite.project.ProjectContext;
 import easyconduite.util.EasyConduitePropertiesHandler;
@@ -34,7 +31,6 @@ import easyconduite.view.*;
 import easyconduite.view.controls.ActionDialog;
 import easyconduite.view.controls.FileChooserControl;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -53,7 +49,6 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -79,7 +74,6 @@ public class MainController extends BaseController {
      * <p>This avoids being directly dependent on tableLayout</p>
      */
     private final ObservableList<UIMediaPlayable> mediaUIList = FXCollections.observableArrayList();
-
     /**
      * The properties of this application EasyConduite.
      *
@@ -147,17 +141,18 @@ public class MainController extends BaseController {
 
     private void openProject(File file) throws IOException {
         project = PersistenceHelper.openFromJson(file, MediaProject.class);
-        final List<AbstractMedia> mediaList = project.getAbstractMediaList();
-        for (AbstractMedia media : mediaList) {
+        final List<MediaPlayable> mediaList = project.getMediaPlayables();
+        for (MediaPlayable media : mediaList) {
             try {
                 media.initPlayer();
             } catch (EasyconduiteException e) {
                 ActionDialog.showError(resourceBundle.getString("dialog.error.header"), resourceBundle.getString("easyconduitecontroler.open.error"));
                 LOG.error("Error occured during player initialize at media {}", media);
             }
-            final AbstractUIMedia mediaUI = (AbstractUIMedia) MediaUIFactory.createMediaUI(media);
+            //final UIMediaPlayable mediaUI = MediaUIFactory.createMediaUI(media);
             //TODO ajouter le média en fonction de l'id dans la table.
-            getTableLayout().getChildren().add(mediaUI);
+                //mediaUIList.add(mediaUI);
+            addMediaToTracks(media);
         }
         context.setNeedToSave(false);
     }
@@ -241,15 +236,18 @@ public class MainController extends BaseController {
             if (audioFiles != null && !audioFiles.isEmpty()) {
                 appProperties.setLastImportDir(audioFiles.get(0).getParentFile().toPath());
                 audioFiles.forEach(file -> {
-                    final AbstractMedia media = MediaFactory.createPlayableMedia(file);
+                    final MediaPlayable media = MediaFactory.createPlayableMedia(file);
                     LOG.trace("Create media from file {} : {}", file, media);
                     try {
                         media.initPlayer();
+
                     } catch (EasyconduiteException e) {
                         ActionDialog.showException(resourceBundle.getString(DIALOG_EXCEPTION_HEADER), resourceBundle.getString("easyconduitecontroler.import.error"), e);
                     }
-                    final UIMediaPlayable mediaUI = MediaUIFactory.createMediaUI(media);
-                    mediaUIList.add(mediaUI);
+                    addMediaToTracks(media);
+                    project.getMediaPlayables().add(media);
+                    //final UIMediaPlayable mediaUI = MediaUIFactory.createMediaUI(media);
+                    //mediaUIList.add(mediaUI);
                 });
                 context.setNeedToSave(true);
             }
@@ -304,10 +302,10 @@ public class MainController extends BaseController {
     }
 
     private void deleteOneTrack(UIMediaPlayable mediaUI) {
-        final AbstractMedia media = mediaUI.getAbstractMedia();
+        final MediaPlayable media = mediaUI.getMediaPlayable();
         media.closePlayer();
         mediaUIList.remove(mediaUI);
-        project.getAbstractMediaList().remove(media);
+        project.getMediaPlayables().remove(media);
         context.setNeedToSave(true);
     }
 
@@ -344,7 +342,8 @@ public class MainController extends BaseController {
         if (!event.isControlDown() && !event.isAltDown()) {
             LOG.trace("Key {} pressed ", event.getCode().getName());
             for (UIMediaPlayable mediaUI : this.getMediaUIList()) {
-                if (mediaUI.getAbstractMedia().getKeycode() == event.getCode()) {
+                if (mediaUI.getMediaPlayable().getKeycode() == event.getCode()) {
+                    LOG.trace("PlayPause with {} pressed ", mediaUI.getMediaPlayable().getKeycode());
                     mediaUI.playPause();
                     event.consume();
                 }
@@ -353,15 +352,8 @@ public class MainController extends BaseController {
     }
 
     @FXML
-    private void handlePauseAll(ActionEvent event) {
-        this.getMediaUIList().forEach(mediaUI -> mediaUI.getAbstractMedia().pause());
-        event.consume();
-    }
-
-
-    @FXML
     private void handleStopAll(ActionEvent event) {
-        this.getMediaUIList().forEach(mediaUI -> mediaUI.getAbstractMedia().stop());
+        this.getMediaUIList().forEach(mediaUI -> mediaUI.getMediaPlayable().stop());
         event.consume();
     }
 
@@ -395,23 +387,23 @@ public class MainController extends BaseController {
             });
         }
 
-        mediaUIList.addListener((ListChangeListener<UIMediaPlayable>) change -> {
-            while (change.next()) {
-                if (change.wasAdded()) {
-                    List<AbstractUIMedia> list = (List<AbstractUIMedia>) change.getAddedSubList();
-                    list.forEach(abstractUIMedia -> {
-                        tableLayout.getChildren().add(abstractUIMedia);
-                        LOG.trace("MediaUI added to mediaUIList : {}", change.getAddedSubList());
-                        project.getAbstractMediaList().add(abstractUIMedia.getAbstractMedia());
-                    });
-                }
-                if (change.wasRemoved()) {
-                    tableLayout.getChildren().removeAll(change.getRemoved());
-                    LOG.trace("MediaUI removed from mediaUIList : {}", Arrays.toString(change.getRemoved().toArray()));
-                }
-            }
-            context.setNeedToSave(true);
-        });
+//        mediaUIList.addListener((ListChangeListener<UIMediaPlayable>) change -> {
+//            while (change.next()) {
+//                if (change.wasAdded()) {
+//                    List<AbstractUIMedia> list = (List<AbstractUIMedia>) change.getAddedSubList();
+//                    list.forEach(abstractUIMedia -> {
+//                            tableLayout.getChildren().add(abstractUIMedia);
+//                            LOG.trace("MediaUI added to mediaUIList : {}", change.getAddedSubList());
+//                            project.getAbstractMediaList().add(abstractUIMedia.getMediaPlayable());
+//                    });
+//                }
+//                if (change.wasRemoved()) {
+//                    tableLayout.getChildren().removeAll(change.getRemoved());
+//                    LOG.trace("MediaUI removed from mediaUIList : {}", Arrays.toString(change.getRemoved().toArray()));
+//                }
+//            }
+//            context.setNeedToSave(true);
+//        });
 
         // initialisation du spinner pour l'infoPane
         waitSpinner = new JFXSpinner();
@@ -419,6 +411,18 @@ public class MainController extends BaseController {
         waitSpinner.layoutYProperty().bind(infoPane.heightProperty().subtract(waitSpinner.heightProperty()).divide(2));
 
         conduiteController.setMainController(this);
+    }
+
+    public UIMediaPlayable addMediaToTracks(MediaPlayable media){
+        LOG.trace("Media added to Project : {}", media);
+        final UIMediaPlayable mediaUI = MediaUIFactory.createMediaUI(media);
+        mediaUIList.add(mediaUI);
+        if(mediaUIList.contains(mediaUI)) tableLayout.getChildren().add((AbstractUIMedia)mediaUI);
+        return mediaUI;
+    }
+
+    private void removeMediaFromTracks(MediaPlayable media){
+
     }
 
     public MediaProject getProject() {

@@ -69,11 +69,6 @@
                               <KeyCodeCombination alt="UP" code="D" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#handlePauseAll" text="%menu.track.pause">
-                           <accelerator>
-                              <KeyCodeCombination alt="UP" code="SPACE" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
-                           </accelerator>
-                        </MenuItem>
                         <MenuItem mnemonicParsing="false" onAction="#handleStopAll" text="%menu.track.stop">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="SPACE" control="DOWN" meta="UP" shift="UP" shortcut="UP" />

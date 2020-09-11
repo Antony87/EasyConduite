@@ -18,6 +18,7 @@ package easyconduite.view;
 
 import com.jfoenix.controls.JFXSlider;
 import easyconduite.media.RemoteMedia;
+import easyconduite.model.AbstractMedia;
 import easyconduite.model.AbstractUIMedia;
 import javafx.beans.property.DoubleProperty;
 import javafx.scene.control.Tooltip;
@@ -47,10 +48,11 @@ public class RemoteMediaUI extends AbstractUIMedia {
      *
      * @param media      a media wich be play.
      */
-    public RemoteMediaUI(RemoteMedia media) {
+    public RemoteMediaUI(AbstractMedia media) {
         super(media);
-        LOG.info("Construct an AudioMedia {}", media);
-        this.remoteMedia = media;
+        LOG.info("Construct an RemoteMediaUI with {}", media);
+        remoteMedia = (RemoteMedia) media;
+
         setPlayerReady(false);
 
         remoteMedia.statutProperty().addListener((observableValue, oldValue, newValue) -> {
@@ -85,7 +87,7 @@ public class RemoteMediaUI extends AbstractUIMedia {
         }
         typeRegion.getStyleClass().add(inactivePlayerCss);
         contextHbox.getChildren().add(new JFXVolumeSlider());
-        this.actualizeUI();
+        actualizeUI();
     }
 
     private void setReadyIcon(boolean etat){
@@ -102,6 +104,7 @@ public class RemoteMediaUI extends AbstractUIMedia {
 
     @Override
     public void playPause() {
+        LOG.trace("RemoteMediaUI playPause call with status {}",remoteMedia.getStatut());
         switch (remoteMedia.getStatut()){
             case PAUSED:
             case READY:
@@ -121,18 +124,18 @@ public class RemoteMediaUI extends AbstractUIMedia {
         remoteMedia.stop();
     }
 
-    @Override
-    public void actualizeUI() {
-        super.actualizeUI();
-        typeRegionToolTip.setText(remoteMedia.getHost());
-    }
+//    @Override
+//    public void actualizeUI() {
+//        super.actualizeUI();
+//        //typeRegionToolTip.setText(remoteMedia.getHost());
+//    }
 
     private class JFXVolumeSlider extends JFXSlider {
         private boolean changing;
 
         //TODO implémenter, dans le KodiManager, le changement de volume lorsque l'on relache
         protected JFXVolumeSlider() {
-            super(0, 100, remoteMedia.getVolume() * 100);
+            super(0, 100, 50);
             final DoubleProperty volumeProperty = RemoteMediaUI.JFXVolumeSlider.this.valueProperty();
         }
     }
