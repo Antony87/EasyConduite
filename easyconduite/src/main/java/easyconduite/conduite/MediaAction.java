@@ -21,7 +21,7 @@
 package easyconduite.conduite;
 
 import easyconduite.media.MediaStatus;
-import easyconduite.model.AbstractMedia;
+import easyconduite.model.MediaPlayable;
 
 import java.util.Objects;
 import java.util.TreeSet;
@@ -30,13 +30,13 @@ public class MediaAction implements Comparable {
 
     private final int index;
 
-    private final AbstractMedia media;
+    private final MediaPlayable media;
 
-    private MediaStatus status;
+    private MediaStatus statusAction;
 
-    public MediaAction(Trigger trigger, AbstractMedia media, MediaStatus status) {
+    public MediaAction(Trigger trigger, MediaPlayable media, MediaStatus status) {
         this.media = media;
-        this.status = status;
+        this.statusAction = status;
         TreeSet<MediaAction> actions = trigger.getMediaActions();
         if(actions.isEmpty()){
             index =1;
@@ -46,8 +46,24 @@ public class MediaAction implements Comparable {
         }
     }
 
-    public void switchToStatut() {
-        switch (status) {
+    public MediaStatus switchStatus(){
+        switch (statusAction) {
+            case STOPPED:
+                setStatusAction(MediaStatus.PLAYING);
+                break;
+            case UNKNOWN:
+            case PLAYING:
+                setStatusAction(MediaStatus.PAUSED);
+                break;
+            case PAUSED:
+                setStatusAction(MediaStatus.STOPPED);
+                break;
+        }
+        return statusAction;
+    }
+
+    public void playStatut() {
+        switch (statusAction) {
             case STOPPED:
                 media.stop();
                 break;
@@ -60,16 +76,16 @@ public class MediaAction implements Comparable {
         }
     }
 
-    public AbstractMedia getMedia() {
+    public MediaPlayable getMedia() {
         return media;
     }
 
-    public MediaStatus getStatus() {
-        return status;
+    public MediaStatus getStatusAction() {
+        return statusAction;
     }
 
-    public void setStatus(MediaStatus status) {
-        this.status = status;
+    public void setStatusAction(MediaStatus statusAction) {
+        this.statusAction = statusAction;
     }
 
     public Integer getIndex() {
@@ -83,12 +99,12 @@ public class MediaAction implements Comparable {
         MediaAction that = (MediaAction) o;
         return index == that.index &&
                 media.equals(that.media) &&
-                status == that.status;
+                statusAction == that.statusAction;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(index, media, status);
+        return Objects.hash(index, media, statusAction);
     }
 
     @Override

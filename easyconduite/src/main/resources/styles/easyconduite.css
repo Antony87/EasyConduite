@@ -62,14 +62,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 .conduiteRegion{
     -fx-background-color :  -grey-600;
-    -fx-min-height: 30;
-    -fx-max-height: 30;
-    -fx-pref-width: 30;
-    -fx-min-width: 30;
+    -fx-min-height: 34;
+    -fx-max-height: 34;
+    -fx-pref-width: 34;
+    -fx-min-width: 34;
 }
 .labelConduite{
-    -fx-min-height: 30;
-    -fx-max-height: 30;
+    -fx-min-height: 34;
+    -fx-max-height: 34;
     -fx-min-width: 96;
     -fx-max-width: 96;
     -fx-border-color:  -grey-600;
@@ -83,8 +83,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .labelHeadTrigger{
     -fx-min-height: 30;
     -fx-max-height: 30;
-    -fx-pref-width: 30;
-    -fx-min-width: 30;
+    -fx-pref-width: 34;
+    -fx-min-width: 34;
     -fx-border-color:  -grey-600;
     -fx-border-style: solid;
     -fx-border-width: 1px 0px 0px 1px ;

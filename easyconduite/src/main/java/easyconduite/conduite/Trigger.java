@@ -21,9 +21,11 @@
 package easyconduite.conduite;
 
 import easyconduite.media.MediaStatus;
-import easyconduite.model.AbstractMedia;
+import easyconduite.model.MediaPlayable;
 
-import java.util.*;
+import java.util.Objects;
+import java.util.SortedMap;
+import java.util.TreeSet;
 
 /**
  * this class implements track trigger features.
@@ -47,13 +49,14 @@ public class Trigger implements Comparable {
 
     public void playActions() {
         mediaActions.forEach((mediaAction) -> {
-            mediaAction.switchToStatut();
+            mediaAction.playStatut();
         });
     }
 
-    public void addNewMediaAction(AbstractMedia media){
-        MediaAction action = new MediaAction(this,media, MediaStatus.UNKNOWN);
+    public MediaAction createMediaAction(MediaPlayable media){
+        final MediaAction action = new MediaAction(this,media, MediaStatus.UNKNOWN);
         mediaActions.add(action);
+        return action;
     }
 
     @Override
@@ -76,6 +79,14 @@ public class Trigger implements Comparable {
     @Override
     public int hashCode() {
         return Objects.hash(index, mediaActions);
+    }
+
+    @Override
+    public String toString() {
+        return "Trigger{" +
+                "index=" + index +
+                ", mediaActions=" + mediaActions +
+                '}';
     }
 
     public int getIndex() {

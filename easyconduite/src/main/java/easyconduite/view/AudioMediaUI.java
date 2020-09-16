@@ -17,16 +17,11 @@
 package easyconduite.view;
 
 import com.jfoenix.controls.JFXSlider;
-import easyconduite.controllers.MainController;
-import easyconduite.exception.EasyconduiteException;
 import easyconduite.media.AudioMedia;
 import easyconduite.model.AbstractMedia;
 import easyconduite.model.AbstractUIMedia;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.control.Slider;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
@@ -122,6 +117,7 @@ public class AudioMediaUI extends AbstractUIMedia {
 
         protected JFXVolumeSlider() {
             super(0, 100, audioMedia.getVolume() * 100);
+            LOG.trace("volume {}",JFXVolumeSlider.this.valueProperty());
             final DoubleProperty volumeProperty = JFXVolumeSlider.this.valueProperty();
             final DoubleProperty volumePlayer = audioMedia.getPlayer().volumeProperty();
 
@@ -140,6 +136,7 @@ public class AudioMediaUI extends AbstractUIMedia {
                 if (!changing) {
                     try {
                         changing = true;
+                        LOG.trace("volume {}",JFXVolumeSlider.this.valueProperty());
                         volumePlayer.set(newvalue.doubleValue()/100);
                         audioMedia.setVolume(volumeProperty.getValue() / 100);
                     } finally {

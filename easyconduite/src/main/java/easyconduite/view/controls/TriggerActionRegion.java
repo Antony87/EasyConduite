@@ -20,8 +20,9 @@
 
 package easyconduite.view.controls;
 
+import easyconduite.conduite.MediaAction;
 import easyconduite.conduite.Trigger;
-import easyconduite.model.AbstractMedia;
+import easyconduite.model.MediaPlayable;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.layout.GridPane;
@@ -35,17 +36,36 @@ public class TriggerActionRegion extends Region {
 
     private final Trigger trigger;
 
-    private final AbstractMedia media;
+    private final MediaPlayable media;
 
-    public TriggerActionRegion(Trigger trigger, AbstractMedia media, Integer rowIndex, Integer colIndex, GridPane gridToAdd) {
+    public TriggerActionRegion(Trigger trigger, MediaPlayable media, Integer rowIndex, Integer colIndex, GridPane gridToAdd) {
         super();
         this.trigger = trigger;
         this.media = media;
-        this.trigger.addNewMediaAction(media);
         this.getStyleClass().add("conduiteRegion");
         colIndexProperty().setValue(colIndex);
         rowIndexProperty().setValue(rowIndex);
         gridToAdd.add(this,getColIndex(),getRowIndex());
+
+        this.setOnMouseClicked(event -> {
+            final MediaAction action = getTrigger().getMediaActions().stream().filter(
+                    mediaAction -> mediaAction.getMedia().equals(getMedia())).findFirst().get();
+            action.switchStatus();
+            this.getStyleClass().removeAll("playbutton","pausebutton","stopbutton");
+            switch (action.getStatusAction()){
+                case STOPPED:
+                    this.getStyleClass().add("stopbutton");
+                    break;
+                case PLAYING:
+                    this.getStyleClass().add("playbutton");
+                    break;
+                case PAUSED:
+                    this.getStyleClass().add("pausebutton");
+            }
+            System.out.println(action.getStatusAction());
+            System.out.println("media : " + getMedia().getName());
+        });
+
     }
 
     public int getColIndex() {
@@ -76,7 +96,7 @@ public class TriggerActionRegion extends Region {
         return trigger;
     }
 
-    public AbstractMedia getMedia() {
+    public MediaPlayable getMedia() {
         return media;
     }
 }

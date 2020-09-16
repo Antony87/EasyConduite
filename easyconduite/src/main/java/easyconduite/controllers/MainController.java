@@ -149,9 +149,7 @@ public class MainController extends BaseController {
                 ActionDialog.showError(resourceBundle.getString("dialog.error.header"), resourceBundle.getString("easyconduitecontroler.open.error"));
                 LOG.error("Error occured during player initialize at media {}", media);
             }
-            //final UIMediaPlayable mediaUI = MediaUIFactory.createMediaUI(media);
             //TODO ajouter le média en fonction de l'id dans la table.
-                //mediaUIList.add(mediaUI);
             addMediaToTracks(media);
         }
         context.setNeedToSave(false);
@@ -387,30 +385,10 @@ public class MainController extends BaseController {
             });
         }
 
-//        mediaUIList.addListener((ListChangeListener<UIMediaPlayable>) change -> {
-//            while (change.next()) {
-//                if (change.wasAdded()) {
-//                    List<AbstractUIMedia> list = (List<AbstractUIMedia>) change.getAddedSubList();
-//                    list.forEach(abstractUIMedia -> {
-//                            tableLayout.getChildren().add(abstractUIMedia);
-//                            LOG.trace("MediaUI added to mediaUIList : {}", change.getAddedSubList());
-//                            project.getAbstractMediaList().add(abstractUIMedia.getMediaPlayable());
-//                    });
-//                }
-//                if (change.wasRemoved()) {
-//                    tableLayout.getChildren().removeAll(change.getRemoved());
-//                    LOG.trace("MediaUI removed from mediaUIList : {}", Arrays.toString(change.getRemoved().toArray()));
-//                }
-//            }
-//            context.setNeedToSave(true);
-//        });
-
         // initialisation du spinner pour l'infoPane
         waitSpinner = new JFXSpinner();
         waitSpinner.layoutXProperty().bind(infoPane.widthProperty().subtract(waitSpinner.widthProperty()).divide(2));
         waitSpinner.layoutYProperty().bind(infoPane.heightProperty().subtract(waitSpinner.heightProperty()).divide(2));
-
-        conduiteController.setMainController(this);
     }
 
     public UIMediaPlayable addMediaToTracks(MediaPlayable media){
@@ -418,6 +396,7 @@ public class MainController extends BaseController {
         final UIMediaPlayable mediaUI = MediaUIFactory.createMediaUI(media);
         mediaUIList.add(mediaUI);
         if(mediaUIList.contains(mediaUI)) tableLayout.getChildren().add((AbstractUIMedia)mediaUI);
+        conduiteController.addMedia(media);
         return mediaUI;
     }
 

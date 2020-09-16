@@ -85,6 +85,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
      -fx-pref-height: 4px;
 }
 
+.jfx-button {
+    -fx-background-color: -blue-grey-600;
+    -fx-min-height: 26;
+    -fx-max-height: 26;
+    -fx-min-width: 80;
+    -fx-max-width: 80;
+    -fx-font-size: 12;
+    -fx-text-fill: -orange-300;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center 50%;
+}
+
+.cueBackward {
+    -fx-background-image: url('../icons/return.png');
+}
+
+.cueRewind {
+    -fx-background-image: url('../icons/rewind.png');
+}
+
+.cueForward {
+    -fx-background-image: url('../icons/next.png');
+}
+
+
 .jfx-slider > .thumb {
      -fx-background-color: #d32f2f;
 }
@@ -170,9 +195,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-background-image: url('../icons/pause.png');
 }
 
+.pausebutton{
+    -fx-background-image: url('../icons/pause.png');
+        -fx-background-position : center;
+        -fx-background-repeat: no-repeat;
+}
+
 .stopbutton{
     -fx-background-image: url('../icons/stop.png');
     -fx-background-repeat: no-repeat;
+    -fx-background-position : center;
 }
 
 .playbutton:hover,.stopbutton:hover{
