@@ -20,10 +20,14 @@
 
 package easyconduite.conduite;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import easyconduite.media.MediaStatus;
 import easyconduite.model.MediaPlayable;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeSet;
 
@@ -35,6 +39,9 @@ public class Trigger implements Comparable {
     private int index;
 
     private final TreeSet<MediaAction> mediaActions;
+
+    @JsonIgnore
+    private BooleanProperty actif = new SimpleBooleanProperty(false);
 
     public Trigger(Conduite conduite) {
         final SortedMap<Integer,Trigger> triggers = conduite.getTriggers();
@@ -50,6 +57,7 @@ public class Trigger implements Comparable {
     public void playActions() {
         mediaActions.forEach((mediaAction) -> {
             mediaAction.playStatut();
+            setActif(true);
         });
     }
 
@@ -57,6 +65,13 @@ public class Trigger implements Comparable {
         final MediaAction action = new MediaAction(this,media, MediaStatus.UNKNOWN);
         mediaActions.add(action);
         return action;
+    }
+
+    public MediaAction findActionFromMedia(MediaPlayable media){
+        final Optional<MediaAction> mediaOptionnal = mediaActions.stream().
+                filter(mediaAction -> mediaAction.getMedia().equals(media))
+                .findFirst();
+        return mediaOptionnal.orElse(null);
     }
 
     @Override
@@ -99,5 +114,17 @@ public class Trigger implements Comparable {
 
     public TreeSet<MediaAction> getMediaActions() {
         return mediaActions;
+    }
+
+    public boolean isActif() {
+        return actif.get();
+    }
+
+    public BooleanProperty actifProperty() {
+        return actif;
+    }
+
+    public void setActif(boolean actif) {
+        this.actif.set(actif);
     }
 }

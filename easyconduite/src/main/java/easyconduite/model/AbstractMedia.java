@@ -1,5 +1,7 @@
 package easyconduite.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -8,6 +10,8 @@ import easyconduite.media.AudioMedia;
 import easyconduite.media.RemoteMedia;
 import easyconduite.tools.jackson.DurationDeserializer;
 import easyconduite.tools.jackson.DurationSerializer;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.input.KeyCode;
 import javafx.util.Duration;
 
@@ -27,7 +31,9 @@ import java.util.UUID;
 })
 public abstract class AbstractMedia implements MediaPlayable {
 
-    private String name;
+//    @JsonDeserialize(using = NamePropertyDeserialize.class)
+//    @JsonSerialize(using = StringPropertySerializer.class)
+    private StringProperty name = new SimpleStringProperty();
 
     @JsonSerialize(using = DurationSerializer.class)
     @JsonDeserialize(using = DurationDeserializer.class)
@@ -41,19 +47,19 @@ public abstract class AbstractMedia implements MediaPlayable {
 
     private boolean loppable = false;
 
-//    public AbstractMedia() {
-//    }
-
-    /**
-     * @return Nom du EasyMédia.
-     */
     @Override
+    @JsonProperty("mediaName")
     public String getName() {
+        return name.get();
+    }
+
+    public StringProperty nameProperty() {
         return name;
     }
 
+    @JsonSetter("mediaName")
     public void setName(String name) {
-        this.name = name;
+        this.name.set(name);
     }
 
     /**
@@ -121,13 +127,13 @@ public abstract class AbstractMedia implements MediaPlayable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, duration, uniqueId, indexInTable, keycode, loppable);
+        return Objects.hash(getName(), duration, uniqueId, indexInTable, keycode, loppable);
     }
 
     @Override
     public String toString() {
         return "AbstractMedia{" +
-                "name='" + name + '\'' +
+                "name='" + getName() + '\'' +
                 ", duration=" + duration +
                 ", uniqueId=" + uniqueId +
                 ", indexInTable=" + indexInTable +

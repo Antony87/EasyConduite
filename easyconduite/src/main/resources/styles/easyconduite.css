@@ -93,3 +93,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-alignment:CENTER;
 }
 
+.labelHeadTrigger:playing{
+    -fx-background-color :  -blue-grey-600;
+}
+
+
+.jfx-button {
+    -fx-background-color: -blue-grey-600;
+    -fx-min-height: 26;
+    -fx-max-height: 26;
+    -fx-min-width: 80;
+    -fx-max-width: 80;
+    -fx-font-size: 12;
+    -fx-text-fill: -orange-300;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center 50%;
+}
+
+.cueBackward {
+    -fx-background-image: url('../icons/return.png');
+}
+
+.cueRewind {
+    -fx-background-image: url('../icons/rewind.png');
+}
+
+.cueForward {
+    -fx-background-image: url('../icons/next.png');
+}
+

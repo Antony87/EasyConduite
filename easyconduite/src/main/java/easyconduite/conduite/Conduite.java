@@ -1,6 +1,8 @@
 package easyconduite.conduite;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,12 +39,17 @@ public class Conduite {
         }else{
             seekIndex=1;
         }
+        inactiveAllTriggers();
         currentTrigger=triggers.get(seekIndex);
         currentTrigger.playActions();
     }
 
     public void firePreviousTrigger(){
 
+    }
+
+    private void inactiveAllTriggers(){
+        triggers.forEach((integer, trigger) -> trigger.setActif(false));
     }
 
     public SortedMap<Integer,Trigger> getTriggers() {

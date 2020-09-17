@@ -95,6 +95,7 @@ public abstract class AbstractUIMedia extends VBox implements UIMediaPlayable {
         });
 
         nameLabel.setMouseTransparent(true);
+        nameLabel.textProperty().bind(media.nameProperty());
 
         // Construction de la partie contextuelle, centrale de l'UI.
         // sans le slider de volume qui est spécifique.
@@ -136,7 +137,7 @@ public abstract class AbstractUIMedia extends VBox implements UIMediaPlayable {
 
     @Override
     public void actualizeUI() {
-        nameLabel.setText(abstractMedia.getName());
+        //nameLabel.setText(abstractMedia.getName());
         timeLabel.setText(formatTime(abstractMedia.getDuration()));
         keycodeLabel.setText(KeyCodeHelper.toString(this.abstractMedia.getKeycode()));
         repeatRegion.getStyleClass().remove(REPEAT_CSS);
@@ -163,6 +164,9 @@ public abstract class AbstractUIMedia extends VBox implements UIMediaPlayable {
         return null;
     }
 
+    public Label getNameLabel() {
+        return nameLabel;
+    }
 
     @Override
     public boolean isSelected() {

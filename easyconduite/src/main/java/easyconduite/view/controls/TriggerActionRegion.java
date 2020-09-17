@@ -30,13 +30,10 @@ import javafx.scene.layout.Region;
 
 public class TriggerActionRegion extends Region {
 
-    private IntegerProperty colIndex = new SimpleIntegerProperty();
-
-    private IntegerProperty rowIndex = new SimpleIntegerProperty();
-
     private final Trigger trigger;
-
     private final MediaPlayable media;
+    private IntegerProperty colIndex = new SimpleIntegerProperty();
+    private IntegerProperty rowIndex = new SimpleIntegerProperty();
 
     public TriggerActionRegion(Trigger trigger, MediaPlayable media, Integer rowIndex, Integer colIndex, GridPane gridToAdd) {
         super();
@@ -45,14 +42,13 @@ public class TriggerActionRegion extends Region {
         this.getStyleClass().add("conduiteRegion");
         colIndexProperty().setValue(colIndex);
         rowIndexProperty().setValue(rowIndex);
-        gridToAdd.add(this,getColIndex(),getRowIndex());
+        gridToAdd.add(this, getColIndex(), getRowIndex());
 
         this.setOnMouseClicked(event -> {
-            final MediaAction action = getTrigger().getMediaActions().stream().filter(
-                    mediaAction -> mediaAction.getMedia().equals(getMedia())).findFirst().get();
+            final MediaAction action = getTrigger().findActionFromMedia(media);
             action.switchStatus();
-            this.getStyleClass().removeAll("playbutton","pausebutton","stopbutton");
-            switch (action.getStatusAction()){
+            this.getStyleClass().removeAll("playbutton", "pausebutton", "stopbutton");
+            switch (action.getStatusAction()) {
                 case STOPPED:
                     this.getStyleClass().add("stopbutton");
                     break;
@@ -62,8 +58,6 @@ public class TriggerActionRegion extends Region {
                 case PAUSED:
                     this.getStyleClass().add("pausebutton");
             }
-            System.out.println(action.getStatusAction());
-            System.out.println("media : " + getMedia().getName());
         });
 
     }
@@ -72,24 +66,24 @@ public class TriggerActionRegion extends Region {
         return colIndex.get();
     }
 
-    public IntegerProperty colIndexProperty() {
-        return colIndex;
-    }
-
     public void setColIndex(int colIndex) {
         this.colIndex.set(colIndex);
+    }
+
+    public IntegerProperty colIndexProperty() {
+        return colIndex;
     }
 
     public int getRowIndex() {
         return rowIndex.get();
     }
 
-    public IntegerProperty rowIndexProperty() {
-        return rowIndex;
-    }
-
     public void setRowIndex(int rowIndex) {
         this.rowIndex.set(rowIndex);
+    }
+
+    public IntegerProperty rowIndexProperty() {
+        return rowIndex;
     }
 
     public Trigger getTrigger() {

@@ -21,7 +21,10 @@ import easyconduite.EasyConduiteProperties;
 import easyconduite.Easyconduite;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.media.MediaFactory;
-import easyconduite.model.*;
+import easyconduite.model.AbstractUIMedia;
+import easyconduite.model.BaseController;
+import easyconduite.model.MediaPlayable;
+import easyconduite.model.UIMediaPlayable;
 import easyconduite.project.MediaProject;
 import easyconduite.project.ProjectContext;
 import easyconduite.util.EasyConduitePropertiesHandler;
@@ -107,16 +110,18 @@ public class MainController extends BaseController {
     private BorderPane conduite;
 
     private JFXSpinner waitSpinner;
+    @FXML
+    private Menu menuOpenRecent;
+
+    /* ============================================================================
+    Menu File statements.
+     ==============================================================================*/
 
     public MainController() throws EasyconduiteException {
         LOG.debug("EasyConduite MainController is instantiated");
         project = new MediaProject();
         appProperties = EasyConduitePropertiesHandler.getInstance().getApplicationProperties();
     }
-
-    /* ============================================================================
-    Menu File statements.
-     ==============================================================================*/
 
     @FXML
     private void menuFileOpen(ActionEvent event) {
@@ -154,9 +159,6 @@ public class MainController extends BaseController {
         }
         context.setNeedToSave(false);
     }
-
-    @FXML
-    private Menu menuOpenRecent;
 
     @FXML
     private void menuFileSaveProject(ActionEvent event) {
@@ -277,11 +279,13 @@ public class MainController extends BaseController {
     }
 
     public void editTrack(UIMediaPlayable mediaUi) {
-        LOG.trace("Edit media with UIMediaPlayable {}",mediaUi);
+        LOG.trace("Edit media with UIMediaPlayable {}", mediaUi);
         mediaUi.stop();
         try {
-            if(mediaUi instanceof AudioMediaUI) new TrackConfigDialog().withAudioMedia((AudioMediaUI) mediaUi).build();
-            if(mediaUi instanceof RemoteMediaUI) new TrackConfigDialog().withRemoteMedia((RemoteMediaUI) mediaUi).build();
+            if (mediaUi instanceof AudioMediaUI)
+                new TrackConfigDialog().withAudioMedia((AudioMediaUI) mediaUi).build();
+            if (mediaUi instanceof RemoteMediaUI)
+                new TrackConfigDialog().withRemoteMedia((RemoteMediaUI) mediaUi).build();
         } catch (EasyconduiteException e) {
             e.printStackTrace();
         }
@@ -308,7 +312,7 @@ public class MainController extends BaseController {
     }
 
     protected boolean isProjectErasable() {
-        if(!context.isNeedToSave()) return true;
+        if (!context.isNeedToSave()) return true;
         Optional<ButtonType> result = ActionDialog.showConfirmation(resourceBundle.getString("dialog.warning.clear.header"), resourceBundle.getString("dialog.warning.clear.content"));
         if (result.isPresent()) {
             ButtonType response = result.get();
@@ -316,6 +320,21 @@ public class MainController extends BaseController {
             return response == ButtonType.YES || response == ButtonType.OK;
         }
         return false;
+    }
+
+    @FXML
+    private void menuCueAddTrigger(ActionEvent event) {
+        conduiteController.addTriggerAction(event);
+    }
+
+    @FXML
+    private void menuCueNextTrigger(ActionEvent event) {
+        conduiteController.fireNextTriggerAction(event);
+    }
+
+    @FXML
+    private void menuCuePreviousTrigger(ActionEvent event) {
+        conduiteController.firePreviousTriggerAction(event);
     }
 
     @FXML
@@ -370,6 +389,7 @@ public class MainController extends BaseController {
         super.initialize(url, rb);
         LOG.debug("EasyConduite MainController is initialized");
 
+
         if (appProperties.getLastFileProject() != null) {
             MenuItem recentFileMenuItem = new MenuItem(appProperties.getLastFileProject().toString());
             menuOpenRecent.getItems().add(recentFileMenuItem);
@@ -391,17 +411,26 @@ public class MainController extends BaseController {
         waitSpinner.layoutYProperty().bind(infoPane.heightProperty().subtract(waitSpinner.heightProperty()).divide(2));
     }
 
-    public UIMediaPlayable addMediaToTracks(MediaPlayable media){
+    public UIMediaPlayable addMediaToTracks(MediaPlayable media) {
         LOG.trace("Media added to Project : {}", media);
         final UIMediaPlayable mediaUI = MediaUIFactory.createMediaUI(media);
         mediaUIList.add(mediaUI);
-        if(mediaUIList.contains(mediaUI)) tableLayout.getChildren().add((AbstractUIMedia)mediaUI);
+        if (mediaUIList.contains(mediaUI)) tableLayout.getChildren().add((AbstractUIMedia) mediaUI);
         conduiteController.addMedia(media);
         return mediaUI;
     }
 
-    private void removeMediaFromTracks(MediaPlayable media){
+    public UIMediaPlayable findUIfromMedia(MediaPlayable media) {
+        for (UIMediaPlayable uiMedia : mediaUIList) {
+            final MediaPlayable mediaPlayable = uiMedia.getMediaPlayable();
+            if (mediaPlayable.equals(media)) {
+                return uiMedia;
+            }
+        }
+        return null;
+    }
 
+    private void removeMediaFromTracks(MediaPlayable media) {
     }
 
     public MediaProject getProject() {
@@ -412,7 +441,7 @@ public class MainController extends BaseController {
         return tableLayout;
     }
 
-    public List<UIMediaPlayable> getMediaUIList() {
+    public ObservableList<UIMediaPlayable> getMediaUIList() {
         return mediaUIList;
     }
 }

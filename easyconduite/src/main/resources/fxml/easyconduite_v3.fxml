@@ -78,11 +78,21 @@
                         </Menu>
                         <Menu mnemonicParsing="false" text="%menu.cue.title">
                             <items>
-                                <MenuItem disable="true" mnemonicParsing="false" text="RAZ Timer">
-                                    <accelerator>
-                                        <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
-                                    </accelerator>
+                                <MenuItem mnemonicParsing="false" onAction="#menuCueAddTrigger" text="%menu.cue.addtrigger">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="T" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                           </accelerator>
                                 </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#menuCueNextTrigger" text="%menu.cue.nexttrigger">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="NUMPAD6" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#menuCuePreviousTrigger" text="%menu.cue.previoustrigger">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="NUMPAD4" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="%menu.help.title">
