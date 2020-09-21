@@ -25,6 +25,7 @@ import easyconduite.conduite.Trigger;
 import easyconduite.model.AbstractMedia;
 import easyconduite.model.BaseController;
 import easyconduite.model.MediaPlayable;
+import easyconduite.project.ProjectContext;
 import easyconduite.view.commons.PlayingPseudoClass;
 import easyconduite.view.controls.TriggerActionRegion;
 import javafx.beans.property.BooleanProperty;
@@ -76,17 +77,19 @@ public class ConduiteController extends BaseController {
 
     @FXML
     public void fireRewindTriggerAction(ActionEvent event){
-
+        ProjectContext.getContext().getMainControler().handleStopAll(event);
+        conduite.fireRewindTrigger();
+        event.consume();
     }
 
     @FXML
     public void addTriggerAction(ActionEvent event) {
         if (!tracksMap.isEmpty()) {
             final Trigger trigger = conduite.createTrigger();
-            int index = trigger.getIndex();
+            int index = conduite.getTriggers().lastKey();
             final Label titleTrigger = new Label("" + index);
 
-            titleTrigger.setOnMouseClicked(event1 -> trigger.playActions());
+            titleTrigger.setOnMouseClicked(event1 -> trigger.runActions());
 
             final BooleanProperty playingClass = new PlayingPseudoClass(titleTrigger);
             trigger.actifProperty().addListener((observable, oldValue, newValue) -> {
@@ -112,8 +115,10 @@ public class ConduiteController extends BaseController {
 
         int nbrRows = grid.getRowCount();
         conduite.getTriggers().forEach((index, trigger) -> {
-            trigger.createMediaAction(media);
-            addTriggerActionRegion(trigger, media, nbrRows, index);
+            if(trigger!=null){
+                trigger.createMediaAction(media);
+                addTriggerActionRegion(trigger, media, nbrRows, index);
+            }
         });
 
         grid.add(titleMedia, 0, nbrRows);

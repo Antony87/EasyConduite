@@ -46,7 +46,7 @@ public class TriggerActionRegion extends Region {
 
         this.setOnMouseClicked(event -> {
             final MediaAction action = getTrigger().findActionFromMedia(media);
-            action.switchStatus();
+            action.nextStatus();
             this.getStyleClass().removeAll("playbutton", "pausebutton", "stopbutton");
             switch (action.getStatusAction()) {
                 case STOPPED:

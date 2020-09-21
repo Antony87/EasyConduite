@@ -20,49 +20,39 @@
 
 package easyconduite.conduite;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import easyconduite.media.MediaStatus;
+import easyconduite.model.AbstractMedia;
 import easyconduite.model.MediaPlayable;
 
-import java.util.Objects;
-import java.util.TreeSet;
+public class MediaAction {
 
-public class MediaAction implements Comparable {
+    private Long uniqueId;
 
-    private final int index;
-
+    @JsonIgnore
     private final MediaPlayable media;
 
-    private MediaStatus statusAction;
+    @JsonIgnore
+    private final MediaStatus[] statusPossibles = {MediaStatus.UNKNOWN, MediaStatus.PLAYING, MediaStatus.PAUSED, MediaStatus.STOPPED};
 
-    public MediaAction(Trigger trigger, MediaPlayable media, MediaStatus status) {
+    private int indexOfStatus;
+
+    private MediaStatus statusAction = MediaStatus.UNKNOWN;
+
+    public MediaAction(MediaPlayable media) {
         this.media = media;
-        this.statusAction = status;
-        TreeSet<MediaAction> actions = trigger.getMediaActions();
-        if(actions.isEmpty()){
-            index =1;
-        }else{
-            final Integer last = actions.last().getIndex();
-            index = last+1;
-        }
+        uniqueId = ((AbstractMedia)this.media).getUniqueId();
+        indexOfStatus = 0;
     }
 
-    public MediaStatus switchStatus(){
-        switch (statusAction) {
-            case STOPPED:
-                setStatusAction(MediaStatus.PLAYING);
-                break;
-            case UNKNOWN:
-            case PLAYING:
-                setStatusAction(MediaStatus.PAUSED);
-                break;
-            case PAUSED:
-                setStatusAction(MediaStatus.STOPPED);
-                break;
-        }
+    public MediaStatus nextStatus() {
+        indexOfStatus++;
+        if (indexOfStatus > 3) indexOfStatus = 0;
+        setStatusAction(statusPossibles[indexOfStatus]);
         return statusAction;
     }
 
-    public void playStatut() {
+    public void runStatut() {
         switch (statusAction) {
             case STOPPED:
                 media.stop();
@@ -72,6 +62,8 @@ public class MediaAction implements Comparable {
                 break;
             case PAUSED:
                 media.pause();
+                break;
+            default:
                 break;
         }
     }
@@ -88,30 +80,4 @@ public class MediaAction implements Comparable {
         this.statusAction = statusAction;
     }
 
-    public Integer getIndex() {
-        return index;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof MediaAction)) return false;
-        MediaAction that = (MediaAction) o;
-        return index == that.index &&
-                media.equals(that.media) &&
-                statusAction == that.statusAction;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(index, media, statusAction);
-    }
-
-    @Override
-    public int compareTo(Object o) {
-        MediaAction action = (MediaAction) o;
-        if (index == action.index) return 0;
-        if (index > action.index) return 1;
-        return -1;
-    }
 }

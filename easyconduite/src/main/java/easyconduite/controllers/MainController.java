@@ -369,7 +369,7 @@ public class MainController extends BaseController {
     }
 
     @FXML
-    private void handleStopAll(ActionEvent event) {
+    public void handleStopAll(ActionEvent event) {
         this.getMediaUIList().forEach(mediaUI -> mediaUI.getMediaPlayable().stop());
         event.consume();
     }

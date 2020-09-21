@@ -21,48 +21,36 @@
 package easyconduite.conduite;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import easyconduite.media.MediaStatus;
 import easyconduite.model.MediaPlayable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
-import java.util.Objects;
+import java.util.HashSet;
 import java.util.Optional;
-import java.util.SortedMap;
-import java.util.TreeSet;
 
 /**
  * this class implements track trigger features.
  */
-public class Trigger implements Comparable {
+public class Trigger {
 
-    private int index;
-
-    private final TreeSet<MediaAction> mediaActions;
+    private final HashSet<MediaAction> mediaActions;
 
     @JsonIgnore
-    private BooleanProperty actif = new SimpleBooleanProperty(false);
+    private final BooleanProperty actif = new SimpleBooleanProperty(false);
 
-    public Trigger(Conduite conduite) {
-        final SortedMap<Integer,Trigger> triggers = conduite.getTriggers();
-        if(triggers.isEmpty()){
-            index =1;
-        }else{
-            final Integer last = triggers.lastKey();
-            index = last+1;
-        }
-        mediaActions = new TreeSet<>();
+    public Trigger() {
+        mediaActions = new HashSet<>();
     }
 
-    public void playActions() {
+    public void runActions() {
         mediaActions.forEach((mediaAction) -> {
-            mediaAction.playStatut();
+            mediaAction.runStatut();
             setActif(true);
         });
     }
 
     public MediaAction createMediaAction(MediaPlayable media){
-        final MediaAction action = new MediaAction(this,media, MediaStatus.UNKNOWN);
+        final MediaAction action = new MediaAction(media);
         mediaActions.add(action);
         return action;
     }
@@ -75,44 +63,14 @@ public class Trigger implements Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
-        Trigger trigger = (Trigger) o;
-        if (index == trigger.index) return 0;
-        if (index > trigger.index) return 1;
-        return -1;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Trigger)) return false;
-        Trigger trigger = (Trigger) o;
-        return index == trigger.index &&
-                Objects.equals(mediaActions, trigger.mediaActions);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(index, mediaActions);
-    }
-
-    @Override
     public String toString() {
         return "Trigger{" +
-                "index=" + index +
-                ", mediaActions=" + mediaActions +
+                "mediaActions=" + mediaActions +
+                ", actif=" + actif +
                 '}';
     }
 
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    public TreeSet<MediaAction> getMediaActions() {
+    public HashSet<MediaAction> getMediaActions() {
         return mediaActions;
     }
 
