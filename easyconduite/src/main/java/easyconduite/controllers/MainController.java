@@ -21,10 +21,7 @@ import easyconduite.EasyConduiteProperties;
 import easyconduite.Easyconduite;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.media.MediaFactory;
-import easyconduite.model.AbstractUIMedia;
-import easyconduite.model.BaseController;
-import easyconduite.model.MediaPlayable;
-import easyconduite.model.UIMediaPlayable;
+import easyconduite.model.*;
 import easyconduite.project.MediaProject;
 import easyconduite.project.ProjectContext;
 import easyconduite.util.EasyConduitePropertiesHandler;
@@ -146,6 +143,7 @@ public class MainController extends BaseController {
 
     private void openProject(File file) throws IOException {
         project = PersistenceHelper.openFromJson(file, MediaProject.class);
+        conduiteController.setConduite(project.getConduite());
         final List<MediaPlayable> mediaList = project.getMediaPlayables();
         for (MediaPlayable media : mediaList) {
             try {
@@ -157,6 +155,7 @@ public class MainController extends BaseController {
             //TODO ajouter le média en fonction de l'id dans la table.
             addMediaToTracks(media);
         }
+        conduiteController.updateConduiteUI(project.getConduite());
         context.setNeedToSave(false);
     }
 
@@ -239,15 +238,13 @@ public class MainController extends BaseController {
                     final MediaPlayable media = MediaFactory.createPlayableMedia(file);
                     LOG.trace("Create media from file {} : {}", file, media);
                     try {
+                        assert media != null;
                         media.initPlayer();
-
                     } catch (EasyconduiteException e) {
                         ActionDialog.showException(resourceBundle.getString(DIALOG_EXCEPTION_HEADER), resourceBundle.getString("easyconduitecontroler.import.error"), e);
                     }
                     addMediaToTracks(media);
                     project.getMediaPlayables().add(media);
-                    //final UIMediaPlayable mediaUI = MediaUIFactory.createMediaUI(media);
-                    //mediaUIList.add(mediaUI);
                 });
                 context.setNeedToSave(true);
             }
@@ -409,14 +406,17 @@ public class MainController extends BaseController {
         waitSpinner = new JFXSpinner();
         waitSpinner.layoutXProperty().bind(infoPane.widthProperty().subtract(waitSpinner.widthProperty()).divide(2));
         waitSpinner.layoutYProperty().bind(infoPane.heightProperty().subtract(waitSpinner.heightProperty()).divide(2));
+
+        // injection de la conduite dans le ConduiteController
+        conduiteController.setConduite(getProject().getConduite());
     }
 
     public UIMediaPlayable addMediaToTracks(MediaPlayable media) {
         LOG.trace("Media added to Project : {}", media);
         final UIMediaPlayable mediaUI = MediaUIFactory.createMediaUI(media);
         mediaUIList.add(mediaUI);
-        if (mediaUIList.contains(mediaUI)) tableLayout.getChildren().add((AbstractUIMedia) mediaUI);
         conduiteController.addMedia(media);
+        if (mediaUIList.contains(mediaUI)) tableLayout.getChildren().add((AbstractUIMedia) mediaUI);
         return mediaUI;
     }
 

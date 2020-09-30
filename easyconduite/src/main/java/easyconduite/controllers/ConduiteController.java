@@ -21,6 +21,7 @@
 package easyconduite.controllers;
 
 import easyconduite.conduite.Conduite;
+import easyconduite.conduite.MediaAction;
 import easyconduite.conduite.Trigger;
 import easyconduite.model.AbstractMedia;
 import easyconduite.model.BaseController;
@@ -46,8 +47,9 @@ import java.util.TreeMap;
 public class ConduiteController extends BaseController {
 
     private static final Logger LOG = LogManager.getLogger(ConduiteController.class);
+
     private final GridPane grid;
-    private final Conduite conduite;
+
     /**
      * grid row of the media
      */
@@ -55,28 +57,29 @@ public class ConduiteController extends BaseController {
     @FXML
     private BorderPane cueBorderPane;
 
+    private Conduite conduite;
+
     public ConduiteController() {
         LOG.debug("EasyConduite ConduiteController is instantiated");
-        conduite = new Conduite();
         grid = new GridPane();
         grid.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
         tracksMap = new TreeMap<>();
     }
 
     @FXML
-    public void fireNextTriggerAction(ActionEvent event){
+    public void fireNextTriggerAction(ActionEvent event) {
         conduite.fireNextTrigger();
         event.consume();
     }
 
     @FXML
-    public void firePreviousTriggerAction(ActionEvent event){
+    public void firePreviousTriggerAction(ActionEvent event) {
         conduite.firePreviousTrigger();
         event.consume();
     }
 
     @FXML
-    public void fireRewindTriggerAction(ActionEvent event){
+    public void fireRewindTriggerAction(ActionEvent event) {
         ProjectContext.getContext().getMainControler().handleStopAll(event);
         conduite.fireRewindTrigger();
         event.consume();
@@ -86,24 +89,25 @@ public class ConduiteController extends BaseController {
     public void addTriggerAction(ActionEvent event) {
         if (!tracksMap.isEmpty()) {
             final Trigger trigger = conduite.createTrigger();
-            int index = conduite.getTriggers().lastKey();
-            final Label titleTrigger = new Label("" + index);
-
-            titleTrigger.setOnMouseClicked(event1 -> trigger.runActions());
-
-            final BooleanProperty playingClass = new PlayingPseudoClass(titleTrigger);
-            trigger.actifProperty().addListener((observable, oldValue, newValue) -> {
-                playingClass.setValue(newValue);
-            });
-
-            titleTrigger.getStyleClass().add("labelHeadTrigger");
-            grid.add(titleTrigger, index, 0);
+            int columnIndex = conduite.getListeTriggers().getLast().getIndex();
+            addTriggerLabel(trigger, columnIndex);
             tracksMap.forEach((row, media) -> {
-                trigger.createMediaAction(media);
-                addTriggerActionRegion(trigger, media, row, index);
+                final MediaAction action = trigger.getActionFromMedia(media);
+                final Region actionRegion = new TriggerActionRegion(trigger, action, row, columnIndex);
+                grid.add(actionRegion, columnIndex, row);
             });
         }
         event.consume();
+    }
+
+    private void addTriggerLabel(Trigger trigger, int index) {
+        final Label titleTrigger = new Label("" + index);
+        final BooleanProperty playingClass = new PlayingPseudoClass(titleTrigger);
+        trigger.actifProperty().addListener((observable, oldValue, newValue) -> {
+            playingClass.setValue(newValue);
+        });
+        titleTrigger.getStyleClass().add("labelHeadTrigger");
+        grid.add(titleTrigger, index, 0);
     }
 
     public void addMedia(MediaPlayable media) {
@@ -113,31 +117,36 @@ public class ConduiteController extends BaseController {
         titleMedia.textProperty().bind(abstractMedia.nameProperty());
         titleMedia.getStyleClass().add("labelConduite");
 
-        int nbrRows = grid.getRowCount();
-        conduite.getTriggers().forEach((index, trigger) -> {
-            if(trigger!=null){
-                trigger.createMediaAction(media);
-                addTriggerActionRegion(trigger, media, nbrRows, index);
+        int lastRow = grid.getRowCount();
+        conduite.getListeTriggers().forEach(trigger -> {
+            if (trigger != null) {
+                int indexColumn = trigger.getIndex();
+                MediaAction action = trigger.getActionFromMedia(media);
+                final Region actionRegion = new TriggerActionRegion(trigger, action, lastRow, indexColumn);
+                grid.add(actionRegion, indexColumn, lastRow);
             }
         });
+        grid.add(titleMedia, 0, lastRow);
+        tracksMap.put(lastRow, media);
 
-        grid.add(titleMedia, 0, nbrRows);
-        tracksMap.put(nbrRows, media);
     }
 
-    private void addTriggerActionRegion(Trigger trigger, MediaPlayable media, int row, int column) {
-        final TriggerActionRegion regionTrigger = new TriggerActionRegion(trigger, media, row, column, grid);
-        LOG.debug("region added at row: {} column: {}", regionTrigger.getRowIndex(), regionTrigger.getColIndex());
+    public void updateConduiteUI(Conduite conduite){
+        conduite.getListeTriggers().forEach(trigger -> {
+            addTriggerLabel(trigger, trigger.getIndex());
+        });
+    }
+
+    public void setConduite(Conduite conduite) {
+        this.conduite = conduite;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
         cueBorderPane.setCenter(grid);
-
         final Label titleColonne = new Label(" Triggers : ");
         titleColonne.getStyleClass().add("jfx-button");
         grid.add(titleColonne, 0, 0);
-
     }
 }

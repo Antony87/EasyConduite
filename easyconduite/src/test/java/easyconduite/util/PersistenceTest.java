@@ -55,6 +55,7 @@ public class PersistenceTest {
         assertEquals(media1.getResourcePath(),media2.getResourcePath());
         assertEquals(media1.getDuration(),media2.getDuration());
         assertEquals(media1.getKeycode(),media2.getKeycode());
+        assertEquals(media1.getUniqueId(),media2.getUniqueId());
     }
 
     @Test

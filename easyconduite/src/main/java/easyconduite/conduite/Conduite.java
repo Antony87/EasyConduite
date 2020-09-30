@@ -4,78 +4,88 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.Collections;
+import java.util.LinkedList;
 
 public class Conduite {
 
     @JsonIgnore
     private static final Logger LOG = LogManager.getLogger(Conduite.class);
 
-    private final SortedMap<Integer, Trigger> triggers;
+    private final LinkedList<Trigger> listeTriggers;
 
     @JsonIgnore
     private int currentIndex = 0;
 
     public Conduite() {
-        triggers = new TreeMap<>();
+        listeTriggers = new LinkedList<>();
     }
 
     public Trigger createTrigger() {
         int index;
-        if (triggers.isEmpty()) {
+        if (listeTriggers.isEmpty()) {
             index = 1;
         } else {
-            index = triggers.lastKey() + 1;
+            index = listeTriggers.getLast().getIndex() + 1;
         }
-        final Trigger trigger = new Trigger();
-        triggers.put(index, trigger);
+        LOG.trace("Create Trigger with index {}", index);
+        final Trigger trigger = new Trigger(index);
+        listeTriggers.addLast(trigger);
+        Collections.sort(listeTriggers);
         LOG.trace("Add trigger {} to triggers map", trigger);
         return trigger;
     }
 
     public void fireNextTrigger() {
-        if (!triggers.isEmpty()) {
+        if (!listeTriggers.isEmpty()) {
             inactiveAllTriggers();
             forwardCurrentIndex();
-            final Trigger actionTrigger = triggers.get(currentIndex);
-            actionTrigger.runActions();
+            final Trigger actionTrigger = listeTriggers.get(currentIndex - 1);
+            actionTrigger.runAllActions();
         }
     }
 
     public void firePreviousTrigger() {
-        if (!triggers.isEmpty()) {
+        if (!listeTriggers.isEmpty()) {
             inactiveAllTriggers();
             backwardCurrentIndex();
-            final Trigger actionTrigger = triggers.get(currentIndex);
-            actionTrigger.runActions();
+            final Trigger actionTrigger = listeTriggers.get(currentIndex - 1);
+            actionTrigger.runAllActions();
         }
     }
 
-    public void fireRewindTrigger(){
-        if(!triggers.isEmpty()){
+    public void fireRewindTrigger() {
+        if (!listeTriggers.isEmpty()) {
             inactiveAllTriggers();
-            currentIndex=0;
+            currentIndex = 0;
         }
     }
 
     private void forwardCurrentIndex() {
-        int lastIndex = triggers.lastKey();
+        int lastIndex = listeTriggers.getLast().getIndex();
         LOG.trace("nextIndex from last = {} and current = {}", lastIndex, currentIndex);
         if (lastIndex > currentIndex) currentIndex++;
     }
 
     private void backwardCurrentIndex() {
-        int firstIndex = triggers.firstKey();
+        int firstIndex = listeTriggers.getFirst().getIndex();
         LOG.trace("nextIndex from first = {} and current = {}", firstIndex, currentIndex);
-        if (firstIndex<currentIndex) currentIndex--;
+        if (firstIndex < currentIndex) currentIndex--;
     }
 
     private void inactiveAllTriggers() {
-        triggers.forEach((integer, trigger) -> trigger.setActif(false));
+        listeTriggers.forEach(trigger -> trigger.setActif(false));
     }
 
-    public SortedMap<Integer, Trigger> getTriggers() {
-        return triggers;
+    public LinkedList<Trigger> getListeTriggers() {
+        return listeTriggers;
+    }
+
+    @Override
+    public String toString() {
+        return "Conduite{" +
+                "listeTriggers=" + listeTriggers +
+                ", currentIndex=" + currentIndex +
+                '}';
     }
 }

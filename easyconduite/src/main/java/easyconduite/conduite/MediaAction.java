@@ -21,63 +21,100 @@
 package easyconduite.conduite;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import easyconduite.media.MediaStatus;
 import easyconduite.model.AbstractMedia;
 import easyconduite.model.MediaPlayable;
 
+/**
+ * Cette classe encapsule une action qui sera déclenchée sur un {@link MediaPlayable}.
+ */
 public class MediaAction {
 
-    private Long uniqueId;
+    /**
+     * Les actions possibles dans l'ordre.
+     */
+    @JsonIgnore
+    private final Action[] actionsPossibles={Action.NONE,Action.PLAY,Action.PAUSE,Action.STOP};
+
+    /**
+     * L'index de l'action courante.
+     */
+    private int currentActionIndex;
+
+    private Action statusAction = Action.NONE;
 
     @JsonIgnore
-    private final MediaPlayable media;
+    private MediaPlayable media;
 
-    @JsonIgnore
-    private final MediaStatus[] statusPossibles = {MediaStatus.UNKNOWN, MediaStatus.PLAYING, MediaStatus.PAUSED, MediaStatus.STOPPED};
+    private long uniqueIdMedia;
 
-    private int indexOfStatus;
-
-    private MediaStatus statusAction = MediaStatus.UNKNOWN;
-
-    public MediaAction(MediaPlayable media) {
-        this.media = media;
-        uniqueId = ((AbstractMedia)this.media).getUniqueId();
-        indexOfStatus = 0;
+    public MediaAction() {
+        currentActionIndex = 0;
     }
 
-    public MediaStatus nextStatus() {
-        indexOfStatus++;
-        if (indexOfStatus > 3) indexOfStatus = 0;
-        setStatusAction(statusPossibles[indexOfStatus]);
+    public MediaAction(MediaPlayable media) {
+        this();
+        this.media = media;
+        uniqueIdMedia = ((AbstractMedia)media).getUniqueId();
+    }
+
+    public Action nextAction() {
+        currentActionIndex++;
+        if (currentActionIndex > 3) currentActionIndex = 0;
+        setStatusAction(actionsPossibles[currentActionIndex]);
         return statusAction;
     }
 
-    public void runStatut() {
+    public void runAction() {
         switch (statusAction) {
-            case STOPPED:
-                media.stop();
+            case STOP:
+                this.media.stop();
                 break;
-            case PLAYING:
-                media.play();
+            case PLAY:
+                this.media.play();
                 break;
-            case PAUSED:
-                media.pause();
+            case PAUSE:
+                this.media.pause();
                 break;
             default:
                 break;
         }
     }
 
+    public Action getStatusAction() {
+        return statusAction;
+    }
+
+    public void setStatusAction(Action statusAction) {
+        this.statusAction = statusAction;
+    }
+
     public MediaPlayable getMedia() {
         return media;
     }
 
-    public MediaStatus getStatusAction() {
-        return statusAction;
+    public void setMedia(MediaPlayable media) {
+        this.media = media;
     }
 
-    public void setStatusAction(MediaStatus statusAction) {
-        this.statusAction = statusAction;
+    public int getCurrentActionIndex() {
+        return currentActionIndex;
     }
 
+    public void setCurrentActionIndex(int currentActionIndex) {
+        this.currentActionIndex = currentActionIndex;
+    }
+
+    public long getUniqueIdMedia() {
+        return uniqueIdMedia;
+    }
+
+    @Override
+    public String toString() {
+        return "MediaAction{" +
+                ", currentActionIndex=" + currentActionIndex +
+                ", statusAction=" + statusAction +
+                ", media=" + media +
+                ", uniqueIdMedia=" + uniqueIdMedia +
+                '}';
+    }
 }

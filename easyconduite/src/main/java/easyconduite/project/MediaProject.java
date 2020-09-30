@@ -38,8 +38,11 @@ import java.util.List;
 public class MediaProject {
 
     private String name;
+
     private Conduite conduite;
+
     private Path projectPath;
+
     private List<MediaPlayable> mediaPlayables;
 
     public MediaProject() {

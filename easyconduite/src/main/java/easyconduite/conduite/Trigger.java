@@ -21,68 +21,102 @@
 package easyconduite.conduite;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import easyconduite.model.AbstractMedia;
 import easyconduite.model.MediaPlayable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
-import java.util.HashSet;
-import java.util.Optional;
+import java.util.ArrayList;
 
 /**
- * this class implements track trigger features.
+ * Cette classe implémente les comportement d'un Trigger pour le déclenchement de pistes Media.
  */
-public class Trigger {
-
-    private final HashSet<MediaAction> mediaActions;
+public class Trigger implements Comparable {
 
     @JsonIgnore
     private final BooleanProperty actif = new SimpleBooleanProperty(false);
 
+    private ArrayList<MediaAction> listeActions;
+
+    private int index;
+
     public Trigger() {
-        mediaActions = new HashSet<>();
+        listeActions = new ArrayList<>();
     }
 
-    public void runActions() {
-        mediaActions.forEach((mediaAction) -> {
-            mediaAction.runStatut();
+    public Trigger(int index) {
+        this();
+        this.index = index;
+    }
+
+    public void runAllActions() {
+        listeActions.forEach(action -> {
+            action.runAction();
             setActif(true);
         });
     }
 
-    public MediaAction createMediaAction(MediaPlayable media){
+    /**
+     * Cette méthode retourne {@link MediaAction} associée au {@link MediaPlayable} ou en crée une avec ce Media.
+     * @param media Le media qui est ou sera associé à l'action
+     * @return
+     */
+    public MediaAction getActionFromMedia(MediaPlayable media) {
+        for (MediaAction action : listeActions) {
+                //si désérialization, comparer les uniqueId
+                if(action.getUniqueIdMedia()==((AbstractMedia)media).getUniqueId()){
+                    action.setMedia(media);
+                    return action;
+                }
+        }
         final MediaAction action = new MediaAction(media);
-        mediaActions.add(action);
+        listeActions.add(action);
         return action;
-    }
-
-    public MediaAction findActionFromMedia(MediaPlayable media){
-        final Optional<MediaAction> mediaOptionnal = mediaActions.stream().
-                filter(mediaAction -> mediaAction.getMedia().equals(media))
-                .findFirst();
-        return mediaOptionnal.orElse(null);
     }
 
     @Override
     public String toString() {
         return "Trigger{" +
-                "mediaActions=" + mediaActions +
-                ", actif=" + actif +
+                "listeActions=" + listeActions +
+                ", index=" + index +
                 '}';
-    }
-
-    public HashSet<MediaAction> getMediaActions() {
-        return mediaActions;
     }
 
     public boolean isActif() {
         return actif.get();
     }
 
+    public void setActif(boolean actif) {
+        this.actif.set(actif);
+    }
+
     public BooleanProperty actifProperty() {
         return actif;
     }
 
-    public void setActif(boolean actif) {
-        this.actif.set(actif);
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public ArrayList<MediaAction> getListeActions() {
+        return listeActions;
+    }
+
+    public void setListeActions(ArrayList<MediaAction> listeActions) {
+        this.listeActions = listeActions;
+    }
+
+    /**
+     * La comapraison se fait sur la propriété index.
+     * @param aTrigger
+     * @return
+     */
+    @Override
+    public int compareTo(Object aTrigger) {
+        return this.index - ((Trigger) aTrigger).index;
     }
 }

@@ -22,75 +22,60 @@ package easyconduite.view.controls;
 
 import easyconduite.conduite.MediaAction;
 import easyconduite.conduite.Trigger;
-import easyconduite.model.MediaPlayable;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TriggerActionRegion extends Region {
 
-    private final Trigger trigger;
-    private final MediaPlayable media;
-    private IntegerProperty colIndex = new SimpleIntegerProperty();
-    private IntegerProperty rowIndex = new SimpleIntegerProperty();
+    private static final Logger LOG = LogManager.getLogger(TriggerActionRegion.class);
 
-    public TriggerActionRegion(Trigger trigger, MediaPlayable media, Integer rowIndex, Integer colIndex, GridPane gridToAdd) {
+    private final Trigger trigger;
+    private final MediaAction mediaAction;
+    private final int rowIndex;
+    private final int columnIndex;
+
+    public TriggerActionRegion(Trigger aTrigger, MediaAction action, int row, int column) {
         super();
-        this.trigger = trigger;
-        this.media = media;
-        this.getStyleClass().add("conduiteRegion");
-        colIndexProperty().setValue(colIndex);
-        rowIndexProperty().setValue(rowIndex);
-        gridToAdd.add(this, getColIndex(), getRowIndex());
+        LOG.debug("Create TriggerActionRegion whith Trigger {} Media {}",aTrigger,action);
+        this.trigger = aTrigger;
+        this.mediaAction = action;
+        this.rowIndex= row;
+        this.columnIndex = column;
+
+        updateUI(mediaAction);
 
         this.setOnMouseClicked(event -> {
-            final MediaAction action = getTrigger().findActionFromMedia(media);
-            action.nextStatus();
+            mediaAction.nextAction();
+            updateUI(mediaAction);
+        });
+        this.getStyleClass().add("conduiteRegion");
+    }
+
+
+    public void updateUI(MediaAction action){
+        if(action!=null){
             this.getStyleClass().removeAll("playbutton", "pausebutton", "stopbutton");
             switch (action.getStatusAction()) {
-                case STOPPED:
+                case STOP:
                     this.getStyleClass().add("stopbutton");
                     break;
-                case PLAYING:
+                case PLAY:
                     this.getStyleClass().add("playbutton");
                     break;
-                case PAUSED:
+                case PAUSE:
                     this.getStyleClass().add("pausebutton");
             }
-        });
-
+        }
     }
 
-    public int getColIndex() {
-        return colIndex.get();
-    }
-
-    public void setColIndex(int colIndex) {
-        this.colIndex.set(colIndex);
-    }
-
-    public IntegerProperty colIndexProperty() {
-        return colIndex;
-    }
-
-    public int getRowIndex() {
-        return rowIndex.get();
-    }
-
-    public void setRowIndex(int rowIndex) {
-        this.rowIndex.set(rowIndex);
-    }
-
-    public IntegerProperty rowIndexProperty() {
-        return rowIndex;
-    }
-
-    public Trigger getTrigger() {
-        return trigger;
-    }
-
-    public MediaPlayable getMedia() {
-        return media;
+    @Override
+    public String toString() {
+        return "TriggerActionRegion{" +
+                "trigger=" + trigger +
+                ", mediaAction=" + mediaAction +
+                ", rowIndex=" + rowIndex +
+                ", columnIndex=" + columnIndex +
+                "} " + super.toString();
     }
 }
