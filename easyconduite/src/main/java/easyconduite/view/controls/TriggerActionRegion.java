@@ -35,7 +35,7 @@ public class TriggerActionRegion extends Region {
     private final int rowIndex;
     private final int columnIndex;
 
-    public TriggerActionRegion(Trigger aTrigger, MediaAction action, int row, int column) {
+    public TriggerActionRegion(Trigger aTrigger, MediaAction action, int column,int row) {
         super();
         LOG.debug("Create TriggerActionRegion whith Trigger {} Media {}",aTrigger,action);
         this.trigger = aTrigger;
@@ -50,6 +50,7 @@ public class TriggerActionRegion extends Region {
             updateUI(mediaAction);
         });
         this.getStyleClass().add("conduiteRegion");
+        this.setId(columnIndex+"_"+rowIndex);
     }
 
 

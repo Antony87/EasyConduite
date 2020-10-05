@@ -29,7 +29,9 @@ import javafx.beans.property.SimpleBooleanProperty;
 import java.util.ArrayList;
 
 /**
- * Cette classe implémente les comportement d'un Trigger pour le déclenchement de pistes Media.
+ * This class implements the features of a trigger, like medias playing, etc.
+ * <br>
+ * A trigger contains a lits of actions {@link MediaAction}
  */
 public class Trigger implements Comparable {
 
@@ -58,16 +60,17 @@ public class Trigger implements Comparable {
 
     /**
      * Cette méthode retourne {@link MediaAction} associée au {@link MediaPlayable} ou en crée une avec ce Media.
+     *
      * @param media Le media qui est ou sera associé à l'action
      * @return
      */
     public MediaAction getActionFromMedia(MediaPlayable media) {
         for (MediaAction action : listeActions) {
-                //si désérialization, comparer les uniqueId
-                if(action.getUniqueIdMedia()==((AbstractMedia)media).getUniqueId()){
-                    action.setMedia(media);
-                    return action;
-                }
+            //si désérialization, comparer les uniqueId
+            if (action.getUniqueIdMedia() == ((AbstractMedia) media).getUniqueId()) {
+                action.setMedia(media);
+                return action;
+            }
         }
         final MediaAction action = new MediaAction(media);
         listeActions.add(action);
@@ -112,6 +115,7 @@ public class Trigger implements Comparable {
 
     /**
      * La comapraison se fait sur la propriété index.
+     *
      * @param aTrigger
      * @return
      */

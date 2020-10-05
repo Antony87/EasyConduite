@@ -304,7 +304,9 @@ public class MainController extends BaseController {
         final MediaPlayable media = mediaUI.getMediaPlayable();
         media.closePlayer();
         mediaUIList.remove(mediaUI);
+        conduiteController.deleteOneMedia(media);
         project.getMediaPlayables().remove(media);
+        tableLayout.getChildren().remove(mediaUI);
         context.setNeedToSave(true);
     }
 

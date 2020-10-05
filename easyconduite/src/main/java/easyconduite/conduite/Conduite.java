@@ -7,6 +7,9 @@ import org.apache.logging.log4j.Logger;
 import java.util.Collections;
 import java.util.LinkedList;
 
+/**
+ * This class manages the sequence of actions on the media.
+ */
 public class Conduite {
 
     @JsonIgnore
