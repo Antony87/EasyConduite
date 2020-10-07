@@ -21,7 +21,10 @@ import easyconduite.EasyConduiteProperties;
 import easyconduite.Easyconduite;
 import easyconduite.exception.EasyconduiteException;
 import easyconduite.media.MediaFactory;
-import easyconduite.model.*;
+import easyconduite.model.AbstractUIMedia;
+import easyconduite.model.BaseController;
+import easyconduite.model.MediaPlayable;
+import easyconduite.model.UIMediaPlayable;
 import easyconduite.project.MediaProject;
 import easyconduite.project.ProjectContext;
 import easyconduite.util.EasyConduitePropertiesHandler;
@@ -387,7 +390,6 @@ public class MainController extends BaseController {
     public void initialize(URL url, ResourceBundle rb) {
         super.initialize(url, rb);
         LOG.debug("EasyConduite MainController is initialized");
-
 
         if (appProperties.getLastFileProject() != null) {
             MenuItem recentFileMenuItem = new MenuItem(appProperties.getLastFileProject().toString());
