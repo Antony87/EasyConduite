@@ -22,6 +22,9 @@ package easyconduite.view.controls;
 
 import easyconduite.conduite.MediaAction;
 import easyconduite.conduite.Trigger;
+import easyconduite.view.commons.PlayingPseudoClass;
+import javafx.beans.property.BooleanProperty;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Region;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,18 +33,22 @@ public class TriggerActionRegion extends Region {
 
     private static final Logger LOG = LogManager.getLogger(TriggerActionRegion.class);
 
+    final BooleanProperty playingClass;
+
     private final Trigger trigger;
     private final MediaAction mediaAction;
     private final int rowIndex;
     private final int columnIndex;
 
-    public TriggerActionRegion(Trigger aTrigger, MediaAction action, int column,int row) {
+    public TriggerActionRegion(Trigger aTrigger, MediaAction action, int column, int row) {
         super();
-        LOG.debug("Create TriggerActionRegion whith Trigger {} Media {}",aTrigger,action);
+        LOG.debug("Create TriggerActionRegion whith Trigger {} Media {}", aTrigger, action);
         this.trigger = aTrigger;
         this.mediaAction = action;
-        this.rowIndex= row;
+        this.rowIndex = row;
         this.columnIndex = column;
+        playingClass = new PlayingPseudoClass(this);
+        playingClassProperty().setValue(false);
 
         updateUI(mediaAction);
 
@@ -49,8 +56,12 @@ public class TriggerActionRegion extends Region {
             mediaAction.nextAction();
             updateUI(mediaAction);
         });
+
+        final Tooltip tip = new Tooltip(columnIndex + "_" + rowIndex);
+        Tooltip.install(this, tip);
+
         this.getStyleClass().add("conduiteRegion");
-        this.setId(columnIndex+"_"+rowIndex);
+        this.setId(columnIndex + "_" + rowIndex);
     }
 
 
@@ -68,6 +79,18 @@ public class TriggerActionRegion extends Region {
                     this.getStyleClass().add("pausebutton");
             }
         }
+    }
+
+    public boolean isPlayingClass() {
+        return playingClass.get();
+    }
+
+    public void setPlayingClass(boolean playingClass) {
+        this.playingClass.set(playingClass);
+    }
+
+    public BooleanProperty playingClassProperty() {
+        return playingClass;
     }
 
     @Override
