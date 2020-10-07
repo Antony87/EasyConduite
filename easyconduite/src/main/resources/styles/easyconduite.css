@@ -61,12 +61,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 .conduiteRegion{
-    -fx-background-color :  -grey-600;
+    -fx-background-color :  -grey-800;
     -fx-min-height: 34;
     -fx-max-height: 34;
     -fx-pref-width: 34;
     -fx-min-width: 34;
 }
+
+.conduiteRegion:playing{
+    -fx-background-color :  -blue-grey-600;
+}
+
 .labelConduite{
     -fx-min-height: 34;
     -fx-max-height: 34;
