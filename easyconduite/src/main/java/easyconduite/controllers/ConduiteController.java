@@ -23,11 +23,13 @@ package easyconduite.controllers;
 import easyconduite.conduite.Conduite;
 import easyconduite.conduite.MediaAction;
 import easyconduite.conduite.Trigger;
+import easyconduite.media.RemoteMedia;
 import easyconduite.model.AbstractMedia;
 import easyconduite.model.BaseController;
 import easyconduite.model.MediaPlayable;
 import easyconduite.project.ProjectContext;
 import easyconduite.view.commons.PlayingPseudoClass;
+import easyconduite.view.controls.TrackConduiteLabel;
 import easyconduite.view.controls.TriggerActionRegion;
 import javafx.beans.property.BooleanProperty;
 import javafx.event.ActionEvent;
@@ -133,10 +135,12 @@ public class ConduiteController extends BaseController {
 
     public void addMedia(MediaPlayable media) {
 
-        final Label titleMedia = new Label();
-        final AbstractMedia abstractMedia = (AbstractMedia) media;
-        titleMedia.textProperty().bind(abstractMedia.nameProperty());
-        titleMedia.getStyleClass().add("labelConduite");
+//        final Label titleMedia = new Label();
+//        final AbstractMedia abstractMedia = (AbstractMedia) media;
+//        titleMedia.textProperty().bind(abstractMedia.nameProperty());
+//        titleMedia.getStyleClass().add("labelConduite");
+
+
 
         int lastRow;
         if(tracksMap.size()==0){
@@ -144,6 +148,8 @@ public class ConduiteController extends BaseController {
         }else{
             lastRow=tracksMap.lastKey()+1;
         }
+
+        final TrackConduiteLabel titleLabelMedia = new TrackConduiteLabel(media,lastRow);
 
         final int finalLastRow = lastRow;
         conduite.getListeTriggers().forEach(trigger -> {
@@ -158,9 +164,10 @@ public class ConduiteController extends BaseController {
         tracksMap.put(lastRow, media);
 
         // add an id for lookup "column-row"
-        titleMedia.idProperty().setValue("0_" + lastRow);
-        titleMedia.setTooltip(new Tooltip(titleMedia.getId()));
-        grid.add(titleMedia, 0, lastRow);
+        titleLabelMedia.idProperty().setValue("0_" + lastRow);
+        titleLabelMedia.setTooltip(new Tooltip(titleLabelMedia.getId()));
+        grid.add(titleLabelMedia, 0, lastRow);
+
     }
 
     public void deleteOneMedia(MediaPlayable media) {
