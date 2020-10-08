@@ -21,12 +21,12 @@
 package easyconduite.tools.kodi;
 
 import easyconduite.exception.RemotePlayableException;
-import easyconduite.media.MediaStatus;
 import easyconduite.media.RemoteMedia;
 import easyconduite.model.IRemotePlayer;
 import easyconduite.util.PersistenceHelper;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
+import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -82,7 +82,7 @@ public class KodiPlayer implements IRemotePlayer {
         itemRequest = HttpRequest.newBuilder().uri(hostUri).POST(HttpRequest.BodyPublishers.ofString(jsonRequestItem)).header(CONTENT_TYPE, APP_JSON).build();
         LOG.trace("item request {}",jsonRequestItem);
 
-        this.remoteMedia.setStatut(MediaStatus.UNKNOWN);
+        this.remoteMedia.setStatus(MediaPlayer.Status.UNKNOWN);
 
         final KodiPlayer.ActiveHostObserver hostObserver = new KodiPlayer.ActiveHostObserver();
         hostObserver.setPeriod(Duration.millis(2000));
@@ -97,13 +97,13 @@ public class KodiPlayer implements IRemotePlayer {
                     final String responseString = new String(reponse.body().getBytes(), StandardCharsets.UTF_8);
                     final KodiActiveResponse kodiActiveResponse = KodiRequest.buildResponse(responseString, KodiActiveResponse.class);
                     if (kodiActiveResponse.getId() != null) {
-                        final MediaStatus status = remoteMedia.getStatut();
-                        if (status == MediaStatus.HALTED || status == MediaStatus.UNKNOWN) {
-                            remoteMedia.setStatut(MediaStatus.READY);
+                        final MediaPlayer.Status status = remoteMedia.getStatus();
+                        if (status == MediaPlayer.Status.HALTED || status == MediaPlayer.Status.UNKNOWN) {
+                            remoteMedia.setStatus(MediaPlayer.Status.READY);
                         }
                     }
                 } else {
-                    remoteMedia.setStatut(MediaStatus.HALTED);
+                    remoteMedia.setStatus(MediaPlayer.Status.HALTED);
                 }
             });
         } catch (Exception e) {
@@ -120,16 +120,16 @@ public class KodiPlayer implements IRemotePlayer {
                         final KodiItemResponse kodiItemResponse = KodiRequest.buildResponse(responseString, KodiItemResponse.class);
                         final KodiItemResponse.KodiItem kodiItem = kodiItemResponse.getResult().getItem();
                         if (kodiItem.getLabel().equals(this.mediaFileName)) {
-                            remoteMedia.setStatut(MediaStatus.PLAYING);
+                            remoteMedia.setStatus(MediaPlayer.Status.PLAYING);
                         } else {
-                            remoteMedia.setStatut(MediaStatus.READY);
+                            remoteMedia.setStatus(MediaPlayer.Status.READY);
                         }
                     }catch (Exception e){
                         e.printStackTrace();
                     }
 
                 } else {
-                    remoteMedia.setStatut(MediaStatus.HALTED);
+                    remoteMedia.setStatus(MediaPlayer.Status.HALTED);
                 }
             });
         } catch (Exception e) {
@@ -165,9 +165,9 @@ public class KodiPlayer implements IRemotePlayer {
     public void play() {
         client.sendAsync(playRequest, HttpResponse.BodyHandlers.ofString()).thenAccept(reponse -> {
             if (reponse.statusCode() == HTTP_OK) {
-                remoteMedia.statutProperty().setValue(MediaStatus.PLAYING);
+                remoteMedia.statusProperty().setValue(MediaPlayer.Status.PLAYING);
             } else {
-                remoteMedia.statutProperty().setValue(MediaStatus.HALTED);
+                remoteMedia.statusProperty().setValue(MediaPlayer.Status.HALTED);
             }
         });
     }
@@ -176,9 +176,9 @@ public class KodiPlayer implements IRemotePlayer {
     public void pause() {
         client.sendAsync(stopRequest, HttpResponse.BodyHandlers.ofString()).thenAccept(reponse -> {
             if (reponse.statusCode() == HTTP_OK) {
-                remoteMedia.statutProperty().setValue(MediaStatus.STOPPED);
+                remoteMedia.statusProperty().setValue(MediaPlayer.Status.STOPPED);
             } else {
-                remoteMedia.statutProperty().setValue(MediaStatus.HALTED);
+                remoteMedia.statusProperty().setValue(MediaPlayer.Status.HALTED);
             }
         });
     }
@@ -187,9 +187,9 @@ public class KodiPlayer implements IRemotePlayer {
     public void stop() {
         client.sendAsync(stopRequest, HttpResponse.BodyHandlers.ofString()).thenAccept(reponse -> {
             if (reponse.statusCode() == HTTP_OK) {
-                remoteMedia.statutProperty().setValue(MediaStatus.STOPPED);
+                remoteMedia.statusProperty().setValue(MediaPlayer.Status.STOPPED);
             } else {
-                remoteMedia.statutProperty().setValue(MediaStatus.HALTED);
+                remoteMedia.statusProperty().setValue(MediaPlayer.Status.HALTED);
             }
         });
     }

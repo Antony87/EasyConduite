@@ -28,6 +28,7 @@ import easyconduite.model.IRemotePlayer;
 import easyconduite.tools.kodi.KodiPlayer;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,7 +41,7 @@ public class RemoteMedia extends AbstractMedia {
     @JsonIgnore
     private static final Logger LOG = LogManager.getLogger(RemoteMedia.class);
     @JsonIgnore
-    private final ObjectProperty<MediaStatus> statut = new SimpleObjectProperty();
+    private final ObjectProperty<MediaPlayer.Status> status = new SimpleObjectProperty();
     private Path resource;
     private double volume = 0.5;
     private RemoteType type;
@@ -57,17 +58,17 @@ public class RemoteMedia extends AbstractMedia {
         this();
         setDuration(new Duration(0));
         this.type = type;
-        setStatut(MediaStatus.UNKNOWN);
+        setStatus(MediaPlayer.Status.UNKNOWN);
     }
 
     @Override
     public void play() {
-        switch (statut.getValue()) {
+        switch (status.getValue()) {
             case READY:
             case STOPPED:
             case PAUSED:
                 remotePlayer.play();
-                setStatut(MediaStatus.PLAYING);
+                setStatus(MediaPlayer.Status.PLAYING);
                 break;
             default:
                 break;
@@ -76,10 +77,10 @@ public class RemoteMedia extends AbstractMedia {
 
     @Override
     public void pause() {
-        switch (statut.getValue()) {
+        switch (status.getValue()) {
             case PLAYING:
                 remotePlayer.stop();
-                setStatut(MediaStatus.STOPPED);
+                setStatus(MediaPlayer.Status.STOPPED);
                 break;
             case READY:
             case STOPPED:
@@ -93,11 +94,11 @@ public class RemoteMedia extends AbstractMedia {
 
     @Override
     public void stop() {
-        switch (statut.getValue()) {
+        switch (status.getValue()) {
             case PAUSED:
             case PLAYING:
                 remotePlayer.stop();
-                setStatut(MediaStatus.STOPPED);
+                setStatus(MediaPlayer.Status.STOPPED);
                 break;
             case READY:
             case STOPPED:
@@ -165,16 +166,16 @@ public class RemoteMedia extends AbstractMedia {
         this.volume = volume;
     }
 
-    public MediaStatus getStatut() {
-        return statut.get();
+    public MediaPlayer.Status getStatus() {
+        return status.get();
     }
 
-    public void setStatut(MediaStatus statut) {
-        this.statut.set(statut);
+    public void setStatus(MediaPlayer.Status status) {
+        this.status.set(status);
     }
 
-    public ObjectProperty<MediaStatus> statutProperty() {
-        return statut;
+    public ObjectProperty<MediaPlayer.Status> statusProperty() {
+        return status;
     }
 
     public IRemotePlayer getRemotePlayer() {
@@ -205,7 +206,7 @@ public class RemoteMedia extends AbstractMedia {
                 ", host='" + host + '\'' +
                 ", port=" + port +
                 ", player=" + remotePlayer +
-                ", status=" + statut +
+                ", status=" + status +
                 "} " + super.toString();
     }
 

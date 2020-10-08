@@ -55,7 +55,7 @@ public class RemoteMediaUI extends AbstractUIMedia {
 
         setPlayerReady(false);
 
-        remoteMedia.statutProperty().addListener((observableValue, oldValue, newValue) -> {
+        remoteMedia.statusProperty().addListener((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
                 LOG.trace("MediaStatus player {} is {}", this.remoteMedia.getName(), newValue);
                 switch (newValue) {
@@ -104,8 +104,8 @@ public class RemoteMediaUI extends AbstractUIMedia {
 
     @Override
     public void playPause() {
-        LOG.trace("RemoteMediaUI playPause call with status {}",remoteMedia.getStatut());
-        switch (remoteMedia.getStatut()){
+        LOG.trace("RemoteMediaUI playPause call with status {}",remoteMedia.getStatus());
+        switch (remoteMedia.getStatus()){
             case PAUSED:
             case READY:
             case STOPPED:

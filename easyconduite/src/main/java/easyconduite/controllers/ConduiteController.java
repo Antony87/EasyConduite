@@ -23,8 +23,6 @@ package easyconduite.controllers;
 import easyconduite.conduite.Conduite;
 import easyconduite.conduite.MediaAction;
 import easyconduite.conduite.Trigger;
-import easyconduite.media.RemoteMedia;
-import easyconduite.model.AbstractMedia;
 import easyconduite.model.BaseController;
 import easyconduite.model.MediaPlayable;
 import easyconduite.project.ProjectContext;
@@ -124,23 +122,16 @@ public class ConduiteController extends BaseController {
                 }
             });
         });
-        titleTrigger.getStyleClass().add("labelHeadTrigger");
 
+        titleTrigger.getStyleClass().add("labelHeadTrigger");
         // add an id for lookup "column,row"
         titleTrigger.setId(index + "_0");
         titleTrigger.setTooltip(new Tooltip(titleTrigger.getId()));
-
         grid.add(titleTrigger, index, 0);
+
     }
 
     public void addMedia(MediaPlayable media) {
-
-//        final Label titleMedia = new Label();
-//        final AbstractMedia abstractMedia = (AbstractMedia) media;
-//        titleMedia.textProperty().bind(abstractMedia.nameProperty());
-//        titleMedia.getStyleClass().add("labelConduite");
-
-
 
         int lastRow;
         if(tracksMap.size()==0){
@@ -149,8 +140,7 @@ public class ConduiteController extends BaseController {
             lastRow=tracksMap.lastKey()+1;
         }
 
-        final TrackConduiteLabel titleLabelMedia = new TrackConduiteLabel(media,lastRow);
-
+        final TrackConduiteLabel titleLabelMedia = new TrackConduiteLabel(media);
         final int finalLastRow = lastRow;
         conduite.getListeTriggers().forEach(trigger -> {
             if (trigger != null) {
@@ -162,7 +152,6 @@ public class ConduiteController extends BaseController {
         });
 
         tracksMap.put(lastRow, media);
-
         // add an id for lookup "column-row"
         titleLabelMedia.idProperty().setValue("0_" + lastRow);
         titleLabelMedia.setTooltip(new Tooltip(titleLabelMedia.getId()));

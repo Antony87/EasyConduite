@@ -20,14 +20,13 @@
 
 package easyconduite.view.controls;
 
-import easyconduite.controllers.ConduiteController;
 import easyconduite.media.AudioMedia;
-import easyconduite.media.MediaStatus;
 import easyconduite.media.RemoteMedia;
 import easyconduite.model.AbstractMedia;
 import easyconduite.model.MediaPlayable;
 import easyconduite.view.commons.PlayingPseudoClass;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.scene.control.Label;
 import javafx.scene.media.MediaPlayer;
 import org.apache.logging.log4j.LogManager;
@@ -38,47 +37,42 @@ public class TrackConduiteLabel extends Label {
     private static final Logger LOG = LogManager.getLogger(TrackConduiteLabel.class);
     final BooleanProperty playingClass;
     private final MediaPlayable mediaPlayable;
-    private final Integer rowIndex;
 
-    public TrackConduiteLabel(MediaPlayable media, Integer row) {
 
-        mediaPlayable =  media;
-        rowIndex=row;
-        this.textProperty().bind(((AbstractMedia)mediaPlayable).nameProperty());
+    public TrackConduiteLabel(MediaPlayable media) {
+        mediaPlayable = media;
+        this.textProperty().bind(((AbstractMedia) mediaPlayable).nameProperty());
         this.getStyleClass().add("labelConduite");
         playingClass = new PlayingPseudoClass(this);
         playingClassProperty().setValue(false);
 
-        if(mediaPlayable instanceof AudioMedia){
-            LOG.trace("Label for instance AudioMedia");
-            ((AudioMedia)mediaPlayable).getPlayer().statusProperty().addListener((observable, oldValue, newValue) -> {
-                if(newValue.equals(MediaPlayer.Status.PLAYING)) {
-                    this.setPlayingClass(true);
-                }else{
-                    this.setPlayingClass(false);
-                }
-            });
-        }else if(mediaPlayable instanceof RemoteMedia){
-            ((RemoteMedia)mediaPlayable).statutProperty().addListener((observable, oldValue, newValue) -> {
-                if(newValue.equals(MediaStatus.PLAYING)) {
-                    this.setPlayingClass(true);
-                }else{
-                    this.setPlayingClass(false);
-                }
-            });
+        ReadOnlyObjectProperty<MediaPlayer.Status> statusProperty = null;
+        if (media instanceof AudioMedia) {
+            final AudioMedia audioMedia = (AudioMedia) media;
+            statusProperty = audioMedia.getPlayer().statusProperty();
+            addPlayingLookListener(statusProperty);
+        } else if (media instanceof RemoteMedia) {
+            final RemoteMedia remoteMedia = (RemoteMedia) media;
+            statusProperty = remoteMedia.statusProperty();
+            addPlayingLookListener(statusProperty);
         }
-
     }
 
-    public boolean isPlayingClass() {
-        return playingClass.get();
-    }
-
-    public BooleanProperty playingClassProperty() {
-        return playingClass;
+    private void addPlayingLookListener(ReadOnlyObjectProperty<MediaPlayer.Status> property) {
+        property.addListener((observable, oldValue, newValue) -> {
+            if (newValue.equals(MediaPlayer.Status.PLAYING)) {
+                this.setPlayingClass(true);
+            } else {
+                this.setPlayingClass(false);
+            }
+        });
     }
 
     public void setPlayingClass(boolean playingClass) {
         this.playingClass.set(playingClass);
+    }
+
+    public BooleanProperty playingClassProperty() {
+        return playingClass;
     }
 }
